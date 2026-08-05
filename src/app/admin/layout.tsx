@@ -62,19 +62,23 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </div>
           </div>
 
-          <nav className="flex items-center gap-2">
-            <Link
-              href="/admin"
-              className="rounded-full px-4 py-2 text-sm font-black lowercase text-white/60 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              overview
-            </Link>
-            <Link
-              href="/admin/cards"
-              className="rounded-full px-4 py-2 text-sm font-black lowercase text-white/60 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              cards
-            </Link>
+          <nav className="flex flex-wrap items-center gap-1.5">
+            {[
+              { href: "/admin", label: "overview" },
+              { href: "/admin/cards", label: "cards" },
+              { href: "/admin/users", label: "people" },
+              { href: "/admin/nfc", label: "nfc stock" },
+              { href: "/admin/templates", label: "templates" },
+              { href: "/admin/settings", label: "site" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-full px-3.5 py-2 text-sm font-black lowercase text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
               href="/dashboard"
               className="rounded-full border-2 border-white/20 px-4 py-2 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"

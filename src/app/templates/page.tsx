@@ -43,6 +43,31 @@ export default async function PublicTemplatesPage() {
 
   const isLoggedIn = Boolean(user);
 
+  // Admin overrides from template_settings. Readable by anyone (the gallery is
+  // public), and absent rows just fall back to the compiled-in definition.
+  const { data: overrideRows } = await supabase
+    .from("template_settings")
+    .select("template_id, enabled, name, blurb, category, sort_order, is_new");
+
+  const overrides = new Map(
+    (overrideRows ?? []).map((o) => [o.template_id as string, o])
+  );
+
+  const templatesAll = CARD_TEMPLATES.map((t, index) => {
+    const o = overrides.get(t.id);
+    return {
+      ...t,
+      name: o?.name || t.name,
+      blurb: o?.blurb || t.blurb,
+      category: (o?.category as string) || t.category,
+      enabled: o?.enabled ?? true,
+      sortOrder: o?.sort_order ?? 0,
+      isNew: o?.is_new ?? index >= ORIGINAL_COUNT,
+    };
+  })
+    .filter((t) => t.enabled)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+
   return (
     <div className="grain relative min-h-screen overflow-hidden bg-ink text-white">
       <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-acid/20 blur-[150px]" />
@@ -68,7 +93,7 @@ export default async function PublicTemplatesPage() {
           </Link>
 
           <h1 className="card-rise mt-7 text-[clamp(2.8rem,8vw,5.5rem)] font-black leading-[0.86] tracking-[-0.05em]">
-            <span className="text-acid">{CARD_TEMPLATES.length}</span> templates.
+            <span className="text-acid">{templatesAll.length}</span> templates.
             <br />
             {TEMPLATE_CATEGORIES.length} sectors.
           </h1>
@@ -88,7 +113,7 @@ export default async function PublicTemplatesPage() {
             style={{ ["--d" as string]: "140ms" }}
           >
             {TEMPLATE_CATEGORIES.map((category) => {
-              const count = CARD_TEMPLATES.filter(
+              const count = templatesAll.filter(
                 (t) => t.category === category.id
               ).length;
               return (
@@ -114,7 +139,7 @@ export default async function PublicTemplatesPage() {
           One block per sector.
           ------------------------------------------------------------------ */}
       {TEMPLATE_CATEGORIES.map((category, categoryIndex) => {
-        const templates = CARD_TEMPLATES.filter((t) => t.category === category.id);
+        const templates = templatesAll.filter((t) => t.category === category.id);
         if (templates.length === 0) return null;
 
         return (
@@ -150,8 +175,7 @@ export default async function PublicTemplatesPage() {
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-12">
               {templates.map((template, index) => {
                 const accent = template.preview;
-                const globalIndex = CARD_TEMPLATES.findIndex((t) => t.id === template.id);
-                const isNew = globalIndex >= ORIGINAL_COUNT;
+                const isNew = template.isNew;
                 const persona = DEMO_PERSONAS[template.id];
                 const previewHref = `/preview/card/${template.id}?accent=${encodeURIComponent(accent)}`;
 
