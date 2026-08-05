@@ -124,7 +124,7 @@ export default function CardEditorFields({
                 title={preset.name}
                 aria-label={preset.name}
                 onClick={() => onFormChange({ accent_color: preset.value })}
-                className={`h-9 w-9 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
+                className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
                   form.accent_color.toLowerCase() === preset.value.toLowerCase()
                     ? "border-acid"
                     : "border-white/20"
@@ -395,7 +395,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => moveButton(index, -1)}
-                  className="flex h-8 w-8 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
+                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
                   aria-label="Move up"
                 >
                   ▲
@@ -404,7 +404,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => moveButton(index, 1)}
-                  className="flex h-8 w-8 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
+                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
                   aria-label="Move down"
                 >
                   ▼
