@@ -9,6 +9,7 @@ import {
   LogOut,
   IdCard,
   BarChart3,
+  Package,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,6 +19,7 @@ const sidebarLinks = [
   { name: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "my card", href: "/dashboard/card", icon: IdCard },
   { name: "analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "orders", href: "/dashboard/orders", icon: Package },
   { name: "billing", href: "/dashboard/billing", icon: CreditCard },
   { name: "settings", href: "/dashboard/settings", icon: Settings },
 ];

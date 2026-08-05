@@ -31,9 +31,9 @@ async function assertAdmin() {
   return { supabase, user };
 }
 
-type Result = { ok: boolean; error?: string };
+type Result<T = undefined> = { ok: boolean; error?: string; data?: T };
 
-function fail(error: unknown): Result {
+function fail(error: unknown): Result<never> {
   return { ok: false, error: error instanceof Error ? error.message : String(error) };
 }
 
@@ -123,7 +123,6 @@ export async function issueNfcCards(count: number, batch: string): Promise<Resul
       card_url: makeCardCode(),
       batch: batch?.trim() || null,
       user_id: null,
-      website_id: null,
       card_profile_id: null,
     }));
 
@@ -250,6 +249,80 @@ export async function saveAppSettings(input: {
     revalidatePath("/admin/settings");
     revalidatePath("/", "layout");
     return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+// ---------------------------------------------------------------- orders
+
+export async function setOrderStatus(
+  orderIds: string[],
+  status: string
+): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const allowed = ["pending", "paid", "printing", "shipped", "delivered", "cancelled"];
+    if (!allowed.includes(status)) throw new Error("Unknown status.");
+    if (orderIds.length === 0) throw new Error("Nothing selected.");
+
+    const patch: Record<string, unknown> = { status };
+    // Marking an order paid is the moment money is confirmed, so stamp it.
+    if (status === "paid") patch.payment_verified_at = new Date().toISOString();
+
+    const { error } = await supabase.from("orders").update(patch).in("id", orderIds);
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin/orders");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function setOrderFlag(orderId: string, flagged: boolean): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+    const { error } = await supabase.from("orders").update({ flagged }).eq("id", orderId);
+    if (error) throw new Error(error.message);
+    revalidatePath("/admin/orders");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function setOrderNote(orderId: string, note: string): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+    const { error } = await supabase
+      .from("orders")
+      .update({ internal_note: note.trim() || null })
+      .eq("id", orderId);
+    if (error) throw new Error(error.message);
+    revalidatePath("/admin/orders");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Signed URL for a payment proof.
+ *
+ * The bucket is private, so there is no public link to hand out. This mints a
+ * short-lived one on demand rather than making the bucket readable.
+ */
+export async function getProofUrl(path: string): Promise<Result<{ url: string }>> {
+  try {
+    const { supabase } = await assertAdmin();
+    const { data, error } = await supabase.storage
+      .from("payment-proofs")
+      .createSignedUrl(path, 300);
+
+    if (error) throw new Error(error.message);
+    return { ok: true, data: { url: data.signedUrl } };
   } catch (e) {
     return fail(e);
   }
