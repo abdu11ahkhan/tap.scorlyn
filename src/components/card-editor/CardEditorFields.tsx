@@ -124,7 +124,7 @@ export default function CardEditorFields({
                 title={preset.name}
                 aria-label={preset.name}
                 onClick={() => onFormChange({ accent_color: preset.value })}
-                className={`h-7 w-7 rounded-full border-2 transition-transform hover:scale-110 ${
+                className={`h-9 w-9 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
                   form.accent_color.toLowerCase() === preset.value.toLowerCase()
                     ? "border-acid"
                     : "border-white/20"
@@ -337,7 +337,7 @@ export default function CardEditorFields({
               <button
                 type="button"
                 onClick={() => onGalleryChange(gallery.filter((_, i) => i !== index))}
-                className="self-center p-2.5 text-slate-500 transition-colors hover:text-red-400"
+                className="flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
                 aria-label="Remove photo"
               >
                 <Trash2 className="h-4 w-4" />
@@ -395,7 +395,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => moveButton(index, -1)}
-                  className="hover:text-white transition-colors text-xs leading-none px-1"
+                  className="flex h-8 w-8 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
                   aria-label="Move up"
                 >
                   ▲
@@ -404,7 +404,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => moveButton(index, 1)}
-                  className="hover:text-white transition-colors text-xs leading-none px-1"
+                  className="flex h-8 w-8 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
                   aria-label="Move down"
                 >
                   ▼
@@ -456,7 +456,7 @@ export default function CardEditorFields({
                   onClick={() => updateButton(index, { enabled: button.enabled === false })}
                   aria-pressed={button.enabled !== false}
                   title={button.enabled === false ? "Hidden — click to show" : "Visible — click to hide"}
-                  className={`p-2.5 transition-colors ${
+                  className={`flex h-11 w-11 items-center justify-center rounded-lg transition-colors sm:h-9 sm:w-9 ${
                     button.enabled === false
                       ? "text-white/25 hover:text-white/60"
                       : "text-acid hover:text-white"
@@ -471,7 +471,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
-                  className="p-2.5 text-slate-500 hover:text-red-400 transition-colors"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
                   aria-label="Remove button"
                 >
                   <Trash2 className="w-4 h-4" />

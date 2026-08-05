@@ -96,7 +96,7 @@ export default function ProfileExtrasFields({
             <button
               type="button"
               onClick={() => onChange({ business_hours: hours.filter((_, x) => x !== i) })}
-              className="p-2.5 text-slate-500 transition-colors hover:text-red-400"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
               aria-label="Remove hours row"
             >
               <Trash2 className="h-4 w-4" />
@@ -199,7 +199,7 @@ export default function ProfileExtrasFields({
                       onClick={() =>
                         onChange({ payment_methods: methods.filter((_, x) => x !== i) })
                       }
-                      className="p-2.5 text-slate-500 transition-colors hover:text-red-400"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
                       aria-label="Remove payment method"
                     >
                       <Trash2 className="h-4 w-4" />
