@@ -7,6 +7,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * LANDING — one promise, one button.
@@ -169,12 +170,12 @@ export default function PitchCard({
       )}
 
       <footer className="px-6 pb-20 pt-4 text-center">
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="text-xs font-black uppercase tracking-widest text-white/30 hover:text-white"
         >
           save to contacts
-        </a>
+        </SaveContact>
       </footer>
     </div>
   );

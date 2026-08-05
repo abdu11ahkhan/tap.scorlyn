@@ -7,6 +7,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * A living gradient panel carries the identity; a clean panel carries the
@@ -145,13 +146,13 @@ export default function SplitCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-8 text-xs font-semibold tracking-wide text-neutral-400 transition-colors hover:text-neutral-900"
           style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

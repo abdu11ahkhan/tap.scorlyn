@@ -8,6 +8,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * SECTIONED — cover photo, services, work, contact. The closest thing here to
@@ -177,13 +178,13 @@ export default function AgencyCard({
           work with us
         </h2>
         <p className="mt-4 text-2xl font-black tracking-tight">Let&apos;s talk.</p>
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="mt-6 inline-flex items-center justify-center rounded-full px-8 py-4 text-sm font-black uppercase tracking-tight"
           style={{ background: accent, color: onAccent }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </section>
     </div>
   );

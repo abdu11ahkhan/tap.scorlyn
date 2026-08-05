@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Pure black with glowing outlines — a lit sign at night. Everything is
@@ -129,13 +130,13 @@ export default function NeonCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-7 block text-[11px] uppercase tracking-[0.3em] text-white/35 transition-colors hover:text-white"
           style={{ ["--d" as string]: `${340 + buttons.length * 60}ms` }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

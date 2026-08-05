@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Full-bleed gradient that slowly pans, with frosted glass on top. The accent
@@ -93,13 +94,13 @@ export default function AuroraCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-6 block text-center text-xs text-white/50 transition-colors hover:text-white"
           style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

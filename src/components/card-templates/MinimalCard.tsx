@@ -1,6 +1,7 @@
 import { ArrowUpRight, Download, MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Carrd's house style: centred, one accent colour, a lot of air.
@@ -160,14 +161,14 @@ export default function MinimalCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-7 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-5 py-2.5 text-xs font-semibold tracking-wide text-neutral-500 transition-colors hover:border-neutral-900 hover:text-neutral-900"
           style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           <Download className="h-3.5 w-3.5" />
           Save to contacts
-        </a>
+        </SaveContact>
 
         <p
           className="card-rise mt-10 text-[10px] uppercase tracking-[0.3em] text-neutral-300"

@@ -7,6 +7,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Neo-brutalist: 2px black outlines, hard offset shadows, no gradients.
@@ -120,13 +121,13 @@ export default function StickerCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-6 block text-center text-xs font-black uppercase tracking-widest text-ink/50 hover:text-ink"
           style={{ ["--d" as string]: `${190 + buttons.length * 60}ms` }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

@@ -1,6 +1,7 @@
 import { MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Alternating tilts so the stack looks hand-placed rather than laid out.
@@ -133,13 +134,13 @@ export default function TapeCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-8 block text-center text-xs font-bold text-[#1A1A1A]/40 hover:text-[#1A1A1A]"
           style={{ ["--d" as string]: `${240 + buttons.length * 60}ms` }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

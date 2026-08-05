@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * PORTFOLIO — big imagery energy.
@@ -120,13 +121,13 @@ export default function ShowcaseCard({
           })}
         </div>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-9 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-white/30 hover:text-white"
           style={{ ["--d" as string]: `${230 + buttons.length * 60}ms` }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

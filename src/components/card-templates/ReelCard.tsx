@@ -7,6 +7,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * PORTFOLIO — edge-to-edge photos, one after another.
@@ -52,13 +53,13 @@ export default function ReelCard({
             </p>
           )}
         </div>
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-widest"
           style={{ background: accent, color: "#0B0B0B" }}
         >
           save
-        </a>
+        </SaveContact>
       </header>
 
       {card.bio && (

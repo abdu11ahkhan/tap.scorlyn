@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * SECTIONED — a whole small site on one page.
@@ -138,13 +139,13 @@ export default function StackCard({
           <p className="mt-4 text-2xl font-black tracking-tight">
             Let&apos;s make something.
           </p>
-          <a
-            href={`/api/vcard/${card.username}`}
+          <SaveContact
+            card={card}
             className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-sm font-black uppercase tracking-tight text-white"
             style={{ background: accent }}
           >
             save to contacts
-          </a>
+          </SaveContact>
         </section>
       </main>
     </div>

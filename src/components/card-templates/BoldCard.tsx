@@ -7,6 +7,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Oversized display name, hard left alignment, gradient-filled buttons that
@@ -127,13 +128,13 @@ export default function BoldCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-6 inline-block text-xs font-bold uppercase tracking-widest text-neutral-400 transition-colors hover:text-neutral-900"
           style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

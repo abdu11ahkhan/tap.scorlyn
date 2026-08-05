@@ -6,6 +6,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * LANDING — the cover photo is the whole design.
@@ -126,13 +127,13 @@ export default function PosterCard({
           </div>
         )}
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-8 text-[11px] font-black uppercase tracking-[0.25em] text-white/40 hover:text-white"
           style={{ ["--d" as string]: "360ms" }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

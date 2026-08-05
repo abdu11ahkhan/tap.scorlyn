@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Dark, frosted, lit by drifting accent orbs. Matches the marketing site's
@@ -127,13 +128,13 @@ export default function GlassCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-6 block text-center text-xs text-slate-500 transition-colors hover:text-white"
           style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

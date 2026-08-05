@@ -7,6 +7,7 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * FORM — built to get a reply.
@@ -141,13 +142,13 @@ export default function ReplyCard({
           </div>
         )}
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-black/35 hover:text-black"
           style={{ ["--d" as string]: "250ms" }}
         >
           save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

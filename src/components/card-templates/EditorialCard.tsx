@@ -1,6 +1,7 @@
 import { MapPin } from "lucide-react";
 import { initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Magazine spread: warm paper, serif, rules and small caps. Ignores the font
@@ -118,13 +119,13 @@ export default function EditorialCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-9 block text-center text-[11px] uppercase tracking-[0.3em] text-[#1C1A17]/45 hover:text-[#1C1A17]"
           style={{ ["--d" as string]: `${310 + buttons.length * 55}ms` }}
         >
           Save to contacts
-        </a>
+        </SaveContact>
       </main>
     </div>
   );

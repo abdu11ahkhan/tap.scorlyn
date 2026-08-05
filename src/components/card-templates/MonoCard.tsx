@@ -1,5 +1,6 @@
 import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
+import SaveContact from "./SaveContact";
 
 /**
  * Monospace, everything on a grid, with a live terminal caret. Understated but
@@ -130,13 +131,13 @@ export default function MonoCard({
           })}
         </nav>
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="card-rise mt-6 inline-block text-[11px] text-neutral-600 transition-colors hover:text-neutral-300"
           style={{ ["--d" as string]: "320ms" }}
         >
           <span style={{ color: accent }}>$</span> save-contact
-        </a>
+        </SaveContact>
       </main>
     </div>
   );
