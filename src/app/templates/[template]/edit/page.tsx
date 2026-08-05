@@ -22,6 +22,7 @@ import {
 import { renderCardTemplate } from "@/components/card-templates";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import CardDesigner from "@/components/card-design/CardDesigner";
 
 /** Sensible starting buttons so the preview isn't empty on first load. */
 const STARTER_BUTTONS: CardButton[] = [
@@ -71,6 +72,10 @@ export default function PublicCardEditor({
     [form, buttons, gallery]
   );
   const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+
+  // Whatever host this is served from, so the QR works in dev and production.
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  const profileUrl = `${origin}/u/${previewCard.username}`;
 
   /**
    * Publishing is the only gated step. The draft is already in localStorage, so
@@ -191,7 +196,16 @@ export default function PublicCardEditor({
 
         {/* Live preview */}
         <div className={`lg:sticky lg:top-28 ${mobileTab === "preview" ? "" : "hidden lg:block"}`}>
-          <DevicePreview>
+          <DevicePreview
+            cardView={
+              <CardDesigner
+                card={previewCard}
+                profileUrl={profileUrl}
+                width={340}
+                compact
+              />
+            }
+          >
             {/* The real template component, re-rendering as they type. */}
             {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
           </DevicePreview>

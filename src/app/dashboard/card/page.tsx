@@ -24,6 +24,7 @@ import {
 } from "@/lib/card-draft";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import CardDesigner from "@/components/card-design/CardDesigner";
 import { renderCardTemplate } from "@/components/card-templates";
 
 function MyCardEditor() {
@@ -120,6 +121,9 @@ function MyCardEditor() {
     [form, buttons, gallery]
   );
   const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  const profileUrl = `${origin}/u/${previewCard.username}`;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -280,7 +284,16 @@ function MyCardEditor() {
 
       {/* Live preview, sticky beside the fields on desktop. */}
       <div className="hidden lg:sticky lg:top-6 lg:block">
-        <DevicePreview>
+        <DevicePreview
+          cardView={
+            <CardDesigner
+              card={previewCard}
+              profileUrl={profileUrl}
+              width={340}
+              compact
+            />
+          }
+        >
           {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
         </DevicePreview>
       </div>
