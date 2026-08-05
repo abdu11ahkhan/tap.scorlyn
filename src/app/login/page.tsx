@@ -53,7 +53,7 @@ function LoginForm() {
         <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
           <Zap className="h-4 w-4 fill-ink text-ink" />
         </span>
-        <span className="text-xl font-black tracking-tighter text-white">klyro</span>
+        <span className="text-xl font-black tracking-tighter text-white">tapzar</span>
       </Link>
 
       <motion.div

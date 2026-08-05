@@ -1,4 +1,4 @@
-# Klyro
+# Tapzar
 
 NFC digital business cards with a built-in referral loop.
 

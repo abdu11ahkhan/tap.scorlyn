@@ -25,7 +25,7 @@ export default function ReferralBanner({
 }) {
   const [visible, setVisible] = useState(false);
 
-  const dismissKey = "klyro_banner_dismissed";
+  const dismissKey = "tapzar_banner_dismissed";
 
   useEffect(() => {
     if (localStorage.getItem(dismissKey)) return;

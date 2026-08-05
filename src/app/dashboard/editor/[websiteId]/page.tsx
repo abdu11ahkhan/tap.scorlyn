@@ -1093,7 +1093,7 @@ export default function EditorPage() {
         <div className="h-14 flex items-center justify-between px-4 border-b border-white/10 shrink-0">
           <div className="flex items-center gap-2 text-white font-serif italic font-medium">
             <span className="w-6 h-6 bg-white text-black rounded flex items-center justify-center not-italic font-sans font-bold text-xs">N</span>
-            Klyro
+            Tapzar
           </div>
           <button onClick={closeSidebar} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
         </div>

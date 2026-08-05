@@ -34,7 +34,7 @@ export function Navbar() {
           <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid transition-transform group-hover:rotate-12">
             <Zap className="h-4 w-4 fill-ink text-ink" />
           </span>
-          <span className="text-xl font-black tracking-tighter text-ink">klyro</span>
+          <span className="text-xl font-black tracking-tighter text-ink">tapzar</span>
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">

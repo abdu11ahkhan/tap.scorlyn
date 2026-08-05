@@ -37,7 +37,7 @@ export default function BillingPage() {
             <ul className="space-y-5 mb-10">
               <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> 1 Portfolio Website</li>
               <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Standard Templates</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Klyro Subdomain</li>
+              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Tapzar Subdomain</li>
               <li className="flex items-center gap-4 font-bold text-slate-600"><Check className="w-5 h-5 text-slate-700" /> No Custom Domains</li>
               <li className="flex items-center gap-4 font-bold text-slate-600"><Check className="w-5 h-5 text-slate-700" /> No Advanced Analytics</li>
             </ul>

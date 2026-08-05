@@ -40,7 +40,7 @@ export default function Home() {
             <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
               <Zap className="h-4 w-4 fill-ink text-ink" />
             </span>
-            <span className="text-xl font-black tracking-tighter text-white">klyro</span>
+            <span className="text-xl font-black tracking-tighter text-white">tapzar</span>
           </Link>
 
           <div className="flex items-center gap-7 text-sm font-bold text-white/50">
@@ -56,7 +56,7 @@ export default function Home() {
           </div>
 
           <p className="text-xs font-bold uppercase tracking-widest text-white/30">
-            © {new Date().getFullYear()} klyro
+            © {new Date().getFullYear()} tapzar
           </p>
         </div>
       </footer>

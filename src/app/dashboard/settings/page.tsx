@@ -395,7 +395,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between p-6 bg-[#050505] rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
                   <div>
                     <h4 className="font-bold text-white text-lg">Product Updates & Marketing</h4>
-                    <p className="text-sm font-medium text-slate-500 mt-1">Hear about new templates, features, and Klyro news.</p>
+                    <p className="text-sm font-medium text-slate-500 mt-1">Hear about new templates, features, and Tapzar news.</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={notifyMarketing} onChange={(e) => toggleNotification('marketing', e.target.checked)} className="sr-only peer" />
@@ -423,7 +423,7 @@ export default function SettingsPage() {
                 <div>
                   <h2 className="text-2xl font-black uppercase tracking-tight mb-2">API Keys</h2>
                   <p className="text-sm font-semibold text-slate-500 uppercase tracking-widest max-w-lg">
-                    Manage your secret API keys to programmatically interact with your Klyro data.
+                    Manage your secret API keys to programmatically interact with your Tapzar data.
                   </p>
                 </div>
                 <button 

@@ -159,7 +159,7 @@ export function Hero() {
             <div className="flex h-full flex-col justify-between">
               <div className="flex items-start justify-between">
                 <span className="text-2xl font-black tracking-tight text-white">
-                  klyro
+                  tapzar
                 </span>
                 <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
                   <Zap className="h-4 w-4 fill-ink text-ink" />

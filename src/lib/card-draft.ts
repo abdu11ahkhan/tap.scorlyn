@@ -42,7 +42,7 @@ export type CardDraft = {
  * the trip through /login — localStorage does that, cookies would bloat every
  * request with the bio text.
  */
-const DRAFT_KEY = "klyro_card_draft";
+const DRAFT_KEY = "tapzar_card_draft";
 
 export function saveDraft(draft: CardDraft): void {
   if (typeof window === "undefined") return;

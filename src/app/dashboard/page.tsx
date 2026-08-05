@@ -152,7 +152,7 @@ export default function DashboardPage() {
                       <div>
                         <h4 className="text-xl font-bold mb-1 truncate max-w-[200px] md:max-w-xs">{site.slug || "Draft Website"}</h4>
                         <p className="text-sm font-medium text-slate-500">
-                          {site.published ? `klyro.com/${site.slug}` : 'Not published'}
+                          {site.published ? `tapzar.com/${site.slug}` : 'Not published'}
                         </p>
                       </div>
                     </div>

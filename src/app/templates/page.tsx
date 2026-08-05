@@ -9,7 +9,7 @@ import { Marquee } from "@/components/sections/Marquee";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Templates — Klyro",
+  title: "Templates — Tapzar",
   description: "Profile cards, landing pages, portfolios, and contact forms.",
 };
 
@@ -64,7 +64,7 @@ export default async function PublicTemplatesPage() {
             href="/"
             className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-white/60 transition-colors hover:border-acid hover:text-acid"
           >
-            ← klyro
+            ← tapzar
           </Link>
 
           <h1 className="card-rise mt-7 text-[clamp(2.8rem,8vw,5.5rem)] font-black leading-[0.86] tracking-[-0.05em]">
