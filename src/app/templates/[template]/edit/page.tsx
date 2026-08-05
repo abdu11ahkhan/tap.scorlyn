@@ -134,7 +134,7 @@ export default function PublicCardEditor({
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/templates"
-            className="flex shrink-0 items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+            className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
           >
             <ArrowLeft className="h-4 w-4" />
             <span className="hidden sm:inline">templates</span>

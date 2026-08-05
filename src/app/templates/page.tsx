@@ -87,7 +87,7 @@ export default async function PublicTemplatesPage() {
         <header className="max-w-3xl">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-white/60 transition-colors hover:border-acid hover:text-acid"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-widest text-white/60 transition-colors hover:border-acid hover:text-acid"
           >
             ← tapzar
           </Link>

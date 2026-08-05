@@ -226,7 +226,9 @@ export default function CardEditorFields({
             onChange={(e) => onFormChange({ bio: e.target.value })}
             rows={3}
             placeholder="Helping families find homes in DHA and Bahria Town since 2018."
-            className="w-full rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+            // 16px on mobile: iOS Safari zooms the whole viewport when a
+            // focused field is any smaller.
+            className="w-full rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 py-2 text-base font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid sm:text-sm"
           />
         </div>
       </section>
@@ -421,7 +423,7 @@ export default function CardEditorFields({
                 <select
                   value={button.kind}
                   onChange={(e) => updateButton(index, { kind: e.target.value as ButtonKind })}
-                  className="h-10 flex-1 rounded-lg border-2 border-white/15 bg-ink px-2 text-sm font-bold text-white sm:w-36 sm:flex-none"
+                  className="h-11 flex-1 rounded-lg border-2 border-white/15 bg-ink px-2 text-base font-bold text-white sm:h-10 sm:w-36 sm:flex-none sm:text-sm"
                 >
                   {BUTTON_KIND_GROUPS.map((group) => (
                     <optgroup key={group.label} label={group.label}>

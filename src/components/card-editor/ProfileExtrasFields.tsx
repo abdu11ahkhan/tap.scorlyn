@@ -180,7 +180,7 @@ export default function ProfileExtrasFields({
                       onChange={(e) =>
                         set({ kind: e.target.value as PaymentMethod["kind"] })
                       }
-                      className="h-10 rounded-lg border-2 border-white/15 bg-ink px-2 text-sm font-bold text-white sm:w-36"
+                      className="h-11 rounded-lg border-2 border-white/15 bg-ink px-2 text-base font-bold text-white sm:h-10 sm:w-36 sm:text-sm"
                     >
                       {PAYMENT_KINDS.map((k) => (
                         <option key={k.id} value={k.id}>

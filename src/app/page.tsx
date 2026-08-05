@@ -43,14 +43,25 @@ export default function Home() {
             <span className="text-xl font-black tracking-tighter text-white">tapzar</span>
           </Link>
 
-          <div className="flex items-center gap-7 text-sm font-bold text-white/50">
-            <Link href="/templates" className="transition-colors hover:text-acid">
+          {/* inline-flex + min-h-11 so each link is a thumb-sized target, not
+              just a 20px line of text. */}
+          <div className="flex items-center gap-4 text-sm font-bold text-white/50 sm:gap-7">
+            <Link
+              href="/templates"
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
+            >
               templates
             </Link>
-            <Link href="/#pricing" className="transition-colors hover:text-acid">
+            <Link
+              href="/#pricing"
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
+            >
               pricing
             </Link>
-            <Link href="/login" className="transition-colors hover:text-acid">
+            <Link
+              href="/login"
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
+            >
               log in
             </Link>
           </div>

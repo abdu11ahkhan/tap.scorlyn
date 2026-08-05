@@ -317,8 +317,10 @@ function MyCardEditor() {
       </form>
       </div>
 
-      {/* Live preview, sticky beside the fields on desktop. */}
-      <div className="hidden lg:sticky lg:top-6 lg:block">
+      {/* Sticky beside the fields on desktop, stacked underneath on mobile —
+          the card designer and its settings live in here, so hiding it on
+          small screens meant phones couldn't configure the card at all. */}
+      <div className="min-w-0 lg:sticky lg:top-6">
         <DevicePreview
           cardView={
             <CardDesigner

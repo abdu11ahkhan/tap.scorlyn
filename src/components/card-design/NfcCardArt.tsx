@@ -43,6 +43,40 @@ export const CARD_FINISHES: { id: CardFinish; name: string; blurb: string }[] = 
 
 type Face = "front" | "back";
 
+/** Which pieces of the profile actually get printed. */
+export type CardFields = {
+  avatar: boolean;
+  headline: boolean;
+  company: boolean;
+  phone: boolean;
+  email: boolean;
+  location: boolean;
+  qr: boolean;
+  nfc: boolean;
+};
+
+export const DEFAULT_CARD_FIELDS: CardFields = {
+  avatar: true,
+  headline: true,
+  company: true,
+  phone: true,
+  email: true,
+  location: true,
+  qr: true,
+  nfc: true,
+};
+
+export const CARD_FIELD_OPTIONS: { id: keyof CardFields; label: string }[] = [
+  { id: "avatar", label: "photo" },
+  { id: "headline", label: "role" },
+  { id: "company", label: "company" },
+  { id: "phone", label: "phone" },
+  { id: "email", label: "email" },
+  { id: "location", label: "location" },
+  { id: "qr", label: "qr code" },
+  { id: "nfc", label: "nfc mark" },
+];
+
 function surfaceFor(finish: CardFinish, accent: string) {
   switch (finish) {
     case "bold":
@@ -77,7 +111,7 @@ function surfaceFor(finish: CardFinish, accent: string) {
  * Pulled from the buttons the profile already has, so a card can never print a
  * number the digital profile doesn't carry.
  */
-function contactLines(card: CardProfile) {
+function contactLines(card: CardProfile, fields: CardFields) {
   const find = (kind: string) =>
     card.buttons.find((b) => b.kind === kind && b.value?.trim())?.value.trim();
 
@@ -85,9 +119,9 @@ function contactLines(card: CardProfile) {
   const email = find("email") ?? card.email ?? undefined;
 
   return [
-    phone ? { Icon: Phone, text: phone } : null,
-    email ? { Icon: Mail, text: email } : null,
-    card.location ? { Icon: MapPin, text: card.location } : null,
+    fields.phone && phone ? { Icon: Phone, text: phone } : null,
+    fields.email && email ? { Icon: Mail, text: email } : null,
+    fields.location && card.location ? { Icon: MapPin, text: card.location } : null,
   ].filter(Boolean) as { Icon: typeof Phone; text: string }[];
 }
 
@@ -96,14 +130,15 @@ export default function NfcCardArt({
   finish = "minimal",
   face = "front",
   profileUrl,
-  showQr = true,
+  fields = DEFAULT_CARD_FIELDS,
   width = 420,
 }: {
   card: CardProfile;
   finish?: CardFinish;
   face?: Face;
   profileUrl: string;
-  showQr?: boolean;
+  /** Which pieces of the profile to print. */
+  fields?: CardFields;
   width?: number;
 }) {
   const accent = card.accent_color || "#111111";
@@ -124,7 +159,12 @@ export default function NfcCardArt({
   // which means the modules are always dark — never the surface foreground.
   const qrFg = "#0A0A0A";
   const qrBg = light ? "transparent" : "rgba(255,255,255,0.94)";
-  const contacts = contactLines(card);
+  const contacts = contactLines(card, fields);
+
+  // Resolved once here so the nine layouts don't each have to ask permission.
+  const showQr = fields.qr;
+  const headline = fields.headline ? card.headline : "";
+  const company = fields.company ? card.company : "";
 
   const fontFamily = isMono
     ? "var(--font-geist-mono), ui-monospace, monospace"
@@ -143,7 +183,8 @@ export default function NfcCardArt({
     radius: number;
     /** Override where the piece sits on the accent itself, not the surface. */
     fg?: string;
-  }) => (
+  }) =>
+    !fields.avatar ? null : (
     <div
       className="flex shrink-0 items-center justify-center overflow-hidden"
       style={{
@@ -175,8 +216,17 @@ export default function NfcCardArt({
     size?: number;
     opacity?: number;
     fg?: string;
-  }) => (
-    <svg width={u * size} height={u * size} viewBox="0 0 24 24" fill="none" style={{ opacity }}>
+  }) =>
+    !fields.nfc ? null : (
+    <svg
+      width={u * size}
+      height={u * size}
+      viewBox="0 0 24 24"
+      fill="none"
+      // Keeps its right-hand slot in the justify-between rows even when the
+      // avatar opposite it has been switched off.
+      style={{ opacity, marginLeft: "auto" }}
+    >
       {[
         { x: 8, r: 4, y: 8, h: 8 },
         { x: 12, r: 7, y: 5, h: 14 },
@@ -204,6 +254,8 @@ export default function NfcCardArt({
           borderRadius: u * 1.5,
           background: qrBg,
           lineHeight: 0,
+          // Holds the right edge even when every contact line beside it is off.
+          marginLeft: "auto",
         }}
       >
         <QRCodeSVG
@@ -294,7 +346,7 @@ export default function NfcCardArt({
                 style={{ marginTop: u * 3, gap: u * 3 }}
               >
                 <div style={{ minWidth: 0 }}>
-                  {card.headline && (
+                  {headline && (
                     <p
                       style={{
                         fontSize: u * 3,
@@ -303,7 +355,7 @@ export default function NfcCardArt({
                         marginBottom: u * 1.4,
                       }}
                     >
-                      {card.headline}
+                      {headline}
                     </p>
                   )}
                   <Contacts size={2.6} gap={0.9} />
@@ -337,7 +389,7 @@ export default function NfcCardArt({
             >
               {card.full_name}
             </p>
-            {card.headline && (
+            {headline && (
               <p
                 style={{
                   marginTop: u * 1.2,
@@ -348,7 +400,7 @@ export default function NfcCardArt({
                   opacity: s.sub,
                 }}
               >
-                {card.headline}
+                {headline}
               </p>
             )}
             <div
@@ -379,7 +431,7 @@ export default function NfcCardArt({
                 >
                   {card.full_name}
                 </p>
-                {card.headline && (
+                {headline && (
                   <p
                     style={{
                       marginTop: u * 1.2,
@@ -388,7 +440,7 @@ export default function NfcCardArt({
                       color: accent,
                     }}
                   >
-                    {card.headline}
+                    {headline}
                   </p>
                 )}
               </div>
@@ -421,26 +473,28 @@ export default function NfcCardArt({
               className="flex shrink-0 flex-col items-center justify-center"
               style={{ width: "34%", background: accent, padding: u * 3 }}
             >
-              <div
-                className="flex items-center justify-center overflow-hidden"
-                style={{
-                  width: u * 15,
-                  height: u * 15,
-                  borderRadius: u * 15,
-                  background: `${readableOn(accent)}26`,
-                }}
-              >
-                {card.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <span
-                    style={{ fontSize: u * 5, fontWeight: 800, color: readableOn(accent) }}
-                  >
-                    {initialsOf(card.full_name)}
-                  </span>
-                )}
-              </div>
+              {fields.avatar && (
+                <div
+                  className="flex items-center justify-center overflow-hidden"
+                  style={{
+                    width: u * 15,
+                    height: u * 15,
+                    borderRadius: u * 15,
+                    background: `${readableOn(accent)}26`,
+                  }}
+                >
+                  {card.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <span
+                      style={{ fontSize: u * 5, fontWeight: 800, color: readableOn(accent) }}
+                    >
+                      {initialsOf(card.full_name)}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             <div
@@ -459,7 +513,7 @@ export default function NfcCardArt({
                   >
                     {card.full_name}
                   </p>
-                  {card.headline && (
+                  {headline && (
                     <p
                       style={{
                         marginTop: u * 1.1,
@@ -468,7 +522,7 @@ export default function NfcCardArt({
                         opacity: s.sub,
                       }}
                     >
-                      {card.headline}
+                      {headline}
                     </p>
                   )}
                 </div>
@@ -505,9 +559,9 @@ export default function NfcCardArt({
                 >
                   {card.full_name}
                 </p>
-                {card.headline && (
+                {headline && (
                   <p style={{ marginTop: u * 0.9, fontSize: u * 2.5, fontWeight: 800 }}>
-                    {card.headline}
+                    {headline}
                   </p>
                 )}
               </div>
@@ -579,7 +633,7 @@ export default function NfcCardArt({
               }}
             >
               {[
-                card.headline ? { k: "role", v: card.headline } : null,
+                headline ? { k: "role", v: headline } : null,
                 ...contacts.map((c, i) => ({
                   k: ["tel", "mail", "loc"][i] ?? "info",
                   v: c.text,
@@ -641,7 +695,7 @@ export default function NfcCardArt({
                 opacity: 0.5,
               }}
             >
-              {card.company || card.headline || ""}
+              {company || headline || ""}
             </p>
 
             <div
@@ -699,7 +753,7 @@ export default function NfcCardArt({
               >
                 {card.full_name}
               </p>
-              {card.headline && (
+              {headline && (
                 <p
                   style={{
                     marginTop: u * 1.1,
@@ -709,7 +763,7 @@ export default function NfcCardArt({
                     opacity: s.sub,
                   }}
                 >
-                  {card.headline}
+                  {headline}
                 </p>
               )}
 

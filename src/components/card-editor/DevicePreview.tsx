@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CreditCard, Smartphone } from "lucide-react";
 import IframeStage from "./IframeStage";
 
@@ -12,6 +12,8 @@ type Tab = "mobile" | "card";
  * A second tab appears when `cardView` is supplied: the physical NFC card.
  */
 const FRAME = { w: 390, h: 720 };
+/** Frame width including its 12px padding and 2px border on each side. */
+const OUTER = FRAME.w + 28;
 
 export default function DevicePreview({
   children,
@@ -22,6 +24,19 @@ export default function DevicePreview({
   cardView?: React.ReactNode;
 }) {
   const [tab, setTab] = useState<Tab>("mobile");
+
+  const stage = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState(1);
+
+  useEffect(() => {
+    const el = stage.current;
+    if (!el) return;
+    const measure = () => setFit(Math.min(1, el.clientWidth / OUTER));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const showingCard = tab === "card" && Boolean(cardView);
 
@@ -45,7 +60,7 @@ export default function DevicePreview({
                 type="button"
                 onClick={() => setTab(key)}
                 aria-pressed={isActive}
-                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black lowercase transition-colors ${
+                className={`flex min-h-11 items-center gap-2 rounded-full px-4 text-xs font-black lowercase transition-colors ${
                   isActive ? "bg-acid text-ink" : "text-white/50 hover:text-white"
                 }`}
               >
@@ -58,22 +73,32 @@ export default function DevicePreview({
       )}
 
       {showingCard ? (
-        <div className="rounded-3xl border-2 border-white/12 bg-white/[0.03] p-6">
+        <div className="rounded-3xl border-2 border-white/12 bg-white/[0.03] p-4 sm:p-6">
           {cardView}
         </div>
       ) : (
         <>
-          <div className="mx-auto w-fit rounded-[2.2rem] border-2 border-ink bg-white/[0.04] p-3 shadow-[7px_7px_0_0_theme(colors.hotpink)]">
+          {/* The iframe has to stay 390px wide — that's what makes its media
+              queries resolve like a real phone. On a screen narrower than that
+              the frame is scaled down rather than squeezed, so the layout
+              inside stays honest. */}
+          <div ref={stage} className="overflow-hidden">
             <div
-              className="relative overflow-hidden rounded-[1.6rem] bg-black"
-              style={{ width: `${FRAME.w}px`, height: `${FRAME.h}px` }}
+              className="mx-auto origin-top rounded-[2.2rem] border-2 border-ink bg-white/[0.04] p-3 shadow-[7px_7px_0_0_theme(colors.hotpink)]"
+              style={{
+                width: OUTER,
+                transform: fit < 1 ? `scale(${fit})` : undefined,
+                marginBottom: fit < 1 ? -(FRAME.h + 30) * (1 - fit) : undefined,
+              }}
             >
-              {/* An iframe, not a div: media queries resolve against the
-                  viewport, so a narrow container would still match `md:` and
-                  show desktop layouts under a "mobile" label. */}
-              <IframeStage width={FRAME.w} height={FRAME.h}>
-                {children}
-              </IframeStage>
+              <div
+                className="relative overflow-hidden rounded-[1.6rem] bg-black"
+                style={{ width: `${FRAME.w}px`, height: `${FRAME.h}px` }}
+              >
+                <IframeStage width={FRAME.w} height={FRAME.h}>
+                  {children}
+                </IframeStage>
+              </div>
             </div>
           </div>
 

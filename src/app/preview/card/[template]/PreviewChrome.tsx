@@ -23,7 +23,7 @@ export default function PreviewChrome({
       <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b-2 border-white/10 px-4 py-3">
         <Link
           href="/templates"
-          className="flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          className="flex min-h-11 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           templates
