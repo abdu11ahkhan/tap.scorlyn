@@ -230,6 +230,8 @@ export async function saveAppSettings(input: {
   signupsOpen: boolean;
   publishingOpen: boolean;
   announcement?: string;
+  maintenanceMode?: boolean;
+  maintenanceMessage?: string;
 }): Promise<Result> {
   try {
     const { supabase } = await assertAdmin();
@@ -240,6 +242,8 @@ export async function saveAppSettings(input: {
         signups_open: input.signupsOpen,
         publishing_open: input.publishingOpen,
         announcement: input.announcement?.trim() || null,
+        maintenance_mode: input.maintenanceMode ?? false,
+        maintenance_message: input.maintenanceMessage?.trim() || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", true);
@@ -323,6 +327,56 @@ export async function getProofUrl(path: string): Promise<Result<{ url: string }>
 
     if (error) throw new Error(error.message);
     return { ok: true, data: { url: data.signedUrl } };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+// ------------------------------------------------------------------ faqs
+
+export async function saveFaq(input: {
+  id?: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  published: boolean;
+}): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    if (!input.question.trim() || !input.answer.trim()) {
+      throw new Error("Question and answer are both required.");
+    }
+
+    const row = {
+      question: input.question.trim(),
+      answer: input.answer.trim(),
+      sort_order: input.sortOrder,
+      published: input.published,
+    };
+
+    const { error } = input.id
+      ? await supabase.from("faqs").update(row).eq("id", input.id)
+      : await supabase.from("faqs").insert(row);
+
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin/faq");
+    revalidatePath("/faq");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function deleteFaq(id: string): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+    const { error } = await supabase.from("faqs").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+    revalidatePath("/admin/faq");
+    revalidatePath("/faq");
+    return { ok: true };
   } catch (e) {
     return fail(e);
   }

@@ -48,44 +48,38 @@ export default async function AdminOverview() {
       value: profiles.count ?? 0,
       icon: Users,
       hint: "registered accounts",
-      tile: "bg-acid text-ink",
     },
     {
       label: "published cards",
       value: cards.count ?? 0,
       icon: CreditCard,
       hint: "card profiles created",
-      tile: "bg-hotpink text-white",
     },
     {
       label: "taps",
       value: tapRows.length,
       icon: SmartphoneNfc,
       hint: `${nfcTaps} from physical cards`,
-      tile: "bg-violet-pop text-white",
     },
     {
       label: "referred signups",
       value: signups.count ?? 0,
       icon: UserPlus,
       hint: `${nfc.count ?? 0} NFC cards linked`,
-      tile: "bg-white text-ink",
     },
   ];
 
   const error = profiles.error ?? cards.error ?? taps.error;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-4xl font-black tracking-tighter">
-          overview<span className="text-acid">.</span>
-        </h1>
-        <p className="mt-2 font-medium text-white/50">Everything, across every account.</p>
+        <h1 className="app-h1">Overview</h1>
+        <p className="app-sub mt-1">Everything, across every account.</p>
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="app-panel app-panel-pad text-[13px] font-medium text-hotpink">
           {error.message} — check that migration 004 has been applied and your
           account has is_admin set.
         </div>
@@ -97,19 +91,19 @@ export default async function AdminOverview() {
           return (
             <div
               key={stat.label}
-              className={`sticker-lg rounded-2xl border-2 border-ink p-5 ${stat.tile}`}
+              className="app-panel app-panel-pad"
             >
               <Icon className="mb-4 h-5 w-5" />
-              <p className="text-4xl font-black tabular-nums tracking-tighter">{stat.value}</p>
-              <p className="mt-1 text-sm font-black lowercase">{stat.label}</p>
-              <p className="mt-1 text-xs font-semibold opacity-60">{stat.hint}</p>
+              <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
+              <p className="app-sub mt-1">{stat.label}</p>
+              <p className="mt-1 text-[12px] text-white/35">{stat.hint}</p>
             </div>
           );
         })}
       </div>
 
-      <section className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-6">
-        <div className="mb-6 flex items-center gap-2">
+      <section className="app-panel app-panel-pad">
+        <div className="mb-5 flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-acid" />
           <h2 className="font-black lowercase">taps across the platform — last 14 days</h2>
         </div>
@@ -133,7 +127,7 @@ export default async function AdminOverview() {
 
       <Link
         href="/admin/cards"
-        className="sticker sticker-press inline-flex h-14 items-center justify-center rounded-full border-2 border-ink bg-acid px-8 font-black uppercase tracking-tight text-ink"
+        className="app-btn app-btn-primary"
       >
         browse all cards
       </Link>

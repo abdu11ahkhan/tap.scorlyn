@@ -53,13 +53,11 @@ export default async function AdminCards({
     CARD_TEMPLATES.find((t) => t.id === id)?.name ?? id;
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black tracking-tighter">
-            cards<span className="text-acid">.</span>
-          </h1>
-          <p className="mt-2 font-medium text-white/50">
+          <h1 className="app-h1">Cards</h1>
+          <p className="app-sub mt-1">
             {total} {total === 1 ? "card" : "cards"} across all accounts.
           </p>
         </div>
@@ -73,12 +71,12 @@ export default async function AdminCards({
               name="q"
               defaultValue={q ?? ""}
               placeholder="name or @handle"
-              className="h-12 w-60 rounded-full border-2 border-white/15 bg-white/[0.04] pl-10 pr-4 text-sm font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+              className="app-input w-56 pl-9"
             />
           </div>
           <button
             type="submit"
-            className="sticker sticker-press h-12 rounded-full border-2 border-ink bg-acid px-6 text-sm font-black uppercase tracking-tight text-ink"
+            className="app-btn app-btn-primary"
           >
             search
           </button>
@@ -86,31 +84,31 @@ export default async function AdminCards({
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="app-panel app-panel-pad text-[13px] font-medium text-hotpink">
           {error.message}
         </div>
       )}
 
       {cards.length === 0 ? (
-        <p className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-10 text-center font-bold text-white/40">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
           No cards match that.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border-2 border-white/12">
-          <table className="w-full min-w-[720px] text-left">
-            <thead className="bg-white/[0.05]">
-              <tr className="text-[11px] font-black uppercase tracking-widest text-white/40">
-                <th className="px-5 py-3.5">Card</th>
-                <th className="px-5 py-3.5">Template</th>
-                <th className="px-5 py-3.5">Status</th>
-                <th className="px-5 py-3.5">Created</th>
-                <th className="px-5 py-3.5" />
+        <div className="app-panel overflow-x-auto">
+          <table className="app-table w-full min-w-[720px]">
+            <thead className="border-b border-white/8">
+              <tr>
+                <th>Card</th>
+                <th>Template</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th />
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/8">
+            <tbody className="divide-y divide-white/6">
               {cards.map((card) => (
                 <tr key={card.id} className="transition-colors hover:bg-white/[0.03]">
-                  <td className="px-5 py-4">
+                  <td>
                     <div className="flex items-center gap-3">
                       <span
                         className="h-8 w-8 shrink-0 rounded-full border-2 border-ink"
@@ -125,10 +123,10 @@ export default async function AdminCards({
                       </div>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-sm font-bold lowercase text-white/70">
+                  <td className="text-sm font-bold lowercase text-white/70">
                     {templateName(card.template)}
                   </td>
-                  <td className="px-5 py-4">
+                  <td>
                     <span
                       className={`rounded-full border-2 border-ink px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${
                         card.published ? "bg-acid text-ink" : "bg-white/15 text-white/60"
@@ -137,10 +135,10 @@ export default async function AdminCards({
                       {card.published ? "live" : "hidden"}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-sm font-semibold tabular-nums text-white/45">
+                  <td className="text-sm font-semibold tabular-nums text-white/45">
                     {new Date(card.created_at).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-5 py-4 text-right">
+                  <td className="text-right">
                     <Link
                       href={`/u/${card.username}`}
                       target="_blank"
@@ -166,7 +164,7 @@ export default async function AdminCards({
             {currentPage > 1 && (
               <Link
                 href={`/admin/cards?page=${currentPage - 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-                className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                className="app-btn app-btn-ghost"
               >
                 previous
               </Link>
@@ -174,7 +172,7 @@ export default async function AdminCards({
             {currentPage < pages && (
               <Link
                 href={`/admin/cards?page=${currentPage + 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-                className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                className="app-btn app-btn-ghost"
               >
                 next
               </Link>

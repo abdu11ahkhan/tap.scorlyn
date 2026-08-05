@@ -49,13 +49,11 @@ export default async function AdminUsers({
   const pages = Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE));
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black tracking-tighter">
-            people<span className="text-acid">.</span>
-          </h1>
-          <p className="mt-2 font-medium text-white/50">
+          <h1 className="app-h1">People</h1>
+          <p className="app-sub mt-1">
             {count ?? 0} {count === 1 ? "account" : "accounts"}. Grant admin access or
             suspend someone here.
           </p>
@@ -68,12 +66,12 @@ export default async function AdminUsers({
               name="q"
               defaultValue={q ?? ""}
               placeholder="name or email"
-              className="h-12 w-60 rounded-full border-2 border-white/15 bg-white/[0.04] pl-10 pr-4 text-sm font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+              className="app-input w-56 pl-9"
             />
           </div>
           <button
             type="submit"
-            className="sticker sticker-press h-12 rounded-full border-2 border-ink bg-acid px-6 text-sm font-black uppercase tracking-tight text-ink"
+            className="app-btn app-btn-primary"
           >
             search
           </button>
@@ -81,35 +79,38 @@ export default async function AdminUsers({
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="app-panel app-panel-pad text-[13px] font-medium text-hotpink">
           {error.message}
         </div>
       )}
 
       {rows.length === 0 ? (
-        <p className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-10 text-center font-bold text-white/40">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
           No accounts yet.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border-2 border-white/12">
-          <table className="w-full min-w-[760px] text-left">
-            <thead className="bg-white/[0.05]">
-              <tr className="text-[11px] font-black uppercase tracking-widest text-white/40">
-                <th className="px-5 py-3.5">Person</th>
-                <th className="px-5 py-3.5">Referral</th>
-                <th className="px-5 py-3.5">Status</th>
-                <th className="px-5 py-3.5">Joined</th>
+        <div className="app-panel overflow-x-auto">
+          <table className="app-table w-full min-w-[760px]">
+            <thead className="border-b border-white/8">
+              <tr>
+                <th>Person</th>
+                <th>Referral</th>
+                <th>Status</th>
+                <th>Joined</th>
                 <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/8">
+            <tbody className="divide-y divide-white/6">
               {rows.map((row) => {
                 const isMe = row.id === me?.id;
                 return (
                   <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
-                    <td className="px-5 py-4">
+                    <td>
                       <p className="font-black">
-                        {row.full_name || "—"}
+                        <a href={`/admin/users/${row.id}`} className="hover:text-acid">
+                          {row.full_name || "—"}
+                        </a>
+                        {" "}
                         {isMe && (
                           <span className="ml-2 rounded-full border-2 border-white/20 px-2 py-0.5 text-[10px] font-black uppercase text-white/50">
                             you
@@ -118,10 +119,10 @@ export default async function AdminUsers({
                       </p>
                       <p className="text-xs font-semibold text-white/40">{row.email}</p>
                     </td>
-                    <td className="px-5 py-4 font-mono text-xs text-white/50">
+                    <td className="font-mono text-xs text-white/50">
                       {row.referral_code ?? "—"}
                     </td>
-                    <td className="px-5 py-4">
+                    <td>
                       <div className="flex flex-wrap gap-1.5">
                         {row.is_admin && (
                           <span className="flex items-center gap-1 rounded-full border-2 border-ink bg-acid px-2.5 py-1 text-[10px] font-black uppercase text-ink">
@@ -140,10 +141,10 @@ export default async function AdminUsers({
                         )}
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-sm font-semibold tabular-nums text-white/45">
+                    <td className="text-sm font-semibold tabular-nums text-white/45">
                       {new Date(row.created_at).toLocaleDateString("en-GB")}
                     </td>
-                    <td className="px-5 py-4">
+                    <td>
                       <div className="flex flex-wrap justify-end gap-2">
                         <ActionButton
                           action={async () => {

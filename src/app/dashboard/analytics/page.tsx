@@ -74,14 +74,13 @@ export default async function AnalyticsPage() {
     return (
       <div className="max-w-2xl">
         <h1 className="mb-3 text-4xl font-black tracking-tighter text-white">
-          analytics<span className="text-acid">.</span>
-        </h1>
+          analytics        </h1>
         <p className="mb-7 font-medium text-white/50">
           You don&apos;t have a digital card yet. Create one and every tap will show up here.
         </p>
         <Link
           href="/dashboard/card"
-          className="sticker sticker-press inline-flex h-14 items-center justify-center rounded-full border-2 border-ink bg-acid px-8 font-black uppercase tracking-tight text-ink"
+          className="app-btn app-btn-primary"
         >
           create my card
         </Link>
@@ -100,10 +99,8 @@ export default async function AnalyticsPage() {
   return (
     <div className="max-w-5xl space-y-8 pb-16">
       <div>
-        <h1 className="text-4xl font-black tracking-tighter text-white">
-          analytics<span className="text-acid">.</span>
-        </h1>
-        <p className="mt-2 font-medium text-white/50">
+        <h1 className="app-h1">Analytics</h1>
+        <p className="app-sub mt-1">
           Every tap, and how many turned into new customers.
         </p>
       </div>
@@ -114,22 +111,22 @@ export default async function AnalyticsPage() {
           return (
             <div
               key={stat.label}
-              className={`sticker-lg rounded-2xl border-2 border-ink p-5 ${TILE[index % TILE.length]}`}
+              className="app-panel app-panel-pad"
             >
               <Icon className="mb-4 h-5 w-5" />
-              <p className="text-4xl font-black tabular-nums tracking-tighter">{stat.value}</p>
-              <p className="mt-1 text-sm font-black lowercase">{stat.label}</p>
-              <p className="mt-1 text-xs font-semibold opacity-60">{stat.hint}</p>
+              <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
+              <p className="app-sub mt-1">{stat.label}</p>
+              <p className="mt-1 text-[12px] text-white/35">{stat.hint}</p>
             </div>
           );
         })}
       </div>
 
       {/* Taps over time */}
-      <section className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-6">
-        <div className="mb-6 flex items-center gap-2">
+      <section className="app-panel app-panel-pad">
+        <div className="mb-5 flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-acid" />
-          <h2 className="font-black lowercase text-white">taps — last 14 days</h2>
+          <h2 className="text-[15px] font-semibold text-white">taps — last 14 days</h2>
         </div>
         <div className="flex h-40 items-end gap-1.5">
           {series.map((day) => (
@@ -150,8 +147,8 @@ export default async function AnalyticsPage() {
       </section>
 
       {/* Viral funnel */}
-      <section className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-6">
-        <h2 className="mb-6 font-black lowercase text-white">referral funnel</h2>
+      <section className="app-panel app-panel-pad">
+        <h2 className="mb-6 text-[15px] font-semibold text-white">referral funnel</h2>
         <div className="space-y-3">
           {[
             { label: "card opened", value: totalTaps },

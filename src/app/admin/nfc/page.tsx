@@ -28,12 +28,10 @@ export default async function AdminNfc() {
   const assigned = rows.filter((r) => r.card_profile_id).length;
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-4xl font-black tracking-tighter">
-          nfc stock<span className="text-acid">.</span>
-        </h1>
-        <p className="mt-2 max-w-2xl font-medium text-white/50">
+        <h1 className="app-h1">Nfc stock</h1>
+        <p className="app-sub mt-1 max-w-2xl">
           {rows.length} card{rows.length === 1 ? "" : "s"} · {assigned} assigned ·{" "}
           {rows.length - assigned} blank. Issue stock before you print it, then
           attach an owner when it sells.
@@ -42,8 +40,8 @@ export default async function AdminNfc() {
 
       <IssueForm />
 
-      <div className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
-        <p className="text-[11px] font-black uppercase tracking-widest text-white/40">
+      <div className="app-panel app-panel-pad">
+        <p >
           what to write on the tag
         </p>
         <p className="mt-2 font-mono text-sm text-acid">
@@ -57,37 +55,37 @@ export default async function AdminNfc() {
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="app-panel app-panel-pad text-[13px] font-medium text-hotpink">
           {error.message}
         </div>
       )}
 
       {rows.length === 0 ? (
-        <p className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-10 text-center font-bold text-white/40">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
           No cards issued yet.
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border-2 border-white/12">
-          <table className="w-full min-w-[820px] text-left">
-            <thead className="bg-white/[0.05]">
-              <tr className="text-[11px] font-black uppercase tracking-widest text-white/40">
-                <th className="px-5 py-3.5">Code</th>
-                <th className="px-5 py-3.5">Batch</th>
-                <th className="px-5 py-3.5">Assigned to</th>
-                <th className="px-5 py-3.5">Issued</th>
+        <div className="app-panel overflow-x-auto">
+          <table className="app-table w-full min-w-[820px]">
+            <thead className="border-b border-white/8">
+              <tr>
+                <th>Code</th>
+                <th>Batch</th>
+                <th>Assigned to</th>
+                <th>Issued</th>
                 <th className="px-5 py-3.5 text-right">Assign / remove</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/8">
+            <tbody className="divide-y divide-white/6">
               {rows.map((row) => (
                 <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
-                  <td className="px-5 py-4 font-mono text-sm font-bold text-acid">
+                  <td className="font-mono text-sm font-bold text-acid">
                     {row.card_url}
                   </td>
-                  <td className="px-5 py-4 text-sm font-semibold text-white/45">
+                  <td className="text-sm font-semibold text-white/45">
                     {row.batch ?? "—"}
                   </td>
-                  <td className="px-5 py-4">
+                  <td>
                     {row.card_profiles ? (
                       <>
                         <p className="text-sm font-black">{row.card_profiles.full_name}</p>
@@ -101,10 +99,10 @@ export default async function AdminNfc() {
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-4 text-sm font-semibold tabular-nums text-white/45">
+                  <td className="text-sm font-semibold tabular-nums text-white/45">
                     {new Date(row.created_at).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-5 py-4">
+                  <td>
                     <div className="flex flex-wrap items-start justify-end gap-2">
                       <AssignCell
                         cardId={row.id}

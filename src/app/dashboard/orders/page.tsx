@@ -37,10 +37,8 @@ export default async function MyOrders() {
   return (
     <div className="max-w-4xl space-y-9 pb-16">
       <div>
-        <h1 className="text-4xl font-black tracking-tighter text-white">
-          orders<span className="text-acid">.</span>
-        </h1>
-        <p className="mt-2 font-medium text-white/50">
+        <h1 className="app-h1">Orders</h1>
+        <p className="app-sub mt-1">
           Order a printed NFC card, and track it here.
         </p>
       </div>
@@ -56,7 +54,7 @@ export default async function MyOrders() {
               <Link
                 key={o.id}
                 href={`/dashboard/orders/${o.id}`}
-                className="group flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5 transition-colors hover:border-acid"
+                className="group flex flex-wrap items-center justify-between gap-4 app-panel app-panel-pad transition-colors hover:border-acid"
               >
                 <div className="flex items-center gap-4">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-white/15 bg-white/[0.04]">

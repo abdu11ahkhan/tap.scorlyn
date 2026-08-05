@@ -24,19 +24,17 @@ export default async function AdminTemplates() {
   );
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-4xl font-black tracking-tighter">
-          templates<span className="text-acid">.</span>
-        </h1>
-        <p className="mt-2 max-w-2xl font-medium text-white/50">
+        <h1 className="app-h1">Templates</h1>
+        <p className="app-sub mt-1 max-w-2xl">
           {CARD_TEMPLATES.length} designs across {TEMPLATE_CATEGORIES.length} sectors.
           Control which are offered, what they&apos;re called and where they sit.
         </p>
       </div>
 
       {/* Being straight about the limit rather than implying a UI can author React. */}
-      <div className="flex items-start gap-4 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
+      <div className="flex items-start gap-4 app-panel app-panel-pad">
         <Info className="mt-0.5 h-5 w-5 shrink-0 text-acid" />
         <div className="text-sm font-medium text-white/55">
           <p className="font-black text-white">Adding a brand-new design needs code.</p>
@@ -52,7 +50,7 @@ export default async function AdminTemplates() {
       </div>
 
       {error && (
-        <div className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="app-panel app-panel-pad text-[13px] font-medium text-hotpink">
           {error.message}
         </div>
       )}

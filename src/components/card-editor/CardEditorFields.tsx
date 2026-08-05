@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Plus, Trash2, GripVertical, Image as ImageIcon, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,6 +64,27 @@ export default function CardEditorFields({
     const next = [...buttons];
     [next[index], next[target]] = [next[target], next[index]];
     onButtonsChange(next);
+  };
+
+  // Native HTML5 drag rather than a drag library: reordering a short list is
+  // the one thing the browser already does well, and a dnd package would be
+  // ~30KB for this. The arrow buttons stay for keyboard and touch, where
+  // HTML5 drag is unreliable.
+  const [dragFrom, setDragFrom] = useState<number | null>(null);
+  const [dragOver, setDragOver] = useState<number | null>(null);
+
+  const drop = (to: number) => {
+    if (dragFrom === null || dragFrom === to) {
+      setDragFrom(null);
+      setDragOver(null);
+      return;
+    }
+    const next = [...buttons];
+    const [moved] = next.splice(dragFrom, 1);
+    next.splice(to, 0, moved);
+    onButtonsChange(next);
+    setDragFrom(null);
+    setDragOver(null);
   };
 
   return (
@@ -346,9 +368,30 @@ export default function CardEditorFields({
           return (
             <div
               key={index}
-              className="flex flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
+              draggable
+              onDragStart={() => setDragFrom(index)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(index);
+              }}
+              onDragLeave={() => setDragOver((v) => (v === index ? null : v))}
+              onDrop={() => drop(index)}
+              onDragEnd={() => {
+                setDragFrom(null);
+                setDragOver(null);
+              }}
+              className={`flex cursor-grab flex-col gap-2 rounded-xl border-2 bg-white/[0.03] p-3 transition-colors active:cursor-grabbing sm:flex-row ${
+                dragOver === index && dragFrom !== index
+                  ? "border-acid"
+                  : dragFrom === index
+                    ? "border-white/30 opacity-50"
+                    : "border-white/12"
+              }`}
             >
-              <div className="flex justify-center text-white/40 sm:flex-col">
+              <div
+                className="flex justify-center text-white/40 sm:flex-col"
+                title="Drag to reorder"
+              >
                 <button
                   type="button"
                   onClick={() => moveButton(index, -1)}

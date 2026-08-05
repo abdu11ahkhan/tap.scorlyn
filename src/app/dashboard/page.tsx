@@ -68,23 +68,20 @@ export default function DashboardPage() {
   }, []);
 
   const stats = [
-    { label: "taps", value: taps, icon: SmartphoneNfc, tile: "bg-acid text-ink" },
-    { label: "nfc cards linked", value: nfcCount, icon: IdCard, tile: "bg-hotpink text-white" },
+    { label: "taps", value: taps, icon: SmartphoneNfc },
+    { label: "nfc cards linked", value: nfcCount, icon: IdCard },
     {
       label: "card status",
       value: card ? (card.published ? "live" : "hidden") : "none",
       icon: BarChart3,
-      tile: "bg-violet-pop text-white",
     },
   ];
 
   return (
-    <div className="max-w-5xl space-y-8 pb-16">
+    <div className="max-w-4xl space-y-5 pb-16">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-4xl font-black tracking-tighter text-white">
-          hey {name}<span className="text-acid">.</span>
-        </h1>
-        <p className="mt-2 font-medium text-white/50">
+        <h1 className="app-h1">Hey {name}</h1>
+        <p className="app-sub mt-1">
           {card
             ? "Your card is set up. Here's how it's doing."
             : "Let's get your card built — it takes about two minutes."}
@@ -92,23 +89,23 @@ export default function DashboardPage() {
       </motion.div>
 
       {loading ? (
-        <div className="h-32 animate-pulse rounded-2xl border-2 border-white/10 bg-white/[0.03]" />
+        <div className="app-panel h-28 animate-pulse" />
       ) : card ? (
         <>
           {/* The card itself */}
-          <div className="sticker-lg flex flex-wrap items-center justify-between gap-5 rounded-2xl border-2 border-ink bg-white p-6 text-ink">
+          <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-5">
             <div className="flex items-center gap-4">
               <span
-                className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-ink text-lg font-black"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sm font-semibold"
                 style={{ background: card.accent_color || "#111111", color: "#fff" }}
               >
                 {card.full_name.slice(0, 2).toUpperCase()}
               </span>
               <div>
-                <p className="text-2xl font-black leading-none tracking-tight">
+                <p className="text-[17px] font-semibold leading-tight text-white">
                   {card.full_name}
                 </p>
-                <p className="mt-1 text-sm font-bold text-ink/50">
+                <p className="app-sub mt-0.5">
                   {card.headline || "No headline yet"} · {card.template}
                 </p>
               </div>
@@ -118,16 +115,16 @@ export default function DashboardPage() {
               <Link
                 href={`/u/${card.username}`}
                 target="_blank"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-5 py-3 text-sm font-black lowercase transition-colors hover:bg-ink hover:text-white"
+                className="app-btn app-btn-ghost"
               >
                 <ExternalLink className="h-4 w-4" />
                 /u/{card.username}
               </Link>
               <Link
                 href="/dashboard/card"
-                className="sticker sticker-press inline-flex items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 py-3 text-sm font-black uppercase tracking-tight"
+                className="app-btn app-btn-primary"
               >
-                edit card
+                Edit card
               </Link>
             </div>
           </div>
@@ -136,15 +133,12 @@ export default function DashboardPage() {
             {stats.map((s) => {
               const Icon = s.icon;
               return (
-                <div
-                  key={s.label}
-                  className={`sticker-lg rounded-2xl border-2 border-ink p-5 ${s.tile}`}
-                >
-                  <Icon className="mb-4 h-5 w-5" />
-                  <p className="text-4xl font-black lowercase tabular-nums tracking-tighter">
+                <div key={s.label} className="app-panel app-panel-pad">
+                  <Icon className="mb-3 h-4 w-4 text-acid" />
+                  <p className="text-2xl font-semibold capitalize tabular-nums tracking-tight text-white">
                     {s.value}
                   </p>
-                  <p className="mt-1 text-sm font-black lowercase">{s.label}</p>
+                  <p className="app-sub mt-0.5">{s.label}</p>
                 </div>
               );
             })}
@@ -152,25 +146,25 @@ export default function DashboardPage() {
 
           <Link
             href="/dashboard/analytics"
-            className="group inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3.5 font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+            className="app-btn app-btn-ghost group"
           >
-            see full analytics
+            See full analytics
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </>
       ) : (
-        <div className="sticker-lg rounded-2xl border-2 border-ink bg-acid p-8 text-ink">
-          <p className="text-2xl font-black tracking-tight">No card yet.</p>
-          <p className="mt-2 max-w-md font-semibold opacity-70">
+        <div className="app-panel app-panel-pad">
+          <p className="text-[17px] font-semibold text-white">No card yet.</p>
+          <p className="app-sub mt-1 max-w-md">
             Pick a template, fill in your details, and publish. You can change the
             design any time without reprinting anything.
           </p>
           <Link
             href="/templates"
-            className="sticker sticker-press mt-6 inline-flex h-14 items-center gap-2 rounded-full border-2 border-ink bg-ink px-8 font-black uppercase tracking-tight text-acid"
+            className="app-btn app-btn-primary mt-5"
           >
             <Plus className="h-4 w-4" />
-            build my card
+            Build my card
           </Link>
         </div>
       )}

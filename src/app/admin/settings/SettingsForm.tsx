@@ -7,11 +7,19 @@ import { saveAppSettings } from "../actions";
 export default function SettingsForm({
   initial,
 }: {
-  initial: { signupsOpen: boolean; publishingOpen: boolean; announcement: string };
+  initial: {
+    signupsOpen: boolean;
+    publishingOpen: boolean;
+    announcement: string;
+    maintenanceMode: boolean;
+    maintenanceMessage: string;
+  };
 }) {
   const [signupsOpen, setSignupsOpen] = useState(initial.signupsOpen);
   const [publishingOpen, setPublishingOpen] = useState(initial.publishingOpen);
   const [announcement, setAnnouncement] = useState(initial.announcement);
+  const [maintenanceMode, setMaintenanceMode] = useState(initial.maintenanceMode);
+  const [maintenanceMessage, setMaintenanceMessage] = useState(initial.maintenanceMessage);
 
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
@@ -29,6 +37,12 @@ export default function SettingsForm({
       help: "Off stops new cards going live. Existing cards keep working.",
       value: publishingOpen,
       set: setPublishingOpen,
+    },
+    {
+      label: "maintenance mode",
+      help: "Off-limits for everyone except admins. Published cards at /u/… keep working so nobody's tap breaks.",
+      value: maintenanceMode,
+      set: setMaintenanceMode,
     },
   ];
 
@@ -77,6 +91,22 @@ export default function SettingsForm({
         />
       </div>
 
+      <div className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
+        <label className="text-lg font-black lowercase">maintenance message</label>
+        <p className="mt-0.5 text-sm font-medium text-white/45">
+          Shown while maintenance mode is on.
+        </p>
+        <input
+          value={maintenanceMessage}
+          onChange={(e) => {
+            setMaintenanceMessage(e.target.value);
+            setSaved(false);
+          }}
+          placeholder="Back in an hour — upgrading the card editor."
+          className="mt-3 h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+        />
+      </div>
+
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -84,7 +114,13 @@ export default function SettingsForm({
           onClick={() => {
             setError(null);
             startTransition(async () => {
-              const r = await saveAppSettings({ signupsOpen, publishingOpen, announcement });
+              const r = await saveAppSettings({
+                signupsOpen,
+                publishingOpen,
+                announcement,
+                maintenanceMode,
+                maintenanceMessage,
+              });
               if (!r.ok) setError(r.error ?? "Failed.");
               else setSaved(true);
             });

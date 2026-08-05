@@ -62,10 +62,10 @@ export default async function AdminOrders({
   }, {});
 
   const stats = [
-    { label: "revenue this month", value: `Rs.${revenueMonth.toLocaleString()}`, tile: "bg-acid text-ink" },
-    { label: "revenue all time", value: `Rs.${revenueAll.toLocaleString()}`, tile: "bg-hotpink text-white" },
-    { label: "awaiting payment", value: `${pending.length}`, hint: `Rs.${pendingTotal.toLocaleString()}`, tile: "bg-violet-pop text-white" },
-    { label: "orders", value: `${all.length}`, hint: Object.entries(byPlan).map(([k, v]) => `${k} ${v}`).join(" · "), tile: "bg-white text-ink" },
+    { label: "revenue this month", value: `Rs.${revenueMonth.toLocaleString()}` },
+    { label: "revenue all time", value: `Rs.${revenueAll.toLocaleString()}` },
+    { label: "awaiting payment", value: `${pending.length}`, hint: `Rs.${pendingTotal.toLocaleString()}` },
+    { label: "orders", value: `${all.length}`, hint: Object.entries(byPlan).map(([k, v]) => `${k} ${v}`).join(" · ") },
   ];
 
   const csvHref = `/admin/orders/export${q || status || plan ? `?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}), ...(plan ? { plan } : {}) })}` : ""}`;
@@ -74,29 +74,27 @@ export default async function AdminOrders({
     <div className="space-y-7">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black tracking-tighter">
-            orders<span className="text-acid">.</span>
-          </h1>
-          <p className="mt-2 font-medium text-white/50">
+          <h1 className="app-h1">Orders</h1>
+          <p className="app-sub mt-1">
             {count ?? 0} matching · showing up to {PAGE_SIZE}
           </p>
         </div>
         <a
           href={csvHref}
-          className="sticker sticker-press inline-flex h-12 items-center gap-2 rounded-full border-2 border-ink bg-acid px-6 text-sm font-black uppercase tracking-tight text-ink"
+          className="app-btn app-btn-primary"
         >
           <Download className="h-4 w-4" />
-          export csv
+          Export CSV
         </a>
       </div>
 
       {/* Money */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className={`sticker-lg rounded-2xl border-2 border-ink p-5 ${s.tile}`}>
-            <p className="text-2xl font-black tabular-nums tracking-tighter">{s.value}</p>
-            <p className="mt-1 text-sm font-black lowercase">{s.label}</p>
-            {s.hint && <p className="mt-1 text-xs font-semibold opacity-60">{s.hint}</p>}
+          <div key={s.label} className="app-panel app-panel-pad">
+            <p className="text-2xl font-semibold tabular-nums tracking-tight">{s.value}</p>
+            <p className="app-sub mt-1">{s.label}</p>
+            {s.hint && <p className="mt-1 text-[12px] text-white/35">{s.hint}</p>}
           </div>
         ))}
       </div>
@@ -109,13 +107,13 @@ export default async function AdminOrders({
             name="q"
             defaultValue={q ?? ""}
             placeholder="reference, name, phone, city"
-            className="h-12 w-64 rounded-full border-2 border-white/15 bg-white/[0.04] pl-10 pr-4 text-sm font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+            className="app-input w-64 pl-9"
           />
         </div>
         <select
           name="status"
           defaultValue={status ?? ""}
-          className="h-12 rounded-full border-2 border-white/15 bg-ink px-4 text-sm font-bold text-white"
+          className="app-input w-auto bg-ink"
         >
           <option value="">any status</option>
           {["pending", "paid", "printing", "shipped", "delivered", "cancelled"].map((s) => (
@@ -125,7 +123,7 @@ export default async function AdminOrders({
         <select
           name="plan"
           defaultValue={plan ?? ""}
-          className="h-12 rounded-full border-2 border-white/15 bg-ink px-4 text-sm font-bold text-white"
+          className="app-input w-auto bg-ink"
         >
           <option value="">any plan</option>
           {Object.keys(byPlan).map((p) => (
@@ -134,31 +132,27 @@ export default async function AdminOrders({
         </select>
         <button
           type="submit"
-          className="h-12 rounded-full border-2 border-white/20 px-6 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          className="app-btn app-btn-ghost"
         >
           filter
         </button>
         <Link
           href={flagged === "1" ? "/admin/orders" : "/admin/orders?flagged=1"}
-          className={`inline-flex h-12 items-center gap-2 rounded-full border-2 px-5 text-sm font-black lowercase transition-colors ${
-            flagged === "1"
-              ? "border-ink bg-hotpink text-white"
-              : "border-white/20 text-white/60 hover:border-hotpink hover:text-hotpink"
-          }`}
+          className={`app-btn ${flagged === "1" ? "app-btn-primary" : "app-btn-ghost"}`}
         >
           <Flag className="h-3.5 w-3.5" />
-          flagged
+          Flagged
         </Link>
       </form>
 
       {error && (
-        <div className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="app-panel app-panel-pad text-[13px] font-medium text-hotpink">
           {error.message}
         </div>
       )}
 
       {orders.length === 0 ? (
-        <p className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-10 text-center font-bold text-white/40">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
           No orders match.
         </p>
       ) : (

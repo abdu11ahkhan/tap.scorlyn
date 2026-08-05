@@ -31,6 +31,49 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // ------------------------------------------------------------------
+  // Maintenance mode.
+  //
+  // Public cards are deliberately exempt. Someone tapping a physical card in
+  // a meeting should never hit a maintenance page — the card is the product,
+  // and the owner can't explain away a dead tap. Admins get through so they
+  // can turn it back off.
+  // ------------------------------------------------------------------
+  const path = request.nextUrl.pathname
+  const exempt =
+    path.startsWith('/u/') ||
+    path.startsWith('/api/') ||
+    path.startsWith('/maintenance') ||
+    path.startsWith('/login') ||
+    path.startsWith('/admin') ||
+    path.startsWith('/_next')
+
+  if (!exempt) {
+    const { data: settings } = await supabase
+      .from('app_settings')
+      .select('maintenance_mode')
+      .maybeSingle()
+
+    if (settings?.maintenance_mode) {
+      let isAdmin = false
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', user.id)
+          .maybeSingle()
+        isAdmin = Boolean(profile?.is_admin)
+      }
+
+      if (!isAdmin) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/maintenance'
+        url.search = ''
+        return NextResponse.rewrite(url)
+      }
+    }
+  }
+
   // Protected routes logic
   if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
     const url = request.nextUrl.clone()

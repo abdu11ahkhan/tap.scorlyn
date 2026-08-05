@@ -246,6 +246,141 @@
 }
 
 /* ------------------------------------------------------------------
+   App chrome.
+
+   The marketing pages are meant to shout; the dashboard and admin console
+   are meant to be worked in for an hour at a time. Same palette, much
+   quieter application: hairline borders instead of 2px, one soft surface,
+   accent reserved for the primary action and active state.
+   ------------------------------------------------------------------ */
+
+.app-panel {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+}
+
+.app-panel-pad {
+  padding: 20px;
+}
+
+/* Section heading. Sentence case, normal weight — the old all-black
+   lowercase headings read as marketing copy inside a tool. */
+.app-h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.app-h2 {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.app-sub {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.app-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.app-input::placeholder {
+  color: rgba(255, 255, 255, 0.22);
+}
+.app-input:focus {
+  border-color: var(--color-acid);
+}
+textarea.app-input {
+  height: auto;
+  padding: 10px 12px;
+  line-height: 1.5;
+}
+
+.app-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.app-btn-primary {
+  background: var(--color-acid);
+  color: var(--color-ink);
+}
+.app-btn-primary:hover {
+  background: #b8e600;
+}
+
+.app-btn-ghost {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.75);
+}
+.app-btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+
+.app-btn-danger {
+  border-color: rgba(255, 61, 154, 0.4);
+  color: #ff6fb2;
+}
+.app-btn-danger:hover {
+  background: rgba(255, 61, 154, 0.12);
+  border-color: #ff3d9a;
+}
+
+.app-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Table rows in the console */
+.app-table th {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 12px 16px;
+  text-align: left;
+}
+.app-table td {
+  padding: 14px 16px;
+  font-size: 0.875rem;
+}
+
+/* ------------------------------------------------------------------
    Landing page kit.
    Acid palette, chunky stickers, grain — no photography.
    ------------------------------------------------------------------ */
