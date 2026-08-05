@@ -1,0 +1,427 @@
+"use client";
+
+import { Plus, Trash2, GripVertical, Image as ImageIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  ACCENT_PRESETS,
+  BUTTON_KIND_GROUPS,
+  KIND_LABELS,
+  KIND_PLACEHOLDERS,
+  type ButtonKind,
+  type CardButton,
+  type GalleryItem,
+} from "@/lib/card";
+import { iconFor } from "@/components/card-templates/button-icons";
+import type { CardForm } from "@/lib/card-draft";
+import TemplatePicker from "./TemplatePicker";
+
+
+const FONTS = [
+  { id: "sans", label: "Sans" },
+  { id: "serif", label: "Serif" },
+  { id: "mono", label: "Mono" },
+];
+
+/** One field style for the whole editor, matching the site's sticker scheme. */
+const FIELD =
+  "border-2 border-white/15 bg-white/[0.04] font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:ring-0";
+
+/**
+ * Every field of a card, shared by the public editor and the dashboard editor
+ * so the two can never drift apart.
+ */
+export default function CardEditorFields({
+  form,
+  onFormChange,
+  buttons,
+  onButtonsChange,
+  gallery,
+  onGalleryChange,
+  showUsername = true,
+}: {
+  form: CardForm;
+  onFormChange: (patch: Partial<CardForm>) => void;
+  buttons: CardButton[];
+  onButtonsChange: (buttons: CardButton[]) => void;
+  gallery: GalleryItem[];
+  onGalleryChange: (gallery: GalleryItem[]) => void;
+  showUsername?: boolean;
+}) {
+  const updateButton = (index: number, patch: Partial<CardButton>) => {
+    onButtonsChange(buttons.map((b, i) => (i === index ? { ...b, ...patch } : b)));
+  };
+
+  const moveButton = (index: number, direction: -1 | 1) => {
+    const target = index + direction;
+    if (target < 0 || target >= buttons.length) return;
+    const next = [...buttons];
+    [next[index], next[target]] = [next[target], next[index]];
+    onButtonsChange(next);
+  };
+
+  return (
+    <div className="space-y-9">
+      <TemplatePicker
+        value={form.template}
+        accent={form.accent_color}
+        onChange={(template) => onFormChange({ template })}
+      />
+
+      {/* ---------------- Style ---------------- */}
+      <section className="grid sm:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="accent_color">Accent colour</Label>
+          <div className="flex gap-2">
+            <input
+              id="accent_color"
+              type="color"
+              value={form.accent_color}
+              onChange={(e) => onFormChange({ accent_color: e.target.value })}
+              className="h-10 w-14 cursor-pointer rounded-lg border-2 border-white/15 bg-white/[0.04]"
+            />
+            <Input
+              value={form.accent_color}
+              onChange={(e) => onFormChange({ accent_color: e.target.value })}
+              className={FIELD}
+            />
+          </div>
+
+          {/* Presets: a colour picker is a poor way to land on something that
+              actually works, and these are all tested against readableOn(). */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {ACCENT_PRESETS.map((preset) => (
+              <button
+                key={preset.value}
+                type="button"
+                title={preset.name}
+                aria-label={preset.name}
+                onClick={() => onFormChange({ accent_color: preset.value })}
+                className={`h-7 w-7 rounded-full border-2 transition-transform hover:scale-110 ${
+                  form.accent_color.toLowerCase() === preset.value.toLowerCase()
+                    ? "border-acid"
+                    : "border-white/20"
+                }`}
+                style={{ background: preset.value }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Font</Label>
+          <div className="flex gap-2">
+            {FONTS.map((font) => (
+              <button
+                key={font.id}
+                type="button"
+                onClick={() => onFormChange({ font: font.id })}
+                className={`h-10 flex-1 rounded-lg border-2 text-sm font-black lowercase transition-colors ${
+                  form.font === font.id
+                    ? "border-acid bg-acid text-ink"
+                    : "border-white/15 bg-white/[0.04] text-white/60 hover:text-white"
+                }`}
+              >
+                {font.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- Identity ---------------- */}
+      <section className="space-y-5">
+        {showUsername && (
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              value={form.username}
+              onChange={(e) => onFormChange({ username: e.target.value })}
+              placeholder="abdullah"
+              className={FIELD}
+            />
+            <p className="text-xs text-slate-500">
+              Your card will live at /u/{form.username || "username"}
+            </p>
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="full_name">Full name</Label>
+          <Input
+            id="full_name"
+            value={form.full_name}
+            onChange={(e) => onFormChange({ full_name: e.target.value })}
+            placeholder="Abdullah Khan"
+            className={FIELD}
+          />
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="headline">Headline</Label>
+            <Input
+              id="headline"
+              value={form.headline}
+              onChange={(e) => onFormChange({ headline: e.target.value })}
+              placeholder="Real Estate Consultant"
+              className={FIELD}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="company">Company</Label>
+            <Input
+              id="company"
+              value={form.company}
+              onChange={(e) => onFormChange({ company: e.target.value })}
+              placeholder="Skyline Properties"
+              className={FIELD}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="location">Location</Label>
+          <Input
+            id="location"
+            value={form.location}
+            onChange={(e) => onFormChange({ location: e.target.value })}
+            placeholder="Islamabad, Pakistan"
+            className={FIELD}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="bio">Short bio</Label>
+          <textarea
+            id="bio"
+            value={form.bio}
+            onChange={(e) => onFormChange({ bio: e.target.value })}
+            rows={3}
+            placeholder="Helping families find homes in DHA and Bahria Town since 2018."
+            className="w-full rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+          />
+        </div>
+      </section>
+
+      {/* ---------------- Photos ---------------- */}
+      <section className="space-y-5">
+        <div>
+          <Label>Photos</Label>
+          <p className="mt-1 text-xs text-slate-500">
+            Paste image links. Templates use what they need — a profile photo
+            everywhere, a cover on the ones with a hero, and the gallery on
+            portfolio layouts.
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          {(
+            [
+              {
+                key: "avatar_url" as const,
+                label: "Profile photo",
+                hint: "Shown on every template.",
+                round: true,
+              },
+              {
+                key: "cover_url" as const,
+                label: "Cover / background",
+                hint: "Used by Poster, Showcase, Agency, App, Glass.",
+                round: false,
+              },
+            ]
+          ).map((field) => (
+            <div key={field.key} className="space-y-2">
+              <Label htmlFor={field.key}>{field.label}</Label>
+              <div className="flex gap-3">
+                {/* Live thumbnail — the fastest way to catch a broken link. */}
+                <div
+                  className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center overflow-hidden border-2 border-white/15 bg-white/[0.04] ${
+                    field.round ? "rounded-full" : "rounded-lg"
+                  }`}
+                >
+                  {form[field.key] ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={form[field.key]}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <ImageIcon className="h-4 w-4 text-white/25" />
+                  )}
+                </div>
+                <Input
+                  id={field.key}
+                  value={form[field.key]}
+                  onChange={(e) => onFormChange({ [field.key]: e.target.value })}
+                  placeholder="https://..."
+                  className={FIELD}
+                />
+              </div>
+              <p className="text-xs text-slate-500">{field.hint}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Gallery */}
+        <div className="space-y-3">
+          <Label>Gallery</Label>
+          <p className="-mt-1 text-xs text-slate-500">
+            For Grid, Reel and Agency. Ignored by the other templates.
+          </p>
+
+          {gallery.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
+            >
+              <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/15 bg-white/[0.04]">
+                {item.url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={item.url} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <ImageIcon className="h-4 w-4 text-white/25" />
+                )}
+              </div>
+
+              <Input
+                value={item.url}
+                onChange={(e) => {
+                  const next = [...gallery];
+                  next[index] = { ...next[index], url: e.target.value };
+                  onGalleryChange(next);
+                }}
+                placeholder="https://image..."
+                className={`${FIELD} flex-1`}
+              />
+              <Input
+                value={item.caption ?? ""}
+                onChange={(e) => {
+                  const next = [...gallery];
+                  next[index] = { ...next[index], caption: e.target.value };
+                  onGalleryChange(next);
+                }}
+                placeholder="Caption"
+                className={`${FIELD} sm:max-w-[160px]`}
+              />
+
+              <button
+                type="button"
+                onClick={() => onGalleryChange(gallery.filter((_, i) => i !== index))}
+                className="self-center p-2.5 text-slate-500 transition-colors hover:text-red-400"
+                aria-label="Remove photo"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={() => onGalleryChange([...gallery, { url: "", caption: "" }])}
+            className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          >
+            <Plus className="h-4 w-4" />
+            add photo
+          </button>
+        </div>
+      </section>
+
+      {/* ---------------- Buttons ---------------- */}
+      <section className="space-y-3">
+        <div>
+          <Label>Buttons</Label>
+          <p className="text-xs text-slate-500 mt-1">Shown in this order on your card.</p>
+        </div>
+
+        {buttons.map((button, index) => {
+          const KindIcon = iconFor(button.kind);
+          return (
+            <div
+              key={index}
+              className="flex flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
+            >
+              <div className="flex justify-center text-white/40 sm:flex-col">
+                <button
+                  type="button"
+                  onClick={() => moveButton(index, -1)}
+                  className="hover:text-white transition-colors text-xs leading-none px-1"
+                  aria-label="Move up"
+                >
+                  ▲
+                </button>
+                <GripVertical className="w-3.5 h-3.5 my-0.5 hidden sm:block" />
+                <button
+                  type="button"
+                  onClick={() => moveButton(index, 1)}
+                  className="hover:text-white transition-colors text-xs leading-none px-1"
+                  aria-label="Move down"
+                >
+                  ▼
+                </button>
+              </div>
+
+              {/* Icon preview beside the picker — with 26 kinds, seeing the
+                  mark is faster than reading the name back. */}
+              <div className="flex items-center gap-2">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-white/15 bg-white/[0.04] text-white/80">
+                  <KindIcon className="h-4 w-4" />
+                </span>
+
+                <select
+                  value={button.kind}
+                  onChange={(e) => updateButton(index, { kind: e.target.value as ButtonKind })}
+                  className="h-10 flex-1 rounded-lg border-2 border-white/15 bg-ink px-2 text-sm font-bold text-white sm:w-36 sm:flex-none"
+                >
+                  {BUTTON_KIND_GROUPS.map((group) => (
+                    <optgroup key={group.label} label={group.label}>
+                      {group.kinds.map((k) => (
+                        <option key={k} value={k}>
+                          {KIND_LABELS[k]}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                </select>
+              </div>
+
+              <Input
+                value={button.label}
+                onChange={(e) => updateButton(index, { label: e.target.value })}
+                placeholder={KIND_LABELS[button.kind]}
+                className={`${FIELD} sm:max-w-[140px]`}
+              />
+
+              <Input
+                value={button.value}
+                onChange={(e) => updateButton(index, { value: e.target.value })}
+                placeholder={KIND_PLACEHOLDERS[button.kind]}
+                className={`${FIELD} flex-1`}
+              />
+
+              <button
+                type="button"
+                onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
+                className="p-2.5 text-slate-500 hover:text-red-400 transition-colors self-center"
+                aria-label="Remove button"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          );
+        })}
+
+        <button
+          type="button"
+          onClick={() => onButtonsChange([...buttons, { label: "", kind: "link", value: "" }])}
+          className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+        >
+          <Plus className="w-4 h-4" />
+          Add button
+        </button>
+      </section>
+    </div>
+  );
+}
