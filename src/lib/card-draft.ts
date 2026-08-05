@@ -1,4 +1,5 @@
 import type { CardButton, CardProfile, GalleryItem } from "@/lib/card";
+import type { ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 
 /** The editable shape of a card, shared by the public and dashboard editors. */
 export type CardForm = {
@@ -33,6 +34,7 @@ export type CardDraft = {
   form: CardForm;
   buttons: CardButton[];
   gallery?: GalleryItem[];
+  extras?: Partial<ExtrasState>;
 };
 
 /**
@@ -64,6 +66,7 @@ export function loadDraft(): CardDraft | null {
       form: { ...EMPTY_CARD_FORM, ...parsed.form },
       buttons: Array.isArray(parsed.buttons) ? parsed.buttons : [],
       gallery: Array.isArray(parsed.gallery) ? parsed.gallery : [],
+      extras: parsed.extras ?? {},
     };
   } catch {
     return null;
@@ -83,7 +86,8 @@ export function clearDraft(): void {
 export function draftToCardProfile(
   form: CardForm,
   buttons: CardButton[],
-  gallery: GalleryItem[] = []
+  gallery: GalleryItem[] = [],
+  extras?: Partial<ExtrasState>
 ): CardProfile {
   return {
     id: "preview",
@@ -101,6 +105,14 @@ export function draftToCardProfile(
     phone: buttons.find((b) => b.kind === "phone")?.value ?? null,
     email: buttons.find((b) => b.kind === "email")?.value ?? null,
     buttons,
+    available_for_work: extras?.available_for_work ?? false,
+    availability_note: extras?.availability_note || null,
+    business_hours: extras?.business_hours ?? [],
+    video_url: extras?.video_url || null,
+    background_style: "accent",
+    payment_enabled: extras?.payment_enabled ?? false,
+    payment_methods: extras?.payment_methods ?? [],
+    view_count: 0,
     accent_color: form.accent_color,
     template: form.template,
     font: form.font,

@@ -21,8 +21,18 @@ import {
 } from "@/lib/card-draft";
 import { renderCardTemplate } from "@/components/card-templates";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
+import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import CardDesigner from "@/components/card-design/CardDesigner";
+
+const EMPTY_EXTRAS: ExtrasState = {
+  available_for_work: false,
+  availability_note: "",
+  business_hours: [],
+  video_url: "",
+  payment_enabled: false,
+  payment_methods: [],
+};
 
 /** Sensible starting buttons so the preview isn't empty on first load. */
 const STARTER_BUTTONS: CardButton[] = [
@@ -41,6 +51,7 @@ export default function PublicCardEditor({
   const [form, setForm] = useState<CardForm>({ ...EMPTY_CARD_FORM, template });
   const [buttons, setButtons] = useState<CardButton[]>(STARTER_BUTTONS);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [extras, setExtras] = useState<ExtrasState>(EMPTY_EXTRAS);
   const [ready, setReady] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
@@ -54,6 +65,7 @@ export default function PublicCardEditor({
       setForm({ ...draft.form, template: isKnownTemplate ? template : draft.form.template });
       setButtons(draft.buttons.length ? draft.buttons : STARTER_BUTTONS);
       setGallery(draft.gallery ?? []);
+      setExtras({ ...EMPTY_EXTRAS, ...(draft.extras ?? {}) });
     }
     setReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,14 +74,14 @@ export default function PublicCardEditor({
   // Persist as they type so nothing is lost on the trip through login.
   useEffect(() => {
     if (!ready) return;
-    saveDraft({ form, buttons, gallery });
-  }, [form, buttons, gallery, ready]);
+    saveDraft({ form, buttons, gallery, extras });
+  }, [form, buttons, gallery, extras, ready]);
 
   const updateForm = (patch: Partial<CardForm>) => setForm((prev) => ({ ...prev, ...patch }));
 
   const previewCard = useMemo(
-    () => draftToCardProfile(form, buttons, resolveGallery(gallery)),
-    [form, buttons, gallery]
+    () => draftToCardProfile(form, buttons, resolveGallery(gallery), extras),
+    [form, buttons, gallery, extras]
   );
   const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
 
@@ -83,7 +95,7 @@ export default function PublicCardEditor({
    */
   const handlePublish = async () => {
     setPublishing(true);
-    saveDraft({ form, buttons, gallery });
+    saveDraft({ form, buttons, gallery, extras });
 
     const supabase = createClient();
     const {
@@ -178,6 +190,8 @@ export default function PublicCardEditor({
             onButtonsChange={setButtons}
             gallery={gallery}
             onGalleryChange={setGallery}
+            extras={extras}
+            onExtrasChange={(patch) => setExtras((prev) => ({ ...prev, ...patch }))}
             // Username is claimed at publish time, once there's an account.
             showUsername={false}
           />

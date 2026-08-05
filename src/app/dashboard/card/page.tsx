@@ -23,9 +23,19 @@ import {
   type CardForm,
 } from "@/lib/card-draft";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
+import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import { renderCardTemplate } from "@/components/card-templates";
+
+const EMPTY_EXTRAS: ExtrasState = {
+  available_for_work: false,
+  availability_note: "",
+  business_hours: [],
+  video_url: "",
+  payment_enabled: false,
+  payment_methods: [],
+};
 
 function MyCardEditor() {
   const supabase = createClient();
@@ -44,6 +54,7 @@ function MyCardEditor() {
   const [form, setForm] = useState<CardForm>(EMPTY_CARD_FORM);
   const [buttons, setButtons] = useState<CardButton[]>([]);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [extras, setExtras] = useState<ExtrasState>(EMPTY_EXTRAS);
   const [cardId, setCardId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -84,7 +95,17 @@ function MyCardEditor() {
           }
         : null;
 
-      if (data) setCardId(data.id);
+      if (data) {
+        setCardId(data.id);
+        setExtras({
+          available_for_work: data.available_for_work ?? false,
+          availability_note: data.availability_note ?? "",
+          business_hours: Array.isArray(data.business_hours) ? data.business_hours : [],
+          video_url: data.video_url ?? "",
+          payment_enabled: data.payment_enabled ?? false,
+          payment_methods: Array.isArray(data.payment_methods) ? data.payment_methods : [],
+        });
+      }
 
       // Work done before signing up wins — it's what they just built, and the
       // username is the one thing the anonymous editor couldn't collect.
@@ -94,6 +115,7 @@ function MyCardEditor() {
         setForm({ ...draft.form, username: saved?.username ?? draft.form.username });
         setButtons(draft.buttons);
         setGallery(draft.gallery ?? []);
+        setExtras({ ...EMPTY_EXTRAS, ...(draft.extras ?? {}) });
         setDraftApplied(true);
       } else if (saved) {
         setForm({ ...saved, template: presetTemplate ?? saved.template });
@@ -117,8 +139,8 @@ function MyCardEditor() {
 
   // Same live preview the public editor has — editing here was previously blind.
   const previewCard = useMemo(
-    () => draftToCardProfile(form, buttons, resolveGallery(gallery)),
-    [form, buttons, gallery]
+    () => draftToCardProfile(form, buttons, resolveGallery(gallery), extras),
+    [form, buttons, gallery, extras]
   );
   const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
 
@@ -161,6 +183,14 @@ function MyCardEditor() {
       user_id: user.id,
       buttons: cleanButtons,
       gallery: gallery.filter((g) => g.url?.trim()),
+      available_for_work: extras.available_for_work,
+      availability_note: extras.availability_note?.trim() || null,
+      business_hours: extras.business_hours.filter((h) => h.day?.trim() && h.hours?.trim()),
+      video_url: extras.video_url?.trim() || null,
+      payment_enabled: extras.payment_enabled,
+      payment_methods: extras.payment_methods.filter(
+        (m) => m.account_number?.trim() || m.iban?.trim()
+      ),
       // Kept in sync so the vCard export and any legacy reads still work.
       whatsapp: cleanButtons.find((b) => b.kind === "whatsapp")?.value ?? null,
       phone: cleanButtons.find((b) => b.kind === "phone")?.value ?? null,
@@ -256,6 +286,11 @@ function MyCardEditor() {
           gallery={gallery}
           onGalleryChange={(next) => {
             setGallery(next);
+            setSaved(false);
+          }}
+          extras={extras}
+          onExtrasChange={(patch) => {
+            setExtras((prev) => ({ ...prev, ...patch }));
             setSaved(false);
           }}
           showUsername={false}

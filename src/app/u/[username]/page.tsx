@@ -5,6 +5,9 @@ import { resolveButtons, type CardProfile } from "@/lib/card";
 import { renderCardTemplate } from "@/components/card-templates";
 import TapTracker from "@/components/nfc/TapTracker";
 import ReferralBanner from "@/components/nfc/ReferralBanner";
+import ProfileExtras from "@/components/nfc/ProfileExtras";
+import ShareButton from "@/components/nfc/ShareButton";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -63,11 +66,24 @@ export default async function CardProfilePage({
 
   const buttons = resolveButtons(card.buttons);
 
+  // Built from the request so the share link is right on any host.
+  const host = (await headers()).get("host") ?? "";
+  const proto = host.startsWith("localhost") ? "http" : "https";
+  const shareUrl = `${proto}://${host}/u/${card.username}`;
+
   return (
     <>
       <TapTracker username={card.username} source={source} />
 
+      <ShareButton
+        url={shareUrl}
+        name={card.full_name}
+        accent={card.accent_color || "#111111"}
+      />
+
       {renderCardTemplate({ card, buttons })}
+
+      <ProfileExtras card={card} />
 
       <ReferralBanner
         refCode={card.referral_code}

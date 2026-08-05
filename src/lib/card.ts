@@ -116,6 +116,18 @@ export type CardButton = {
   label: string;
   kind: ButtonKind;
   value: string;
+  /** Off keeps the link saved but hides it from the public card. */
+  enabled?: boolean;
+};
+
+export type BusinessHour = { day: string; hours: string };
+
+export type PaymentMethod = {
+  label: string;
+  kind: "bank" | "easypaisa" | "jazzcash" | "other";
+  account_name?: string;
+  account_number?: string;
+  iban?: string;
 };
 
 export type GalleryItem = { url: string; caption?: string; href?: string };
@@ -138,6 +150,14 @@ export type CardProfile = {
   phone: string | null;
   email: string | null;
   buttons: CardButton[];
+  available_for_work: boolean;
+  availability_note: string | null;
+  business_hours: BusinessHour[];
+  video_url: string | null;
+  background_style: string | null;
+  payment_enabled: boolean;
+  payment_methods: PaymentMethod[];
+  view_count: number;
   accent_color: string | null;
   template: string;
   font: string;
@@ -172,6 +192,8 @@ export function resolveButton(button: CardButton): ResolvedButton | null {
 export function resolveButtons(buttons: unknown): ResolvedButton[] {
   if (!Array.isArray(buttons)) return [];
   return buttons
+    // `enabled` is optional so older rows (no flag) stay visible.
+    .filter((b) => (b as CardButton)?.enabled !== false)
     .map((b) => resolveButton(b as CardButton))
     .filter((b): b is ResolvedButton => b !== null);
 }

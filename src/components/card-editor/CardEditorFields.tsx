@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, GripVertical, Image as ImageIcon } from "lucide-react";
+import { Plus, Trash2, GripVertical, Image as ImageIcon, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,6 +15,7 @@ import {
 import { iconFor } from "@/components/card-templates/button-icons";
 import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
+import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
 
 
 const FONTS = [
@@ -38,6 +39,8 @@ export default function CardEditorFields({
   onButtonsChange,
   gallery,
   onGalleryChange,
+  extras,
+  onExtrasChange,
   showUsername = true,
 }: {
   form: CardForm;
@@ -46,6 +49,8 @@ export default function CardEditorFields({
   onButtonsChange: (buttons: CardButton[]) => void;
   gallery: GalleryItem[];
   onGalleryChange: (gallery: GalleryItem[]) => void;
+  extras: ExtrasState;
+  onExtrasChange: (patch: Partial<ExtrasState>) => void;
   showUsername?: boolean;
 }) {
   const updateButton = (index: number, patch: Partial<CardButton>) => {
@@ -401,14 +406,34 @@ export default function CardEditorFields({
                 className={`${FIELD} flex-1`}
               />
 
-              <button
-                type="button"
-                onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
-                className="p-2.5 text-slate-500 hover:text-red-400 transition-colors self-center"
-                aria-label="Remove button"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1 self-center">
+                {/* Hide without deleting — keeps the value for later. */}
+                <button
+                  type="button"
+                  onClick={() => updateButton(index, { enabled: button.enabled === false })}
+                  aria-pressed={button.enabled !== false}
+                  title={button.enabled === false ? "Hidden — click to show" : "Visible — click to hide"}
+                  className={`p-2.5 transition-colors ${
+                    button.enabled === false
+                      ? "text-white/25 hover:text-white/60"
+                      : "text-acid hover:text-white"
+                  }`}
+                >
+                  {button.enabled === false ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
+                  className="p-2.5 text-slate-500 hover:text-red-400 transition-colors"
+                  aria-label="Remove button"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           );
         })}
@@ -422,6 +447,8 @@ export default function CardEditorFields({
           Add button
         </button>
       </section>
+
+      <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
     </div>
   );
 }
