@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { readStorage, writeStorage } from "@/lib/safe-storage";
 import { SmartphoneNfc, X } from "lucide-react";
 import { referralSignupUrl } from "@/lib/referral";
 
@@ -28,7 +29,7 @@ export default function ReferralBanner({
   const dismissKey = "tapzar_banner_dismissed";
 
   useEffect(() => {
-    if (localStorage.getItem(dismissKey)) return;
+    if (readStorage("local", dismissKey)) return;
 
     // Let the card land first — an instant banner reads as a popup ad.
     const timer = setTimeout(() => setVisible(true), 1200);
@@ -52,7 +53,7 @@ export default function ReferralBanner({
   };
 
   const dismiss = () => {
-    localStorage.setItem(dismissKey, "1");
+    writeStorage("local", dismissKey, "1");
     setVisible(false);
   };
 

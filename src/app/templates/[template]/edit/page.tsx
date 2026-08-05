@@ -177,10 +177,10 @@ export default function PublicCardEditor({
         </div>
       </header>
 
-      <div className="relative mx-auto grid max-w-7xl items-start gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_400px]">
+      <div className="relative mx-auto grid max-w-7xl items-start gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         {/* Fields */}
-        <div className={mobileTab === "edit" ? "" : "hidden lg:block"}>
-          <h1 className="mb-7 text-4xl font-black tracking-tighter">
+        <div className={`min-w-0 ${mobileTab === "edit" ? "" : "hidden lg:block"}`}>
+          <h1 className="mb-6 text-3xl font-black tracking-tighter sm:text-4xl">
             make it <span className="text-acid">yours.</span>
           </h1>
           <CardEditorFields
@@ -209,7 +209,7 @@ export default function PublicCardEditor({
         </div>
 
         {/* Live preview */}
-        <div className={`lg:sticky lg:top-28 ${mobileTab === "preview" ? "" : "hidden lg:block"}`}>
+        <div className={`min-w-0 lg:sticky lg:top-28 ${mobileTab === "preview" ? "" : "hidden lg:block"}`}>
           <DevicePreview
             cardView={
               <CardDesigner

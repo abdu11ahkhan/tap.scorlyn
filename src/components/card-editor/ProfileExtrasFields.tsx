@@ -35,7 +35,7 @@ export default function ProfileExtrasFields({
   const methods = value.payment_methods ?? [];
 
   return (
-    <div className="space-y-9">
+    <div className="min-w-0 space-y-9">
       {/* ------------------ availability ------------------ */}
       <section className="space-y-3">
         <Label>Availability</Label>
@@ -72,7 +72,7 @@ export default function ProfileExtrasFields({
         </div>
 
         {hours.map((h, i) => (
-          <div key={i} className="flex gap-2">
+          <div key={i} className="flex min-w-0 gap-2">
             <Input
               value={h.day}
               onChange={(e) => {
@@ -172,9 +172,9 @@ export default function ProfileExtrasFields({
               return (
                 <div
                   key={i}
-                  className="space-y-2 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-3"
+                  className="min-w-0 space-y-2 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-3"
                 >
-                  <div className="flex gap-2">
+                  <div className="flex min-w-0 gap-2">
                     <select
                       value={m.kind}
                       onChange={(e) =>

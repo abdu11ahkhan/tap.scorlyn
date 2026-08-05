@@ -1,5 +1,6 @@
 import type { CardButton, CardProfile, GalleryItem } from "@/lib/card";
 import type { ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
+import { readStorage, removeStorage, writeStorage } from "@/lib/safe-storage";
 
 /** The editable shape of a card, shared by the public and dashboard editors. */
 export type CardForm = {
@@ -47,18 +48,12 @@ export type CardDraft = {
 const DRAFT_KEY = "tapzar_card_draft";
 
 export function saveDraft(draft: CardDraft): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  } catch {
-    // Private mode / quota — the editor still works, it just won't persist.
-  }
+  writeStorage("local", DRAFT_KEY, JSON.stringify(draft));
 }
 
 export function loadDraft(): CardDraft | null {
-  if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem(DRAFT_KEY);
+    const raw = readStorage("local", DRAFT_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as CardDraft;
     if (!parsed?.form) return null;
@@ -74,12 +69,7 @@ export function loadDraft(): CardDraft | null {
 }
 
 export function clearDraft(): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.removeItem(DRAFT_KEY);
-  } catch {
-    // Nothing useful to do.
-  }
+  removeStorage("local", DRAFT_KEY);
 }
 
 /** Builds the object the card templates expect from in-progress form state. */

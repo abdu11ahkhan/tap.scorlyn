@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { readStorage, writeStorage } from "@/lib/safe-storage";
 
 /**
  * Records a tap once per browser session. Renders nothing.
@@ -16,9 +17,11 @@ export default function TapTracker({
   source: "nfc" | "qr" | "link";
 }) {
   useEffect(() => {
+    // Safe wrappers: touching sessionStorage directly throws in Safari with
+    // cross-site tracking blocked, and an uncaught throw here blanked the card.
     const key = `tap:${username}`;
-    if (sessionStorage.getItem(key)) return;
-    sessionStorage.setItem(key, "1");
+    if (readStorage("session", key)) return;
+    writeStorage("session", key, "1");
 
     fetch("/api/tap", {
       method: "POST",

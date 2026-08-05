@@ -88,7 +88,7 @@ export default function CardEditorFields({
   };
 
   return (
-    <div className="space-y-9">
+    <div className="min-w-0 space-y-9">
       <TemplatePicker
         value={form.template}
         accent={form.accent_color}
@@ -302,7 +302,7 @@ export default function CardEditorFields({
           {gallery.map((item, index) => (
             <div
               key={index}
-              className="flex flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
+              className="flex min-w-0 flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
             >
               <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/15 bg-white/[0.04]">
                 {item.url ? (
@@ -380,7 +380,7 @@ export default function CardEditorFields({
                 setDragFrom(null);
                 setDragOver(null);
               }}
-              className={`flex cursor-grab flex-col gap-2 rounded-xl border-2 bg-white/[0.03] p-3 transition-colors active:cursor-grabbing sm:flex-row ${
+              className={`flex cursor-grab flex-col gap-2 rounded-xl border-2 bg-white/[0.03] p-3 transition-colors active:cursor-grabbing sm:flex-row min-w-0 ${
                 dragOver === index && dragFrom !== index
                   ? "border-acid"
                   : dragFrom === index
@@ -413,7 +413,7 @@ export default function CardEditorFields({
 
               {/* Icon preview beside the picker — with 26 kinds, seeing the
                   mark is faster than reading the name back. */}
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-white/15 bg-white/[0.04] text-white/80">
                   <KindIcon className="h-4 w-4" />
                 </span>
