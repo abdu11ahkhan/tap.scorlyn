@@ -1,244 +1,179 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Globe, SmartphoneNfc, CreditCard, Eye, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import {
+  ArrowUpRight,
+  BarChart3,
+  ExternalLink,
+  IdCard,
+  Plus,
+  SmartphoneNfc,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
+type CardRow = {
+  username: string;
+  full_name: string;
+  headline: string | null;
+  template: string;
+  published: boolean;
+  accent_color: string | null;
+};
+
 export default function DashboardPage() {
-  const [userName, setUserName] = useState<string>("User");
-  const [websites, setWebsites] = useState<any[]>([]);
-  const [nfcCards, setNfcCards] = useState<any[]>([]);
+  const [name, setName] = useState("there");
+  const [card, setCard] = useState<CardRow | null>(null);
+  const [taps, setTaps] = useState(0);
+  const [nfcCount, setNfcCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   useEffect(() => {
-    async function loadDashboardData() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    const load = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      // Extract name from user metadata or email
-      const name = user.user_metadata?.full_name || user.email?.split('@')[0] || "User";
-      setUserName(name);
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
-      // Fetch websites
-      const { data: websitesData } = await supabase
-        .from('websites')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      setName(user.user_metadata?.full_name?.split(" ")[0] || user.email?.split("@")[0] || "there");
 
-      if (websitesData) setWebsites(websitesData);
+      // RLS scopes all three to this user.
+      const [{ data: cards }, { count: tapCount }, { count: cardCount }] = await Promise.all([
+        supabase
+          .from("card_profiles")
+          .select("username, full_name, headline, template, published, accent_color")
+          .eq("user_id", user.id)
+          .maybeSingle()
+          .then((r) => ({ data: r.data ? [r.data] : [] })),
+        supabase.from("card_taps").select("id", { count: "exact", head: true }),
+        supabase
+          .from("nfc_cards")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id),
+      ]);
 
-      // Fetch NFC cards
-      const { data: nfcData } = await supabase
-        .from('nfc_cards')
-        .select('*')
-        .eq('user_id', user.id);
-
-      if (nfcData) setNfcCards(nfcData);
-
+      setCard(cards[0] ?? null);
+      setTaps(tapCount ?? 0);
+      setNfcCount(cardCount ?? 0);
       setLoading(false);
-    }
+    };
 
-    loadDashboardData();
+    load();
   }, []);
 
-  // Compute stats
-  const activeSites = websites.filter(w => w.published).length;
-  const totalSites = websites.length;
-  const totalNfcCards = nfcCards.length;
-
   const stats = [
-    { title: "TOTAL VIEWS", value: "0", icon: Eye, trend: "N/A" }, // Placeholder until analytics is added
-    { title: "ACTIVE SITES", value: `${activeSites} / 3`, icon: Globe, trend: "FREE" },
-    { title: "NFC CARDS", value: `${totalNfcCards}`, icon: SmartphoneNfc, trend: "ACTIVE" },
+    { label: "taps", value: taps, icon: SmartphoneNfc, tile: "bg-acid text-ink" },
+    { label: "nfc cards linked", value: nfcCount, icon: IdCard, tile: "bg-hotpink text-white" },
+    {
+      label: "card status",
+      value: card ? (card.published ? "live" : "hidden") : "none",
+      icon: BarChart3,
+      tile: "bg-violet-pop text-white",
+    },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-cyan-400 border-r-2"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-12 max-w-7xl mx-auto">
-
-      {/* Welcome Section */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row md:items-end justify-between gap-6"
-      >
-        <div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-2">DASHBOARD.</h1>
-          <p className="text-xl text-slate-400 font-medium">Welcome back, <span className="capitalize">{userName}</span>. Here is your overview.</p>
-        </div>
-        <Link href="/dashboard/templates">
-          <Button className="bg-white text-black hover:bg-gray-200 rounded-full h-14 px-8 font-bold text-lg transition-transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            <Plus className="w-5 h-5 mr-2" />
-            New Portfolio
-          </Button>
-        </Link>
+    <div className="max-w-5xl space-y-8 pb-16">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="text-4xl font-black tracking-tighter text-white">
+          hey {name}<span className="text-acid">.</span>
+        </h1>
+        <p className="mt-2 font-medium text-white/50">
+          {card
+            ? "Your card is set up. Here's how it's doing."
+            : "Let's get your card built — it takes about two minutes."}
+        </p>
       </motion.div>
 
-      {/* Stats Grid */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {stats.map((stat, i) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              key={i}
-            >
-              <Card className="p-8 rounded-[2rem] bg-[#0A0A0A] border-white/5 hover:bg-[#111] hover:border-white/10 transition-all duration-300">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="p-4 rounded-2xl bg-cyan-950 border border-cyan-900/50">
-                    <Icon className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <span className="text-sm font-black text-cyan-400 bg-cyan-950 px-3 py-1.5 rounded-full uppercase tracking-wider">
-                    {stat.trend}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-slate-500 font-bold text-sm uppercase tracking-widest mb-2">{stat.title}</h3>
-                  <p className="text-5xl font-black tracking-tighter">{stat.value}</p>
-                </div>
-              </Card>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {/* Recent Websites & Subscription Status */}
-      <div className="grid md:grid-cols-3 gap-8">
-
-        {/* Recent Websites */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="md:col-span-2 space-y-6"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-black uppercase tracking-tight">Recent Portfolios</h2>
-            <Link href="/dashboard/websites" className="text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors flex items-center">
-              VIEW ALL <ArrowUpRight className="w-4 h-4 ml-1" />
-            </Link>
-          </div>
-
-          <div className="space-y-4">
-            {websites.length === 0 ? (
-              <div className="p-12 rounded-[2rem] bg-[#0A0A0A] border border-white/5 border-dashed text-center">
-                 <Globe className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                 <h3 className="text-xl font-bold mb-2">No Portfolios Found</h3>
-                 <p className="text-slate-500 font-medium">Create your first portfolio to see it here.</p>
-              </div>
-            ) : (
-              websites.slice(0, 3).map((site, i) => (
-                <Link href={`/dashboard/editor/${site.id}`} key={site.id}>
-                  <Card className="p-6 rounded-[2rem] bg-[#0A0A0A] border-white/5 flex items-center justify-between hover:bg-[#111] hover:border-white/10 transition-all cursor-pointer group mt-4">
-                    <div className="flex items-center gap-6">
-                      <div className="w-16 h-16 rounded-2xl bg-slate-900 border border-white/5 flex items-center justify-center">
-                        <Globe className="w-8 h-8 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-                      </div>
-                      <div>
-                        <h4 className="text-xl font-bold mb-1 truncate max-w-[200px] md:max-w-xs">{site.slug || "Draft Website"}</h4>
-                        <p className="text-sm font-medium text-slate-500">
-                          {site.published ? `tapzar.com/${site.slug}` : 'Not published'}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="text-right hidden sm:block">
-                        <p className="text-sm font-bold text-white uppercase">{site.template_name}</p>
-                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Template</p>
-                      </div>
-                      <span className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider ${site.published ? 'bg-cyan-950 text-cyan-400' : 'bg-slate-900 text-slate-400'}`}>
-                        {site.published ? 'Published' : 'Draft'}
-                      </span>
-                      <Button variant="ghost" className="opacity-0 group-hover:opacity-100 transition-opacity font-bold rounded-full">
-                        EDIT
-                      </Button>
-                    </div>
-                  </Card>
-                </Link>
-              ))
-            )}
-          </div>
-        </motion.div>
-
-        {/* Subscription Status */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-6"
-        >
-          <h2 className="text-2xl font-black uppercase tracking-tight">Plan Details</h2>
-          
-          <Card className="p-8 rounded-[2rem] bg-gradient-to-b from-[#0A0A0A] to-[#050505] border-white/5 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 group-hover:bg-cyan-500/20 transition-colors duration-500" />
-
-            <div className="flex items-center gap-4 mb-8">
-              <div className="p-3 rounded-2xl bg-cyan-950 text-cyan-400 border border-cyan-900/50">
-                <CreditCard className="w-6 h-6" />
-              </div>
+      {loading ? (
+        <div className="h-32 animate-pulse rounded-2xl border-2 border-white/10 bg-white/[0.03]" />
+      ) : card ? (
+        <>
+          {/* The card itself */}
+          <div className="sticker-lg flex flex-wrap items-center justify-between gap-5 rounded-2xl border-2 border-ink bg-white p-6 text-ink">
+            <div className="flex items-center gap-4">
+              <span
+                className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-ink text-lg font-black"
+                style={{ background: card.accent_color || "#111111", color: "#fff" }}
+              >
+                {card.full_name.slice(0, 2).toUpperCase()}
+              </span>
               <div>
-                <h3 className="font-black text-xl uppercase tracking-tight">Free Plan</h3>
-                <p className="text-xs font-bold text-cyan-400 uppercase tracking-widest">Active</p>
+                <p className="text-2xl font-black leading-none tracking-tight">
+                  {card.full_name}
+                </p>
+                <p className="mt-1 text-sm font-bold text-ink/50">
+                  {card.headline || "No headline yet"} · {card.template}
+                </p>
               </div>
             </div>
 
-            <div className="space-y-3 mb-8">
-              <div className="flex justify-between text-sm font-bold uppercase tracking-wider">
-                <span className="text-slate-500">Websites</span>
-                <span className="text-white">{totalSites} / 3</span>
-              </div>
-              <div className="w-full bg-slate-900 rounded-full h-3">
-                <div 
-                  className="bg-gradient-to-r from-cyan-400 to-blue-500 h-3 rounded-full shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all duration-1000" 
-                  style={{ width: `${Math.min((totalSites / 3) * 100, 100)}%` }} 
-                />
-              </div>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href={`/u/${card.username}`}
+                target="_blank"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-5 py-3 text-sm font-black lowercase transition-colors hover:bg-ink hover:text-white"
+              >
+                <ExternalLink className="h-4 w-4" />
+                /u/{card.username}
+              </Link>
+              <Link
+                href="/dashboard/card"
+                className="sticker sticker-press inline-flex items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 py-3 text-sm font-black uppercase tracking-tight"
+              >
+                edit card
+              </Link>
             </div>
+          </div>
 
-            <Link href="/dashboard/billing">
-              <Button className="w-full bg-white text-black hover:bg-gray-200 h-14 rounded-full font-black uppercase tracking-widest text-sm transition-all hover:scale-105">
-                Upgrade to Pro
-              </Button>
-            </Link>
-          </Card>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {stats.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div
+                  key={s.label}
+                  className={`sticker-lg rounded-2xl border-2 border-ink p-5 ${s.tile}`}
+                >
+                  <Icon className="mb-4 h-5 w-5" />
+                  <p className="text-4xl font-black lowercase tabular-nums tracking-tighter">
+                    {s.value}
+                  </p>
+                  <p className="mt-1 text-sm font-black lowercase">{s.label}</p>
+                </div>
+              );
+            })}
+          </div>
 
-          {/* NFC Status */}
-          <Card className="p-8 rounded-[2rem] bg-[#0A0A0A] border-white/5 hover:border-white/10 transition-colors">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 rounded-2xl bg-blue-950 text-blue-400 border border-blue-900/50">
-                <SmartphoneNfc className="w-6 h-6" />
-              </div>
-              <h3 className="font-black text-xl uppercase tracking-tight">NFC Cards</h3>
-            </div>
-            <p className="text-sm font-medium text-slate-500 mb-6 leading-relaxed">
-              {totalNfcCards === 0 
-                ? "You have no active NFC cards connected." 
-                : `You have ${totalNfcCards} active NFC card${totalNfcCards > 1 ? 's' : ''} connected.`}
-            </p>
-            <Link href="/dashboard/nfc">
-              <Button variant="outline" className="w-full border-white/10 hover:bg-white/5 h-12 rounded-full font-bold uppercase tracking-widest text-xs">
-                Manage Cards
-              </Button>
-            </Link>
-          </Card>
-        </motion.div>
-
-      </div>
+          <Link
+            href="/dashboard/analytics"
+            className="group inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3.5 font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          >
+            see full analytics
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        </>
+      ) : (
+        <div className="sticker-lg rounded-2xl border-2 border-ink bg-acid p-8 text-ink">
+          <p className="text-2xl font-black tracking-tight">No card yet.</p>
+          <p className="mt-2 max-w-md font-semibold opacity-70">
+            Pick a template, fill in your details, and publish. You can change the
+            design any time without reprinting anything.
+          </p>
+          <Link
+            href="/templates"
+            className="sticker sticker-press mt-6 inline-flex h-14 items-center gap-2 rounded-full border-2 border-ink bg-ink px-8 font-black uppercase tracking-tight text-acid"
+          >
+            <Plus className="h-4 w-4" />
+            build my card
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

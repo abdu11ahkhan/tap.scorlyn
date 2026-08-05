@@ -138,7 +138,6 @@ export type CardProfile = {
   phone: string | null;
   email: string | null;
   buttons: CardButton[];
-  links: unknown;
   accent_color: string | null;
   template: string;
   font: string;

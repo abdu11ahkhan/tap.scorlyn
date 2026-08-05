@@ -4,9 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
-  Globe,
-  LayoutTemplate,
-  SmartphoneNfc,
   CreditCard,
   Settings,
   LogOut,
@@ -21,9 +18,6 @@ const sidebarLinks = [
   { name: "dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "my card", href: "/dashboard/card", icon: IdCard },
   { name: "analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "my websites", href: "/dashboard/websites", icon: Globe },
-  { name: "templates", href: "/dashboard/templates", icon: LayoutTemplate },
-  { name: "nfc cards", href: "/dashboard/nfc", icon: SmartphoneNfc },
   { name: "billing", href: "/dashboard/billing", icon: CreditCard },
   { name: "settings", href: "/dashboard/settings", icon: Settings },
 ];

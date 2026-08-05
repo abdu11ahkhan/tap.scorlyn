@@ -101,7 +101,6 @@ export function draftToCardProfile(
     phone: buttons.find((b) => b.kind === "phone")?.value ?? null,
     email: buttons.find((b) => b.kind === "email")?.value ?? null,
     buttons,
-    links: [],
     accent_color: form.accent_color,
     template: form.template,
     font: form.font,

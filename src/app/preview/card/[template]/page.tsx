@@ -97,7 +97,6 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     phone: persona.phone,
     email: persona.email,
     buttons: persona.buttons,
-    links: [],
     accent_color: accent,
     template,
     font,
