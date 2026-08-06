@@ -59,7 +59,7 @@ const PLANS = [
   },
 ];
 
-export function Pricing() {
+export function Pricing({ note }: { note?: string | null } = {}) {
   return (
     <section id="pricing" className="grain relative overflow-hidden bg-ink py-28">
       <div className="float-orb pointer-events-none absolute -right-32 top-1/3 h-[460px] w-[460px] rounded-full bg-hotpink/20 blur-[130px]" />
@@ -130,7 +130,7 @@ export function Pricing() {
         </div>
 
         <p className="mt-10 text-center text-sm font-semibold text-white/40">
-          Prices in PKR. Bulk orders for teams — just ask.
+          {note || "Prices in PKR. Bulk orders for teams — just ask."}
         </p>
       </div>
     </section>

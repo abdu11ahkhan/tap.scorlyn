@@ -4,6 +4,13 @@ import { CreditCard, SmartphoneNfc, Users, UserPlus, TrendingUp } from "lucide-r
 
 export const dynamic = "force-dynamic";
 
+/** Where each overview figure drills through to. */
+const STAT_LINKS: Record<string, string | undefined> = {
+  users: "/admin/users",
+  "published cards": "/admin/cards",
+  "referred signups": "/admin/users",
+};
+
 type Tap = { created_at: string; source: string };
 
 /** Taps per day for the last 14 days, oldest first. */
@@ -135,18 +142,32 @@ export default async function AdminOverview() {
         </section>
       )}
 
+      {/* Each figure opens the list behind it — a number on its own only ever
+          prompts the question "which ones?". */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
-          return (
-            <div
-              key={stat.label}
-              className="app-panel app-panel-pad"
-            >
+          const href = STAT_LINKS[stat.label];
+          const body = (
+            <>
               <Icon className="mb-4 h-5 w-5" />
               <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
               <p className="app-sub mt-1">{stat.label}</p>
               <p className="mt-1 text-[12px] text-white/35">{stat.hint}</p>
+            </>
+          );
+
+          return href ? (
+            <Link
+              key={stat.label}
+              href={href}
+              className="app-panel app-panel-pad transition-colors hover:bg-white/[0.05]"
+            >
+              {body}
+            </Link>
+          ) : (
+            <div key={stat.label} className="app-panel app-panel-pad">
+              {body}
             </div>
           );
         })}

@@ -408,3 +408,106 @@ export async function markOrdersSeen(): Promise<Result> {
     return fail(e);
   }
 }
+
+// ------------------------------------------------------- shop payments
+
+export type ShopPaymentInput = {
+  id?: string;
+  label: string;
+  kind: string;
+  accountName?: string;
+  accountNumber?: string;
+  iban?: string;
+  note?: string;
+  enabled: boolean;
+  sortOrder: number;
+};
+
+/** Add or update one of the shop's own accounts. */
+export async function saveShopPayment(input: ShopPaymentInput): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    if (!input.label.trim()) throw new Error("Give it a name, e.g. Meezan Bank.");
+    if (!input.accountNumber?.trim() && !input.iban?.trim()) {
+      throw new Error("An account number or IBAN is needed — otherwise nobody can pay it.");
+    }
+
+    const row = {
+      label: input.label.trim(),
+      kind: input.kind,
+      account_name: input.accountName?.trim() || null,
+      account_number: input.accountNumber?.trim() || null,
+      iban: input.iban?.trim() || null,
+      note: input.note?.trim() || null,
+      enabled: input.enabled,
+      sort_order: input.sortOrder,
+    };
+
+    const { error } = input.id
+      ? await supabase.from("shop_payment_methods").update(row).eq("id", input.id)
+      : await supabase.from("shop_payment_methods").insert(row);
+
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin/billing");
+    revalidatePath("/dashboard/orders", "layout");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function deleteShopPayment(id: string): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+    const { error } = await supabase.from("shop_payment_methods").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin/billing");
+    revalidatePath("/dashboard/orders", "layout");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+// ------------------------------------------------------------- content
+
+/**
+ * Landing copy.
+ *
+ * Empty strings are stored as NULL so a blanked field falls back to the
+ * compiled-in text rather than shipping an empty headline.
+ */
+export async function saveSiteContent(input: {
+  heroTitle?: string;
+  heroSubtitle?: string;
+  pricingNote?: string;
+  supportWhatsapp?: string;
+  supportEmail?: string;
+}): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const { error } = await supabase
+      .from("app_settings")
+      .update({
+        hero_title: input.heroTitle?.trim() || null,
+        hero_subtitle: input.heroSubtitle?.trim() || null,
+        pricing_note: input.pricingNote?.trim() || null,
+        support_whatsapp: input.supportWhatsapp?.trim() || null,
+        support_email: input.supportEmail?.trim() || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", true);
+
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin/content");
+    revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}

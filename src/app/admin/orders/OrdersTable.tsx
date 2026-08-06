@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Check, Flag, Loader2, StickyNote, Eye } from "lucide-react";
 import { setOrderStatus, setOrderFlag, setOrderNote, getProofUrl } from "../actions";
@@ -13,6 +14,7 @@ export type AdminOrder = {
   plan_id: string | null;
   quantity: number;
   amount_pkr: number;
+  user_id: string | null;
   full_name: string;
   phone: string;
   city: string;
@@ -151,9 +153,26 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                   )}
                 </td>
                 <td className="px-4 py-4">
-                  <p className="text-sm font-black text-white">{o.full_name}</p>
-                  <p className="text-xs font-semibold text-white/40">{o.phone}</p>
-                  <p className="text-xs font-semibold text-white/30">{o.city}</p>
+                  {/* Through to the customer's record: the question an order
+                      raises is almost always about the person who placed it. */}
+                  {o.user_id ? (
+                    <Link
+                      href={`/admin/users/${o.user_id}`}
+                      className="group/cust block"
+                    >
+                      <p className="text-sm font-black text-white group-hover/cust:underline">
+                        {o.full_name}
+                      </p>
+                      <p className="text-xs font-semibold text-white/40">{o.phone}</p>
+                      <p className="text-xs font-semibold text-white/30">{o.city}</p>
+                    </Link>
+                  ) : (
+                    <>
+                      <p className="text-sm font-black text-white">{o.full_name}</p>
+                      <p className="text-xs font-semibold text-white/40">{o.phone}</p>
+                      <p className="text-xs font-semibold text-white/30">{o.city}</p>
+                    </>
+                  )}
                 </td>
                 <td className="px-4 py-4 text-sm font-bold lowercase text-white/70">
                   {o.quantity} × {o.plan_id}

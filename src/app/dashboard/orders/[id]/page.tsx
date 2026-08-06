@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { STATUS_LABELS, STATUS_STEPS, statusTone } from "../status";
 import ProofUpload from "./ProofUpload";
 import ReorderButton from "./ReorderButton";
+import CopyRow from "@/components/nfc/CopyRow";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,19 @@ export default async function OrderDetail({
     .select("status, note, created_at")
     .eq("order_id", id)
     .order("created_at");
+
+  // The shop's own accounts. Only fetched for an unpaid order — there's no
+  // reason to put bank details on screen once the money has arrived.
+  const { data: paymentRows } =
+    order.status === "pending"
+      ? await supabase
+          .from("shop_payment_methods")
+          .select("id, label, account_name, account_number, iban, note")
+          .eq("enabled", true)
+          .order("sort_order")
+      : { data: [] };
+
+  const payMethods = paymentRows ?? [];
 
   const cancelled = order.status === "cancelled";
   const currentStep = STATUS_STEPS.indexOf(order.status);
@@ -133,11 +147,42 @@ export default async function OrderDetail({
             Transfer the amount, then upload a screenshot. We confirm manually —
             usually within a few hours.
           </p>
-          <div className="mt-4 rounded-xl border-2 border-ink bg-white p-4 text-sm font-semibold">
-            <p className="text-[11px] font-black uppercase tracking-widest opacity-45">
-              pay to
-            </p>
-            <p className="mt-1">Bank details will be shown here once configured in admin.</p>
+          <div className="mt-4 space-y-3">
+            {payMethods.length === 0 ? (
+              <div className="rounded-xl border-2 border-ink bg-white p-4 text-sm font-semibold">
+                <p className="text-[11px] font-black uppercase tracking-widest opacity-45">
+                  pay to
+                </p>
+                <p className="mt-1">
+                  No payment account is set up yet — message us and we&apos;ll send
+                  the details.
+                </p>
+              </div>
+            ) : (
+              payMethods.map((m) => (
+                <div
+                  key={m.id}
+                  className="rounded-xl border-2 border-ink bg-white p-4"
+                >
+                  <p className="text-sm font-black">{m.label}</p>
+                  <div className="mt-2 space-y-0.5">
+                    {m.account_name && (
+                      <CopyRow label="Name" value={m.account_name} accent="#0a0a0a" />
+                    )}
+                    {m.account_number && (
+                      <CopyRow label="Account" value={m.account_number} accent="#0a0a0a" />
+                    )}
+                    {m.iban && <CopyRow label="IBAN" value={m.iban} accent="#0a0a0a" />}
+                  </div>
+                  {m.note && (
+                    <p className="mt-2 text-[11px] font-semibold opacity-50">{m.note}</p>
+                  )}
+                  <p className="mt-1.5 px-0.5 text-[10px] font-semibold opacity-35">
+                    Tap any line to copy it.
+                  </p>
+                </div>
+              ))
+            )}
           </div>
           <div className="mt-4">
             <div className="rounded-xl bg-ink p-4">

@@ -351,7 +351,7 @@ export default function CardEditorFields({
       {/* ---------------- Buttons ---------------- */}
       <EditorSection
         title="links"
-        hint="WhatsApp, email, socials, bank details"
+        hint="WhatsApp, email, socials, anything"
         badge={buttons.length ? `${buttons.length}` : undefined}
         defaultOpen
       >
@@ -488,18 +488,26 @@ export default function CardEditorFields({
           Add button
         </button>
 
-        {/* Bank details sit with the links because that's what they are: a
-            thing someone taps on your card to act on. In "extras" nobody
-            found them. */}
-        <div className="mt-8 border-t-2 border-white/10 pt-7">
-          <PaymentFields
-            enabled={extras.payment_enabled}
-            methods={extras.payment_methods ?? []}
-            onChange={onExtrasChange}
-          />
-        </div>
       </section>
 
+      </EditorSection>
+
+      {/* Its own section, not a rule inside links. Bank details are their own
+          decision — worth opening deliberately, and worth being able to skip. */}
+      <EditorSection
+        title="payment details"
+        hint="Bank, EasyPaisa or JazzCash for getting paid"
+        badge={
+          extras.payment_enabled && (extras.payment_methods?.length ?? 0) > 0
+            ? `${extras.payment_methods.length}`
+            : undefined
+        }
+      >
+        <PaymentFields
+          enabled={extras.payment_enabled}
+          methods={extras.payment_methods ?? []}
+          onChange={onExtrasChange}
+        />
       </EditorSection>
 
       <EditorSection

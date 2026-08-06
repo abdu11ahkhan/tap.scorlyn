@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
   CreditCard,
+  FileText,
   HelpCircle,
   LayoutDashboard,
   LayoutTemplate,
@@ -10,6 +11,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   Users,
+  Wallet,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -71,6 +73,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/cards", label: "Cards", icon: CreditCard },
     { href: "/admin/users", label: "Customers", icon: Users },
     { href: "/admin/nfc", label: "NFC stock", icon: Nfc },
+    { href: "/admin/billing", label: "Billing", icon: Wallet },
+    { href: "/admin/content", label: "Content", icon: FileText },
     { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
     { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
     { href: "/admin/settings", label: "Settings", icon: Settings },

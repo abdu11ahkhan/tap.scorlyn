@@ -6,17 +6,28 @@ import { Marquee } from "@/components/sections/Marquee";
 import { Features } from "@/components/sections/Features";
 import { Pricing } from "@/components/sections/Pricing";
 import BrandMark from "@/components/layout/BrandMark";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  // Copy the admin can change without a deploy. NULL means "use the default",
+  // so an emptied field can never ship a blank headline.
+  const supabase = await createClient();
+  const { data: content } = await supabase
+    .from("app_settings")
+    .select("hero_title, hero_subtitle, pricing_note")
+    .maybeSingle();
+
   return (
     <main className="flex-1 bg-ink">
       <Navbar />
-      <Hero />
+      <Hero title={content?.hero_title} subtitle={content?.hero_subtitle} />
 
       <Marquee className="bg-acid text-ink" />
       <Features />
       <Marquee reverse className="bg-hotpink text-white" />
-      <Pricing />
+      <Pricing note={content?.pricing_note} />
 
       {/* Closing call to action */}
       <section className="grain relative overflow-hidden bg-acid py-24 text-ink">

@@ -10,7 +10,14 @@ import BrandMark from "@/components/layout/BrandMark";
  * JPEG and then pinned the page for 3000px of GSAP scrubbing before you could
  * reach anything — this one says what it is and gets out of the way.
  */
-export function Hero() {
+export function Hero({
+  title,
+  subtitle,
+}: {
+  /** Admin override. Plain text — the default carries its own markup. */
+  title?: string | null;
+  subtitle?: string | null;
+} = {}) {
   return (
     <section className="grain relative min-h-screen overflow-hidden bg-ink pt-32 pb-20">
       {/* Acid colour fields instead of a background photo. */}
@@ -53,18 +60,27 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.07 }}
             className="mt-7 text-[clamp(3.2rem,9vw,7rem)] font-black leading-[0.85] tracking-[-0.05em] text-white"
           >
-            paper cards
-            <br />
-            are{" "}
-            <span className="relative inline-block">
-              <span className="relative z-10 text-ink">dead</span>
-              {/* Generous inset — a tight box clips the descender on the 'd'. */}
-              <span className="absolute inset-x-[-0.09em] inset-y-[-0.06em] -z-0 -rotate-1 rounded-lg bg-hotpink" />
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-acid via-cyan-300 to-hotpink bg-clip-text text-transparent">
-              yours isn&apos;t.
-            </span>
+            {title ? (
+              // A custom headline is plain text: the default's highlight and
+              // gradient are typeset around specific words and can't be
+              // applied to arbitrary copy without looking accidental.
+              title
+            ) : (
+              <>
+                paper cards
+                <br />
+                are{" "}
+                <span className="relative inline-block">
+                  <span className="relative z-10 text-ink">dead</span>
+                  {/* Generous inset — a tight box clips the descender on the 'd'. */}
+                  <span className="absolute inset-x-[-0.09em] inset-y-[-0.06em] -z-0 -rotate-1 rounded-lg bg-hotpink" />
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-acid via-cyan-300 to-hotpink bg-clip-text text-transparent">
+                  yours isn&apos;t.
+                </span>
+              </>
+            )}
           </motion.h1>
 
           <motion.p
@@ -73,8 +89,8 @@ export function Hero() {
             transition={{ duration: 0.6, delay: 0.14 }}
             className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-white/60"
           >
-            Tap your card on any phone and your whole profile opens instantly. No
-            app. No QR. Build it in about two minutes.
+            {subtitle ||
+              "Tap your card on any phone and your whole profile opens instantly. No app. No QR. Build it in about two minutes."}
           </motion.p>
 
           <motion.div
