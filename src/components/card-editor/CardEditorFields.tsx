@@ -17,6 +17,7 @@ import { iconFor } from "@/components/card-templates/button-icons";
 import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
 import ImagePicker from "./ImagePicker";
+import PaymentFields from "./PaymentFields";
 import EditorSection from "./EditorSection";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
 
@@ -350,7 +351,7 @@ export default function CardEditorFields({
       {/* ---------------- Buttons ---------------- */}
       <EditorSection
         title="links"
-        hint="WhatsApp, email, socials, anything"
+        hint="WhatsApp, email, socials, bank details"
         badge={buttons.length ? `${buttons.length}` : undefined}
         defaultOpen
       >
@@ -486,13 +487,24 @@ export default function CardEditorFields({
           <Plus className="w-4 h-4" />
           Add button
         </button>
+
+        {/* Bank details sit with the links because that's what they are: a
+            thing someone taps on your card to act on. In "extras" nobody
+            found them. */}
+        <div className="mt-8 border-t-2 border-white/10 pt-7">
+          <PaymentFields
+            enabled={extras.payment_enabled}
+            methods={extras.payment_methods ?? []}
+            onChange={onExtrasChange}
+          />
+        </div>
       </section>
 
       </EditorSection>
 
       <EditorSection
         title="extras"
-        hint="Availability, hours, video, payment details"
+        hint="Availability, business hours, video"
       >
         <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
       </EditorSection>
