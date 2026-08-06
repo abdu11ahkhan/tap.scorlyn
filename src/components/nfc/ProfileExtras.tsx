@@ -1,4 +1,4 @@
-import { Banknote, Clock, Download, PlayCircle } from "lucide-react";
+import { Banknote, ChevronDown, Clock, Download, PlayCircle } from "lucide-react";
 import type { BusinessHour, CardProfile, PaymentMethod } from "@/lib/card";
 import CopyRow from "./CopyRow";
 import SaveContact from "@/components/card-templates/SaveContact";
@@ -39,7 +39,7 @@ function PaymentRow({ method, accent }: { method: PaymentMethod; accent: string 
   ].filter(Boolean) as { k: string; v: string }[];
 
   return (
-    <div className="rounded-2xl border border-black/10 bg-white p-4">
+    <div className="rounded-xl border border-black/10 bg-white p-3.5">
       <p className="text-sm font-black" style={{ color: accent }}>
         {method.label || method.kind}
       </p>
@@ -134,23 +134,47 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
         )}
 
         {showPayments && (
-          <div>
-            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-black/35">
-              <Banknote className="h-3.5 w-3.5" />
-              pay {card.full_name.split(" ")[0]}
-            </p>
-            <div className="space-y-2.5">
+          /* Closed by default. An account number is the one thing on this page
+             that shouldn't be readable over someone's shoulder, or sitting in
+             frame the moment a stranger screenshots the card. Opening it is a
+             deliberate act. Native <details>, so it works without JavaScript
+             and keyboard behaviour comes free. */
+          <details className="group rounded-2xl border border-black/10 bg-white">
+            <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
+                style={{ background: `${accent}1A`, color: accent }}
+              >
+                <Banknote className="h-4 w-4" />
+              </span>
+
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-black leading-tight">
+                  Pay {card.full_name.split(" ")[0]}
+                </span>
+                <span className="mt-0.5 block text-[11px] font-semibold leading-tight text-black/40">
+                  {methods.length === 1
+                    ? "Tap to see bank details"
+                    : `Tap to see ${methods.length} payment options`}
+                </span>
+              </span>
+
+              <ChevronDown className="h-4 w-4 shrink-0 text-black/30 transition-transform group-open:rotate-180" />
+            </summary>
+
+            <div className="space-y-2.5 border-t border-black/8 px-4 pb-4 pt-4">
               {methods.map((m, i) => (
                 <PaymentRow key={i} method={m} accent={accent} />
               ))}
+
+              {/* Anyone can screenshot a public page and reuse the branding with
+                  their own number. Saying so costs nothing and prevents real loss. */}
+              <p className="text-[11px] font-semibold leading-relaxed text-black/40">
+                Always confirm these details directly with{" "}
+                {card.full_name.split(" ")[0]} before sending money.
+              </p>
             </div>
-            {/* Anyone can screenshot a public page and reuse the branding with
-                their own number. Saying so costs nothing and prevents real loss. */}
-            <p className="mt-2 text-[11px] font-semibold leading-relaxed text-black/40">
-              Always confirm these details directly with {card.full_name.split(" ")[0]}{" "}
-              before sending money.
-            </p>
-          </div>
+          </details>
         )}
 
         <SaveContact
