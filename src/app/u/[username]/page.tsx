@@ -107,6 +107,7 @@ export default async function CardProfilePage({
         refCode={card.referral_code}
         cardProfileId={card.id}
         ownerName={card.full_name}
+        template={card.template}
         cardPrice={cheapest?.price_pkr ?? null}
       />
     </>

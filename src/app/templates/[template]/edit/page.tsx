@@ -24,6 +24,7 @@ import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import CardDesigner from "@/components/card-design/CardDesigner";
+import RefCatcher from "@/components/nfc/RefCatcher";
 
 const EMPTY_EXTRAS: ExtrasState = {
   available_for_work: false,
@@ -127,6 +128,7 @@ export default function PublicCardEditor({
 
   return (
     <div className="grain relative min-h-screen bg-ink text-white">
+      <RefCatcher />
       <div className="float-orb pointer-events-none absolute -left-40 top-40 h-[460px] w-[460px] rounded-full bg-violet-pop/15 blur-[140px]" />
 
       {/* Top bar */}

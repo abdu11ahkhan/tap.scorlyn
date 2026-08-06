@@ -35,6 +35,25 @@ export function referralSignupUrl(refCode: string | null | undefined): string {
 }
 
 /**
+ * "Want a card like theirs?" — so start them on the design they just tapped.
+ *
+ * Straight into the editor, not through signup: editing without an account is
+ * the whole shape of this product, and asking a stranger to register before
+ * they have seen anything is the wrong order. RefCatcher parks the code so
+ * attribution survives until they publish.
+ *
+ * Their details are never copied — only the template. The card they tapped is
+ * somebody's name, number and links.
+ */
+export function referralTemplateUrl(
+  template: string,
+  refCode: string | null | undefined
+): string {
+  const base = `/templates/${encodeURIComponent(template)}/edit`;
+  return refCode ? `${base}?${REF_PARAM}=${encodeURIComponent(refCode)}` : base;
+}
+
+/**
  * Same, but landing on the order form.
  *
  * Routed through signup rather than straight to /dashboard/orders so the ref

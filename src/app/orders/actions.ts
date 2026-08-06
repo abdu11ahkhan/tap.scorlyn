@@ -64,9 +64,16 @@ export async function placeOrder(input: {
 
     const { data: card } = await supabase
       .from("card_profiles")
-      .select("id")
+      .select("id, username")
       .eq("user_id", user.id)
       .maybeSingle();
+
+    // The form disables this, but a Server Action is reachable by direct POST.
+    // A printed card is a chip holding a link to a page — with no page there
+    // is nothing to write, and an admin cannot assign the chip to anything.
+    if (plan.price_pkr > 0 && !card?.username) {
+      throw new Error("Make your card first — a printed card has to point at one.");
+    }
 
     const { data, error } = await supabase
       .from("orders")

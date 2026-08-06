@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion, type Transition } from "framer-motion";
 import { readStorage, writeStorage } from "@/lib/safe-storage";
 import { ArrowRight, SmartphoneNfc, X } from "lucide-react";
-import { referralOrderUrl, referralSignupUrl } from "@/lib/referral";
+import { referralOrderUrl, referralTemplateUrl } from "@/lib/referral";
 
 /**
  * The viral loop: everyone who opens someone else's card is a prospect.
@@ -32,11 +32,14 @@ export default function ReferralBanner({
   refCode,
   cardProfileId,
   ownerName,
+  template,
   cardPrice = null,
 }: {
   refCode: string | null;
   cardProfileId: string;
   ownerName: string;
+  /** The design they just tapped — what "a card like theirs" actually means. */
+  template: string;
   /** Cheapest physical plan, so the CTA can quote a real number. */
   cardPrice?: number | null;
 }) {
@@ -120,7 +123,7 @@ export default function ReferralBanner({
                 want the free page, some want the physical card in their hand. */}
             <div className="mt-2.5 flex gap-2">
               <Link
-                href={referralSignupUrl(refCode)}
+                href={referralTemplateUrl(template, refCode)}
                 onClick={() => track("banner_click")}
                 className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-white/15 px-3 py-2 text-center transition-colors hover:border-white/35"
               >

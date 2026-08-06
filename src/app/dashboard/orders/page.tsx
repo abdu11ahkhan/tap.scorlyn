@@ -23,13 +23,19 @@ export default async function MyOrders() {
 
   if (!user) return <p className="font-bold text-white/50">Please log in.</p>;
 
-  const [{ data: plans }, { data: orders }, { data: profile }] = await Promise.all([
+  const [{ data: plans }, { data: orders }, { data: profile }, { data: card }] =
+    await Promise.all([
     supabase.from("plans").select("*").eq("enabled", true).order("sort_order"),
     supabase
       .from("orders")
       .select("id, reference, status, amount_pkr, quantity, plan_id, created_at, estimated_delivery")
       .order("created_at", { ascending: false }),
     supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+    supabase
+      .from("card_profiles")
+      .select("username, published")
+      .eq("user_id", user.id)
+      .maybeSingle(),
   ]);
 
   const rows = orders ?? [];
@@ -95,6 +101,7 @@ export default async function MyOrders() {
         <OrderForm
           plans={(plans ?? []) as Plan[]}
           defaults={{ fullName: profile?.full_name ?? "", phone: "" }}
+          hasCard={Boolean(card?.username)}
         />
       </section>
     </div>

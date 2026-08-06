@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { placeOrder } from "@/app/orders/actions";
 
 type Plan = { id: string; name: string; price_pkr: number; blurb: string | null; perks: string[] };
@@ -13,9 +14,13 @@ const FIELD =
 export default function OrderForm({
   plans,
   defaults,
+  hasCard,
 }: {
   plans: Plan[];
   defaults: { fullName: string; phone: string };
+  /** Whether this account has a card page yet. A printed card is a link to
+   *  one, so without it there is nothing to program the chip with. */
+  hasCard: boolean;
 }) {
   const router = useRouter();
   const [planId, setPlanId] = useState(plans.find((p) => p.price_pkr > 0)?.id ?? plans[0]?.id);
@@ -31,6 +36,11 @@ export default function OrderForm({
 
   const plan = plans.find((p) => p.id === planId);
   const total = (plan?.price_pkr ?? 0) * quantity;
+
+  // A physical card is a chip holding a link to your page. Without a page
+  // there is no link, and an admin cannot assign the chip to anything — the
+  // customer would pay for something we can't send.
+  const needsCard = !hasCard && (plan?.price_pkr ?? 0) > 0;
 
   return (
     <form
@@ -53,6 +63,26 @@ export default function OrderForm({
       }}
       className="space-y-7"
     >
+      {!hasCard && (
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border-2 border-hotpink/40 bg-hotpink/10 p-5">
+          <div className="min-w-0 flex-1">
+            <p className="text-[15px] font-black text-white">
+              Make your card first
+            </p>
+            <p className="mt-1 text-sm font-semibold text-white/60">
+              A printed card is a chip holding the link to your page. Until
+              there&apos;s a page, there&apos;s nothing to write onto it.
+            </p>
+          </div>
+          <Link
+            href="/dashboard/card"
+            className="sticker sticker-press shrink-0 rounded-full border-2 border-ink bg-acid px-5 py-3 text-sm font-black uppercase tracking-tight text-ink"
+          >
+            build my card
+          </Link>
+        </div>
+      )}
+
       {/* Plan */}
       <section>
         <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
@@ -66,7 +96,8 @@ export default function OrderForm({
                 key={p.id}
                 type="button"
                 onClick={() => setPlanId(p.id)}
-                className={`rounded-2xl border-2 p-5 text-left transition-all ${
+                disabled={!hasCard && p.price_pkr > 0}
+                className={`rounded-2xl border-2 p-5 text-left transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
                   active
                     ? "sticker-lg border-ink bg-acid text-ink"
                     : "border-white/15 bg-white/[0.03] text-white hover:border-white/40"
@@ -154,7 +185,7 @@ export default function OrderForm({
         </div>
         <button
           type="submit"
-          disabled={pending}
+          disabled={pending || needsCard}
           className="sticker sticker-press flex h-14 items-center gap-2 rounded-full border-2 border-ink bg-acid px-8 font-black uppercase tracking-tight disabled:opacity-60"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
