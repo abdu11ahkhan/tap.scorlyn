@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import ActionButton from "../ActionButton";
 import { deleteNfcCard } from "../actions";
@@ -17,6 +18,12 @@ type CardRow = {
 
 export default async function AdminNfc() {
   const supabase = await createClient();
+
+  // Read from the request rather than hardcoded: the chip is written once and
+  // then physically posted to someone, so a stale domain here means a dead
+  // card. Whatever host the admin is on is the host the tag should point at.
+  const host = (await headers()).get("host") ?? "";
+  const origin = `${host.startsWith("localhost") ? "http" : "https"}://${host}`;
 
   const { data, error } = await supabase
     .from("nfc_cards")
@@ -45,7 +52,7 @@ export default async function AdminNfc() {
           what to write on the tag
         </p>
         <p className="mt-2 font-mono text-sm text-acid">
-          https://tapzar.vercel.app/api/nfc/&lt;code&gt;
+          {origin}/api/nfc/&lt;code&gt;
         </p>
         <p className="mt-2 text-sm font-medium text-white/45">
           That endpoint looks the card up and redirects, so you can reassign a
