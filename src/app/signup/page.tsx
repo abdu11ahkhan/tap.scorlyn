@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { Loader2, Mail } from "lucide-react";
 import { REF_COOKIE, REF_COOKIE_MAX_AGE, REF_PARAM } from "@/lib/referral";
-import BrandMark from "@/components/layout/BrandMark";
+import BrandLockup from "@/components/layout/BrandLockup";
 
 function SignupForm() {
   const [name, setName] = useState("");
@@ -109,9 +109,8 @@ function SignupForm() {
         style={{ ["--d" as string]: "3s" }}
       />
 
-      <Link href="/" className="absolute left-6 top-6 flex items-center gap-2.5">
-        <BrandMark size={36} />
-        <span className="text-xl font-black tracking-tighter text-white">ScorlynTap</span>
+      <Link href="/" className="absolute left-6 top-6 flex items-center">
+        <BrandLockup width={170} />
       </Link>
 
       <motion.div
