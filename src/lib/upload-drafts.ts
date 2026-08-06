@@ -1,3 +1,5 @@
+import { uploadImage } from "@/lib/upload-image";
+
 /**
  * Photos picked before there was an account.
  *
@@ -14,18 +16,9 @@ function isInline(url: string | null | undefined): boolean {
 
 async function uploadDataUrl(dataUrl: string): Promise<string> {
   const blob = await (await fetch(dataUrl)).blob();
-
-  const form = new FormData();
-  form.append("file", new File([blob], "image.jpg", { type: blob.type || "image/jpeg" }));
-
-  const res = await fetch("/api/upload", { method: "POST", body: form });
-  if (!res.ok) {
-    const { error } = await res.json().catch(() => ({ error: null }));
-    throw new Error(error ?? "Could not upload one of your photos.");
-  }
-
-  const { url } = await res.json();
-  return url as string;
+  const url = await uploadImage(blob);
+  if (!url) throw new Error("Please log in again before publishing.");
+  return url;
 }
 
 /**

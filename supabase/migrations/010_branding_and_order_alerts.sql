@@ -64,10 +64,12 @@ CREATE INDEX IF NOT EXISTS notifications_unsent_idx
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 -- Admin-only. Customers have no business reading the outbound queue.
+DROP POLICY IF EXISTS "Admins read notifications." ON public.notifications;
 CREATE POLICY "Admins read notifications."
   ON public.notifications FOR SELECT
   USING (public.is_admin());
 
+DROP POLICY IF EXISTS "Admins manage notifications." ON public.notifications;
 CREATE POLICY "Admins manage notifications."
   ON public.notifications FOR ALL
   USING (public.is_admin())

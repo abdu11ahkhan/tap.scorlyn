@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
+import { uploadImage } from "@/lib/upload-image";
 
 /**
  * Pick an image from the device and keep it.
@@ -19,6 +20,9 @@ import { ImagePlus, Loader2, Trash2 } from "lucide-react";
  *  - If there's no account yet it stays as a data URL in the draft. The public
  *    editor deliberately works without signing in, so the upload has to wait
  *    for the account rather than forcing one.
+ *
+ * The upload itself goes browser -> Supabase. Storage policies restrict writes
+ * to the signing-in user's own folder, so no elevated key is involved.
  */
 const MAX_EDGE = { avatar: 640, cover: 1600, gallery: 1200 };
 
@@ -80,22 +84,10 @@ export default function ImagePicker({
     setBusy(true);
     try {
       const blob = await downscale(file, kind);
+      const url = await uploadImage(blob);
 
-      const form = new FormData();
-      form.append("file", new File([blob], "image.jpg", { type: "image/jpeg" }));
-
-      const res = await fetch("/api/upload", { method: "POST", body: form });
-
-      if (res.ok) {
-        const { url } = await res.json();
-        onChange(url);
-      } else if (res.status === 401) {
-        // Not signed in yet. Carry it in the draft; it uploads on publish.
-        onChange(await toDataUrl(blob));
-      } else {
-        const { error: message } = await res.json().catch(() => ({ error: null }));
-        setError(message ?? "Upload failed. Try again.");
-      }
+      // null means no account yet — carry it in the draft, upload on publish.
+      onChange(url ?? (await toDataUrl(blob)));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not use that image.");
     } finally {
