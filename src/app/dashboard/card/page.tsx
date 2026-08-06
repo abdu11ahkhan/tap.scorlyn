@@ -25,6 +25,7 @@ import {
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import { uploadPendingImages } from "@/lib/upload-drafts";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import { renderCardTemplate } from "@/components/card-templates";
 
@@ -177,12 +178,32 @@ function MyCardEditor() {
 
     const cleanButtons = buttons.filter((b) => b.value?.trim());
 
+    // Photos picked before signing in are still inline in the draft. There's an
+    // account now, so they become real uploads before anything is written.
+    let uploadedForm = form;
+    let uploadedGallery = gallery;
+    try {
+      const done = await uploadPendingImages(form, gallery);
+      uploadedForm = done.form;
+      uploadedGallery = done.gallery;
+      setForm(done.form);
+      setGallery(done.gallery);
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Could not upload your photos."
+      );
+      setSaving(false);
+      return;
+    }
+
     const payload = {
-      ...form,
+      ...uploadedForm,
       username,
       user_id: user.id,
       buttons: cleanButtons,
-      gallery: gallery.filter((g) => g.url?.trim()),
+      gallery: uploadedGallery.filter((g) => g.url?.trim()),
       available_for_work: extras.available_for_work,
       availability_note: extras.availability_note?.trim() || null,
       business_hours: extras.business_hours.filter((h) => h.day?.trim() && h.hours?.trim()),

@@ -50,6 +50,7 @@ export default function SaveContact({
     <a
       href={`/api/vcard/${card.username}`}
       onClick={download}
+      data-save-contact=""
       className={className}
       style={style}
     >

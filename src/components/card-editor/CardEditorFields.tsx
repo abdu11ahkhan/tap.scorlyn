@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, GripVertical, Image as ImageIcon, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, GripVertical, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -16,6 +16,7 @@ import {
 import { iconFor } from "@/components/card-templates/button-icons";
 import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
+import ImagePicker from "./ImagePicker";
 import EditorSection from "./EditorSection";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
 
@@ -263,60 +264,27 @@ export default function CardEditorFields({
         <div>
           <Label>Photos</Label>
           <p className="mt-1 text-xs text-slate-500">
-            Paste image links. Templates use what they need — a profile photo
-            everywhere, a cover on the ones with a hero, and the gallery on
-            portfolio layouts.
+            Pick them from your phone. Templates use what they need — a profile
+            photo everywhere, a cover on the ones with a hero, and the gallery
+            on portfolio layouts.
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {(
-            [
-              {
-                key: "avatar_url" as const,
-                label: "Profile photo",
-                hint: "Shown on every template.",
-                round: true,
-              },
-              {
-                key: "cover_url" as const,
-                label: "Cover / background",
-                hint: "Used by Poster, Showcase, Agency, App, Glass.",
-                round: false,
-              },
-            ]
-          ).map((field) => (
-            <div key={field.key} className="space-y-2">
-              <Label htmlFor={field.key}>{field.label}</Label>
-              <div className="flex gap-3">
-                {/* Live thumbnail — the fastest way to catch a broken link. */}
-                <div
-                  className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center overflow-hidden border-2 border-white/15 bg-white/[0.04] ${
-                    field.round ? "rounded-full" : "rounded-lg"
-                  }`}
-                >
-                  {form[field.key] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={form[field.key]}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <ImageIcon className="h-4 w-4 text-white/25" />
-                  )}
-                </div>
-                <Input
-                  id={field.key}
-                  value={form[field.key]}
-                  onChange={(e) => onFormChange({ [field.key]: e.target.value })}
-                  placeholder="https://..."
-                  className={FIELD}
-                />
-              </div>
-              <p className="text-xs text-slate-500">{field.hint}</p>
-            </div>
-          ))}
+        <div className="grid gap-5 sm:grid-cols-2">
+          <ImagePicker
+            kind="avatar"
+            label="Profile photo"
+            hint="Shown on every template."
+            value={form.avatar_url}
+            onChange={(url) => onFormChange({ avatar_url: url })}
+          />
+          <ImagePicker
+            kind="cover"
+            label="Cover / background"
+            hint="Used by Poster, Showcase, Agency, App, Glass."
+            value={form.cover_url}
+            onChange={(url) => onFormChange({ cover_url: url })}
+          />
         </div>
 
         {/* Gallery */}
@@ -331,25 +299,19 @@ export default function CardEditorFields({
               key={index}
               className="flex min-w-0 flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
             >
-              <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center overflow-hidden rounded-lg border-2 border-white/15 bg-white/[0.04]">
-                {item.url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.url} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  <ImageIcon className="h-4 w-4 text-white/25" />
-                )}
+              <div className="min-w-0 flex-1">
+                <ImagePicker
+                  kind="gallery"
+                  label={`Photo ${index + 1}`}
+                  value={item.url}
+                  onChange={(url) => {
+                    const next = [...gallery];
+                    next[index] = { ...next[index], url };
+                    onGalleryChange(next);
+                  }}
+                />
               </div>
 
-              <Input
-                value={item.url}
-                onChange={(e) => {
-                  const next = [...gallery];
-                  next[index] = { ...next[index], url: e.target.value };
-                  onGalleryChange(next);
-                }}
-                placeholder="https://image..."
-                className={`${FIELD} flex-1`}
-              />
               <Input
                 value={item.caption ?? ""}
                 onChange={(e) => {

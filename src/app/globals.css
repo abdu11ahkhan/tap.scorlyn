@@ -503,3 +503,14 @@ textarea.app-input {
   min-height: 0 !important;
   padding-bottom: 1.5rem !important;
 }
+
+/*
+ * Two save-to-contacts buttons appeared once the extras rendered: the one each
+ * template draws, and the one at the foot of the extras. The extras' button is
+ * the last thing on the page, which is where it belongs, so the template's is
+ * hidden — but only when extras exist. Without them the template's button is
+ * the only one there is, and it stays.
+ */
+.card-has-extras [data-save-contact] {
+  display: none;
+}
