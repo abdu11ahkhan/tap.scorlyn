@@ -29,8 +29,6 @@ function estimateDelivery(workingDays: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-export type Branding = "branded" | "unbranded";
-
 export async function placeOrder(input: {
   planId: string;
   quantity: number;
@@ -38,7 +36,6 @@ export async function placeOrder(input: {
   phone: string;
   address: string;
   city: string;
-  branding?: Branding;
   note?: string;
 }): Promise<Result<{ id: string; reference: string }>> {
   try {
@@ -65,20 +62,6 @@ export async function placeOrder(input: {
 
     if (!plan?.enabled) throw new Error("That plan isn't available.");
 
-    // Branding only exists on a physical card — there's nothing to print a
-    // logo on when the plan is digital, so it can't be charged for either.
-    const isPhysical = plan.price_pkr > 0;
-    const branding: Branding =
-      isPhysical && input.branding === "unbranded" ? "unbranded" : "branded";
-
-    const { data: settings } = await supabase
-      .from("app_settings")
-      .select("unbranded_surcharge_pkr")
-      .maybeSingle();
-
-    const surcharge =
-      branding === "unbranded" ? (settings?.unbranded_surcharge_pkr ?? 0) : 0;
-
     const { data: card } = await supabase
       .from("card_profiles")
       .select("id")
@@ -92,8 +75,7 @@ export async function placeOrder(input: {
         card_profile_id: card?.id ?? null,
         plan_id: plan.id,
         quantity,
-        branding,
-        amount_pkr: (plan.price_pkr + surcharge) * quantity,
+        amount_pkr: plan.price_pkr * quantity,
         full_name: input.fullName.trim(),
         phone: input.phone.trim(),
         address: input.address.trim(),
@@ -120,7 +102,7 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
 
     const { data: old } = await supabase
       .from("orders")
-      .select("plan_id, quantity, full_name, phone, address, city, branding")
+      .select("plan_id, quantity, full_name, phone, address, city")
       .eq("id", orderId)
       .maybeSingle();
 
@@ -133,8 +115,6 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
       phone: old.phone,
       address: old.address,
       city: old.city,
-      // Repricing is deliberate: the surcharge may have moved since.
-      branding: old.branding as Branding,
       note: "Repeat order",
     });
 

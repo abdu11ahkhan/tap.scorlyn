@@ -27,7 +27,6 @@ export default async function AdminSettings() {
           signupsOpen: data?.signups_open ?? true,
           publishingOpen: data?.publishing_open ?? true,
           announcement: data?.announcement ?? "",
-          unbrandedSurcharge: data?.unbranded_surcharge_pkr ?? 300,
           maintenanceMode: data?.maintenance_mode ?? false,
           maintenanceMessage: data?.maintenance_message ?? "",
         }}

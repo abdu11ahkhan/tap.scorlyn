@@ -20,6 +20,9 @@ import AppCard from "./AppCard";
 import ReelCard from "./ReelCard";
 import AgencyCard from "./AgencyCard";
 import BookingCard from "./BookingCard";
+import OrbitCard from "./OrbitCard";
+import TilesCard from "./TilesCard";
+import DockCard from "./DockCard";
 
 export type CardTemplateProps = {
   card: CardProfile;
@@ -48,6 +51,9 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   reel: ReelCard,
   agency: AgencyCard,
   booking: BookingCard,
+  orbit: OrbitCard,
+  tiles: TilesCard,
+  dock: DockCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */

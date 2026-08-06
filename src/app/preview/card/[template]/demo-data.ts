@@ -381,6 +381,62 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
       ["Directions", "link", "https://example.pk/map"],
     ],
   }),
+
+  // ---------------- Icon-only ----------------
+  // Given more links than the labelled templates carry, since the whole point
+  // of dropping labels is that a long list stops being a long list.
+  orbit: person({
+    n: "0022",
+    username: "areebaj",
+    full_name: "Areeba Javed",
+    headline: "Content Creator",
+    company: "Freelance",
+    bio: "Food and travel across Pakistan. 200k on Instagram, mostly hungry.",
+    location: "Karachi",
+    links: [
+      ["Instagram", "instagram", "https://instagram.com/example"],
+      ["TikTok", "tiktok", "https://tiktok.com/@example"],
+      ["YouTube", "youtube", "https://youtube.com/@example"],
+      ["WhatsApp", "whatsapp", wa("0022")],
+      ["Email", "email", "areeba@example.pk"],
+      ["Website", "link", "https://example.pk"],
+    ],
+  }),
+
+  tiles: person({
+    n: "0023",
+    username: "shahzaib",
+    full_name: "Shahzaib Alam",
+    headline: "Barber — Fade Specialist",
+    company: "Crop Room, Gulberg",
+    bio: "Walk in or book ahead. Open till 11pm, closed Mondays.",
+    location: "Lahore",
+    links: [
+      ["WhatsApp", "whatsapp", wa("0023")],
+      ["Call", "phone", tel("0023")],
+      ["Instagram", "instagram", "https://instagram.com/example"],
+      ["Directions", "maps", "https://maps.app.goo.gl/example"],
+      ["Prices", "link", "https://example.pk/prices"],
+      ["Email", "email", "shahzaib@example.pk"],
+    ],
+  }),
+
+  dock: person({
+    n: "0024",
+    username: "maryamz",
+    full_name: "Maryam Zaidi",
+    headline: "Wedding Photographer",
+    company: "Studio Noor",
+    bio: "Nikkah, mehndi, barat. Booked six months out — message early.",
+    location: "Islamabad",
+    links: [
+      ["Instagram", "instagram", "https://instagram.com/example"],
+      ["WhatsApp", "whatsapp", wa("0024")],
+      ["Portfolio", "link", "https://example.pk/work"],
+      ["Email", "email", "maryam@example.pk"],
+      ["Call", "phone", tel("0024")],
+    ],
+  }),
 };
 
 export const FALLBACK_PERSONA = DEMO_PERSONAS.minimal;

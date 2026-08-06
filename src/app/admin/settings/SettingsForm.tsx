@@ -13,7 +13,6 @@ export default function SettingsForm({
     announcement: string;
     maintenanceMode: boolean;
     maintenanceMessage: string;
-    unbrandedSurcharge: number;
   };
 }) {
   const [signupsOpen, setSignupsOpen] = useState(initial.signupsOpen);
@@ -21,7 +20,6 @@ export default function SettingsForm({
   const [announcement, setAnnouncement] = useState(initial.announcement);
   const [maintenanceMode, setMaintenanceMode] = useState(initial.maintenanceMode);
   const [maintenanceMessage, setMaintenanceMessage] = useState(initial.maintenanceMessage);
-  const [unbrandedSurcharge, setUnbrandedSurcharge] = useState(initial.unbrandedSurcharge);
 
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
@@ -94,40 +92,6 @@ export default function SettingsForm({
       </div>
 
       <div className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
-        <label
-          htmlFor="unbranded_surcharge"
-          className="text-lg font-black lowercase"
-        >
-          no-branding surcharge
-        </label>
-        <p className="mt-0.5 text-sm font-medium text-white/45">
-          Rupees per card to leave the ScorlynTap mark off. Applies to physical
-          plans only, and to new orders — placed orders keep the price they were
-          quoted.
-        </p>
-        <div className="mt-3 flex items-center gap-3">
-          <span className="text-sm font-black text-white/40">Rs.</span>
-          <input
-            id="unbranded_surcharge"
-            type="number"
-            min={0}
-            step={50}
-            value={unbrandedSurcharge}
-            onChange={(e) => {
-              setUnbrandedSurcharge(Math.max(0, Number(e.target.value) || 0));
-              setSaved(false);
-            }}
-            className="h-12 w-40 rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none focus:border-acid"
-          />
-          <span className="text-sm font-semibold text-white/35">
-            {unbrandedSurcharge === 0
-              ? "free — no reason to pick branded"
-              : "per card"}
-          </span>
-        </div>
-      </div>
-
-      <div className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
         <label className="text-lg font-black lowercase">maintenance message</label>
         <p className="mt-0.5 text-sm font-medium text-white/45">
           Shown while maintenance mode is on.
@@ -156,7 +120,6 @@ export default function SettingsForm({
                 announcement,
                 maintenanceMode,
                 maintenanceMessage,
-                unbrandedSurcharge,
               });
               if (!r.ok) setError(r.error ?? "Failed.");
               else setSaved(true);

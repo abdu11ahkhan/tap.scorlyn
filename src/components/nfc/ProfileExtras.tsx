@@ -1,5 +1,5 @@
 import { Banknote, ChevronDown, Clock, Download, PlayCircle } from "lucide-react";
-import type { BusinessHour, CardProfile, PaymentMethod } from "@/lib/card";
+import { readableOn, type BusinessHour, type CardProfile, type PaymentMethod } from "@/lib/card";
 import CopyRow from "./CopyRow";
 import SaveContact from "@/components/card-templates/SaveContact";
 
@@ -139,30 +139,33 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
              frame the moment a stranger screenshots the card. Opening it is a
              deliberate act. Native <details>, so it works without JavaScript
              and keyboard behaviour comes free. */
-          <details className="group rounded-2xl border border-black/10 bg-white">
-            <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+          <details className="group">
+            {/* Sized and weighted like the link buttons above it. As a pale
+                hairline panel it read as a disabled block rather than the
+                tappable thing it is. */}
+            <summary className="flex min-h-[60px] cursor-pointer list-none items-center gap-3 rounded-2xl border-2 border-[#111] bg-white px-4 py-3 shadow-[4px_4px_0_0_#111] transition-transform [&::-webkit-details-marker]:hidden group-open:rounded-b-none group-open:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
               <span
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                style={{ background: `${accent}1A`, color: accent }}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-[#111]"
+                style={{ background: accent, color: readableOn(accent) }}
               >
                 <Banknote className="h-4 w-4" />
               </span>
 
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-black leading-tight">
+                <span className="block text-[15px] font-black leading-tight">
                   Pay {card.full_name.split(" ")[0]}
                 </span>
-                <span className="mt-0.5 block text-[11px] font-semibold leading-tight text-black/40">
+                <span className="mt-0.5 block text-[11px] font-semibold leading-tight text-black/45">
                   {methods.length === 1
                     ? "Tap to see bank details"
                     : `Tap to see ${methods.length} payment options`}
                 </span>
               </span>
 
-              <ChevronDown className="h-4 w-4 shrink-0 text-black/30 transition-transform group-open:rotate-180" />
+              <ChevronDown className="h-4 w-4 shrink-0 text-black/40 transition-transform group-open:rotate-180" />
             </summary>
 
-            <div className="space-y-2.5 border-t border-black/8 px-4 pb-4 pt-4">
+            <div className="space-y-2.5 rounded-b-2xl border-2 border-t-0 border-[#111] bg-white px-4 pb-4 pt-4 shadow-[4px_4px_0_0_#111]">
               {methods.map((m, i) => (
                 <PaymentRow key={i} method={m} accent={accent} />
               ))}
@@ -179,7 +182,7 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
 
         <SaveContact
           card={card}
-          className="flex items-center justify-center gap-2 rounded-full border-2 border-black/10 py-3.5 text-sm font-bold transition-colors hover:border-black/40"
+          className="flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border-2 border-[#111] bg-white text-[15px] font-black shadow-[4px_4px_0_0_#111] transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
         >
           <Download className="h-4 w-4" />
           Save to contacts

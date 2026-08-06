@@ -537,6 +537,32 @@ export const CARD_TEMPLATES = [
     vibe: "classic",
     preview: "#0D9488",
   },
+  // Icon-only. Labels are what make a link list long, and face to face nobody
+  // reads them — the glyph is recognised faster than the word.
+  {
+    id: "orbit",
+    name: "Orbit",
+    blurb: "Icon-only links under your photo. No labels at all.",
+    category: 'profile',
+    vibe: "icons",
+    preview: "#22D3EE",
+  },
+  {
+    id: "tiles",
+    name: "Tiles",
+    blurb: "Icon-only links as a grid of big square tiles.",
+    category: 'profile',
+    vibe: "icons",
+    preview: "#F59E0B",
+  },
+  {
+    id: "dock",
+    name: "Dock",
+    blurb: "Full-bleed photo, icon links docked where your thumb is.",
+    category: 'profile',
+    vibe: "icons",
+    preview: "#EC4899",
+  },
 ] as const;
 
 export const TEMPLATE_IDS = CARD_TEMPLATES.map((t) => t.id);

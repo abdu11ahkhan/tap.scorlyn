@@ -232,7 +232,6 @@ export async function saveAppSettings(input: {
   announcement?: string;
   maintenanceMode?: boolean;
   maintenanceMessage?: string;
-  unbrandedSurcharge?: number;
 }): Promise<Result> {
   try {
     const { supabase } = await assertAdmin();
@@ -245,12 +244,6 @@ export async function saveAppSettings(input: {
         announcement: input.announcement?.trim() || null,
         maintenance_mode: input.maintenanceMode ?? false,
         maintenance_message: input.maintenanceMessage?.trim() || null,
-        // Clamped here as well as by the CHECK constraint — a negative
-        // surcharge would quietly discount every unbranded order.
-        unbranded_surcharge_pkr: Math.max(
-          0,
-          Math.floor(input.unbrandedSurcharge ?? 0)
-        ),
         updated_at: new Date().toISOString(),
       })
       .eq("id", true);
