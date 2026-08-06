@@ -14,6 +14,7 @@ type CardRow = {
   headline: string | null;
   template: string;
   published: boolean;
+  owner_suspended: boolean;
   created_at: string;
   accent_color: string | null;
 };
@@ -32,7 +33,7 @@ export default async function AdminCards({
   let query = supabase
     .from("card_profiles")
     .select(
-      "id, username, full_name, headline, template, published, created_at, accent_color",
+      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color",
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
@@ -127,12 +128,24 @@ export default async function AdminCards({
                     {templateName(card.template)}
                   </td>
                   <td>
+                    {/* Suspension outranks published: a suspended owner's card
+                        is off the internet however the flag reads. Showing
+                        "live" here is what hid the fact that suspension was
+                        doing nothing at all. */}
                     <span
                       className={`rounded-full border-2 border-ink px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${
-                        card.published ? "bg-acid text-ink" : "bg-white/15 text-white/60"
+                        card.owner_suspended
+                          ? "bg-hotpink text-white"
+                          : card.published
+                            ? "bg-acid text-ink"
+                            : "bg-white/15 text-white/60"
                       }`}
                     >
-                      {card.published ? "live" : "hidden"}
+                      {card.owner_suspended
+                        ? "suspended"
+                        : card.published
+                          ? "live"
+                          : "hidden"}
                     </span>
                   </td>
                   <td className="text-sm font-semibold tabular-nums text-white/45">

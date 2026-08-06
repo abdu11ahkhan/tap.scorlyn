@@ -92,8 +92,8 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
   if (nothingToShow) return null;
 
   return (
-    <section className="bg-white px-5 pb-20 pt-2 text-[#111]">
-      <div className="mx-auto w-full max-w-sm space-y-5">
+    <section className="bg-white pb-20 pt-2 text-[#111]">
+      <div className="mx-auto w-full max-w-sm space-y-5 px-5">
         {video && (
           <div>
             <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-black/35">
@@ -143,9 +143,10 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
             {/* Sized and weighted like the link buttons above it. As a pale
                 hairline panel it read as a disabled block rather than the
                 tappable thing it is. */}
-            <summary className="flex min-h-[60px] cursor-pointer list-none items-center gap-3 rounded-2xl border-2 border-[#111] bg-white px-4 py-3 shadow-[4px_4px_0_0_#111] transition-transform [&::-webkit-details-marker]:hidden group-open:rounded-b-none group-open:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+            <summary style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
+              className="flex cursor-pointer list-none items-center gap-3 rounded-2xl border-2 border-ink bg-white px-4 py-3 [&::-webkit-details-marker]:hidden group-open:rounded-b-none">
               <span
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-[#111]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-ink"
                 style={{ background: accent, color: readableOn(accent) }}
               >
                 <Banknote className="h-4 w-4" />
@@ -165,7 +166,8 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
               <ChevronDown className="h-4 w-4 shrink-0 text-black/40 transition-transform group-open:rotate-180" />
             </summary>
 
-            <div className="space-y-2.5 rounded-b-2xl border-2 border-t-0 border-[#111] bg-white px-4 pb-4 pt-4 shadow-[4px_4px_0_0_#111]">
+            <div style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
+              className="space-y-2.5 rounded-b-2xl border-2 border-t-0 border-ink bg-white px-4 pb-4 pt-4">
               {methods.map((m, i) => (
                 <PaymentRow key={i} method={m} accent={accent} />
               ))}
@@ -182,7 +184,8 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
 
         <SaveContact
           card={card}
-          className="flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border-2 border-[#111] bg-white text-[15px] font-black shadow-[4px_4px_0_0_#111] transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+          style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
+          className="flex h-[68px] items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-white text-[15px] font-black"
         >
           <Download className="h-4 w-4" />
           Save to contacts

@@ -1,6 +1,7 @@
 import { ShieldCheck, Ban, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import ActionButton from "../ActionButton";
+import ConfirmByName from "../ConfirmByName";
 import { setAdmin, setSuspended } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -146,35 +147,48 @@ export default async function AdminUsers({
                     </td>
                     <td>
                       <div className="flex flex-wrap justify-end gap-2">
-                        <ActionButton
+                        {/* Typed confirmation, not a confirm() dialog. Granting
+                            admin from a table row is one careless tap, and the
+                            muscle memory in a list is to hit Enter. */}
+                        <ConfirmByName
                           action={async () => {
                             "use server";
                             return setAdmin(row.id, !row.is_admin);
                           }}
-                          variant={row.is_admin ? "ghost" : "acid"}
-                          confirm={
+                          expected={row.full_name?.trim() || row.email}
+                          variant={row.is_admin ? "danger" : "acid"}
+                          title={
                             row.is_admin
-                              ? `Remove admin access from ${row.email}?`
-                              : `Give ${row.email} full admin access?`
+                              ? "Remove admin access"
+                              : "Give full admin access"
                           }
+                          body={
+                            row.is_admin
+                              ? `${row.email} will lose the console, including orders and every customer's details.`
+                              : `${row.email} will be able to see every order and customer, change prices, and edit the site.`
+                          }
+                          cta={row.is_admin ? "Remove access" : "Make admin"}
                         >
                           {row.is_admin ? "revoke admin" : "make admin"}
-                        </ActionButton>
+                        </ConfirmByName>
 
-                        <ActionButton
+                        <ConfirmByName
                           action={async () => {
                             "use server";
                             return setSuspended(row.id, !row.suspended);
                           }}
+                          expected={row.full_name?.trim() || row.email}
                           variant="danger"
-                          confirm={
+                          title={row.suspended ? "Restore this account" : "Suspend this account"}
+                          body={
                             row.suspended
-                              ? `Restore ${row.email}?`
-                              : `Suspend ${row.email}? Their card stops being public immediately.`
+                              ? `${row.email}'s card goes public again immediately.`
+                              : `${row.email}'s card stops being public immediately. Anyone tapping their printed card gets nothing.`
                           }
+                          cta={row.suspended ? "Restore" : "Suspend"}
                         >
                           {row.suspended ? "restore" : "suspend"}
-                        </ActionButton>
+                        </ConfirmByName>
                       </div>
                     </td>
                   </tr>
