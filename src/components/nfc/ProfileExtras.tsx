@@ -1,5 +1,7 @@
 import { Banknote, Clock, Download, PlayCircle } from "lucide-react";
 import type { BusinessHour, CardProfile, PaymentMethod } from "@/lib/card";
+import CopyRow from "./CopyRow";
+import SaveContact from "@/components/card-templates/SaveContact";
 
 /**
  * Optional blocks appended below whichever template rendered above.
@@ -41,17 +43,35 @@ function PaymentRow({ method, accent }: { method: PaymentMethod; accent: string 
       <p className="text-sm font-black" style={{ color: accent }}>
         {method.label || method.kind}
       </p>
-      <dl className="mt-2 space-y-1">
+      <div className="mt-2 space-y-0.5">
         {rows.map((r) => (
-          <div key={r.k} className="flex items-baseline justify-between gap-4">
-            <dt className="text-[11px] font-bold uppercase tracking-widest text-black/35">
-              {r.k}
-            </dt>
-            <dd className="font-mono text-[13px] font-semibold text-black/80">{r.v}</dd>
-          </div>
+          <CopyRow key={r.k} label={r.k} value={r.v} accent={accent} />
         ))}
-      </dl>
+      </div>
+      <p className="mt-1.5 px-0.5 text-[10px] font-semibold text-black/25">
+        Tap any line to copy it.
+      </p>
     </div>
+  );
+}
+
+/**
+ * Whether any extras block will render.
+ *
+ * Exported so the page can tell the template above it that it is no longer the
+ * last thing on the page — every template is min-h-screen, which reserves a
+ * whole viewport of dead space when its content is short.
+ */
+export function hasProfileExtras(card: CardProfile): boolean {
+  const hours = (Array.isArray(card.business_hours) ? card.business_hours : []).filter(
+    (h: BusinessHour) => h?.day?.trim() && h?.hours?.trim()
+  );
+  const methods = (Array.isArray(card.payment_methods) ? card.payment_methods : []).filter(
+    (m: PaymentMethod) => m?.account_number?.trim() || m?.iban?.trim()
+  );
+  return Boolean(
+    hours.length || (card.video_url && embedUrl(card.video_url)) ||
+      (card.payment_enabled && methods.length)
   );
 }
 
@@ -133,13 +153,13 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
           </div>
         )}
 
-        <a
-          href={`/api/vcard/${card.username}`}
+        <SaveContact
+          card={card}
           className="flex items-center justify-center gap-2 rounded-full border-2 border-black/10 py-3.5 text-sm font-bold transition-colors hover:border-black/40"
         >
           <Download className="h-4 w-4" />
           Save to contacts
-        </a>
+        </SaveContact>
       </div>
     </section>
   );

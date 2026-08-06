@@ -5,7 +5,7 @@ import { resolveButtons, type CardProfile } from "@/lib/card";
 import { renderCardTemplate } from "@/components/card-templates";
 import TapTracker from "@/components/nfc/TapTracker";
 import ReferralBanner from "@/components/nfc/ReferralBanner";
-import ProfileExtras from "@/components/nfc/ProfileExtras";
+import ProfileExtras, { hasProfileExtras } from "@/components/nfc/ProfileExtras";
 import ShareButton from "@/components/nfc/ShareButton";
 import { headers } from "next/headers";
 
@@ -66,12 +66,7 @@ export default async function CardProfilePage({
 
   const buttons = resolveButtons(card.buttons);
 
-  // Nobody needs selling their own card back to them.
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const isOwner = Boolean(user && user.id === card.user_id);
 
   // Cheapest physical plan, so the visitor CTA quotes a real number instead of
   // a hardcoded one that drifts the moment pricing changes.
@@ -99,7 +94,12 @@ export default async function CardProfilePage({
         accent={card.accent_color || "#111111"}
       />
 
-      {renderCardTemplate({ card, buttons })}
+      {/* Every template is min-h-screen, which reserves a full viewport below
+          short content. Harmless when the template is the whole page; a large
+          dead gap once the extras render underneath it. */}
+      <div className={hasProfileExtras(card) ? "card-has-extras" : undefined}>
+        {renderCardTemplate({ card, buttons })}
+      </div>
 
       <ProfileExtras card={card} />
 
@@ -107,7 +107,6 @@ export default async function CardProfilePage({
         refCode={card.referral_code}
         cardProfileId={card.id}
         ownerName={card.full_name}
-        isOwner={isOwner}
         cardPrice={cheapest?.price_pkr ?? null}
       />
     </>

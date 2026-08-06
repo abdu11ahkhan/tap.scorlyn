@@ -474,3 +474,32 @@ textarea.app-input {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+/* ------------------------------------------------------------------ */
+/* Public profile: template + extras                                   */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Templates are written as if they own the whole page, so every one of them is
+ * min-h-screen. When the optional extras (hours, video, bank details) render
+ * below, that reserved height becomes a dead gap between the two — several
+ * hundred pixels on a card with only a few links.
+ *
+ * Only the reserved height is dropped. Each template's own bottom padding is
+ * left alone: it's deliberate breathing room, and some templates sit a fixed
+ * bar in it.
+ */
+/*
+ * !important because Tailwind's min-h-screen is a single class too — equal
+ * specificity, and the utility layer is emitted after this one, so it won.
+ *
+ * The bottom padding goes with it. It's generous (up to pb-32) because each
+ * template assumes it ends the page; with the extras below, that reads as a
+ * second gap. No template pins anything to the bottom, so nothing needs the
+ * room. Padding is applied on the root or an inner <main> depending on the
+ * template, hence both.
+ */
+.card-has-extras > *,
+.card-has-extras > * > main {
+  min-height: 0 !important;
+  padding-bottom: 1.5rem !important;
+}

@@ -17,6 +17,10 @@ import { referralOrderUrl, referralSignupUrl } from "@/lib/referral";
  * X switched the loop off for that browser on every card, forever. It expires
  * now, and dismissing collapses the CTA to a small pill rather than removing
  * it — the visitor stops being nagged, but the way in is still there.
+ *
+ * Shown to the owner too. Hiding it from them was tidier in theory and worse
+ * in practice: the owner is the one person who checks their own card, so they
+ * were the only person who could never confirm the loop was working.
  */
 const DISMISS_KEY = "tapzar_banner_dismissed_at";
 const DISMISS_DAYS = 7;
@@ -28,7 +32,6 @@ export default function ReferralBanner({
   refCode,
   cardProfileId,
   ownerName,
-  isOwner = false,
   cardPrice = null,
 }: {
   refCode: string | null;
@@ -36,14 +39,10 @@ export default function ReferralBanner({
   ownerName: string;
   /** Cheapest physical plan, so the CTA can quote a real number. */
   cardPrice?: number | null;
-  /** The owner doesn't need selling to — they already have one. */
-  isOwner?: boolean;
 }) {
   const [stage, setStage] = useState<Stage>("hidden");
 
   useEffect(() => {
-    if (isOwner) return;
-
     const dismissedAt = Number(readStorage("local", DISMISS_KEY) ?? 0);
     const stillQuiet =
       dismissedAt > 0 &&
@@ -57,7 +56,7 @@ export default function ReferralBanner({
     // Let the card land first — an instant banner reads as a popup ad.
     const timer = setTimeout(() => setStage("full"), 1800);
     return () => clearTimeout(timer);
-  }, [isOwner]);
+  }, []);
 
   useEffect(() => {
     if (stage !== "full" || !refCode) return;
@@ -79,8 +78,6 @@ export default function ReferralBanner({
     writeStorage("local", DISMISS_KEY, String(Date.now()));
     setStage("pill");
   };
-
-  if (isOwner) return null;
 
   const firstName = ownerName.trim().split(" ")[0] || "theirs";
 
