@@ -43,7 +43,12 @@ export default function CardDesigner({
   useEffect(() => {
     const el = stage.current;
     if (!el) return;
-    const fit = () => setDrawWidth(Math.min(width, Math.floor(el.clientWidth)));
+    const fit = () => {
+      // Ignore zero: a hidden or detached node reports it, and acting on it
+      // would collapse the card to nothing.
+      const available = Math.floor(el.clientWidth);
+      if (available > 0) setDrawWidth(Math.min(width, available));
+    };
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);

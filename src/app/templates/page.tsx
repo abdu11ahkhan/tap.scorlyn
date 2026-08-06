@@ -184,15 +184,7 @@ export default async function PublicTemplatesPage() {
                         subtree — the iframe included — to be resampled, which
                         left every preview visibly soft. The lift on hover is
                         transform too, but only while hovered. */}
-                    <div
-                      className="relative rounded-[1.7rem] border-2 border-ink bg-white/[0.03] p-2 transition-all duration-300 group-hover:-translate-y-2 sm:rounded-[2rem] sm:p-3"
-                      style={{ boxShadow: `7px 7px 0 0 ${accent}` }}
-                    >
-                      <div
-                        className="pointer-events-none absolute inset-0 -z-10 rounded-[2rem] opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
-                        style={{ background: accent }}
-                      />
-
+                    <div className="relative rounded-[1.7rem] border-2 border-white/12 bg-white/[0.03] p-2 transition-all duration-300 group-hover:-translate-y-2 group-hover:border-white/30 sm:rounded-[2rem] sm:p-3">
                       {isNew && (
                         <span className="sticker absolute -right-2 -top-3 z-20 rotate-3 rounded-full border-2 border-ink bg-acid px-3 py-1 text-[10px] font-black uppercase tracking-widest text-ink">
                           new

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CreditCard, Smartphone } from "lucide-react";
 import IframeStage from "./IframeStage";
 
@@ -25,18 +25,37 @@ export default function DevicePreview({
 }) {
   const [tab, setTab] = useState<Tab>("mobile");
 
-  const stage = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState(1);
+  const observer = useRef<ResizeObserver | null>(null);
 
-  useEffect(() => {
-    const el = stage.current;
-    if (!el) return;
-    const measure = () => setFit(Math.min(1, el.clientWidth / OUTER));
+  /**
+   * A callback ref, not useRef + useEffect([]).
+   *
+   * Switching to the NFC card tab unmounts this div. An effect with an empty
+   * dep list never re-runs, so the observer kept watching the detached node —
+   * which reports a width of 0, collapsing the frame to scale(0). Coming back
+   * mounted a *new* div that nothing was measuring, so the preview stayed
+   * invisible until a reload. A callback ref re-attaches on every remount.
+   */
+  const stage = useCallback((node: HTMLDivElement | null) => {
+    observer.current?.disconnect();
+    observer.current = null;
+    if (!node) return;
+
+    const measure = () => {
+      // A detached or display:none node measures 0. That isn't a real width,
+      // and acting on it is what blanked the preview.
+      const width = node.clientWidth;
+      if (width > 0) setFit(Math.min(1, width / OUTER));
+    };
+
     measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
+    ro.observe(node);
+    observer.current = ro;
   }, []);
+
+  useEffect(() => () => observer.current?.disconnect(), []);
 
   const showingCard = tab === "card" && Boolean(cardView);
 
