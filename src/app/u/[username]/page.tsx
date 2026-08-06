@@ -66,6 +66,13 @@ export default async function CardProfilePage({
 
   const buttons = resolveButtons(card.buttons);
 
+  // Nobody needs selling their own card back to them.
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isOwner = Boolean(user && user.id === card.user_id);
+
   // Built from the request so the share link is right on any host.
   const host = (await headers()).get("host") ?? "";
   const proto = host.startsWith("localhost") ? "http" : "https";
@@ -89,6 +96,7 @@ export default async function CardProfilePage({
         refCode={card.referral_code}
         cardProfileId={card.id}
         ownerName={card.full_name}
+        isOwner={isOwner}
       />
     </>
   );

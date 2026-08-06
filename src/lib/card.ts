@@ -134,6 +134,8 @@ export type GalleryItem = { url: string; caption?: string; href?: string };
 
 export type CardProfile = {
   id: string;
+  /** Owner. Optional because drafts and demo personas have no account yet. */
+  user_id?: string | null;
   username: string;
   full_name: string;
   headline: string | null;

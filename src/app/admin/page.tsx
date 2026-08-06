@@ -128,8 +128,9 @@ export default async function AdminOverview() {
             ))}
           </ul>
           <p className="mt-3 text-[12px] text-white/30">
-            Cleared when you open the orders list. No email is sent yet — set
-            RESEND_API_KEY and ORDER_ALERT_EMAIL to turn that on.
+            Stays here until you hit &ldquo;mark all read&rdquo; on the orders
+            page. No email is sent yet — set RESEND_API_KEY and
+            ORDER_ALERT_EMAIL to turn that on.
           </p>
         </section>
       )}

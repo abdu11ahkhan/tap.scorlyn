@@ -107,6 +107,8 @@ export default async function AdminOrders({
         ))}
       </div>
 
+      <MarkSeen unseen={unseen ?? 0} />
+
       {/* Filters */}
       <form method="get" className="flex flex-wrap items-center gap-2">
         <div className="relative">
@@ -166,7 +168,6 @@ export default async function AdminOrders({
       ) : (
         <OrdersTable orders={orders} />
       )}
-      <MarkSeen unseen={unseen ?? 0} />
     </div>
   );
 }
