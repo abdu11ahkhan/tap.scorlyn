@@ -11,6 +11,66 @@ type Plan = { id: string; name: string; price_pkr: number; blurb: string | null;
 const FIELD =
   "h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid";
 
+/**
+ * A labelled field.
+ *
+ * The form used to be bare inputs whose placeholder was the only label, so the
+ * moment you typed, the question disappeared — and a delivery address you
+ * can't re-read is one a card gets posted to wrongly.
+ */
+function Field({
+  label,
+  required,
+  hint,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  hint?: string;
+  error?: string | null;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block min-w-0">
+      <span className="mb-1.5 flex items-baseline gap-1.5">
+        <span className="text-sm font-black text-white">{label}</span>
+        {required && <span className="text-sm font-black text-hotpink">*</span>}
+        {hint && !error && (
+          <span className="text-[11px] font-semibold text-white/35">{hint}</span>
+        )}
+      </span>
+      {children}
+      {error && (
+        <span className="mt-1.5 block text-[12px] font-bold text-hotpink">{error}</span>
+      )}
+    </label>
+  );
+}
+
+/**
+ * A Pakistani mobile, as people actually type it.
+ *
+ * Accepts 03001234567, 0300-1234567, +92 300 1234567 and 923001234567; they
+ * are the same number. What matters is that it comes to eleven digits starting
+ * 03 — a courier ringing a ten-digit number reaches nobody.
+ */
+function checkPhone(raw: string): { digits: string; error: string | null } {
+  let d = raw.replace(/\D/g, "");
+  if (d.startsWith("0092")) d = d.slice(4);
+  if (d.startsWith("92")) d = "0" + d.slice(2);
+
+  if (!d) return { digits: "", error: "We need a number to arrange delivery." };
+  if (!/^03/.test(d)) return { digits: d, error: "Should start 03." };
+  if (d.length !== 11) {
+    return {
+      digits: d,
+      error: `That's ${d.length} digits — a mobile number is 11.`,
+    };
+  }
+  return { digits: d, error: null };
+}
+
 export default function OrderForm({
   plans,
   defaults,
@@ -25,8 +85,12 @@ export default function OrderForm({
   const router = useRouter();
   const [planId, setPlanId] = useState(plans.find((p) => p.price_pkr > 0)?.id ?? plans[0]?.id);
   const [quantity, setQuantity] = useState(1);
-  const [fullName, setFullName] = useState(defaults.fullName);
-  const [phone, setPhone] = useState(defaults.phone);
+  // Deliberately not pre-filled from the account. The person ordering may not
+  // be the person the card is posted to, and a box that already holds a name
+  // gets skimmed past rather than read.
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [note, setNote] = useState("");
@@ -37,6 +101,8 @@ export default function OrderForm({
   const plan = plans.find((p) => p.id === planId);
   const total = (plan?.price_pkr ?? 0) * quantity;
 
+  const { digits: phoneDigits, error: phoneError } = checkPhone(phone);
+
   // A physical card is a chip holding a link to your page. Without a page
   // there is no link, and an admin cannot assign the chip to anything — the
   // customer would pay for something we can't send.
@@ -46,13 +112,20 @@ export default function OrderForm({
     <form
       onSubmit={(e) => {
         e.preventDefault();
+
+        if (phoneError) {
+          setPhoneTouched(true);
+          setError(phoneError);
+          return;
+        }
+
         setError(null);
         startTransition(async () => {
           const r = await placeOrder({
             planId: planId!,
             quantity,
             fullName,
-            phone,
+            phone: phoneDigits,
             address,
             city,
             note,
@@ -119,57 +192,89 @@ export default function OrderForm({
       </section>
 
       {/* Delivery */}
-      <section className="space-y-3">
+      <section className="space-y-4">
         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
           where it goes
         </p>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full name"
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Full name" required>
+            <input
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="e.g. Ayesha Siddiqui"
+              required
+              autoComplete="name"
+              className={FIELD}
+            />
+          </Field>
+
+          <Field
+            label="Mobile number"
             required
-            className={FIELD}
-          />
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="03xx xxxxxxx"
-            required
-            className={FIELD}
-          />
+            hint="11 digits, starting 03"
+            error={phoneTouched ? phoneError : null}
+          >
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              onBlur={() => setPhoneTouched(true)}
+              placeholder="e.g. 03001234567"
+              required
+              inputMode="numeric"
+              autoComplete="tel"
+              maxLength={17}
+              aria-invalid={phoneTouched && Boolean(phoneError)}
+              className={`${FIELD} ${
+                phoneTouched && phoneError ? "border-hotpink" : ""
+              }`}
+            />
+          </Field>
         </div>
-        <input
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="House / street / area"
-          required
-          className={FIELD}
-        />
-        <div className="grid gap-3 sm:grid-cols-[1fr_140px]">
+
+        <Field label="Address" required hint="House or flat, street, area">
           <input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="City"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="e.g. House 12, Street 4, DHA Phase 5"
             required
+            autoComplete="street-address"
             className={FIELD}
           />
-          <input
-            type="number"
-            min={1}
-            max={50}
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            aria-label="How many cards"
-            className={FIELD}
-          />
+        </Field>
+
+        <div className="grid gap-4 sm:grid-cols-[1fr_150px]">
+          <Field label="City" required>
+            <input
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="e.g. Lahore"
+              required
+              autoComplete="address-level2"
+              className={FIELD}
+            />
+          </Field>
+
+          <Field label="How many" hint="1 to 50">
+            <input
+              type="number"
+              min={1}
+              max={50}
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className={FIELD}
+            />
+          </Field>
         </div>
-        <input
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="Anything we should know? (optional)"
-          className={FIELD}
-        />
+
+        <Field label="Anything we should know?" hint="Optional">
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="e.g. deliver after 6pm, call before arriving"
+            className={FIELD}
+          />
+        </Field>
       </section>
 
       {/* Total */}
@@ -185,7 +290,7 @@ export default function OrderForm({
         </div>
         <button
           type="submit"
-          disabled={pending || needsCard}
+          disabled={pending || needsCard || Boolean(phoneError)}
           className="sticker sticker-press flex h-14 items-center gap-2 rounded-full border-2 border-ink bg-acid px-8 font-black uppercase tracking-tight disabled:opacity-60"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}

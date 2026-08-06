@@ -43,6 +43,15 @@ export async function placeOrder(input: {
 
     const quantity = Math.min(Math.max(1, Math.floor(input.quantity) || 1), 50);
 
+    // The form validates this, but a Server Action takes a direct POST. A
+    // courier calling a wrong-length number just fails to deliver.
+    let phone = input.phone.replace(/\D/g, "");
+    if (phone.startsWith("0092")) phone = phone.slice(4);
+    if (phone.startsWith("92")) phone = "0" + phone.slice(2);
+    if (!/^03\d{9}$/.test(phone)) {
+      throw new Error("That mobile number doesn't look right — 11 digits starting 03.");
+    }
+
     for (const [label, v] of [
       ["name", input.fullName],
       ["phone", input.phone],
@@ -84,7 +93,7 @@ export async function placeOrder(input: {
         quantity,
         amount_pkr: plan.price_pkr * quantity,
         full_name: input.fullName.trim(),
-        phone: input.phone.trim(),
+        phone,
         address: input.address.trim(),
         city: input.city.trim(),
         customer_note: input.note?.trim() || null,
