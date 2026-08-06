@@ -90,7 +90,7 @@ BEGIN
   VALUES (
     'order_placed',
     NEW.id,
-    'New order ' || NEW.reference || ' — Rs. ' || NEW.amount_pkr,
+    'New order ' || NEW.reference || ' - Rs. ' || NEW.amount_pkr,
     NEW.full_name || ' (' || NEW.phone || ') ordered ' || NEW.quantity ||
       ' x ' || COALESCE(NEW.plan_id, 'unknown plan') ||
       ', ' || NEW.branding ||
