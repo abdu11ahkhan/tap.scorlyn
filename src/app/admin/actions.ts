@@ -232,6 +232,7 @@ export async function saveAppSettings(input: {
   announcement?: string;
   maintenanceMode?: boolean;
   maintenanceMessage?: string;
+  unbrandedSurcharge?: number;
 }): Promise<Result> {
   try {
     const { supabase } = await assertAdmin();
@@ -244,6 +245,12 @@ export async function saveAppSettings(input: {
         announcement: input.announcement?.trim() || null,
         maintenance_mode: input.maintenanceMode ?? false,
         maintenance_message: input.maintenanceMessage?.trim() || null,
+        // Clamped here as well as by the CHECK constraint — a negative
+        // surcharge would quietly discount every unbranded order.
+        unbranded_surcharge_pkr: Math.max(
+          0,
+          Math.floor(input.unbrandedSurcharge ?? 0)
+        ),
         updated_at: new Date().toISOString(),
       })
       .eq("id", true);
@@ -251,6 +258,7 @@ export async function saveAppSettings(input: {
     if (error) throw new Error(error.message);
 
     revalidatePath("/admin/settings");
+    revalidatePath("/dashboard/orders");
     revalidatePath("/", "layout");
     return { ok: true };
   } catch (e) {
@@ -376,6 +384,32 @@ export async function deleteFaq(id: string): Promise<Result> {
     if (error) throw new Error(error.message);
     revalidatePath("/admin/faq");
     revalidatePath("/faq");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Clear the new-order badge.
+ *
+ * Called once when an admin opens the orders list — the list is where the
+ * orders get seen, so that's what "seen" means. Deliberately not done during
+ * render: a Server Component may render more than once, and a write belongs
+ * in an action.
+ */
+export async function markOrdersSeen(): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const { error } = await supabase
+      .from("orders")
+      .update({ admin_seen_at: new Date().toISOString() })
+      .is("admin_seen_at", null);
+
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin", "layout");
     return { ok: true };
   } catch (e) {
     return fail(e);

@@ -46,6 +46,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     );
   }
 
+  // Orders nobody has opened yet. This is the entire new-order alert for now:
+  // no email provider is configured, so the console has to carry the signal.
+  // Read after the admin gate — under RLS a customer would otherwise be
+  // counting their own rows.
+  const { count: unseenOrders } = await supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .is("admin_seen_at", null);
+
   return (
     <div className="grain min-h-screen bg-ink text-white">
       <header className="border-b border-white/8">
@@ -65,7 +74,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <nav className="flex flex-wrap items-center gap-1.5">
             {[
               { href: "/admin", label: "overview" },
-              { href: "/admin/orders", label: "orders" },
+              { href: "/admin/orders", label: "orders", badge: unseenOrders ?? 0 },
               { href: "/admin/cards", label: "cards" },
               { href: "/admin/users", label: "people" },
               { href: "/admin/nfc", label: "nfc stock" },
@@ -76,9 +85,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-lg px-3 py-2 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white"
               >
                 {item.label}
+                {Boolean(item.badge) && (
+                  <span
+                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-hotpink px-1 text-[11px] font-black text-white"
+                    title={`${item.badge} order${item.badge === 1 ? "" : "s"} you haven't opened`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             ))}
             <Link

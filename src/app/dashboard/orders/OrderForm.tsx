@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
-import { placeOrder } from "@/app/orders/actions";
+import { placeOrder, type Branding } from "@/app/orders/actions";
 
 type Plan = { id: string; name: string; price_pkr: number; blurb: string | null; perks: string[] };
 
@@ -13,13 +13,17 @@ const FIELD =
 export default function OrderForm({
   plans,
   defaults,
+  unbrandedSurcharge,
 }: {
   plans: Plan[];
   defaults: { fullName: string; phone: string };
+  /** Per card, set by an admin. Server recomputes it — this is display only. */
+  unbrandedSurcharge: number;
 }) {
   const router = useRouter();
   const [planId, setPlanId] = useState(plans.find((p) => p.price_pkr > 0)?.id ?? plans[0]?.id);
   const [quantity, setQuantity] = useState(1);
+  const [branding, setBranding] = useState<Branding>("branded");
   const [fullName, setFullName] = useState(defaults.fullName);
   const [phone, setPhone] = useState(defaults.phone);
   const [address, setAddress] = useState("");
@@ -30,7 +34,11 @@ export default function OrderForm({
   const [error, setError] = useState<string | null>(null);
 
   const plan = plans.find((p) => p.id === planId);
-  const total = (plan?.price_pkr ?? 0) * quantity;
+
+  // Nothing gets printed on a digital plan, so there's no logo to remove.
+  const isPhysical = (plan?.price_pkr ?? 0) > 0;
+  const surcharge = isPhysical && branding === "unbranded" ? unbrandedSurcharge : 0;
+  const total = ((plan?.price_pkr ?? 0) + surcharge) * quantity;
 
   return (
     <form
@@ -45,6 +53,7 @@ export default function OrderForm({
             phone,
             address,
             city,
+            branding,
             note,
           });
           if (!r.ok) setError(r.error ?? "Could not place the order.");
@@ -86,6 +95,73 @@ export default function OrderForm({
           })}
         </div>
       </section>
+
+      {/* Branding — physical cards only. */}
+      {isPhysical && (
+        <section>
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+            card branding
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {(
+              [
+                {
+                  id: "branded" as const,
+                  name: "with tapzar mark",
+                  price: 0,
+                  blurb: "A small Tapzar logo on the back of the card.",
+                },
+                {
+                  id: "unbranded" as const,
+                  name: "no branding",
+                  price: unbrandedSurcharge,
+                  blurb: "Your design only. Nothing of ours on the card.",
+                },
+              ]
+            ).map((option) => {
+              const active = option.id === branding;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => setBranding(option.id)}
+                  aria-pressed={active}
+                  className={`rounded-2xl border-2 p-5 text-left transition-all ${
+                    active
+                      ? "sticker-lg border-ink bg-acid text-ink"
+                      : "border-white/15 bg-white/[0.03] text-white hover:border-white/40"
+                  }`}
+                >
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="text-base font-black lowercase">{option.name}</p>
+                    <p className="shrink-0 text-lg font-black tracking-tighter">
+                      {option.price === 0
+                        ? "included"
+                        : `+Rs.${option.price.toLocaleString()}`}
+                    </p>
+                  </div>
+                  <p
+                    className={`mt-1.5 text-xs font-semibold ${
+                      active ? "opacity-70" : "text-white/45"
+                    }`}
+                  >
+                    {option.blurb}
+                  </p>
+                  {option.price > 0 && (
+                    <p
+                      className={`mt-1 text-[11px] font-bold ${
+                        active ? "opacity-55" : "text-white/30"
+                      }`}
+                    >
+                      per card
+                    </p>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Delivery */}
       <section className="space-y-3">
@@ -150,6 +226,7 @@ export default function OrderForm({
           </p>
           <p className="mt-1 text-xs font-bold opacity-50">
             {quantity} × {plan?.name}
+            {surcharge > 0 && ` + Rs.${surcharge.toLocaleString()} no-branding`}
           </p>
         </div>
         <button

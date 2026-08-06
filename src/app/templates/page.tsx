@@ -5,6 +5,7 @@ import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import { DEMO_PERSONAS } from "@/app/preview/card/[template]/demo-data";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
+import TemplateThumb from "./TemplateThumb";
 
 export const dynamic = "force-dynamic";
 
@@ -13,23 +14,17 @@ export const metadata: Metadata = {
   description: "Profile cards, landing pages, portfolios, and contact forms.",
 };
 
-// Previews render at real phone dimensions, then scale down into the frame.
-// The iframe keeps a full 844px viewport so templates lay out as they really
-// would; the frame is deliberately shorter than the scaled result and crops it.
-// At full height each card ran ~780px tall, so barely one row fit on screen.
-// Whole pixels throughout: a fractional card width (320.4px x3) overflowed a
-// 1025px column by 0.2px and silently wrapped the row to two cards.
-const FRAME_W = 296;
-const FRAME_H = 470;
-const CARD_W = FRAME_W + 24; // + frame padding
-const GAP = 32;
+// Cards used to be a fixed 320px wide, which meant one per row below 1073px —
+// 21 templates at ~470px tall is an enormous scroll on a phone. The grid is
+// fluid now: two across on mobile, three from lg. TemplateThumb scales the
+// preview to whatever width its column ends up.
+//
+// Visible frame height as a fraction of width. These pages are taller than one
+// screen, so the preview always crops; this is where it crops.
+const THUMB_ASPECT = 470 / 296;
 
-/**
- * Exactly three cards plus their gaps, with a few px of slack. Every section
- * header, card row and the page header share this width, so headings line up
- * with the first card instead of sitting in a wider container.
- */
-const COLUMN_W = CARD_W * 3 + GAP * 2 + 4;
+/** Three 320px cards plus their gaps — the widest the grid ever needs to be. */
+const COLUMN_W = 1060;
 
 /** Anything after this index is newer than the original five. */
 const ORIGINAL_COUNT = 5;
@@ -81,7 +76,7 @@ export default async function PublicTemplatesPage() {
       />
 
       <div
-        className="relative mx-auto w-full px-6 pt-20 pb-14"
+        className="relative mx-auto w-full px-4 pt-14 pb-10 sm:px-6 sm:pt-20 sm:pb-14"
         style={{ maxWidth: `${COLUMN_W + 48}px` }}
       >
         <header className="max-w-3xl">
@@ -146,7 +141,7 @@ export default async function PublicTemplatesPage() {
           <section
             key={category.id}
             id={category.id}
-            className="relative mx-auto w-full scroll-mt-6 px-6 pt-16 pb-4"
+            className="relative mx-auto w-full scroll-mt-6 px-4 pt-12 pb-4 sm:px-6 sm:pt-16"
             style={{ maxWidth: `${COLUMN_W + 48}px` }}
           >
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b-2 border-white/10 pb-5">
@@ -169,10 +164,7 @@ export default async function PublicTemplatesPage() {
               </span>
             </div>
 
-            {/* Flex-wrap rather than a grid: sectors hold anywhere from one to
-                ten templates, and a 3-column grid leaves a lopsided hole beside
-                the short ones. Centred wrapping keeps every row balanced. */}
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-12">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
               {templates.map((template, index) => {
                 const accent = template.preview;
                 const isNew = template.isNew;
@@ -185,18 +177,15 @@ export default async function PublicTemplatesPage() {
                   // ragged heights across a row.
                   <article
                     key={template.id}
-                    className="card-rise group flex flex-col"
-                    style={{
-                      ["--d" as string]: `${(index % 3) * 90}ms`,
-                      width: `${CARD_W}px`,
-                    }}
+                    className="card-rise group flex min-w-0 flex-col"
+                    style={{ ["--d" as string]: `${(index % 3) * 90}ms` }}
                   >
                     {/* No static tilt: rotating a container forces its whole
                         subtree — the iframe included — to be resampled, which
                         left every preview visibly soft. The lift on hover is
                         transform too, but only while hovered. */}
                     <div
-                      className="relative rounded-[2rem] border-2 border-ink bg-white/[0.03] p-3 transition-all duration-300 group-hover:-translate-y-2"
+                      className="relative rounded-[1.7rem] border-2 border-ink bg-white/[0.03] p-2 transition-all duration-300 group-hover:-translate-y-2 sm:rounded-[2rem] sm:p-3"
                       style={{ boxShadow: `7px 7px 0 0 ${accent}` }}
                     >
                       <div
@@ -215,66 +204,59 @@ export default async function PublicTemplatesPage() {
                       <Link
                         href={previewHref}
                         aria-label={`View the ${template.name} template`}
-                        className="group/frame relative block overflow-hidden rounded-[1.4rem] bg-black"
-                        style={{ width: `${FRAME_W}px`, height: `${FRAME_H}px` }}
+                        className="group/frame relative block"
                       >
-                        <span className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-ink/70 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover/frame:opacity-100">
-                          <span className="sticker flex items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 py-2.5 text-sm font-black uppercase tracking-tight text-ink">
+                        <span className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-[1.4rem] bg-ink/70 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover/frame:opacity-100">
+                          <span className="sticker flex items-center gap-2 rounded-full border-2 border-ink bg-acid px-4 py-2 text-xs font-black uppercase tracking-tight text-ink sm:px-5 sm:py-2.5 sm:text-sm">
                             <Eye className="h-4 w-4" />
                             view
                           </span>
                         </span>
-                        {/* Rendered at the frame's real size rather than at
-                            390px and scaled down. Scaling an iframe rasterises
-                            it first, so the text came out soft; at native size
-                            the templates just lay out for a narrow viewport and
-                            stay pin sharp. */}
-                        {/* raw=1 skips the preview page's device-toggle chrome
-                            — the thumbnail wants the card alone. */}
-                        <iframe
+
+                        {/* raw=1 skips the preview page's chrome — the
+                            thumbnail wants the card alone. */}
+                        <TemplateThumb
                           src={`/preview/card/${template.id}?accent=${encodeURIComponent(accent)}&raw=1`}
                           title={`${template.name} template preview`}
-                          loading="lazy"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                          className="pointer-events-none absolute left-0 top-0 border-0"
-                          style={{ width: `${FRAME_W}px`, height: `${FRAME_H}px` }}
+                          aspect={THUMB_ASPECT}
                         />
 
                         {/* These pages are taller than one phone screen, so the
                             preview always cuts off. A frosted bar reads as
                             deliberate chrome — a black fade would smear over
                             the light templates like a stain. */}
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-9 items-center justify-center border-t border-white/15 bg-ink/70 backdrop-blur-md">
-                          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/70">
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-7 items-center justify-center rounded-b-[1.4rem] border-t border-white/15 bg-ink/70 backdrop-blur-md sm:h-9">
+                          <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/70 sm:text-[10px]">
                             scrolls on
                           </span>
                         </div>
                       </Link>
                     </div>
 
-                    <div className="mt-5 flex flex-1 flex-col px-1">
-                      <div className="flex items-center gap-2.5">
+                    <div className="mt-4 flex min-w-0 flex-1 flex-col px-1 sm:mt-5">
+                      <div className="flex min-w-0 items-center gap-2">
                         <span
-                          className="h-3.5 w-3.5 shrink-0 rounded-full border-2 border-ink"
+                          className="h-3 w-3 shrink-0 rounded-full border-2 border-ink sm:h-3.5 sm:w-3.5"
                           style={{ background: accent }}
                         />
-                        <h3 className="text-2xl font-black lowercase tracking-tight transition-colors group-hover:text-acid">
+                        <h3 className="truncate text-lg font-black lowercase tracking-tight transition-colors group-hover:text-acid sm:text-2xl">
                           {template.name}
                         </h3>
-                        <span className="ml-auto rounded-full border-2 border-white/15 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-white/40">
+                        {/* The vibe tag is the first thing to go — at half width
+                            it pushes the name into an ellipsis. */}
+                        <span className="ml-auto hidden shrink-0 rounded-full border-2 border-white/15 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-white/40 lg:inline">
                           {template.vibe}
                         </span>
                       </div>
 
-                      <p className="mt-2 text-sm font-medium leading-relaxed text-white/50">
+                      <p className="mt-1.5 text-xs font-medium leading-relaxed text-white/50 sm:mt-2 sm:text-sm">
                         {template.blurb}
                       </p>
 
                       {/* Who the preview is showing. Makes it obvious the
                           templates suit different trades, not just palettes. */}
                       {persona && (
-                        <p className="mt-2.5 flex items-center gap-1.5 text-[11px] font-bold text-white/30">
+                        <p className="mt-2 hidden items-center gap-1.5 text-[11px] font-bold text-white/30 sm:flex">
                           <User className="h-3 w-3 shrink-0" />
                           <span className="truncate">
                             {persona.headline} · {persona.location}
@@ -282,19 +264,21 @@ export default async function PublicTemplatesPage() {
                         </p>
                       )}
 
-                      <div className="mt-auto flex items-center gap-2 pt-4">
+                      <div className="mt-auto flex min-w-0 items-center gap-2 pt-3 sm:pt-4">
                         <Link
                           href={`/templates/${template.id}/edit`}
-                          className="sticker sticker-press group/btn inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid text-sm font-black uppercase tracking-tight text-ink"
+                          className="sticker sticker-press group/btn inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border-2 border-ink bg-acid text-xs font-black uppercase tracking-tight text-ink sm:h-12 sm:gap-2 sm:text-sm"
                         >
                           customise
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover/btn:translate-x-1" />
                         </Link>
 
+                        {/* Tapping the preview already opens it; the separate
+                            eye button is desktop-only affordance. */}
                         <Link
                           href={previewHref}
                           target="_blank"
-                          className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/20 text-white/70 transition-colors hover:border-acid hover:text-acid"
+                          className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-white/20 text-white/70 transition-colors hover:border-acid hover:text-acid lg:inline-flex"
                           title="Open full preview"
                         >
                           <Eye className="h-4 w-4" />
@@ -310,7 +294,7 @@ export default async function PublicTemplatesPage() {
       })}
 
       <section
-        className="relative mx-auto w-full px-6 pb-24 pt-20 text-center"
+        className="relative mx-auto w-full px-4 pb-20 pt-16 text-center sm:px-6 sm:pb-24 sm:pt-20"
         style={{ maxWidth: `${COLUMN_W + 48}px` }}
       >
         <div className="sticker-lg rounded-[2rem] border-2 border-ink bg-acid p-10 text-ink">

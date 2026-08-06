@@ -20,6 +20,8 @@ export type AdminOrder = {
   flagged: boolean;
   internal_note: string | null;
   payment_proof_url: string | null;
+  branding: string | null;
+  admin_seen_at: string | null;
   created_at: string;
 };
 
@@ -129,7 +131,16 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                   />
                 </td>
                 <td className="px-4 py-4">
-                  <p className="font-mono text-sm font-black text-white">{o.reference}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-sm font-black text-white">{o.reference}</p>
+                    {/* Survives the badge being cleared on open, so an admin can
+                        still tell which orders are the ones that just came in. */}
+                    {!o.admin_seen_at && (
+                      <span className="rounded-full bg-hotpink px-1.5 text-[10px] font-black uppercase text-white">
+                        new
+                      </span>
+                    )}
+                  </div>
                   <p className="text-xs font-semibold text-white/35">
                     {new Date(o.created_at).toLocaleDateString("en-GB")}
                   </p>
@@ -146,6 +157,12 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                 </td>
                 <td className="px-4 py-4 text-sm font-bold lowercase text-white/70">
                   {o.quantity} × {o.plan_id}
+                  {/* Printing needs to know this before the card goes out. */}
+                  {o.branding === "unbranded" && (
+                    <span className="mt-1 block text-[11px] font-black uppercase tracking-wide text-acid">
+                      no branding
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-4 text-sm font-black tabular-nums text-white">
                   Rs.{o.amount_pkr.toLocaleString()}

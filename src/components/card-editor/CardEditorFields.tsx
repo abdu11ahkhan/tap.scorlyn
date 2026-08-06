@@ -16,6 +16,7 @@ import {
 import { iconFor } from "@/components/card-templates/button-icons";
 import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
+import EditorSection from "./EditorSection";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
 
 
@@ -54,6 +55,11 @@ export default function CardEditorFields({
   onExtrasChange: (patch: Partial<ExtrasState>) => void;
   showUsername?: boolean;
 }) {
+  // Shown on the collapsed section headers so it's obvious what's already
+  // filled in without opening each one.
+  const photoCount =
+    (form.avatar_url ? 1 : 0) + (form.cover_url ? 1 : 0) + gallery.length;
+
   const updateButton = (index: number, patch: Partial<CardButton>) => {
     onButtonsChange(buttons.map((b, i) => (i === index ? { ...b, ...patch } : b)));
   };
@@ -88,7 +94,7 @@ export default function CardEditorFields({
   };
 
   return (
-    <div className="min-w-0 space-y-9">
+    <div className="min-w-0 space-y-3">
       <TemplatePicker
         value={form.template}
         accent={form.accent_color}
@@ -96,6 +102,11 @@ export default function CardEditorFields({
       />
 
       {/* ---------------- Style ---------------- */}
+      <EditorSection
+        title="colour & font"
+        hint="The accent used across your card"
+        badge={form.font}
+      >
       <section className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="accent_color">Accent colour</Label>
@@ -155,7 +166,14 @@ export default function CardEditorFields({
         </div>
       </section>
 
+      </EditorSection>
+
       {/* ---------------- Identity ---------------- */}
+      <EditorSection
+        title="your details"
+        hint="Name, role, company, bio"
+        defaultOpen
+      >
       <section className="space-y-5">
         {showUsername && (
           <div className="space-y-2">
@@ -233,7 +251,14 @@ export default function CardEditorFields({
         </div>
       </section>
 
+      </EditorSection>
+
       {/* ---------------- Photos ---------------- */}
+      <EditorSection
+        title="photos"
+        hint="Profile picture, cover image, gallery"
+        badge={photoCount ? `${photoCount}` : undefined}
+      >
       <section className="space-y-5">
         <div>
           <Label>Photos</Label>
@@ -358,7 +383,15 @@ export default function CardEditorFields({
         </div>
       </section>
 
+      </EditorSection>
+
       {/* ---------------- Buttons ---------------- */}
+      <EditorSection
+        title="links"
+        hint="WhatsApp, email, socials, anything"
+        badge={buttons.length ? `${buttons.length}` : undefined}
+        defaultOpen
+      >
       <section className="space-y-3">
         <div>
           <Label>Buttons</Label>
@@ -493,7 +526,14 @@ export default function CardEditorFields({
         </button>
       </section>
 
-      <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
+      </EditorSection>
+
+      <EditorSection
+        title="extras"
+        hint="Availability, hours, video, payment details"
+      >
+        <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
+      </EditorSection>
     </div>
   );
 }

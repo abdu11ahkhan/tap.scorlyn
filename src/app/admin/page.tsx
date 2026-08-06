@@ -37,6 +37,15 @@ export default async function AdminOverview() {
       .eq("event_type", "signup"),
   ]);
 
+  // The new-order alert. Everything that arrived since an admin last opened
+  // the orders list — the closest thing to an inbox until email is wired up.
+  const { data: newOrders } = await supabase
+    .from("orders")
+    .select("id, reference, full_name, city, amount_pkr, quantity, plan_id, branding, created_at")
+    .is("admin_seen_at", null)
+    .order("created_at", { ascending: false })
+    .limit(8);
+
   const tapRows: Tap[] = taps.data ?? [];
   const nfcTaps = tapRows.filter((t) => t.source === "nfc").length;
   const series = dailySeries(tapRows);
@@ -83,6 +92,46 @@ export default async function AdminOverview() {
           {error.message} — check that migration 004 has been applied and your
           account has is_admin set.
         </div>
+      )}
+
+      {(newOrders ?? []).length > 0 && (
+        <section className="app-panel app-panel-pad border-hotpink/40">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-hotpink px-1.5 text-[12px] font-black text-white">
+              {newOrders!.length}
+            </span>
+            <h2 className="font-black lowercase">new orders</h2>
+            <Link
+              href="/admin/orders"
+              className="ml-auto text-[13px] font-semibold text-acid hover:underline"
+            >
+              open all
+            </Link>
+          </div>
+          <ul className="divide-y divide-white/8">
+            {newOrders!.map((o) => (
+              <li key={o.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5">
+                <span className="font-mono text-[13px] font-black text-white">
+                  {o.reference}
+                </span>
+                <span className="text-[13px] font-semibold text-white/70">
+                  {o.full_name} · {o.city}
+                </span>
+                <span className="text-[12px] text-white/40">
+                  {o.quantity} × {o.plan_id}
+                  {o.branding === "unbranded" && " · no branding"}
+                </span>
+                <span className="ml-auto text-[13px] font-black tabular-nums">
+                  Rs.{(o.amount_pkr as number).toLocaleString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[12px] text-white/30">
+            Cleared when you open the orders list. No email is sent yet — set
+            RESEND_API_KEY and ORDER_ALERT_EMAIL to turn that on.
+          </p>
+        </section>
       )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

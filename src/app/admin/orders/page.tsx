@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Download, Flag, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import OrdersTable, { type AdminOrder } from "./OrdersTable";
+import MarkSeen from "./MarkSeen";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,13 @@ export default async function AdminOrders({
 
   const { data, count, error } = await query;
   const orders = (data ?? []) as AdminOrder[];
+
+  // Counted across every order, not just this filtered page — the badge in the
+  // nav counts the same way, so clearing it here has to mean the same thing.
+  const { count: unseen } = await supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .is("admin_seen_at", null);
 
   // Money figures come from every row, not just this page.
   const { data: allRows } = await supabase
@@ -158,6 +166,7 @@ export default async function AdminOrders({
       ) : (
         <OrdersTable orders={orders} />
       )}
+      <MarkSeen unseen={unseen ?? 0} />
     </div>
   );
 }
