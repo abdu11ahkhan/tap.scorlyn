@@ -516,115 +516,38 @@ textarea.app-input {
 }
 
 /* ------------------------------------------------------------------
-   Admin console — light, Polaris-flavoured.
+   Admin console.
 
-   The storefront is meant to shout; the console is a tool you sit in for
-   an hour reconciling orders, and a dark neon surface is tiring for that.
-   This is Shopify's shape: pale page, white cards, hairline borders, a
-   near-black primary action, and quiet type.
+   Shopify's *shape* — a left rail, cards, dense tables, one calm primary
+   action — on the site's own dark palette, so moving between the storefront
+   and the console doesn't feel like two products.
 
-   Scoped to .admin-shell and expressed as overrides of the utilities the
-   admin pages already use, rather than a rewrite of fifteen files. The
-   opacity ladder (white/70 down to white/25) carries the visual hierarchy,
-   so each step maps to its own grey instead of collapsing to one.
+   The shared app-* layer is already dark, so this only styles the chrome the
+   console adds. An earlier attempt recoloured the whole thing light by
+   overriding the white/opacity utilities; that flattened the dark top bar's
+   own text to grey (1.32:1) because it caught .text-white there too.
    ------------------------------------------------------------------ */
 
 .admin-shell {
-  --a-bg: #f1f1f1;
-  --a-surface: #ffffff;
-  --a-border: #e1e1e1;
-  --a-border-soft: #ececec;
-  --a-text: #303030;
-  --a-text-2: #616161;
-  --a-text-3: #8a8a8a;
-  --a-text-4: #b5b5b5;
-
-  background: var(--a-bg);
-  color: var(--a-text);
-}
-
-/* Text ladder */
-.admin-shell .text-white,
-.admin-shell .hover\:text-white:hover { color: var(--a-text); }
-.admin-shell .text-white\/80 { color: #3d3d3d; }
-.admin-shell .text-white\/70 { color: #474747; }
-.admin-shell .text-white\/60 { color: #545454; }
-.admin-shell .text-white\/55 { color: var(--a-text-2); }
-.admin-shell .text-white\/50 { color: #6b6b6b; }
-.admin-shell .text-white\/45 { color: #737373; }
-.admin-shell .text-white\/40 { color: #7d7d7d; }
-.admin-shell .text-white\/35 { color: var(--a-text-3); }
-.admin-shell .text-white\/30 { color: #9c9c9c; }
-.admin-shell .text-white\/25 { color: var(--a-text-4); }
-
-/* Surfaces */
-.admin-shell .bg-white\/\[0\.01\],
-.admin-shell .bg-white\/\[0\.02\],
-.admin-shell .bg-white\/\[0\.03\],
-.admin-shell .bg-white\/\[0\.04\],
-.admin-shell .bg-white\/\[0\.05\] { background: var(--a-surface); }
-.admin-shell .bg-white\/15 { background: #ededed; }
-.admin-shell .hover\:bg-white\/\[0\.03\]:hover,
-.admin-shell .hover\:bg-white\/\[0\.06\]:hover { background: #f7f7f7; }
-
-/* Lines */
-.admin-shell .border-white\/8,
-.admin-shell .border-white\/10,
-.admin-shell .border-white\/12,
-.admin-shell .border-white\/15,
-.admin-shell .border-white\/20,
-.admin-shell .hover\:border-white\/45:hover { border-color: var(--a-border); }
-.admin-shell .divide-white\/6 > * + *,
-.admin-shell .divide-white\/8 > * + * { border-color: var(--a-border-soft); }
-
-/* The shared app-* layer */
-.admin-shell .app-panel {
-  background: var(--a-surface);
-  border: 1px solid var(--a-border);
-  border-radius: 12px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
-}
-.admin-shell .app-h1 { color: var(--a-text); font-size: 1.3125rem; }
-.admin-shell .app-h2 { color: var(--a-text-3); }
-.admin-shell .app-sub { color: var(--a-text-2); }
-
-.admin-shell .app-input {
-  background: var(--a-surface);
-  border-color: #c9c9c9;
-  color: var(--a-text);
-}
-.admin-shell .app-input::placeholder { color: var(--a-text-4); }
-.admin-shell .app-input:focus {
-  border-color: #303030;
-  box-shadow: 0 0 0 2px rgba(48, 48, 48, 0.12);
-}
-
-/* Near-black primary, the way Polaris does it — the acid green is a
-   marketing colour and reads as an alert in a dense table. */
-.admin-shell .app-btn-primary {
-  background: #303030;
+  --a-rail: rgba(255, 255, 255, 0.03);
+  --a-line: rgba(255, 255, 255, 0.09);
+  background: var(--color-ink);
   color: #fff;
-  border-color: #303030;
 }
-.admin-shell .app-btn-primary:hover { background: #1a1a1a; }
-.admin-shell .app-btn-ghost {
-  background: var(--a-surface);
-  border: 1px solid #c9c9c9;
-  color: var(--a-text);
-}
-.admin-shell .app-btn-ghost:hover { background: #f7f7f7; }
-.admin-shell .app-btn-danger { background: #d72c0d; border-color: #d72c0d; color: #fff; }
 
-.admin-shell .app-table th {
-  background: #fafafa;
-  color: var(--a-text-2);
-  border-bottom: 1px solid var(--a-border);
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 9px;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
-.admin-shell .app-table td { border-bottom: 1px solid var(--a-border-soft); }
 
-/* Accent-on-dark bits that only work on ink */
-.admin-shell .text-acid { color: #1a6b3c; }
-.admin-shell .bg-acid { background: #303030; color: #fff; }
-.admin-shell .border-ink { border-color: var(--a-border); }
-.admin-shell select.app-input,
-.admin-shell select { background-color: var(--a-surface); color: var(--a-text); }
+.admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}

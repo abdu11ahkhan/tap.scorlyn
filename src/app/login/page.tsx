@@ -18,11 +18,22 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // Same credentials either way — this only decides where you land, and the
+  // admin area still gates on is_admin server-side. It exists because an admin
+  // is also a customer, and typing /admin every time is friction.
+  const [mode, setMode] = useState<"customer" | "admin">("customer");
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  const next = safeNext(searchParams.get("next"));
+  const requestedNext = safeNext(searchParams.get("next"));
+  // An explicit ?next= wins — it's how Publish carries unsaved work through.
+  const hasExplicitNext = Boolean(searchParams.get("next"));
+  const next = hasExplicitNext
+    ? requestedNext
+    : mode === "admin"
+      ? "/admin"
+      : "/dashboard";
   // Arriving here from Publish means there's unsaved work waiting.
   const fromDraft = next.includes("from=draft");
 
@@ -67,8 +78,33 @@ function LoginForm() {
         <p className="mt-3 text-[15px] font-semibold text-ink/50">
           {fromDraft
             ? "Log in and we'll bring your card straight over."
-            : "Log in to manage your card."}
+            : mode === "admin"
+              ? "Log in to the ScorlynTap console."
+              : "Log in to manage your card."}
         </p>
+
+        {!hasExplicitNext && (
+          <div className="mt-5 flex gap-1 rounded-full border-2 border-ink bg-ink/[0.06] p-1">
+            {([
+              { id: "customer" as const, label: "my card" },
+              { id: "admin" as const, label: "admin" },
+            ]).map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setMode(tab.id)}
+                aria-pressed={mode === tab.id}
+                className={`min-h-11 flex-1 rounded-full text-sm font-black lowercase transition-colors ${
+                  mode === tab.id
+                    ? "bg-ink text-acid"
+                    : "text-ink/45 hover:text-ink"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {error && (
           <div className="mt-6 rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">

@@ -4,12 +4,20 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
+/**
+ * Kept in step with the `plans` table by hand.
+ *
+ * These numbers are quoted on the storefront and charged from the database, so
+ * a mismatch is a customer being shown one price and billed another. If this
+ * drifts again it should read from the table instead — the only reason it
+ * doesn't is that this is a client component inside a static marketing page.
+ */
 const PLANS = [
   {
-    name: "free",
+    name: "free page",
     price: "Rs.0",
     note: "forever",
-    perks: ["1 digital card", "all 5 templates", "unlimited links", "tap counter"],
+    perks: ["your own card page", "every template", "unlimited links", "tap counter"],
     cta: "start free",
     href: "/templates",
     className: "bg-white text-ink",
@@ -17,22 +25,37 @@ const PLANS = [
     tilt: "-1.5deg",
   },
   {
-    name: "card + setup",
-    price: "Rs.1,200",
+    name: "blank nfc card",
+    price: "Rs.1,600",
     note: "one time",
     perks: [
-      "everything in free",
-      "physical NFC card, posted to you",
+      "everything in the free page",
+      "blank NFC card, posted to you",
       "we write and link it for you",
-      "full referral dashboard",
-      "swap your design anytime",
+      "swap your page design anytime",
     ],
     cta: "get my card",
     href: "/templates",
     className: "bg-acid text-ink",
     button: "bg-ink text-acid",
     featured: true,
-    tilt: "1.5deg",
+    tilt: "1deg",
+  },
+  {
+    name: "your design",
+    price: "Rs.2,200",
+    note: "one time",
+    perks: [
+      "everything in the blank card",
+      "your artwork printed on it",
+      "design help if you need it",
+      "priority support",
+    ],
+    cta: "order yours",
+    href: "/templates",
+    className: "bg-white text-ink",
+    button: "bg-ink text-white",
+    tilt: "-1deg",
   },
 ];
 
@@ -53,12 +76,12 @@ export function Pricing() {
             cheap. <span className="text-hotpink">obviously.</span>
           </h2>
           <p className="mt-5 max-w-lg text-lg font-medium text-white/60">
-            The digital card is free. You only pay if you want the physical one in
-            your pocket.
+            The card page is free forever. You only pay when you want the
+            physical card in your pocket.
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           {PLANS.map((plan, index) => (
             <motion.div
               key={plan.name}
