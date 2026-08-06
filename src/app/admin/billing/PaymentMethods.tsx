@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Loader2, Plus, Trash2 } from "lucide-react";
 import { deleteShopPayment, saveShopPayment } from "../actions";
+import { hasBankData, parseBankPaste } from "@/lib/parse-paste";
 
 export type ShopPayment = {
   id: string;
@@ -170,7 +171,19 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
               <input
                 value={editing.label}
                 onChange={(e) => setEditing({ ...editing, label: e.target.value })}
-                placeholder="Meezan Bank"
+                onPaste={(e) => {
+                  const parsed = parseBankPaste(e.clipboardData.getData("text"));
+                  if (!hasBankData(parsed)) return;
+                  e.preventDefault();
+                  setEditing({
+                    ...editing,
+                    label: parsed.label ?? editing.label,
+                    accountName: parsed.accountName ?? editing.accountName,
+                    accountNumber: parsed.accountNumber ?? editing.accountNumber,
+                    iban: parsed.iban ?? editing.iban,
+                  });
+                }}
+                placeholder="Meezan Bank — or paste the whole block"
                 className="app-input mt-1.5"
               />
             </label>

@@ -178,7 +178,14 @@ export default async function AdminUserDetail({
                 <tbody className="divide-y divide-white/6">
                   {orderRows.map((o) => (
                     <tr key={o.id}>
-                      <td className="font-mono text-[13px] text-white">{o.reference}</td>
+                      <td className="font-mono text-[13px]">
+                        <Link
+                          href={`/admin/orders/${o.id}`}
+                          className="text-white hover:text-acid hover:underline"
+                        >
+                          {o.reference}
+                        </Link>
+                      </td>
                       <td className="text-white/60">
                         {o.quantity} × {o.plan_id}
                       </td>

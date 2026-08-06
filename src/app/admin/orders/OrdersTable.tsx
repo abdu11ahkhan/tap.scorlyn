@@ -134,7 +134,14 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                 </td>
                 <td className="px-4 py-4">
                   <div className="flex items-center gap-2">
-                    <p className="font-mono text-sm font-black text-white">{o.reference}</p>
+                    {/* The reference opens the full order — address included,
+                        which the table has no room for. */}
+                    <Link
+                      href={`/admin/orders/${o.id}`}
+                      className="font-mono text-sm font-black text-white hover:text-acid hover:underline"
+                    >
+                      {o.reference}
+                    </Link>
                     {/* Survives the badge being cleared on open, so an admin can
                         still tell which orders are the ones that just came in. */}
                     {!o.admin_seen_at && (

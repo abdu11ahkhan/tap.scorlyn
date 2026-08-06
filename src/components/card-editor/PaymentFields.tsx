@@ -4,6 +4,7 @@ import { AlertTriangle, Plus, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { PaymentMethod } from "@/lib/card";
+import { hasBankData, parseBankPaste } from "@/lib/parse-paste";
 
 const FIELD =
   "border-2 border-white/15 bg-white/[0.04] font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:ring-0";
