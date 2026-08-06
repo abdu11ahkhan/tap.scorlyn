@@ -108,9 +108,9 @@ export default function PublicCardEditor({
 
   if (!isKnownTemplate) {
     return (
-      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
+      <div className="grain flex min-h-screen flex-col items-center justify-center gap-4 bg-ink text-white">
         <p className="text-slate-400">That template doesn&apos;t exist.</p>
-        <Link href="/templates" className="text-cyan-400 font-semibold hover:text-cyan-300">
+        <Link href="/templates" className="font-black lowercase text-acid hover:underline">
           Browse templates
         </Link>
       </div>
@@ -119,8 +119,8 @@ export default function PublicCardEditor({
 
   if (!ready) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+      <div className="grain flex min-h-screen items-center justify-center bg-ink">
+        <Loader2 className="h-6 w-6 animate-spin text-acid" />
       </div>
     );
   }

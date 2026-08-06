@@ -2,11 +2,10 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Check, Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import {
   changeEmail,
   changePassword,
-  changeUsername,
   deleteAccount,
   saveNotifications,
 } from "./actions";
@@ -73,18 +72,13 @@ function Panel({
 
 export default function SettingsPanels({
   email,
-  username,
-  usernameLocked,
   notify,
 }: {
   email: string;
-  username: string | null;
-  usernameLocked: boolean;
   notify: { email: boolean; whatsapp: boolean; number: string };
 }) {
   const router = useRouter();
 
-  const [handle, setHandle] = useState(username ?? "");
   const [newEmail, setNewEmail] = useState(email);
   const [password, setPassword] = useState("");
   const [notifyEmail, setNotifyEmail] = useState(notify.email);
@@ -94,40 +88,6 @@ export default function SettingsPanels({
 
   return (
     <div className="space-y-4">
-      {/* Handle */}
-      <Panel
-        title="Public handle"
-        help={
-          usernameLocked
-            ? "You have already used your one change. Contact support if it needs changing again."
-            : "You can change this once."
-        }
-        onSave={() => changeUsername(handle)}
-        saveLabel="Change handle"
-        confirmText={`Change your handle to "${handle}"? Any NFC card already printed with the old link will stop working. This can only be done once.`}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-[13px] text-white/35">/u/</span>
-          <input
-            value={handle}
-            onChange={(e) => setHandle(e.target.value)}
-            disabled={usernameLocked}
-            className="app-input max-w-xs"
-          />
-        </div>
-
-        {!usernameLocked && (
-          <div className="flex items-start gap-2.5 rounded-lg border border-hotpink/30 bg-hotpink/10 p-3">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-hotpink" />
-            <p className="text-[13px] leading-relaxed text-white/65">
-              Printed cards point at your current link. Changing the handle
-              breaks any card already in someone&apos;s wallet — the chip
-              cannot be updated remotely.
-            </p>
-          </div>
-        )}
-      </Panel>
-
       {/* Email */}
       <Panel
         title="Email address"

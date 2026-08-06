@@ -37,8 +37,6 @@ export default async function SettingsPage() {
 
       <SettingsPanels
         email={user.email ?? ""}
-        username={card?.username ?? null}
-        usernameLocked={Boolean(card?.username_changed_at)}
         notify={{
           email: profile?.notify_email ?? true,
           whatsapp: profile?.notify_whatsapp ?? false,

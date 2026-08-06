@@ -1,6 +1,16 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
+import {
+  CreditCard,
+  HelpCircle,
+  LayoutDashboard,
+  LayoutTemplate,
+  Nfc,
+  Settings,
+  ShieldCheck,
+  ShoppingBag,
+  Users,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -55,60 +65,88 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .select("id", { count: "exact", head: true })
     .is("admin_seen_at", null);
 
-  return (
-    <div className="grain min-h-screen bg-ink text-white">
-      <header className="border-b border-white/8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-3.5">
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
-              <ShieldCheck className="h-4 w-4 text-ink" />
-            </span>
-            <div>
-              <p className="text-[15px] font-semibold leading-none">admin</p>
-              <p className="text-[12px] text-white/40">
-                {profile.full_name || user.email}
-              </p>
-            </div>
-          </div>
+  const nav = [
+    { href: "/admin", label: "Overview", icon: LayoutDashboard },
+    { href: "/admin/orders", label: "Orders", icon: ShoppingBag, badge: unseenOrders ?? 0 },
+    { href: "/admin/cards", label: "Cards", icon: CreditCard },
+    { href: "/admin/users", label: "Customers", icon: Users },
+    { href: "/admin/nfc", label: "NFC stock", icon: Nfc },
+    { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
+    { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
+    { href: "/admin/settings", label: "Settings", icon: Settings },
+  ];
 
-          <nav className="flex flex-wrap items-center gap-1.5">
-            {[
-              { href: "/admin", label: "overview" },
-              { href: "/admin/orders", label: "orders", badge: unseenOrders ?? 0 },
-              { href: "/admin/cards", label: "cards" },
-              { href: "/admin/users", label: "people" },
-              { href: "/admin/nfc", label: "nfc stock" },
-              { href: "/admin/templates", label: "templates" },
-              { href: "/admin/faq", label: "faq" },
-              { href: "/admin/settings", label: "site" },
-            ].map((item) => (
+  return (
+    <div className="admin-shell min-h-screen">
+      {/* Top bar: thin, dark, always there — the way a console anchors itself. */}
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 bg-[#1a1a1a] px-4 text-white">
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-white/10">
+          <ShieldCheck className="h-4 w-4" />
+        </span>
+        <p className="text-[14px] font-semibold">ScorlynTap admin</p>
+
+        <div className="ml-auto flex items-center gap-3">
+          <p className="hidden text-[13px] text-white/50 sm:block">
+            {profile.full_name || user.email}
+          </p>
+          <Link
+            href="/dashboard"
+            className="rounded-md border border-white/20 px-3 py-1.5 text-[13px] font-medium text-white/80 transition-colors hover:bg-white/10"
+          >
+            Exit
+          </Link>
+        </div>
+      </header>
+
+      <div className="mx-auto flex w-full max-w-[1400px]">
+        {/* Sidebar. Hidden on small screens, where it becomes a scrolling
+            strip under the header instead — a 200px rail on a phone leaves
+            nothing for the tables it exists to navigate. */}
+        <aside className="hidden w-[220px] shrink-0 border-r border-[var(--a-border)] bg-[#fbfbfb] px-3 py-4 lg:block">
+          <nav className="space-y-0.5">
+            {nav.map(({ href, label, icon: Icon, badge }) => (
               <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/[0.06] hover:text-white"
+                key={href}
+                href={href}
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-[#4a4a4a] transition-colors hover:bg-[#efefef]"
               >
-                {item.label}
-                {Boolean(item.badge) && (
+                <Icon className="h-4 w-4 shrink-0 text-[#8a8a8a]" />
+                <span className="min-w-0 flex-1 truncate">{label}</span>
+                {Boolean(badge) && (
                   <span
-                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-hotpink px-1 text-[11px] font-black text-white"
-                    title={`${item.badge} order${item.badge === 1 ? "" : "s"} you haven't opened`}
+                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#d72c0d] px-1 text-[11px] font-bold text-white"
+                    title={`${badge} order${badge === 1 ? "" : "s"} you haven't opened`}
                   >
-                    {item.badge}
+                    {badge}
                   </span>
                 )}
               </Link>
             ))}
-            <Link
-              href="/dashboard"
-              className="app-btn app-btn-ghost"
-            >
-              exit
-            </Link>
           </nav>
-        </div>
-      </header>
+        </aside>
 
-      <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
+        {/* Mobile nav */}
+        <div className="min-w-0 flex-1">
+          <div className="flex gap-1 overflow-x-auto border-b border-[var(--a-border)] bg-[#fbfbfb] px-3 py-2 lg:hidden">
+            {nav.map(({ href, label, badge }) => (
+              <Link
+                key={href}
+                href={href}
+                className="flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-medium text-[#4a4a4a]"
+              >
+                {label}
+                {Boolean(badge) && (
+                  <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-[#d72c0d] px-1 text-[10px] font-bold text-white">
+                    {badge}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+
+          <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6">{children}</main>
+        </div>
+      </div>
     </div>
   );
 }

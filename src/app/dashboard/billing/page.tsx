@@ -1,101 +1,176 @@
-"use client";
+import Link from "next/link";
+import { ArrowUpRight, FileText, Receipt } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { STATUS_LABELS, statusTone } from "../orders/status";
 
-import { Check, CreditCard, Zap } from "lucide-react";
-import { motion } from "framer-motion";
+export const dynamic = "force-dynamic";
 
-export default function BillingPage() {
+type Plan = { id: string; name: string; price_pkr: number; blurb: string | null };
+type Order = {
+  id: string;
+  reference: string;
+  status: string;
+  amount_pkr: number;
+  quantity: number;
+  plan_id: string | null;
+  branding: string | null;
+  created_at: string;
+};
+
+/** Statuses where the money is actually ours. */
+const SETTLED = ["paid", "printing", "shipped", "delivered"];
+
+/**
+ * Billing.
+ *
+ * This page used to advertise a $12/month "Pro Plan" with unlimited websites
+ * and custom domains — an artefact of the site-builder this project started
+ * as. None of that exists: cards are bought once, in rupees, and there is no
+ * subscription to manage. So the page shows what there actually is to show —
+ * what you've spent, on what, and where the invoices are.
+ */
+export default async function BillingPage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return <p className="app-sub">Please log in.</p>;
+  }
+
+  const [{ data: planRows }, { data: orderRows }] = await Promise.all([
+    supabase.from("plans").select("id, name, price_pkr, blurb").eq("enabled", true).order("sort_order"),
+    supabase
+      .from("orders")
+      .select("id, reference, status, amount_pkr, quantity, plan_id, branding, created_at")
+      .order("created_at", { ascending: false }),
+  ]);
+
+  const plans = (planRows ?? []) as Plan[];
+  const orders = (orderRows ?? []) as Order[];
+
+  const spent = orders
+    .filter((o) => SETTLED.includes(o.status))
+    .reduce((sum, o) => sum + o.amount_pkr, 0);
+  const awaiting = orders.filter((o) => o.status === "pending");
+  const cardsOrdered = orders
+    .filter((o) => SETTLED.includes(o.status))
+    .reduce((sum, o) => sum + o.quantity, 0);
+
+  const money = (n: number) => `Rs.${n.toLocaleString()}`;
+
   return (
-    <div className="space-y-12 max-w-7xl mx-auto pb-20">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col md:flex-row md:items-end justify-between gap-6"
-      >
-        <div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-2">BILLING.</h1>
-          <p className="text-xl text-slate-400 font-medium">Manage your subscription, billing details, and view invoices.</p>
-        </div>
-      </motion.div>
-
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Current Plan */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-[#0A0A0A] border border-white/5 rounded-[2rem] p-10 relative overflow-hidden group hover:bg-[#111] transition-colors"
-        >
-          <div className="absolute top-0 right-0 p-8 opacity-5 text-white transition-opacity group-hover:opacity-10">
-            <Zap className="w-48 h-48 -mr-10 -mt-10" />
-          </div>
-          <div className="relative z-10">
-            <h3 className="text-2xl font-black uppercase tracking-tight mb-2">Free Plan</h3>
-            <p className="text-slate-400 mb-8 font-medium">You are currently on the basic free plan.</p>
-
-            <div className="text-6xl font-black mb-8 tracking-tighter">$0 <span className="text-xl font-bold text-slate-500 uppercase tracking-widest">/ mo</span></div>
-
-            <ul className="space-y-5 mb-10">
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> 1 Portfolio Website</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Standard Templates</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> ScorlynTap Subdomain</li>
-              <li className="flex items-center gap-4 font-bold text-slate-600"><Check className="w-5 h-5 text-slate-700" /> No Custom Domains</li>
-              <li className="flex items-center gap-4 font-bold text-slate-600"><Check className="w-5 h-5 text-slate-700" /> No Advanced Analytics</li>
-            </ul>
-          </div>
-        </motion.div>
-
-        {/* Pro Plan Upgrade */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-gradient-to-b from-[#0A0A0A] to-[#050505] border border-cyan-900/30 rounded-[2rem] p-10 relative overflow-hidden group"
-        >
-          <div className="absolute top-0 right-0 bg-cyan-950 text-cyan-400 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-bl-2xl border-l border-b border-cyan-900/50 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-            RECOMMENDED
-          </div>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-cyan-500/20 transition-colors" />
-
-          <div className="relative z-10 flex flex-col h-full">
-            <h3 className="text-2xl font-black uppercase tracking-tight mb-2 text-white">Pro Plan</h3>
-            <p className="text-slate-400 mb-8 font-medium">Everything you need for a professional presence.</p>
-
-            <div className="text-6xl font-black mb-8 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">$12 <span className="text-xl font-bold text-slate-500 uppercase tracking-widest">/ mo</span></div>
-
-            <ul className="space-y-5 mb-10 flex-1">
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Unlimited Websites</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Premium 3D Templates</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Custom Domain Support</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Advanced Analytics</li>
-              <li className="flex items-center gap-4 font-bold text-white"><Check className="w-5 h-5 text-cyan-400" /> Priority Support</li>
-            </ul>
-
-            <button className="w-full py-5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 text-black font-black uppercase tracking-widest text-sm transition-transform hover:scale-105 shadow-[0_0_30px_rgba(34,211,238,0.3)] mt-auto">
-              Upgrade to Pro
-            </button>
-          </div>
-        </motion.div>
+    <div className="space-y-5">
+      <div>
+        <h1 className="app-h1">Billing</h1>
+        <p className="app-sub mt-1">
+          What you&apos;ve paid, and the invoices for it. Cards are a one-off
+          purchase — there&apos;s no subscription.
+        </p>
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-[#0A0A0A] border border-white/5 rounded-[2rem] p-8 mt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:bg-[#111] transition-colors"
-      >
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center border border-white/5">
-            <CreditCard className="w-8 h-8 text-slate-500" />
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        {[
+          { label: "Total paid", value: money(spent), hint: "confirmed orders only" },
+          { label: "Cards ordered", value: String(cardsOrdered), hint: "across all orders" },
+          {
+            label: "Awaiting payment",
+            value: awaiting.length ? money(awaiting.reduce((s, o) => s + o.amount_pkr, 0)) : "—",
+            hint: awaiting.length ? `${awaiting.length} order${awaiting.length === 1 ? "" : "s"}` : "nothing outstanding",
+          },
+        ].map((stat) => (
+          <div key={stat.label} className="app-panel app-panel-pad">
+            <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
+            <p className="app-sub mt-1">{stat.label}</p>
+            <p className="mt-1 text-[12px] text-white/35">{stat.hint}</p>
           </div>
-          <div>
-            <h3 className="font-black text-xl uppercase tracking-tight mb-1">Payment Methods</h3>
-            <p className="text-sm text-slate-500 font-medium">No payment methods added yet.</p>
-          </div>
+        ))}
+      </div>
+
+      {/* What things cost */}
+      <section className="app-panel app-panel-pad">
+        <h2 className="font-black lowercase">what things cost</h2>
+        <p className="app-sub mt-1">Prices are set by us and can change; placed orders keep the price they were quoted.</p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {plans.map((p) => (
+            <div key={p.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+              <p className="text-[15px] font-semibold">{p.name}</p>
+              <p className="mt-1 text-xl font-black tracking-tight">
+                {p.price_pkr === 0 ? "Free" : money(p.price_pkr)}
+              </p>
+              {p.blurb && <p className="app-sub mt-1.5 text-[12px]">{p.blurb}</p>}
+            </div>
+          ))}
         </div>
-        <button className="px-8 py-4 rounded-full border border-white/10 hover:bg-white/5 font-bold uppercase tracking-widest text-xs transition-colors shadow-sm">
-          Add Card
-        </button>
-      </motion.div>
+
+        <Link href="/dashboard/orders" className="app-btn app-btn-primary mt-5">
+          Order a card
+          <ArrowUpRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      {/* Invoices */}
+      <section className="app-panel app-panel-pad">
+        <div className="mb-4 flex items-center gap-2">
+          <Receipt className="h-4 w-4" />
+          <h2 className="font-black lowercase">invoices</h2>
+        </div>
+
+        {orders.length === 0 ? (
+          <p className="app-sub">
+            No orders yet. Anything you buy shows up here with an invoice you can
+            download.
+          </p>
+        ) : (
+          <div className="divide-y divide-white/8">
+            {orders.map((o) => (
+              <div key={o.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-3">
+                <span className="font-mono text-[13px] font-black">{o.reference}</span>
+
+                <span className="text-[13px] text-white/55">
+                  {o.quantity} × {o.plan_id}
+                  {o.branding === "unbranded" && " · no branding"}
+                </span>
+
+                <span className="text-[12px] text-white/35">
+                  {new Date(o.created_at).toLocaleDateString("en-GB")}
+                </span>
+
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[11px] font-black ${statusTone(o.status)}`}
+                >
+                  {STATUS_LABELS[o.status] ?? o.status}
+                </span>
+
+                <span className="ml-auto text-[13px] font-black tabular-nums">
+                  {money(o.amount_pkr)}
+                </span>
+
+                <Link
+                  href={`/dashboard/orders/${o.id}/invoice`}
+                  className="app-btn app-btn-ghost shrink-0"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  Invoice
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="app-panel app-panel-pad">
+        <h2 className="font-black lowercase">how payment works</h2>
+        <p className="app-sub mt-1 max-w-2xl">
+          Orders are paid by bank transfer or EasyPaisa/JazzCash. You&apos;ll get
+          the details on the order page, upload proof of payment there, and we
+          confirm it manually before printing. Nothing is charged automatically
+          and no card details are stored.
+        </p>
+      </section>
     </div>
   );
 }
