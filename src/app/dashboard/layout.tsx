@@ -8,17 +8,15 @@ import {
   Settings,
   LogOut,
   IdCard,
-  BarChart3,
   Package,
-  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import BrandMark from "@/components/layout/BrandMark";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "My card", href: "/dashboard/card", icon: IdCard },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Orders", href: "/dashboard/orders", icon: Package },
   { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -45,10 +43,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className="z-20 hidden w-72 flex-col border-r border-white/8 bg-ink md:flex">
         <div className="flex h-24 items-center px-7">
           <Link href="/" className="group flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid transition-transform group-hover:rotate-12">
-              <Zap className="h-4 w-4 fill-ink text-ink" />
-            </span>
-            <span className="text-xl font-black tracking-tighter text-white">tapzar</span>
+            <BrandMark size={36} className="transition-transform group-hover:rotate-12" />
+            <span className="text-xl font-black tracking-tighter text-white">ScorlynTap</span>
           </Link>
         </div>
 

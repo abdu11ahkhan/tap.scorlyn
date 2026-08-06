@@ -22,7 +22,7 @@ import { referralOrderUrl, referralSignupUrl } from "@/lib/referral";
  * in practice: the owner is the one person who checks their own card, so they
  * were the only person who could never confirm the loop was working.
  */
-const DISMISS_KEY = "tapzar_banner_dismissed_at";
+const DISMISS_KEY = "ScorlynTap_banner_dismissed_at";
 const DISMISS_DAYS = 7;
 const SPRING: Transition = { type: "spring", stiffness: 260, damping: 26 };
 

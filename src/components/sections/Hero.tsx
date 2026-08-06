@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap } from "lucide-react";
+import BrandMark from "@/components/layout/BrandMark";
 
 /**
  * No photography, no pinned scroll sequence. The old hero loaded a full-bleed
@@ -159,11 +160,9 @@ export function Hero() {
             <div className="flex h-full flex-col justify-between">
               <div className="flex items-start justify-between">
                 <span className="text-2xl font-black tracking-tight text-white">
-                  tapzar
+                  ScorlynTap
                 </span>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
-                  <Zap className="h-4 w-4 fill-ink text-ink" />
-                </div>
+                <BrandMark size={36} />
               </div>
               <div>
                 <div className="mb-2 h-1.5 w-20 rounded-full bg-white/50" />

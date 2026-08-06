@@ -101,7 +101,7 @@ export default function SettingsForm({
           no-branding surcharge
         </label>
         <p className="mt-0.5 text-sm font-medium text-white/45">
-          Rupees per card to leave the Tapzar mark off. Applies to physical
+          Rupees per card to leave the ScorlynTap mark off. Applies to physical
           plans only, and to new orders — placed orders keep the price they were
           quoted.
         </p>

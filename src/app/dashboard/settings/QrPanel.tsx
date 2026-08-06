@@ -18,18 +18,41 @@ export default function QrPanel({ username }: { username: string }) {
   const holder = useRef<HTMLDivElement>(null);
   const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => setOrigin(window.location.origin), []);
 
   const url = origin ? `${origin}/u/${username}` : "";
 
   const download = () => {
+    setFailed(false);
+
     const canvas = holder.current?.querySelector("canvas");
-    if (!canvas) return;
-    const link = document.createElement("a");
-    link.download = `tapzar-${username}-qr.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    if (!canvas) {
+      setFailed(true);
+      return;
+    }
+
+    // A Blob, not canvas.toDataURL(). At 1024px the data URL is over a
+    // megabyte, and mobile Safari refuses to navigate to one that big — the
+    // button appeared to do nothing at all. The anchor also has to be in the
+    // document: a detached one is ignored by several browsers.
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        setFailed(true);
+        return;
+      }
+
+      const href = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = href;
+      link.download = `scorlyntap-${username}-qr.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      setTimeout(() => URL.revokeObjectURL(href), 10_000);
+    }, "image/png");
   };
 
   const copy = async () => {
@@ -67,6 +90,13 @@ export default function QrPanel({ username }: { username: string }) {
               Download QR
             </button>
           </div>
+
+          {failed && (
+            <p className="mt-2 text-[12px] font-semibold text-hotpink">
+              Couldn&apos;t save the QR. Long-press the code above and choose
+              &ldquo;Save image&rdquo; instead.
+            </p>
+          )}
         </div>
       </div>
 

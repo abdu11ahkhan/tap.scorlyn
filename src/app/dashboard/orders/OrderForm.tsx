@@ -107,9 +107,9 @@ export default function OrderForm({
               [
                 {
                   id: "branded" as const,
-                  name: "with tapzar mark",
+                  name: "with ScorlynTap mark",
                   price: 0,
-                  blurb: "A small Tapzar logo on the back of the card.",
+                  blurb: "A small ScorlynTap logo on the back of the card.",
                 },
                 {
                   id: "unbranded" as const,

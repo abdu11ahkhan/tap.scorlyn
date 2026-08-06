@@ -1,4 +1,4 @@
-# Tapzar
+# ScorlynTap
 
 NFC digital business cards with a built-in referral loop.
 

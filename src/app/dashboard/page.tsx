@@ -143,14 +143,6 @@ export default function DashboardPage() {
               );
             })}
           </div>
-
-          <Link
-            href="/dashboard/analytics"
-            className="app-btn app-btn-ghost group"
-          >
-            See full analytics
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
         </>
       ) : (
         <div className="app-panel app-panel-pad">

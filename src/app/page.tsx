@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import {  } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
 import { Features } from "@/components/sections/Features";
 import { Pricing } from "@/components/sections/Pricing";
+import BrandMark from "@/components/layout/BrandMark";
 
 export default function Home() {
   return (
@@ -37,10 +38,8 @@ export default function Home() {
       <footer className="border-t-2 border-white/10 bg-ink py-14">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 sm:flex-row sm:justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
-              <Zap className="h-4 w-4 fill-ink text-ink" />
-            </span>
-            <span className="text-xl font-black tracking-tighter text-white">tapzar</span>
+            <BrandMark size={36} />
+            <span className="text-xl font-black tracking-tighter text-white">ScorlynTap</span>
           </Link>
 
           {/* inline-flex + min-h-11 so each link is a thumb-sized target, not
@@ -67,7 +66,7 @@ export default function Home() {
           </div>
 
           <p className="text-xs font-bold uppercase tracking-widest text-white/30">
-            © {new Date().getFullYear()} tapzar
+            © {new Date().getFullYear()} ScorlynTap
           </p>
         </div>
       </footer>

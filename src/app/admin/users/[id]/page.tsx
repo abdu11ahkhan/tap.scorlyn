@@ -51,7 +51,7 @@ export default async function AdminUserDetail({
   // Pre-filled outreach. mailto/wa.me rather than an in-app inbox — there is
   // no messaging system, and pretending otherwise would just lose messages.
   const waNumber = (person.whatsapp ?? "").replace(/\D/g, "");
-  const greeting = `Hi ${person.full_name?.split(" ")[0] ?? "there"}, this is Tapzar support.`;
+  const greeting = `Hi ${person.full_name?.split(" ")[0] ?? "there"}, this is ScorlynTap support.`;
 
   return (
     <div className="max-w-5xl space-y-5">
@@ -129,7 +129,7 @@ export default async function AdminUserDetail({
             {/* Contact */}
             <div className="mt-5 flex flex-wrap gap-2 border-t border-white/8 pt-4">
               <a
-                href={`mailto:${person.email}?subject=${encodeURIComponent("Tapzar")}&body=${encodeURIComponent(greeting)}`}
+                href={`mailto:${person.email}?subject=${encodeURIComponent("ScorlynTap")}&body=${encodeURIComponent(greeting)}`}
                 className="app-btn app-btn-ghost"
               >
                 <Mail className="h-3.5 w-3.5" />

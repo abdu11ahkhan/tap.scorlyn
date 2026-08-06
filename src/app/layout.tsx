@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Tapzar - Professional Portfolio Builder",
+  title: "ScorlynTap - Professional Portfolio Builder",
   description: "Create your professional portfolio in minutes, connect with NFC, and share your profile anywhere.",
 };
 

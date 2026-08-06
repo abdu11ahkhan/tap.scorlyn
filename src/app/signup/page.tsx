@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
-import { Loader2, Mail, Zap } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { REF_COOKIE, REF_COOKIE_MAX_AGE, REF_PARAM } from "@/lib/referral";
+import BrandMark from "@/components/layout/BrandMark";
 
 function SignupForm() {
   const [name, setName] = useState("");
@@ -109,10 +110,8 @@ function SignupForm() {
       />
 
       <Link href="/" className="absolute left-6 top-6 flex items-center gap-2.5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-acid">
-          <Zap className="h-4 w-4 fill-ink text-ink" />
-        </span>
-        <span className="text-xl font-black tracking-tighter text-white">tapzar</span>
+        <BrandMark size={36} />
+        <span className="text-xl font-black tracking-tighter text-white">ScorlynTap</span>
       </Link>
 
       <motion.div

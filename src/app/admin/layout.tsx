@@ -33,7 +33,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="grain flex min-h-screen flex-col items-center justify-center gap-5 bg-ink px-6 text-center text-white">
         <h1 className="text-4xl font-black tracking-tighter">not your door.</h1>
         <p className="max-w-sm font-medium text-white/50">
-          This area is for Tapzar staff. If you think that&apos;s wrong, ask an
+          This area is for ScorlynTap staff. If you think that&apos;s wrong, ask an
           admin to flip <code className="text-acid">is_admin</code> on your account.
         </p>
         <Link

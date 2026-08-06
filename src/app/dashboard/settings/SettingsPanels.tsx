@@ -209,7 +209,7 @@ export default function SettingsPanels({
       <section className="app-panel app-panel-pad border-hotpink/25">
         <h2 className="text-[15px] font-semibold text-white">Delete account</h2>
         <p className="app-sub mt-1">
-          Removes your card, orders and analytics. Any printed card stops
+          Removes your card and orders. Any printed card stops
           working immediately. This cannot be undone.
         </p>
 

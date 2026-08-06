@@ -5,8 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "FAQ — Tapzar",
-  description: "Common questions about Tapzar NFC cards.",
+  title: "FAQ — ScorlynTap",
+  description: "Common questions about ScorlynTap NFC cards.",
 };
 
 export default async function FaqPage() {
@@ -28,7 +28,7 @@ export default async function FaqPage() {
           href="/"
           className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-white/60 transition-colors hover:border-acid hover:text-acid"
         >
-          ← tapzar
+          ← ScorlynTap
         </Link>
 
         <h1 className="mt-7 text-[clamp(2.4rem,7vw,4rem)] font-black leading-[0.9] tracking-[-0.04em]">

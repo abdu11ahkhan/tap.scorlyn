@@ -29,7 +29,7 @@ export default async function Invoice({ params }: { params: Promise<{ id: string
         <div className="border-2 border-black p-8 print:border-0 print:p-0">
           <div className="flex items-start justify-between border-b-2 border-black pb-6">
             <div>
-              <p className="text-3xl font-black tracking-tighter">tapzar</p>
+              <p className="text-3xl font-black tracking-tighter">ScorlynTap</p>
               <p className="mt-1 text-sm font-semibold opacity-60">NFC digital business cards</p>
             </div>
             <div className="text-right">

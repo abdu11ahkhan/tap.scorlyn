@@ -12,8 +12,9 @@ type Tab = "mobile" | "card";
  * A second tab appears when `cardView` is supplied: the physical NFC card.
  */
 const FRAME = { w: 390, h: 720 };
-/** Frame width including its 12px padding and 2px border on each side. */
+/** Frame size including its 12px padding and 2px border on each side. */
 const OUTER = FRAME.w + 28;
+const OUTER_H = FRAME.h + 28;
 
 export default function DevicePreview({
   children,
@@ -101,22 +102,33 @@ export default function DevicePreview({
               queries resolve like a real phone. On a screen narrower than that
               the frame is scaled down rather than squeezed, so the layout
               inside stays honest. */}
-          <div ref={stage} className="overflow-hidden">
+          <div ref={stage}>
+            {/* A sizer at the *scaled* dimensions. A transform doesn't change
+                an element's layout box, so the frame still measured 418px wide
+                however far it was scaled down — mx-auto had nothing to centre
+                and it hung off the right edge on a phone. This box is the size
+                you actually see, so centring works and the height collapses on
+                its own instead of needing a negative margin. */}
             <div
-              className="mx-auto origin-top rounded-[2.2rem] border-2 border-ink bg-white/[0.04] p-3 shadow-[7px_7px_0_0_theme(colors.hotpink)]"
-              style={{
-                width: OUTER,
-                transform: fit < 1 ? `scale(${fit})` : undefined,
-                marginBottom: fit < 1 ? -(FRAME.h + 30) * (1 - fit) : undefined,
-              }}
+              className="mx-auto"
+              style={{ width: OUTER * fit, height: OUTER_H * fit }}
             >
               <div
-                className="relative overflow-hidden rounded-[1.6rem] bg-black"
-                style={{ width: `${FRAME.w}px`, height: `${FRAME.h}px` }}
+                className="rounded-[2.2rem] border-2 border-ink bg-white/[0.04] p-3 shadow-[7px_7px_0_0_theme(colors.hotpink)]"
+                style={{
+                  width: OUTER,
+                  transform: `scale(${fit})`,
+                  transformOrigin: "top left",
+                }}
               >
-                <IframeStage width={FRAME.w} height={FRAME.h}>
-                  {children}
-                </IframeStage>
+                <div
+                  className="relative overflow-hidden rounded-[1.6rem] bg-black"
+                  style={{ width: `${FRAME.w}px`, height: `${FRAME.h}px` }}
+                >
+                  <IframeStage width={FRAME.w} height={FRAME.h}>
+                    {children}
+                  </IframeStage>
+                </div>
               </div>
             </div>
           </div>
