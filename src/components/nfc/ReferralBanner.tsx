@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, type Transition } from "framer-motion";
 import { readStorage, writeStorage } from "@/lib/safe-storage";
-import { SmartphoneNfc, X } from "lucide-react";
-import { referralSignupUrl } from "@/lib/referral";
+import { ArrowRight, SmartphoneNfc, X } from "lucide-react";
+import { referralOrderUrl, referralSignupUrl } from "@/lib/referral";
 
 /**
  * The viral loop: everyone who opens someone else's card is a prospect.
@@ -29,10 +29,13 @@ export default function ReferralBanner({
   cardProfileId,
   ownerName,
   isOwner = false,
+  cardPrice = null,
 }: {
   refCode: string | null;
   cardProfileId: string;
   ownerName: string;
+  /** Cheapest physical plan, so the CTA can quote a real number. */
+  cardPrice?: number | null;
   /** The owner doesn't need selling to — they already have one. */
   isOwner?: boolean;
 }) {
@@ -62,7 +65,7 @@ export default function ReferralBanner({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, refCode]);
 
-  const track = (eventType: "banner_view" | "banner_click") => {
+  const track = (eventType: "banner_view" | "banner_click" | "order") => {
     if (!refCode) return;
     fetch("/api/referral", {
       method: "POST",
@@ -92,37 +95,64 @@ export default function ReferralBanner({
           transition={SPRING}
           className="fixed inset-x-0 bottom-0 z-50 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
         >
-          {/* Sized for a 390px phone: icon, two short lines, button and close
-              all on one row without the copy wrapping into a paragraph. */}
-          <div className="mx-auto flex max-w-md items-center gap-2.5 rounded-2xl border-2 border-ink bg-ink p-2.5 pl-3 shadow-[0_8px_32px_rgba(0,0,0,0.55)]">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-acid">
-              <SmartphoneNfc className="h-[18px] w-[18px] text-ink" />
-            </span>
+          <div className="mx-auto max-w-md rounded-2xl border-2 border-ink bg-ink p-3 shadow-[0_8px_32px_rgba(0,0,0,0.55)]">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-acid">
+                <SmartphoneNfc className="h-[18px] w-[18px] text-ink" />
+              </span>
 
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-black leading-tight text-white">
-                Want a card like {firstName}&apos;s?
-              </p>
-              <p className="truncate text-[11px] font-semibold leading-tight text-white/45">
-                Tap to share everything. Free to make.
-              </p>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-black leading-tight text-white">
+                  Want a card like {firstName}&apos;s?
+                </p>
+                <p className="truncate text-[11px] font-semibold leading-tight text-white/45">
+                  One tap shares everything you do.
+                </p>
+              </div>
+
+              <button
+                onClick={dismiss}
+                aria-label="Dismiss"
+                className="shrink-0 p-1 text-white/35 transition-colors hover:text-white"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
 
-            <Link
-              href={referralSignupUrl(refCode)}
-              onClick={() => track("banner_click")}
-              className="shrink-0 rounded-full bg-acid px-3.5 py-2 text-[12px] font-black uppercase tracking-tight text-ink"
-            >
-              get one
-            </Link>
+            {/* Two intents, because they're genuinely different people: some
+                want the free page, some want the physical card in their hand. */}
+            <div className="mt-2.5 flex gap-2">
+              <Link
+                href={referralSignupUrl(refCode)}
+                onClick={() => track("banner_click")}
+                className="flex flex-1 flex-col items-center justify-center rounded-xl border-2 border-white/15 px-3 py-2 text-center transition-colors hover:border-white/35"
+              >
+                <span className="text-[12px] font-black uppercase tracking-tight text-white">
+                  make mine
+                </span>
+                <span className="text-[10px] font-bold text-white/40">free</span>
+              </Link>
 
-            <button
-              onClick={dismiss}
-              aria-label="Dismiss"
-              className="shrink-0 p-1 text-white/35 transition-colors hover:text-white"
-            >
-              <X className="h-4 w-4" />
-            </button>
+              <Link
+                href={referralOrderUrl(refCode)}
+                onClick={() => track("order")}
+                className="flex flex-1 flex-col items-center justify-center rounded-xl bg-acid px-3 py-2 text-center"
+              >
+                <span className="flex items-center gap-1 text-[12px] font-black uppercase tracking-tight text-ink">
+                  order a card
+                  <ArrowRight className="h-3 w-3" />
+                </span>
+                {cardPrice ? (
+                  <span className="text-[10px] font-bold text-ink/55">
+                    from Rs.{cardPrice.toLocaleString()}
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-ink/55">
+                    posted to you
+                  </span>
+                )}
+              </Link>
+            </div>
           </div>
         </motion.div>
       )}

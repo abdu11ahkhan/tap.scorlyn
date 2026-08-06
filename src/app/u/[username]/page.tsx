@@ -73,6 +73,17 @@ export default async function CardProfilePage({
   } = await supabase.auth.getUser();
   const isOwner = Boolean(user && user.id === card.user_id);
 
+  // Cheapest physical plan, so the visitor CTA quotes a real number instead of
+  // a hardcoded one that drifts the moment pricing changes.
+  const { data: cheapest } = await supabase
+    .from("plans")
+    .select("price_pkr")
+    .eq("enabled", true)
+    .gt("price_pkr", 0)
+    .order("price_pkr", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
   // Built from the request so the share link is right on any host.
   const host = (await headers()).get("host") ?? "";
   const proto = host.startsWith("localhost") ? "http" : "https";
@@ -97,6 +108,7 @@ export default async function CardProfilePage({
         cardProfileId={card.id}
         ownerName={card.full_name}
         isOwner={isOwner}
+        cardPrice={cheapest?.price_pkr ?? null}
       />
     </>
   );

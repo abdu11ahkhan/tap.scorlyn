@@ -34,6 +34,20 @@ export function referralSignupUrl(refCode: string | null | undefined): string {
   return refCode ? `/signup?${REF_PARAM}=${encodeURIComponent(refCode)}` : "/signup";
 }
 
+/**
+ * Same, but landing on the order form.
+ *
+ * Routed through signup rather than straight to /dashboard/orders so the ref
+ * code still gets parked in its cookie — going direct would bounce through
+ * /login and lose the attribution for the referrer.
+ */
+export function referralOrderUrl(refCode: string | null | undefined): string {
+  const next = `next=${encodeURIComponent("/dashboard/orders")}`;
+  return refCode
+    ? `/signup?${REF_PARAM}=${encodeURIComponent(refCode)}&${next}`
+    : `/signup?${next}`;
+}
+
 /** wa.me needs digits only — strip +, spaces, dashes, parens. */
 export function normalizeWhatsapp(raw: string | null | undefined): string | null {
   if (!raw) return null;
