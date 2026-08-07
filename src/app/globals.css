@@ -630,3 +630,14 @@ textarea.app-input {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
 }
+
+/* Last resort: JavaScript never ran, so nothing may stay hidden waiting for
+   it. Covers both our own reveal animation and the inline opacity/transform
+   that the animation library server-renders onto every section it wraps. */
+.js-failed .card-rise,
+.js-failed [style*="opacity:0"],
+.js-failed [style*="opacity: 0"] {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}

@@ -37,5 +37,13 @@
     "puppeteer": "^25.4.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "browserslist": [
+    "> 0.2%",
+    "last 4 versions",
+    "Safari >= 14",
+    "iOS >= 14",
+    "not dead",
+    "not op_mini all"
+  ]
 }
