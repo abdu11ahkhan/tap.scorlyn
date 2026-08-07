@@ -42,7 +42,7 @@ export default function ReelCard({
       {/* Sticky identity strip so the name stays with you down the reel */}
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-white/10 bg-[#0B0B0B]/85 px-5 py-3 backdrop-blur-xl">
         <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full"
+          className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full"
           style={{ background: `${accent}33`, color: ink }}
         >
           {card.avatar_url ? (

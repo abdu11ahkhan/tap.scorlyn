@@ -75,7 +75,7 @@ export default function AgencyCard({
 
         <div className="relative -mt-14 px-6 pb-10">
           <div
-            className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-4 border-[#0D0D0F]"
+            className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border-4 border-[#0D0D0F]"
             style={{ background: accent, color: onAccent }}
           >
             {card.avatar_url ? (

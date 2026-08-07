@@ -42,7 +42,7 @@ export default function ContactSheetCard({
               )}
             </div>
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-[#111]"
+              className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-[#111]"
               style={{ background: `${accent}1F` }}
             >
               {card.avatar_url ? (

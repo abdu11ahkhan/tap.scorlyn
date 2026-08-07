@@ -144,6 +144,8 @@ export type CardProfile = {
   avatar_url: string | null;
   /** Full-bleed hero / backdrop image. Templates without a cover area ignore it. */
   cover_url: string | null;
+  /** Company logo, drawn as a small watermark. Distinct from avatar_url. */
+  logo_url: string | null;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];

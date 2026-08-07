@@ -29,7 +29,7 @@ async function uploadDataUrl(dataUrl: string): Promise<string> {
  * at nothing is worse than telling the person to try again.
  */
 export async function uploadPendingImages<
-  T extends { avatar_url?: string; cover_url?: string },
+  T extends { avatar_url?: string; cover_url?: string; logo_url?: string },
 >(
   form: T,
   gallery: { url: string; caption?: string; href?: string }[]
@@ -41,6 +41,9 @@ export async function uploadPendingImages<
   }
   if (isInline(next.cover_url)) {
     next.cover_url = await uploadDataUrl(next.cover_url as string);
+  }
+  if (isInline(next.logo_url)) {
+    next.logo_url = await uploadDataUrl(next.logo_url as string);
   }
 
   const nextGallery = await Promise.all(

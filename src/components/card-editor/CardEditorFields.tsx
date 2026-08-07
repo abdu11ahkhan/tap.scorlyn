@@ -60,7 +60,10 @@ export default function CardEditorFields({
   // Shown on the collapsed section headers so it's obvious what's already
   // filled in without opening each one.
   const photoCount =
-    (form.avatar_url ? 1 : 0) + (form.cover_url ? 1 : 0) + gallery.length;
+    (form.avatar_url ? 1 : 0) +
+    (form.cover_url ? 1 : 0) +
+    (form.logo_url ? 1 : 0) +
+    gallery.length;
 
   const updateButton = (index: number, patch: Partial<CardButton>) => {
     onButtonsChange(buttons.map((b, i) => (i === index ? { ...b, ...patch } : b)));
@@ -282,9 +285,16 @@ export default function CardEditorFields({
           <ImagePicker
             kind="cover"
             label="Cover / background"
-            hint="Used by Poster, Showcase, Agency, App, Glass."
+            hint="Sits behind the top of your card. Works on every template."
             value={form.cover_url}
             onChange={(url) => onFormChange({ cover_url: url })}
+          />
+          <ImagePicker
+            kind="avatar"
+            label="Company logo"
+            hint="Optional. Shown small in the corner of your card, over everything else."
+            value={form.logo_url}
+            onChange={(url) => onFormChange({ logo_url: url })}
           />
         </div>
 

@@ -40,7 +40,7 @@ export default function MasonryCard({
       <main className="mx-auto w-full max-w-md px-5 pb-24 pt-12">
         <header className="card-rise flex items-center gap-3.5">
           <div
-            className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full"
+            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full"
             style={{ background: `${accent}1F` }}
           >
             {card.avatar_url ? (

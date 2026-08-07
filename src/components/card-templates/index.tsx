@@ -1,5 +1,6 @@
 import type { CardProfile, ResolvedButton } from "@/lib/card";
 import CoverBand from "@/components/nfc/CoverBand";
+import LogoMark from "@/components/nfc/LogoMark";
 import MinimalCard from "./MinimalCard";
 import BoldCard from "./BoldCard";
 import SplitCard from "./SplitCard";
@@ -92,6 +93,26 @@ export type CardTemplateProps = {
   buttons: ResolvedButton[];
 };
 
+/**
+ * The content column each template lays out in, so the cover band can match it.
+ * Read off each template's own `max-w-*`; anything missing falls back to md.
+ */
+export const TEMPLATE_WIDTH: Record<string, string> = {
+  aurora: "max-w-sm",
+  dock: "max-w-sm",
+  editorial: "max-w-sm",
+  glass: "max-w-sm",
+  minimal: "max-w-sm",
+  neon: "max-w-sm",
+  orbit: "max-w-sm",
+  pitch: "max-w-sm",
+  sticker: "max-w-sm",
+  tape: "max-w-sm",
+  tiles: "max-w-sm",
+  waitlist: "max-w-sm",
+  split: "max-w-lg",
+};
+
 const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   minimal: MinimalCard,
   bold: BoldCard,
@@ -141,16 +162,21 @@ export function renderCardTemplate(props: CardTemplateProps) {
   // you conclude the feature is broken.
   const needsBand =
     Boolean(card.cover_url) && !TEMPLATES_WITH_OWN_COVER.has(card.template);
+  const tone = TEMPLATE_TONE[card.template] ?? "#ffffff";
 
-  if (!needsBand) return <Template {...props} />;
+  if (!needsBand && !card.logo_url) return <Template {...props} />;
 
   return (
     <>
-      <CoverBand
-        src={card.cover_url as string}
-        tone={TEMPLATE_TONE[card.template] ?? "#ffffff"}
-      />
+      {needsBand && (
+        <CoverBand
+          src={card.cover_url as string}
+          tone={tone}
+          width={TEMPLATE_WIDTH[card.template] ?? "max-w-md"}
+        />
+      )}
       <Template {...props} />
+      {card.logo_url && <LogoMark src={card.logo_url} tone={tone} />}
     </>
   );
 }

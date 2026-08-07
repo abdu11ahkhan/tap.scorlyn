@@ -51,7 +51,7 @@ export default function EditorialCard({
           style={{ ["--d" as string]: "130ms" }}
         >
           <div
-            className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border"
+            className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border"
             style={{ borderColor: `${accent}55` }}
           >
             {card.avatar_url ? (

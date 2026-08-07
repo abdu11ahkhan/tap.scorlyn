@@ -46,7 +46,7 @@ export default function NeonCard({
           style={{ ["--d" as string]: "0ms" }}
         >
           <div
-            className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 bg-black"
+            className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-2 bg-black"
             style={{ borderColor: accent, boxShadow: glow }}
           >
             {card.avatar_url ? (

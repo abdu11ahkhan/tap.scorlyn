@@ -59,7 +59,7 @@ export default function GlassCard({
               style={{ borderColor: accent }}
             />
             <div
-              className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border"
+              className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-2xl border"
               style={{
                 borderColor: `${accent}55`,
                 background: `linear-gradient(140deg, ${accent}26, transparent)`,

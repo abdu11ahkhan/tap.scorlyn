@@ -87,6 +87,7 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     bio: persona.bio,
     avatar_url: demoAvatar(accent),
     cover_url: demoScene(accent, 0),
+    logo_url: null,
     cover_mode: "cover",
     gallery: captions.map((caption, index) => ({
       url: demoScene(accent, index + 1),

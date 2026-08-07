@@ -52,7 +52,7 @@ export default function StackCard({
         {/* Hero */}
         <section id="top" className="scroll-mt-16 py-14 text-center">
           <div
-            className="card-rise mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl"
+            className="card-rise mx-auto flex h-28 w-28 items-center justify-center overflow-hidden rounded-3xl"
             style={{ background: `${accent}1F`, color: ink, ["--d" as string]: "0ms" }}
           >
             {card.avatar_url ? (

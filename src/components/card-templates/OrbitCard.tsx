@@ -42,7 +42,7 @@ export default function OrbitCard({
             style={{ borderColor: accent }}
           />
           <div
-            className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full"
+            className="relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full"
             style={{ background: `${accent}26`, boxShadow: `0 0 0 2px ${accent}55` }}
           >
             {card.avatar_url ? (

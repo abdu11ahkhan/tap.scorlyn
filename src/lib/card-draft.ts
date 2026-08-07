@@ -11,6 +11,7 @@ export type CardForm = {
   bio: string;
   avatar_url: string;
   cover_url: string;
+  logo_url: string;
   location: string;
   accent_color: string;
   template: string;
@@ -25,6 +26,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   bio: "",
   avatar_url: "",
   cover_url: "",
+  logo_url: "",
   location: "",
   accent_color: "#111111",
   template: "minimal",
@@ -93,6 +95,7 @@ export function draftToCardProfile(
     bio: form.bio || null,
     avatar_url: form.avatar_url || null,
     cover_url: form.cover_url || null,
+    logo_url: form.logo_url || null,
     cover_mode: "cover",
     gallery,
     location: form.location || null,

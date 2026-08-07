@@ -33,7 +33,7 @@ export default function TilesCard({
       <main className="mx-auto w-full max-w-sm px-5 pb-28 pt-16">
         <header className="card-rise flex items-center gap-4">
           <div
-            className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
+            className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
             style={{ background: `${accent}1F` }}
           >
             {card.avatar_url ? (

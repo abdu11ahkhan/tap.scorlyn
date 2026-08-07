@@ -37,7 +37,7 @@ export default function AuroraCard({
         >
           <div className="relative">
             <span className="pulse-ring absolute inset-0 rounded-full border-2 border-white/60" />
-            <div className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-white/40 bg-white/15 backdrop-blur-xl">
+            <div className="relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border border-white/40 bg-white/15 backdrop-blur-xl">
               {card.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
