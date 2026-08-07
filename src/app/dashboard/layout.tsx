@@ -55,8 +55,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </p>
           {sidebarLinks.map((link) => {
             const Icon = link.icon;
+            // "/dashboard" is the index, not a parent: matching it by prefix
+            // left it lit on every child page, so the highlight never told you
+            // where you actually were.
             const isActive =
-              pathname === link.href || pathname.startsWith(link.href + "/");
+              link.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname === link.href || pathname.startsWith(link.href + "/");
 
             return (
               <Link

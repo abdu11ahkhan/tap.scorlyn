@@ -5,6 +5,7 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import BrandMark from "@/components/layout/BrandMark";
+import AccountMenu, { MobileAccountLinks } from "@/components/layout/AccountMenu";
 
 const LINKS = [
   { label: "templates", href: "/templates" },
@@ -51,12 +52,7 @@ export function Navbar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            href="/login"
-            className="hidden rounded-full px-4 py-2 text-[15px] font-bold text-ink/70 transition-colors hover:text-ink sm:block"
-          >
-            log in
-          </Link>
+          <AccountMenu />
           {/* Hidden on the smallest screens: at 360px it wrapped onto two
               lines and overlapped the wordmark. The menu button carries it. */}
           <Link
@@ -88,13 +84,7 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/login"
-            onClick={() => setOpen(false)}
-            className="block rounded-xl px-4 py-3 text-lg font-black text-ink hover:bg-acid"
-          >
-            log in
-          </Link>
+          <MobileAccountLinks onNavigate={() => setOpen(false)} />
         </div>
       )}
     </motion.header>
