@@ -2,7 +2,7 @@ import { ShieldCheck, Ban, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import ActionButton from "../ActionButton";
 import ConfirmByName from "../ConfirmByName";
-import { setAdmin, setSuspended } from "../actions";
+import { setAdmin, setSuspended, deleteAccount } from "../actions";
 
 export const dynamic = "force-dynamic";
 
@@ -189,6 +189,25 @@ export default async function AdminUsers({
                         >
                           {row.suspended ? "restore" : "suspend"}
                         </ConfirmByName>
+
+                        {/* Not offered for yourself or another admin: the
+                            action refuses both, and a button that always
+                            fails is worse than no button. */}
+                        {!isMe && !row.is_admin && (
+                          <ConfirmByName
+                            action={async () => {
+                              "use server";
+                              return deleteAccount(row.id);
+                            }}
+                            expected={row.email ?? ""}
+                            variant="danger"
+                            title="Delete permanently"
+                            body={`Removes ${row.email} from the database and from Supabase Auth, with their card and everything on it. Their orders are kept for the record. This cannot be undone — type the email address to confirm.`}
+                            cta="Delete permanently"
+                          >
+                            delete
+                          </ConfirmByName>
+                        )}
                       </div>
                     </td>
                   </tr>

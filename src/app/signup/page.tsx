@@ -215,7 +215,7 @@ function SignupForm() {
                 </label>
                 <input
                   id="name"
-                  placeholder="Abdullah Khan"
+                  placeholder="Your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required

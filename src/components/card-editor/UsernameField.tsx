@@ -5,12 +5,8 @@ import { Check, Loader2, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { USERNAME_PATTERN } from "@/lib/card-draft";
 
-type State =
-  | { kind: "idle" }
-  | { kind: "invalid"; message: string }
-  | { kind: "checking" }
-  | { kind: "free" }
-  | { kind: "taken" };
+/** Only the answer we have to go and fetch is state. */
+type Availability = "unknown" | "checking" | "free" | "taken";
 
 /**
  * The handle, with availability checked as it is typed.
@@ -32,26 +28,26 @@ export default function UsernameField({
   onChange: (next: string) => void;
   className?: string;
 }) {
-  const [state, setState] = useState<State>({ kind: "idle" });
+  const [availability, setAvailability] = useState<Availability>("unknown");
+
+  const handle = value.trim().toLowerCase();
+  const malformed = handle.length > 0 && !USERNAME_PATTERN.test(handle);
+
+  // Derived, not stored: a value that can be computed from props during render
+  // has no business being set from an effect.
+  const state: { kind: string; message?: string } = malformed
+    ? { kind: "invalid", message: "3–30 characters: lowercase letters, numbers, - and _." }
+    : !handle
+      ? { kind: "idle" }
+      : { kind: availability === "unknown" ? "idle" : availability };
 
   useEffect(() => {
-    const handle = value.trim().toLowerCase();
+    if (!handle || malformed) return;
 
-    if (!handle) {
-      setState({ kind: "idle" });
-      return;
-    }
-
-    if (!USERNAME_PATTERN.test(handle)) {
-      setState({
-        kind: "invalid",
-        message: "3–30 characters: lowercase letters, numbers, - and _.",
-      });
-      return;
-    }
-
-    setState({ kind: "checking" });
     let cancelled = false;
+    // Marked as checking from inside the timer rather than synchronously, so
+    // the effect does not set state during the render it was scheduled by.
+    const mark = window.setTimeout(() => setAvailability("checking"), 0);
 
     // Debounced: this fires on every keystroke otherwise, and the answer for a
     // half-typed handle is never the one being asked for.
@@ -62,15 +58,16 @@ export default function UsernameField({
       if (cancelled) return;
       // A failed check must not claim the name is taken — saving will still
       // catch a genuine clash, and a false "taken" blocks a valid handle.
-      if (error) setState({ kind: "idle" });
-      else setState({ kind: data ? "free" : "taken" });
+      if (error) setAvailability("unknown");
+      else setAvailability(data ? "free" : "taken");
     }, 450);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(mark);
       window.clearTimeout(timer);
     };
-  }, [value]);
+  }, [handle, malformed]);
 
   const border =
     state.kind === "taken" || state.kind === "invalid"
@@ -86,7 +83,7 @@ export default function UsernameField({
           id="username"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="abdullah"
+          placeholder="yourname"
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
@@ -108,17 +105,17 @@ export default function UsernameField({
       <p id="username-status" className="text-xs">
         {state.kind === "taken" ? (
           <span className="font-semibold text-rose-500">
-            “{value.trim().toLowerCase()}” is already taken — try another.
+            “{handle}” is already taken — try another.
           </span>
         ) : state.kind === "invalid" ? (
           <span className="font-semibold text-rose-500">{state.message}</span>
         ) : state.kind === "free" ? (
           <span className="font-semibold text-emerald-600">
-            Available. Your card will live at /u/{value.trim().toLowerCase()}
+            Available. Your card will live at /u/{handle}
           </span>
         ) : (
           <span className="text-slate-500">
-            Your card will live at /u/{value.trim().toLowerCase() || "username"}
+            Your card will live at /u/{handle || "username"}
           </span>
         )}
       </p>

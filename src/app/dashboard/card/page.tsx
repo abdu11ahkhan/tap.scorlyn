@@ -229,11 +229,18 @@ function MyCardEditor() {
     if (saveError) {
       setError(saveError.code === "23505" ? "That username is already taken." : saveError.message);
     } else {
+      const isFirstPublish = !cardId && data.published !== false;
       setCardId(data.id);
       setSaved(true);
       // Published — the local draft has served its purpose.
       clearDraft();
       setDraftApplied(false);
+
+      // Show them the thing they just made. Only on the first publish: doing
+      // it on every save would open a tab each time someone edits a line.
+      if (isFirstPublish) {
+        window.open(`/u/${data.username}`, "_blank", "noopener");
+      }
     }
 
     setSaving(false);
@@ -345,19 +352,25 @@ function MyCardEditor() {
         {/* Draft vs live. The column and the RLS policy already enforce this —
             an unpublished card is not readable by anyone but its owner — there
             was simply no way to set it. */}
-        <div className="mt-3 rounded-xl border-2 border-ink/10 p-4">
+        {cardId && !saved && (
+          <p className="mt-3 rounded-xl border-2 border-hotpink/30 bg-hotpink/5 px-4 py-3 text-center text-[13px] font-black uppercase tracking-widest text-hotpink">
+            unsaved changes
+          </p>
+        )}
+
+        <div className="mt-3 rounded-xl border-2 border-white/15 bg-white/[0.04] p-4">
           <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
               checked={form.published !== false}
               onChange={(e) => updateForm({ published: e.target.checked })}
-              className="mt-0.5 h-4 w-4"
+              className="mt-0.5 h-4 w-4 accent-acid"
             />
             <span className="min-w-0">
-              <span className="block text-sm font-black text-ink">
+              <span className="block text-sm font-black text-white">
                 {form.published !== false ? "Live" : "Draft"}
               </span>
-              <span className="mt-0.5 block text-xs font-semibold text-ink/50">
+              <span className="mt-0.5 block text-xs font-semibold text-white/50">
                 {form.published !== false
                   ? "Anyone with your link or your card can open it."
                   : "Only you can see it. Your link and NFC card will not open for anyone else until you publish."}

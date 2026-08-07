@@ -30,12 +30,10 @@ export default function CardQr({
   accent: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [href, setHref] = useState(url ?? "");
+  const [resolved, setResolved] = useState("");
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => {
-    if (!url) setHref(window.location.href.split("?")[0]);
-  }, [url]);
+  const href = url ?? resolved;
 
   // Escape closes, and the page behind must not scroll under the sheet.
   useEffect(() => {
@@ -111,7 +109,10 @@ export default function CardQr({
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          if (!url) setResolved(window.location.href.split("?")[0]);
+          setOpen(true);
+        }}
         aria-label="Show QR code"
         // Bottom-centre: the share control sits top-right and the logo
         // watermark bottom-left, so this is the one place left that a thumb

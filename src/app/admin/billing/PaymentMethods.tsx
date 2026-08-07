@@ -208,7 +208,7 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
               <input
                 value={editing.accountName}
                 onChange={(e) => setEditing({ ...editing, accountName: e.target.value })}
-                placeholder="Abdullah Khan"
+                placeholder="Account holder name"
                 className="app-input mt-1.5"
               />
             </label>

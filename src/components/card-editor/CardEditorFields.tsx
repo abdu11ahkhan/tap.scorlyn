@@ -198,7 +198,7 @@ export default function CardEditorFields({
             id="full_name"
             value={form.full_name}
             onChange={(e) => onFormChange({ full_name: e.target.value })}
-            placeholder="Abdullah Khan"
+            placeholder="Your full name"
             className={FIELD}
           />
         </div>

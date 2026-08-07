@@ -2,7 +2,7 @@
  * Pull bank details out of a block of pasted text.
  *
  * People copy the whole thing out of a banking app or a WhatsApp message —
- * "Meezan Bank / Abdullah Khan / 02340112924467 / PK34MEZN..." — and then
+ * "Meezan Bank / Ayesha Siddiqui / 02340112924467 / PK34MEZN..." — and then
  * retype it field by field. Retyping an account number is precisely how money
  * reaches the wrong person, so it's better to read it once and split it.
  *
@@ -39,7 +39,7 @@ export function parseBankPaste(raw: string): ParsedBank {
 
   const out: ParsedBank = {};
   // Newlines, but also the separators people use when they paste it as one
-  // line: "Meezan Bank, Abdullah Khan, 0234..." is just as common as four rows.
+  // line: "Meezan Bank, Ayesha Siddiqui, 0234..." is just as common as four rows.
   const lines = text
     .split(/[\n\r|]+|,(?=\s)/)
     .map((l) => l.trim())

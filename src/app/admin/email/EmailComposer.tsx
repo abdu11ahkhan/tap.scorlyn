@@ -41,7 +41,7 @@ export default function EmailComposer({
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, start] = useTransition();
 
-  const usePreset = (id: string) => {
+  const applyPreset = (id: string) => {
     const p = EMAIL_PRESETS.find((x) => x.id === id);
     if (!p) return;
     setSubject(p.subject);
@@ -80,7 +80,7 @@ export default function EmailComposer({
             <button
               key={p.id}
               type="button"
-              onClick={() => usePreset(p.id)}
+              onClick={() => applyPreset(p.id)}
               className="rounded-full border border-white/12 px-3.5 py-1.5 text-xs font-semibold text-white/70 transition-colors hover:border-white/35 hover:text-white"
             >
               {p.name}

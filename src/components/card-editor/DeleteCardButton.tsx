@@ -57,7 +57,7 @@ export default function DeleteCardButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-ink/40 transition-colors hover:text-hotpink"
+        className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white/40 transition-colors hover:text-hotpink"
       >
         <Trash2 className="h-3.5 w-3.5" />
         delete this card
@@ -67,14 +67,14 @@ export default function DeleteCardButton({
 
   return (
     <div className="rounded-xl border-2 border-hotpink/40 bg-hotpink/5 p-4">
-      <p className="text-sm font-black text-ink">Delete this card?</p>
-      <p className="mt-1 text-xs font-semibold text-ink/60">
+      <p className="text-sm font-black text-white">Delete this card?</p>
+      <p className="mt-1 text-xs font-semibold text-white/60">
         Your page at /u/{expected} stops working and the handle becomes
         available to someone else. Any NFC card you own will point at nothing
         until you make a new one. Your orders are kept.
       </p>
 
-      <label className="mt-3 block text-xs font-bold uppercase tracking-widest text-ink/50">
+      <label className="mt-3 block text-xs font-bold uppercase tracking-widest text-white/50">
         Type <span className="text-hotpink">{expected}</span> to confirm
       </label>
       <input
@@ -83,7 +83,7 @@ export default function DeleteCardButton({
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        className="mt-1.5 h-11 w-full rounded-lg border-2 border-ink bg-white px-3 font-semibold text-ink outline-none"
+        className="mt-1.5 h-11 w-full rounded-lg border-2 border-white/20 bg-white/[0.06] px-3 font-semibold text-white outline-none focus:border-acid"
       />
 
       {error && <p className="mt-2 text-xs font-bold text-hotpink">{error}</p>}
@@ -105,7 +105,7 @@ export default function DeleteCardButton({
             setTyped("");
             setError(null);
           }}
-          className="inline-flex h-10 items-center rounded-full px-4 text-xs font-black uppercase tracking-widest text-ink/50"
+          className="inline-flex h-10 items-center rounded-full px-4 text-xs font-black uppercase tracking-widest text-white/50"
         >
           cancel
         </button>
