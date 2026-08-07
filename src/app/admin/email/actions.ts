@@ -32,14 +32,48 @@ function fail(error: unknown): Result<never> {
   return { ok: false, error: error instanceof Error ? error.message : String(error) };
 }
 
-export type Audience = "all" | "customers_with_cards" | "test";
+export type Audience = "all" | "customers_with_cards" | "test" | "custom";
+
+/**
+ * Splits a typed recipient box into addresses.
+ *
+ * Comma, semicolon, space or newline — whatever the admin actually types when
+ * pasting a couple of addresses out of a chat.
+ */
+// Not exported: every export from a "use server" module has to be an async
+// Server Action, and this is a plain local helper.
+function parseRecipients(raw: string): string[] {
+  return [...new Set(
+    raw.split(/[,;\s]+/).map((s) => s.trim().toLowerCase()).filter(Boolean)
+  )];
+}
+
+const EMAIL_RE = /^[^@\s]+@[^@\s.]+\.[^@\s]+$/;
 
 /** Resolves an audience to addresses, each with its own referral code. */
 async function audienceRecipients(
   audience: Audience,
-  adminEmail: string
+  adminEmail: string,
+  custom = ""
 ): Promise<Recipient[]> {
   const supabase = await createClient();
+
+  if (audience === "custom") {
+    const addresses = parseRecipients(custom);
+    if (!addresses.length) throw new Error("Type at least one email address.");
+    const bad = addresses.filter((a) => !EMAIL_RE.test(a));
+    if (bad.length) throw new Error(`Not a valid address: ${bad.join(", ")}`);
+
+    // If the address belongs to a customer, use their referral code so
+    // {{link}} still credits them. Strangers just get the plain site link.
+    const { data } = await supabase.from("profiles").select("email, referral_code");
+    const known = new Map(
+      (data ?? [])
+        .filter((r) => r.email)
+        .map((r) => [(r.email as string).toLowerCase(), r.referral_code])
+    );
+    return addresses.map((email) => ({ email, refCode: known.get(email) ?? null }));
+  }
 
   // profiles.email is the account address. card_profiles.email is the public
   // contact button and is often blank or somebody else's inbox.
@@ -74,7 +108,8 @@ async function audienceRecipients(
 export async function sendNow(
   subject: string,
   body: string,
-  audience: Audience
+  audience: Audience,
+  custom = ""
 ): Promise<Result<{ sent: number; failed: number }>> {
   try {
     const { supabase, user } = await assertAdmin();
@@ -87,7 +122,7 @@ export async function sendNow(
       );
     }
 
-    const recipients = await audienceRecipients(audience, user.email ?? "");
+    const recipients = await audienceRecipients(audience, user.email ?? "", custom);
     if (recipients.length === 0) throw new Error("That audience has nobody in it.");
 
     const { data: row, error } = await supabase
@@ -97,6 +132,7 @@ export async function sendNow(
         body_text: body,
         audience,
         status: "sending",
+        custom_recipients: audience === "custom" ? custom : null,
         created_by: user.id,
       })
       .select("id")
@@ -126,7 +162,8 @@ export async function schedule(
   subject: string,
   body: string,
   audience: Audience,
-  scheduledFor: string
+  scheduledFor: string,
+  custom = ""
 ): Promise<Result> {
   try {
     const { supabase, user } = await assertAdmin();
@@ -138,10 +175,14 @@ export async function schedule(
     if (Number.isNaN(when.getTime())) throw new Error("That isn't a valid date and time.");
     if (when.getTime() < Date.now()) throw new Error("That time is in the past.");
 
+    // Validate the box now rather than letting the cron discover it's junk.
+    if (audience === "custom") await audienceRecipients(audience, "", custom);
+
     const { error } = await supabase.from("email_campaigns").insert({
       subject,
       body_text: body,
       audience,
+      custom_recipients: audience === "custom" ? custom : null,
       status: "scheduled",
       scheduled_for: when.toISOString(),
       created_by: user.id,

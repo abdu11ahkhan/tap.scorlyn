@@ -12,6 +12,14 @@ export default async function AdminEmail() {
     .order("created_at", { ascending: false })
     .limit(20);
 
+  // Suggestions for the recipient box, so sending to one customer doesn't mean
+  // going to look their address up first.
+  const { data: people } = await supabase
+    .from("profiles")
+    .select("email")
+    .not("email", "is", null)
+    .limit(200);
+
   return (
     <div className="space-y-5">
       <div>
@@ -21,7 +29,11 @@ export default async function AdminEmail() {
         </p>
       </div>
 
-      <EmailComposer campaigns={data ?? []} configured={mailerConfigured()} />
+      <EmailComposer
+        campaigns={data ?? []}
+        configured={mailerConfigured()}
+        knownEmails={(people ?? []).map((p) => p.email as string)}
+      />
     </div>
   );
 }

@@ -17,6 +17,7 @@ type Campaign = {
 };
 
 const AUDIENCES: { value: Audience; label: string; hint: string }[] = [
+  { value: "custom", label: "Specific people", hint: "Type any address, customer or not." },
   { value: "test", label: "Just me", hint: "Sends only to your own address." },
   { value: "customers_with_cards", label: "Customers with a card", hint: "Anyone who has set one up." },
   { value: "all", label: "Everyone", hint: "Every registered account." },
@@ -25,14 +26,18 @@ const AUDIENCES: { value: Audience; label: string; hint: string }[] = [
 export default function EmailComposer({
   campaigns,
   configured,
+  knownEmails,
 }: {
   campaigns: Campaign[];
   configured: boolean;
+  /** Existing customers, offered as suggestions in the recipient box. */
+  knownEmails: string[];
 }) {
   const [subject, setSubject] = useState(EMAIL_PRESETS[0].subject);
   const [body, setBody] = useState(EMAIL_PRESETS[0].body);
   const [audience, setAudience] = useState<Audience>("test");
   const [when, setWhen] = useState("");
+  const [custom, setCustom] = useState("");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [pending, start] = useTransition();
 
@@ -105,7 +110,7 @@ export default function EmailComposer({
 
       <div className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Send to</p>
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-2">
           {AUDIENCES.map((a) => (
             <button
               key={a.value}
@@ -122,10 +127,30 @@ export default function EmailComposer({
             </button>
           ))}
         </div>
+        {audience === "custom" && (
+          <div className="space-y-1.5 pt-1">
+            <input
+              value={custom}
+              onChange={(e) => setCustom(e.target.value)}
+              list="known-emails"
+              placeholder="name@example.com, another@example.com"
+              className={field}
+            />
+            <datalist id="known-emails">
+              {knownEmails.map((e) => (
+                <option key={e} value={e} />
+              ))}
+            </datalist>
+            <p className="text-xs text-white/40">
+              Separate several with a comma or a space. Start typing to pick an existing customer.
+            </p>
+          </div>
+        )}
+
         {audience === "all" && (
           <p className="text-xs text-amber-200/80">
-            Promotional mail to everyone from a Gmail account risks the sending account. Test on
-            yourself first.
+            This goes to every registered account. Send it to yourself first and check it lands
+            in the inbox.
           </p>
         )}
       </div>
@@ -133,8 +158,8 @@ export default function EmailComposer({
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          disabled={pending}
-          onClick={() => run(() => sendNow(subject, body, audience), "Sent.")}
+          disabled={pending || (audience === "custom" && !custom.trim())}
+          onClick={() => run(() => sendNow(subject, body, audience, custom), "Sent.")}
           className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-bold text-black disabled:opacity-50"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
@@ -150,8 +175,8 @@ export default function EmailComposer({
           />
           <button
             type="button"
-            disabled={pending || !when}
-            onClick={() => run(() => schedule(subject, body, audience, when), "Scheduled.")}
+            disabled={pending || !when || (audience === "custom" && !custom.trim())}
+            onClick={() => run(() => schedule(subject, body, audience, when, custom), "Scheduled.")}
             className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-semibold text-white disabled:opacity-40"
           >
             <CalendarClock className="h-4 w-4" />
