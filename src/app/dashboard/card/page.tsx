@@ -27,6 +27,7 @@ import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import { uploadPendingImages } from "@/lib/upload-drafts";
 import CardDesigner from "@/components/card-design/CardDesigner";
+import DeleteCardButton from "@/components/card-editor/DeleteCardButton";
 import { renderCardTemplate } from "@/components/card-templates";
 
 const EMPTY_EXTRAS: ExtrasState = {
@@ -91,6 +92,7 @@ function MyCardEditor() {
             cover_url: data.cover_url ?? "",
             logo_url: data.logo_url ?? "",
             show_qr: data.show_qr !== false,
+            published: data.published !== false,
             location: data.location ?? "",
             accent_color: data.accent_color ?? "#111111",
             template: data.template ?? "minimal",
@@ -316,7 +318,7 @@ function MyCardEditor() {
             setExtras((prev) => ({ ...prev, ...patch }));
             setSaved(false);
           }}
-          showUsername={false}
+          showUsername={!cardId}
         />
 
         <button
@@ -329,14 +331,54 @@ function MyCardEditor() {
           ) : saved ? (
             <>
               <Check className="mr-2 h-5 w-5" strokeWidth={3.5} />
-              published
+              saved
             </>
           ) : cardId ? (
             "save changes"
-          ) : (
+          ) : form.published ? (
             "publish my card"
+          ) : (
+            "save as draft"
           )}
         </button>
+
+        {/* Draft vs live. The column and the RLS policy already enforce this —
+            an unpublished card is not readable by anyone but its owner — there
+            was simply no way to set it. */}
+        <div className="mt-3 rounded-xl border-2 border-ink/10 p-4">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={form.published !== false}
+              onChange={(e) => updateForm({ published: e.target.checked })}
+              className="mt-0.5 h-4 w-4"
+            />
+            <span className="min-w-0">
+              <span className="block text-sm font-black text-ink">
+                {form.published !== false ? "Live" : "Draft"}
+              </span>
+              <span className="mt-0.5 block text-xs font-semibold text-ink/50">
+                {form.published !== false
+                  ? "Anyone with your link or your card can open it."
+                  : "Only you can see it. Your link and NFC card will not open for anyone else until you publish."}
+              </span>
+            </span>
+          </label>
+        </div>
+
+        {cardId && (
+          <div className="mt-3">
+            <DeleteCardButton
+              cardId={cardId}
+              username={form.username}
+              onDeleted={() => {
+                setCardId(null);
+                setForm(EMPTY_CARD_FORM);
+                setSaved(false);
+              }}
+            />
+          </div>
+        )}
       </form>
       </div>
 

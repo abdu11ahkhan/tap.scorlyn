@@ -588,3 +588,39 @@ export async function deleteAccount(userId: string, reason?: string): Promise<Re
     return fail(e);
   }
 }
+
+/**
+ * Deletes one customer's card, leaving the account intact.
+ *
+ * Separate from deleting the account: a card that breaks a rule has to come
+ * down without closing the person's account, and unpublishing only hides it
+ * while holding the handle. This frees the handle too.
+ */
+export async function deleteCard(cardId: string): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const { data: card } = await supabase
+      .from("card_profiles")
+      .select("id, username")
+      .eq("id", cardId)
+      .maybeSingle();
+
+    if (!card) throw new Error("That card no longer exists.");
+
+    // Confirm a row actually went. RLS refuses by matching nothing rather than
+    // erroring, so without this a blocked delete would report success.
+    const { data: removed, error } = await supabase
+      .from("card_profiles")
+      .delete()
+      .eq("id", cardId)
+      .select("id");
+    if (error) throw new Error(error.message);
+    if (!removed?.length) throw new Error("That card could not be deleted.");
+
+    revalidatePath("/admin/cards");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}

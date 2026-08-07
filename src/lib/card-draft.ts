@@ -13,6 +13,7 @@ export type CardForm = {
   cover_url: string;
   logo_url: string;
   show_qr: boolean;
+  published: boolean;
   location: string;
   accent_color: string;
   template: string;
@@ -29,6 +30,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   cover_url: "",
   logo_url: "",
   show_qr: true,
+  published: true,
   location: "",
   accent_color: "#111111",
   template: "minimal",

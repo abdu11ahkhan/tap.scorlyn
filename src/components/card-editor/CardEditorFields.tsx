@@ -17,6 +17,7 @@ import { iconFor } from "@/components/card-templates/button-icons";
 import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
 import ImagePicker from "./ImagePicker";
+import UsernameField from "./UsernameField";
 import PaymentFields from "./PaymentFields";
 import EditorSection from "./EditorSection";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
@@ -183,16 +184,11 @@ export default function CardEditorFields({
         {showUsername && (
           <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
+            <UsernameField
               value={form.username}
-              onChange={(e) => onFormChange({ username: e.target.value })}
-              placeholder="abdullah"
+              onChange={(username) => onFormChange({ username })}
               className={FIELD}
             />
-            <p className="text-xs text-slate-500">
-              Your card will live at /u/{form.username || "username"}
-            </p>
           </div>
         )}
 

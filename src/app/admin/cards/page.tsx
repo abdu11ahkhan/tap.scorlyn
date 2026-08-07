@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ExternalLink, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import ConfirmByName from "../ConfirmByName";
+import { deleteCard } from "../actions";
 import { CARD_TEMPLATES } from "@/lib/card";
 
 export const dynamic = "force-dynamic";
@@ -152,14 +154,31 @@ export default async function AdminCards({
                     {new Date(card.created_at).toLocaleDateString("en-GB")}
                   </td>
                   <td data-label="" className="text-right">
-                    <Link
-                      href={`/u/${card.username}`}
-                      target="_blank"
-                      className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3.5 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                      open
-                    </Link>
+                    <div className="inline-flex flex-wrap items-center justify-end gap-2">
+                      <Link
+                        href={`/u/${card.username}`}
+                        target="_blank"
+                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3.5 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        open
+                      </Link>
+                      {/* Typing the handle is the guard: this frees the name
+                          for anyone else and cannot be undone. */}
+                      <ConfirmByName
+                        action={async () => {
+                          "use server";
+                          return deleteCard(card.id);
+                        }}
+                        expected={card.username}
+                        title="Delete this card"
+                        body={`Takes /u/${card.username} down and releases the handle. The person keeps their account and can build a new card. Type the handle to confirm.`}
+                        cta="delete card"
+                        variant="danger"
+                      >
+                        delete
+                      </ConfirmByName>
+                    </div>
                   </td>
                 </tr>
               ))}
