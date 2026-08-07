@@ -46,21 +46,28 @@ export default function AreaSwitch() {
 
   if (!isAdmin) return null;
 
-  const onAdmin = pathname?.startsWith("/admin");
+  // Longest prefix wins, so /admin isn't also matched as the site root.
+  const areas = [
+    { href: "/", label: "Website" },
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/admin", label: "Admin" },
+  ];
+  const current = areas
+    .filter((a) => a.href === "/" || pathname?.startsWith(a.href))
+    .sort((a, b) => b.href.length - a.href.length)[0];
 
   const tab = (active: boolean) =>
-    `rounded-full px-3.5 py-1.5 text-xs font-bold transition-colors ${
+    `rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
       active ? "bg-white text-black" : "text-white/55 hover:text-white"
     }`;
 
   return (
-    <div className="inline-flex items-center gap-0.5 rounded-full border border-white/12 bg-white/[0.04] p-0.5">
-      <Link href="/dashboard" className={tab(!onAdmin)}>
-        Dashboard
-      </Link>
-      <Link href="/admin" className={tab(Boolean(onAdmin))}>
-        Admin
-      </Link>
+    <div className="inline-flex shrink-0 items-center gap-0.5 rounded-full border border-white/12 bg-white/[0.04] p-0.5">
+      {areas.map((a) => (
+        <Link key={a.href} href={a.href} className={tab(a.href === current?.href)}>
+          {a.label}
+        </Link>
+      ))}
     </div>
   );
 }
