@@ -9,6 +9,7 @@ import {
   LogOut,
   IdCard,
   Package,
+  Nfc,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -18,6 +19,7 @@ import AreaSwitch from "@/components/layout/AreaSwitch";
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "My card", href: "/dashboard/card", icon: IdCard },
+  { name: "Get a card", href: "/dashboard/nfc", icon: Nfc },
   { name: "Orders", href: "/dashboard/orders", icon: Package },
   { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },

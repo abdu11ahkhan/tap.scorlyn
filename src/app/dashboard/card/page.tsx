@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Loader2, ExternalLink, Check } from "lucide-react";
+import { Loader2, ExternalLink, Check, Nfc, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -352,6 +352,27 @@ function MyCardEditor() {
         {/* Draft vs live. The column and the RLS policy already enforce this —
             an unpublished card is not readable by anyone but its owner — there
             was simply no way to set it. */}
+        {/* The moment the page exists is the moment the card makes sense.
+            Before this, nothing in the dashboard showed the physical product
+            at all, so the free page was the whole of what people saw. */}
+        {cardId && form.published !== false && (
+          <Link
+            href="/dashboard/nfc"
+            className="sticker mt-4 flex items-center gap-3 rounded-2xl border-2 border-ink bg-acid p-4 text-ink"
+          >
+            <Nfc className="h-6 w-6 shrink-0" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-black uppercase tracking-tight">
+                put this on a real card
+              </span>
+              <span className="mt-0.5 block text-xs font-bold text-ink/60">
+                Blank from Rs.1,600, your design from Rs.2,200 — see both
+              </span>
+            </span>
+            <ArrowRight className="h-5 w-5 shrink-0" />
+          </Link>
+        )}
+
         {cardId && !saved && (
           <p className="mt-3 rounded-xl border-2 border-hotpink/30 bg-hotpink/5 px-4 py-3 text-center text-[13px] font-black uppercase tracking-widest text-hotpink">
             unsaved changes

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -89,7 +90,15 @@ export default function OrderForm({
   card: CardProfile | null;
 }) {
   const router = useRouter();
-  const [planId, setPlanId] = useState(plans.find((p) => p.price_pkr > 0)?.id ?? plans[0]?.id);
+  // Arriving from the card chooser carries the decision already made; landing
+  // on a different plan than the one just picked would silently undo it.
+  const params = useSearchParams();
+  const requestedPlan = params.get("plan");
+  const [planId, setPlanId] = useState(
+    plans.find((p) => p.id === requestedPlan)?.id ??
+      plans.find((p) => p.price_pkr > 0)?.id ??
+      plans[0]?.id
+  );
   const [quantity, setQuantity] = useState(1);
   // Deliberately not pre-filled from the account. The person ordering may not
   // be the person the card is posted to, and a box that already holds a name
@@ -102,7 +111,7 @@ export default function OrderForm({
   const [note, setNote] = useState("");
   // What actually gets printed. Captured with the order so the print run
   // matches what was approved, not whatever the profile looks like later.
-  const [finish, setFinish] = useState("minimal");
+  const [finish, setFinish] = useState(params.get("finish") || "minimal");
   const [fields, setFields] = useState<CardFields | null>(null);
 
   const [pending, startTransition] = useTransition();
