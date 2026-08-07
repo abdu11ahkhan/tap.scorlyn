@@ -11,6 +11,7 @@ const LINKS = [
   { label: "templates", href: "/templates" },
   { label: "features", href: "/#features" },
   { label: "pricing", href: "/#pricing" },
+  { label: "contact", href: "/#contact" },
 ];
 
 export function Navbar() {

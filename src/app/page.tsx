@@ -5,6 +5,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
 import { Features } from "@/components/sections/Features";
 import { Pricing } from "@/components/sections/Pricing";
+import { Contact } from "@/components/sections/Contact";
 import BrandMark from "@/components/layout/BrandMark";
 import { createClient } from "@/lib/supabase/server";
 
@@ -16,7 +17,7 @@ export default async function Home() {
   const supabase = await createClient();
   const { data: content } = await supabase
     .from("app_settings")
-    .select("hero_title, hero_subtitle, pricing_note")
+    .select("hero_title, hero_subtitle, pricing_note, support_whatsapp, support_email")
     .maybeSingle();
 
   return (
@@ -28,6 +29,10 @@ export default async function Home() {
       <Features />
       <Marquee reverse className="bg-hotpink text-white" />
       <Pricing note={content?.pricing_note} />
+      <Contact
+        whatsapp={content?.support_whatsapp}
+        email={content?.support_email}
+      />
 
       {/* Closing call to action */}
       <section className="grain relative overflow-hidden bg-acid py-24 text-ink">
