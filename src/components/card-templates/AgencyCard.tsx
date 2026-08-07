@@ -1,5 +1,6 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -22,6 +23,9 @@ export default function AgencyCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#F97316";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const onAccent = readableOn(accent);
   const gallery = resolveGallery(card.gallery);
   const cover = card.cover_url;
@@ -86,7 +90,7 @@ export default function AgencyCard({
             {card.full_name}
           </h1>
           {card.headline && (
-            <p className="mt-2 text-sm font-black uppercase tracking-[0.18em]" style={{ color: accent }}>
+            <p className="mt-2 text-sm font-black uppercase tracking-[0.18em]" style={{ color: ink }}>
               {card.headline}
             </p>
           )}
@@ -124,7 +128,7 @@ export default function AgencyCard({
                 >
                   <span
                     className="flex h-9 w-9 items-center justify-center rounded-lg"
-                    style={{ background: `${accent}26`, color: accent }}
+                    style={{ background: `${accent}26`, color: ink }}
                   >
                     <Icon className="h-4 w-4" />
                   </span>

@@ -1,5 +1,6 @@
 import { ArrowRight, Check } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -23,6 +24,9 @@ export default function PitchCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#CCFF00";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const onAccent = readableOn(accent);
 
   const [primary, ...rest] = buttons;
@@ -125,7 +129,7 @@ export default function PitchCard({
             { value: "0", label: "apps needed" },
           ].map((stat) => (
             <div key={stat.label} className="px-2">
-              <p className="text-3xl font-black tracking-tighter" style={{ color: accent }}>
+              <p className="text-3xl font-black tracking-tighter" style={{ color: ink }}>
                 {stat.value}
               </p>
               <p className="mt-1 text-[10px] font-black uppercase leading-tight tracking-widest text-white/35">
@@ -156,7 +160,7 @@ export default function PitchCard({
                 >
                   <span
                     className="flex h-8 w-8 items-center justify-center rounded-lg"
-                    style={{ background: `${accent}22`, color: accent }}
+                    style={{ background: `${accent}22`, color: ink }}
                   >
                     <Icon className="h-4 w-4" />
                   </span>

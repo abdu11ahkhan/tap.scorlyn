@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -24,6 +25,9 @@ export default function StudioCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#0F766E";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   const sections = [
@@ -49,7 +53,7 @@ export default function StudioCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-[12px] font-bold" style={{ color: accent }}>
+              <span className="text-[12px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -73,7 +77,7 @@ export default function StudioCard({
             {card.headline || card.full_name}
           </h1>
           {card.company && (
-            <p className="mt-2 text-[14px] font-bold uppercase tracking-[0.2em]" style={{ color: accent }}>
+            <p className="mt-2 text-[14px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>
               {card.company}
             </p>
           )}

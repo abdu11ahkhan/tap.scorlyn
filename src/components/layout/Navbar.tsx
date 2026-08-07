@@ -31,9 +31,11 @@ export function Navbar() {
           scrolled ? "sticker bg-white/95 backdrop-blur-xl" : "bg-white"
         }`}
       >
-        <Link href="/" className="group flex items-center gap-2.5">
-          <BrandMark size={36} className="transition-transform group-hover:rotate-12" />
-          <span className="text-xl font-black tracking-tighter text-ink">ScorlynTap</span>
+        <Link href="/" className="group flex min-w-0 items-center gap-2.5">
+          <BrandMark size={32} className="transition-transform group-hover:rotate-12 sm:h-9 sm:w-9" />
+          <span className="truncate text-lg font-black tracking-tighter text-ink sm:text-xl">
+            ScorlynTap
+          </span>
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">
@@ -48,16 +50,18 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/login"
             className="hidden rounded-full px-4 py-2 text-[15px] font-bold text-ink/70 transition-colors hover:text-ink sm:block"
           >
             log in
           </Link>
+          {/* Hidden on the smallest screens: at 360px it wrapped onto two
+              lines and overlapped the wordmark. The menu button carries it. */}
           <Link
             href="/templates"
-            className="sticker sticker-press rounded-full border-2 border-ink bg-acid px-5 py-2.5 text-[15px] font-black uppercase tracking-tight text-ink"
+            className="sticker sticker-press hidden shrink-0 whitespace-nowrap rounded-full border-2 border-ink bg-acid px-4 py-2 text-[14px] font-black uppercase tracking-tight text-ink sm:inline-flex sm:px-5 sm:py-2.5 sm:text-[15px]"
           >
             get started
           </Link>

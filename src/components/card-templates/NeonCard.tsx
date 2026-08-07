@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -15,6 +15,9 @@ export default function NeonCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#FF3D9A";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const glow = `0 0 12px ${accent}, 0 0 34px ${accent}66`;
 
   return (
@@ -54,7 +57,7 @@ export default function NeonCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl font-bold" style={{ color: accent, textShadow: glow }}>
+              <span className="text-2xl font-bold" style={{ color: ink, textShadow: glow }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -71,7 +74,7 @@ export default function NeonCard({
         {card.headline && (
           <p
             className="card-rise mt-3 text-xs uppercase tracking-[0.3em]"
-            style={{ color: accent, ["--d" as string]: "140ms" }}
+            style={{ color: ink, ["--d" as string]: "140ms" }}
           >
             {card.headline}
           </p>
@@ -117,7 +120,7 @@ export default function NeonCard({
                 className="card-rise group flex w-full items-center gap-3 rounded-full border-2 bg-black/60 px-5 py-3.5 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   borderColor: `${accent}66`,
-                  color: accent,
+                  color: ink,
                   ["--d" as string]: `${300 + index * 60}ms`,
                   boxShadow: `0 0 0 0 ${accent}`,
                 }}

@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   readableOn,
   resolveGallery,
@@ -23,6 +24,9 @@ export default function CaseCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#1D4ED8";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   return (
@@ -33,7 +37,7 @@ export default function CaseCard({
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <p
           className="card-rise text-[11px] font-bold uppercase tracking-[0.28em]"
-          style={{ color: accent }}
+          style={{ color: ink }}
         >
           {card.company || "Selected work"}
         </p>
@@ -75,7 +79,7 @@ export default function CaseCard({
                 <div className="flex items-baseline gap-3">
                   <span
                     className="text-[11px] font-bold tabular-nums"
-                    style={{ color: accent }}
+                    style={{ color: ink }}
                   >
                     {String(index + 1).padStart(2, "0")}
                   </span>

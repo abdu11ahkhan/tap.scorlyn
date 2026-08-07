@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -15,6 +15,9 @@ export default function EditorialCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#B45309";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
 
   return (
     <div
@@ -24,7 +27,7 @@ export default function EditorialCard({
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">
         <p
           className="card-rise text-center text-[11px] uppercase tracking-[0.35em]"
-          style={{ color: accent, ["--d" as string]: "0ms" }}
+          style={{ color: ink, ["--d" as string]: "0ms" }}
         >
           {card.company || "Contact"}
         </p>
@@ -59,7 +62,7 @@ export default function EditorialCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl" style={{ color: accent }}>
+              <span className="text-2xl" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -74,7 +77,7 @@ export default function EditorialCard({
             {/* Drop cap — the one flourish this template gets. */}
             <span
               className="float-left mr-2 mt-1 text-[3.2rem] font-bold leading-[0.75]"
-              style={{ color: accent }}
+              style={{ color: ink }}
             >
               {card.bio.trim().charAt(0)}
             </span>
@@ -107,7 +110,7 @@ export default function EditorialCard({
                   ["--d" as string]: `${270 + index * 55}ms`,
                 }}
               >
-                <Icon className="h-4 w-4 shrink-0" style={{ color: accent }} />
+                <Icon className="h-4 w-4 shrink-0" style={{ color: ink }} />
                 <span className="flex-1 text-[15px] tracking-wide transition-transform group-hover:translate-x-1">
                   {button.label}
                 </span>

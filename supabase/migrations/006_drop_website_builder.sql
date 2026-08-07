@@ -1,7 +1,7 @@
 -- =====================================================================
 -- Remove the old portfolio-website builder.
 --
--- Tapzar is an NFC card product. The `websites` / `assets` tables and the
+-- ScorlynTap is an NFC card product. The `websites` / `assets` tables and the
 -- nfc_cards.website_id column belonged to the site-builder this codebase
 -- started life as, and nothing in the app reads them any more.
 --

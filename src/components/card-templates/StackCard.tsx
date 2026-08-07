@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { readableOn, accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -17,6 +17,9 @@ export default function StackCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#059669";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
 
   const sections = [
     { id: "top", label: "home" },
@@ -50,7 +53,7 @@ export default function StackCard({
         <section id="top" className="scroll-mt-16 py-14 text-center">
           <div
             className="card-rise mx-auto flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl"
-            style={{ background: `${accent}1F`, color: accent, ["--d" as string]: "0ms" }}
+            style={{ background: `${accent}1F`, color: ink, ["--d" as string]: "0ms" }}
           >
             {card.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -74,7 +77,7 @@ export default function StackCard({
           {card.headline && (
             <p
               className="card-rise mt-2.5 text-sm font-black uppercase tracking-[0.18em]"
-              style={{ color: accent, ["--d" as string]: "120ms" }}
+              style={{ color: ink, ["--d" as string]: "120ms" }}
             >
               {card.headline}
             </p>
@@ -121,7 +124,7 @@ export default function StackCard({
                     rel={button.external ? "noopener noreferrer" : undefined}
                     className="group flex items-center gap-3 rounded-xl border border-black/10 px-4 py-3.5 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)]"
                   >
-                    <Icon className="h-[18px] w-[18px]" style={{ color: accent }} />
+                    <Icon className="h-[18px] w-[18px]" style={{ color: ink }} />
                     <span className="flex-1">{button.label}</span>
                     <ArrowUpRight className="h-4 w-4 text-black/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </a>
@@ -141,8 +144,8 @@ export default function StackCard({
           </p>
           <SaveContact
             card={card}
-            className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-sm font-black uppercase tracking-tight text-white"
-            style={{ background: accent }}
+            className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-sm font-black uppercase tracking-tight"
+            style={{ background: accent, color: readableOn(accent) }}
           >
             save to contacts
           </SaveContact>

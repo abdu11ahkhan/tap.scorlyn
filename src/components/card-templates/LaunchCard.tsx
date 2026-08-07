@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   readableOn,
   type CardProfile,
@@ -22,6 +23,9 @@ export default function LaunchCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#DC2626";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const [primary, ...secondary] = buttons;
 
   return (
@@ -53,7 +57,7 @@ export default function LaunchCard({
         {card.headline && (
           <p
             className="card-rise mt-3 text-lg font-semibold"
-            style={{ color: accent, ["--d" as string]: "110ms" }}
+            style={{ color: ink, ["--d" as string]: "110ms" }}
           >
             {card.headline}
           </p>

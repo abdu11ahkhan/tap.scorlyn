@@ -1,5 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  roleLine,
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -24,6 +26,10 @@ export default function MosaicCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#7C3AED";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const gallery = resolveGallery(card.gallery);
 
   return (
@@ -41,16 +47,16 @@ export default function MosaicCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-lg font-bold" style={{ color: accent }}>
+              <span className="text-lg font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
-            {card.headline && (
+            {role && (
               <p className="truncate text-[13px] font-semibold text-white/45">
-                {card.headline}
+                {role}
               </p>
             )}
           </div>

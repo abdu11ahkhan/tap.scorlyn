@@ -6,7 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { Loader2, Mail } from "lucide-react";
-import { REF_COOKIE, REF_COOKIE_MAX_AGE, REF_PARAM } from "@/lib/referral";
+import {
+  LEGACY_REF_COOKIE,
+  REF_COOKIE,
+  REF_COOKIE_MAX_AGE,
+  REF_PARAM,
+} from "@/lib/referral";
 import BrandLockup from "@/components/layout/BrandLockup";
 
 function SignupForm() {
@@ -40,8 +45,13 @@ function SignupForm() {
   const readRefCode = (): string | null => {
     const fromUrl = searchParams.get(REF_PARAM);
     if (fromUrl) return fromUrl;
-    const match = document.cookie.match(new RegExp(`(?:^|; )${REF_COOKIE}=([^;]*)`));
-    return match ? decodeURIComponent(match[1]) : null;
+    // Falls back to the pre-rename cookie so referrals already in flight when
+    // the name changed still attribute.
+    for (const name of [REF_COOKIE, LEGACY_REF_COOKIE]) {
+      const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+      if (match) return decodeURIComponent(match[1]);
+    }
+    return null;
   };
 
   const attributeSignup = async (userId: string) => {

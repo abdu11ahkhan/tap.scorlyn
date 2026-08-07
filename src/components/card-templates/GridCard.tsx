@@ -1,5 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
+  roleLine,
+  accentOn,
   fontStack,
   initialsOf,
   resolveGallery,
@@ -23,6 +25,10 @@ export default function GridCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#0EA5E9";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   return (
@@ -38,7 +44,7 @@ export default function GridCard({
         >
           <div
             className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full"
-            style={{ background: `${accent}1F`, color: accent }}
+            style={{ background: `${accent}1F`, color: ink }}
           >
             {card.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -54,9 +60,9 @@ export default function GridCard({
 
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-lg font-black tracking-tight">{card.full_name}</h1>
-            {card.headline && (
-              <p className="truncate text-[13px] font-semibold" style={{ color: accent }}>
-                {card.headline}
+            {role && (
+              <p className="truncate text-[13px] font-semibold" style={{ color: ink }}>
+                {role}
               </p>
             )}
           </div>
@@ -141,7 +147,7 @@ export default function GridCard({
                 />
                 <span
                   className="relative flex h-9 w-9 items-center justify-center rounded-xl"
-                  style={{ background: `${accent}26`, color: accent }}
+                  style={{ background: `${accent}26`, color: ink }}
                 >
                   <Icon className="h-4 w-4" />
                 </span>

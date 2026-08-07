@@ -1,5 +1,6 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -21,6 +22,9 @@ export default function SplitCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#111111";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   // The identity panel is filled with the accent, so its text has to adapt.
   const onAccent = readableOn(accent);
 
@@ -129,7 +133,7 @@ export default function SplitCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 className="card-rise group relative flex w-full items-center gap-3 overflow-hidden rounded-lg border-2 border-neutral-100 px-5 py-4 text-[15px] font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
                 style={{
-                  color: accent,
+                  color: ink,
                   ["--d" as string]: `${300 + index * 60}ms`,
                 }}
               >

@@ -45,7 +45,10 @@ export type CardDraft = {
  * the trip through /login — localStorage does that, cookies would bloat every
  * request with the bio text.
  */
-const DRAFT_KEY = "tapzar_card_draft";
+const DRAFT_KEY = "scorlyntap_card_draft";
+/** Pre-rename key. Read-only, so a card half-designed before the rename
+ *  isn't thrown away on the visitor's next page load. */
+const LEGACY_DRAFT_KEY = "tapzar_card_draft";
 
 export function saveDraft(draft: CardDraft): void {
   writeStorage("local", DRAFT_KEY, JSON.stringify(draft));
@@ -53,7 +56,8 @@ export function saveDraft(draft: CardDraft): void {
 
 export function loadDraft(): CardDraft | null {
   try {
-    const raw = readStorage("local", DRAFT_KEY);
+    const raw =
+      readStorage("local", DRAFT_KEY) ?? readStorage("local", LEGACY_DRAFT_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as CardDraft;
     if (!parsed?.form) return null;
@@ -70,6 +74,7 @@ export function loadDraft(): CardDraft | null {
 
 export function clearDraft(): void {
   removeStorage("local", DRAFT_KEY);
+  removeStorage("local", LEGACY_DRAFT_KEY);
 }
 
 /** Builds the object the card templates expect from in-progress form state. */

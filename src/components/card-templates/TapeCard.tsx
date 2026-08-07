@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -22,6 +22,9 @@ export default function TapeCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#F59E0B";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
 
   return (
     <div
@@ -124,7 +127,7 @@ export default function TapeCard({
                   className="absolute -top-2 left-6 h-4 w-12 -rotate-3 opacity-60"
                   style={{ background: accent }}
                 />
-                <Icon className="h-[18px] w-[18px]" style={{ color: accent }} />
+                <Icon className="h-[18px] w-[18px]" style={{ color: ink }} />
                 <span className="flex-1 text-left">{button.label}</span>
                 <span className="text-[#1A1A1A]/30 transition-transform group-hover:translate-x-1">
                   →

@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  accentOn,
   fontStack,
   resolveGallery,
   type CardProfile,
@@ -21,6 +22,9 @@ export default function JournalCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#7C2D12";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   return (
@@ -30,7 +34,7 @@ export default function JournalCard({
     >
       <main className="mx-auto w-full max-w-[34rem] px-6 pb-24 pt-16">
         <header className="card-rise border-b border-black/10 pb-7">
-          <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: accent }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: ink }}>
             {card.company || "Notes"}
           </p>
           <h1 className="mt-3 font-serif text-[2.7rem] font-normal leading-[1.08] tracking-tight">
@@ -88,7 +92,7 @@ export default function JournalCard({
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
                 className="flex items-center justify-between py-2.5 font-serif text-[17px] transition-colors hover:text-black"
-                style={{ color: accent }}
+                style={{ color: ink }}
               >
                 {button.label}
                 <ArrowUpRight className="h-4 w-4 opacity-50" />

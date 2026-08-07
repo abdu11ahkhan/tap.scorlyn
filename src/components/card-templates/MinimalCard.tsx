@@ -1,5 +1,5 @@
 import { ArrowUpRight, Download, MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -16,6 +16,9 @@ export default function MinimalCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#111111";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
 
   return (
     <div
@@ -54,7 +57,7 @@ export default function MinimalCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl font-light tracking-wide" style={{ color: accent }}>
+              <span className="text-2xl font-light tracking-wide" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -71,7 +74,7 @@ export default function MinimalCard({
         {card.headline && (
           <p
             className="card-rise mt-2 text-sm uppercase tracking-[0.18em]"
-            style={{ color: accent, ["--d" as string]: "140ms" }}
+            style={{ color: ink, ["--d" as string]: "140ms" }}
           >
             {card.headline}
           </p>
@@ -171,7 +174,7 @@ export default function MinimalCard({
         </SaveContact>
 
         <p
-          className="card-rise mt-10 text-[10px] uppercase tracking-[0.3em] text-neutral-300"
+          className="card-rise mt-10 text-[10px] uppercase tracking-[0.3em] text-neutral-400"
           style={{ ["--d" as string]: `${360 + buttons.length * 60}ms` }}
         >
           @{card.username}

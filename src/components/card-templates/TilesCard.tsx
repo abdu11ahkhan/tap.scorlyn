@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { roleLine, accentOn, fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -19,6 +19,10 @@ export default function TilesCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#111111";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const onAccent = readableOn(accent);
 
   return (
@@ -36,7 +40,7 @@ export default function TilesCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt={card.full_name} className="h-full w-full object-cover" />
             ) : (
-              <span className="text-xl font-bold" style={{ color: accent }}>
+              <span className="text-xl font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -44,9 +48,9 @@ export default function TilesCard({
 
           <div className="min-w-0">
             <h1 className="truncate text-2xl font-bold tracking-tight">{card.full_name}</h1>
-            {card.headline && (
-              <p className="truncate text-sm font-medium" style={{ color: accent }}>
-                {card.headline}
+            {role && (
+              <p className="truncate text-sm font-medium" style={{ color: ink }}>
+                {role}
               </p>
             )}
             {card.location && (
@@ -81,7 +85,7 @@ export default function TilesCard({
                 className="card-rise flex aspect-square items-center justify-center rounded-2xl border border-neutral-200 bg-white transition-all duration-200 hover:-translate-y-1 hover:border-neutral-900"
                 style={{ ["--d" as string]: `${120 + index * 55}ms` }}
               >
-                <Icon className="h-6 w-6" style={{ color: accent }} />
+                <Icon className="h-6 w-6" style={{ color: ink }} />
               </a>
             );
           })}
@@ -99,7 +103,7 @@ export default function TilesCard({
           Save to contacts
         </SaveContact>
 
-        <p className="mt-6 text-center text-[11px] font-medium uppercase tracking-[0.25em] text-neutral-300">
+        <p className="mt-6 text-center text-[11px] font-medium uppercase tracking-[0.25em] text-neutral-400">
           @{card.username}
         </p>
       </main>

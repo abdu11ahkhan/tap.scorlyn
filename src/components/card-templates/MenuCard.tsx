@@ -1,5 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  roleLine,
+  accentOn,
   fontStack,
   readableOn,
   resolveGallery,
@@ -23,6 +25,10 @@ export default function MenuCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#166534";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   // "Item — Rs.800" reads as two columns; anything else stays one.
@@ -43,12 +49,12 @@ export default function MenuCard({
           <h1 className="text-[2.6rem] font-bold leading-none tracking-tight">
             {card.full_name}
           </h1>
-          {card.headline && (
+          {role && (
             <p
               className="mt-2 text-[12px] font-bold uppercase tracking-[0.28em]"
-              style={{ color: accent }}
+              style={{ color: ink }}
             >
-              {card.headline}
+              {role}
             </p>
           )}
           {card.bio && (
@@ -79,7 +85,7 @@ export default function MenuCard({
                   {/* Dotted leader, the way a printed menu does it. */}
                   <span className="min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-black/25" />
                   {item.price && (
-                    <span className="text-[16px] font-bold tabular-nums" style={{ color: accent }}>
+                    <span className="text-[16px] font-bold tabular-nums" style={{ color: ink }}>
                       {item.price}
                     </span>
                   )}

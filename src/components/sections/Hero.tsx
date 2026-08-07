@@ -58,7 +58,7 @@ export function Hero({
             initial={{ opacity: 0, y: 26 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.07 }}
-            className="mt-7 text-[clamp(3.2rem,9vw,7rem)] font-black leading-[0.85] tracking-[-0.05em] text-white"
+            className="mt-7 text-[clamp(2.8rem,9vw,7rem)] font-black leading-[1.18] tracking-[-0.045em] text-white sm:leading-[0.92]"
           >
             {title ? (
               // A custom headline is plain text: the default's highlight and
@@ -73,7 +73,7 @@ export function Hero({
                 <span className="relative inline-block">
                   <span className="relative z-10 text-ink">dead</span>
                   {/* Generous inset — a tight box clips the descender on the 'd'. */}
-                  <span className="absolute inset-x-[-0.09em] inset-y-[-0.06em] -z-0 -rotate-1 rounded-lg bg-hotpink" />
+                  <span className="absolute inset-x-[-0.08em] inset-y-[-0.02em] -z-0 -rotate-1 rounded-lg bg-hotpink" />
                 </span>
                 <br />
                 <span className="bg-gradient-to-r from-acid via-cyan-300 to-hotpink bg-clip-text text-transparent">

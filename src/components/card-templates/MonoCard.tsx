@@ -1,4 +1,4 @@
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -14,6 +14,9 @@ export default function MonoCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#22D3EE";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
 
   return (
     <div
@@ -50,7 +53,7 @@ export default function MonoCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-sm font-bold" style={{ color: accent }}>
+              <span className="text-sm font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -59,7 +62,7 @@ export default function MonoCard({
           <div className="min-w-0">
             <h1 className="truncate text-xl font-bold tracking-tight text-white">
               {card.full_name}
-              <span className="caret-blink ml-1 font-normal" style={{ color: accent }}>
+              <span className="caret-blink ml-1 font-normal" style={{ color: ink }}>
                 _
               </span>
             </h1>
@@ -71,7 +74,7 @@ export default function MonoCard({
           {card.headline && (
             <div className="card-rise flex gap-3" style={{ ["--d" as string]: "90ms" }}>
               <dt className="w-20 shrink-0 text-neutral-600">role</dt>
-              <dd style={{ color: accent }}>{card.headline}</dd>
+              <dd style={{ color: ink }}>{card.headline}</dd>
             </div>
           )}
           {card.company && (
@@ -136,7 +139,7 @@ export default function MonoCard({
           className="card-rise mt-6 inline-block text-[11px] text-neutral-600 transition-colors hover:text-neutral-300"
           style={{ ["--d" as string]: "320ms" }}
         >
-          <span style={{ color: accent }}>$</span> save-contact
+          <span style={{ color: ink }}>$</span> save-contact
         </SaveContact>
       </main>
     </div>

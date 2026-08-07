@@ -1,4 +1,5 @@
 import type { CardProfile, ResolvedButton } from "@/lib/card";
+import CoverBand from "@/components/nfc/CoverBand";
 import MinimalCard from "./MinimalCard";
 import BoldCard from "./BoldCard";
 import SplitCard from "./SplitCard";
@@ -133,5 +134,23 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
 /** Falls back to Minimal so an unknown template id never blanks a card. */
 export function renderCardTemplate(props: CardTemplateProps) {
   const Template = TEMPLATES[props.card.template] ?? MinimalCard;
-  return <Template {...props} />;
+  const { card } = props;
+
+  // The band lives here rather than on the public page, so a cover shows up
+  // in the editor preview too. Uploading one and seeing nothing change is how
+  // you conclude the feature is broken.
+  const needsBand =
+    Boolean(card.cover_url) && !TEMPLATES_WITH_OWN_COVER.has(card.template);
+
+  if (!needsBand) return <Template {...props} />;
+
+  return (
+    <>
+      <CoverBand
+        src={card.cover_url as string}
+        tone={TEMPLATE_TONE[card.template] ?? "#ffffff"}
+      />
+      <Template {...props} />
+    </>
+  );
 }

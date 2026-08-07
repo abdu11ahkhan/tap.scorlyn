@@ -1,5 +1,7 @@
 import { ArrowRight, Check, Star } from "lucide-react";
 import {
+  roleLine,
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -21,6 +23,10 @@ export default function AppCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#2563EB";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const onAccent = readableOn(accent);
   const [primary, ...rest] = buttons;
   const shot = card.cover_url;
@@ -47,9 +53,9 @@ export default function AppCard({
 
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-xl font-black tracking-tight">{card.full_name}</h1>
-            {card.headline && (
+            {role && (
               <p className="truncate text-[13px] font-semibold text-black/50">
-                {card.headline}
+                {role}
               </p>
             )}
             <div className="mt-1 flex items-center gap-1">
@@ -57,7 +63,7 @@ export default function AppCard({
                 <Star
                   key={i}
                   className="h-3 w-3"
-                  style={{ color: accent, fill: i < 4 ? accent : "transparent" }}
+                  style={{ color: ink, fill: i < 4 ? accent : "transparent" }}
                 />
               ))}
               <span className="ml-1 text-[11px] font-bold text-black/40">4.8</span>
@@ -126,7 +132,7 @@ export default function AppCard({
                     >
                       <span
                         className="flex h-8 w-8 items-center justify-center rounded-lg"
-                        style={{ background: `${accent}1F`, color: accent }}
+                        style={{ background: `${accent}1F`, color: ink }}
                       >
                         <Icon className="h-4 w-4" />
                       </span>

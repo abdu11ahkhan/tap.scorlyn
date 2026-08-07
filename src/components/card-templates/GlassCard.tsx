@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -15,6 +15,9 @@ export default function GlassCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#22D3EE";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
 
   return (
     <div
@@ -82,7 +85,7 @@ export default function GlassCard({
           {card.headline && (
             <p
               className="mt-1.5 text-sm font-semibold"
-              style={{ color: accent, textShadow: `0 0 22px ${accent}66` }}
+              style={{ color: ink, textShadow: `0 0 22px ${accent}66` }}
             >
               {card.headline}
             </p>
@@ -119,7 +122,7 @@ export default function GlassCard({
                 />
                 <Icon
                   className="relative h-[18px] w-[18px] transition-transform group-hover:scale-110"
-                  style={{ color: accent }}
+                  style={{ color: ink }}
                 />
                 <span className="relative flex-1">{button.label}</span>
                 <ArrowUpRight className="relative h-4 w-4 text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-white" />

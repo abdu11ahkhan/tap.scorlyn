@@ -1,5 +1,5 @@
 import { ArrowRight, Mail } from "lucide-react";
-import { fontStack, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { readableOn, fontStack, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 
 /**
@@ -79,7 +79,7 @@ export default function WaitlistCard({
               <button
                 type="submit"
                 className="flex h-14 shrink-0 items-center justify-center gap-2 rounded-full px-7 text-[15px] font-black uppercase tracking-tight text-white transition-transform active:scale-95"
-                style={{ background: accent }}
+                style={{ background: accent, color: readableOn(accent) }}
               >
                 join
                 <ArrowRight className="h-4 w-4" />
@@ -92,7 +92,7 @@ export default function WaitlistCard({
               href={fallback.href}
               target={fallback.external ? "_blank" : undefined}
               rel={fallback.external ? "noopener noreferrer" : undefined}
-              className="card-rise mt-9 inline-flex h-14 items-center justify-center gap-2 rounded-full px-8 text-[15px] font-black uppercase tracking-tight text-white"
+              className="card-rise mt-9 inline-flex h-14 items-center justify-center gap-2 rounded-full px-8 text-[15px] font-black uppercase tracking-tight"
               style={{ background: accent, ["--d" as string]: "190ms" }}
             >
               {fallback.label}

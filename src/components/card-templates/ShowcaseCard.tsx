@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -17,6 +17,9 @@ export default function ShowcaseCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#F43F5E";
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
 
   return (
     <div
@@ -59,7 +62,7 @@ export default function ShowcaseCard({
           {card.headline && (
             <p
               className="card-rise mt-2 text-sm font-black uppercase tracking-[0.2em]"
-              style={{ color: accent, ["--d" as string]: "70ms" }}
+              style={{ color: ink, ["--d" as string]: "70ms" }}
             >
               {card.headline}
             </p>
@@ -103,7 +106,7 @@ export default function ShowcaseCard({
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl"
-                  style={{ background: `${accent}26`, color: accent }}
+                  style={{ background: `${accent}26`, color: ink }}
                 >
                   <Icon className="h-5 w-5" />
                 </span>

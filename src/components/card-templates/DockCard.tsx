@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { roleLine, accentOn, fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -18,6 +18,10 @@ export default function DockCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#111111";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const onAccent = readableOn(accent);
 
   return (
@@ -52,12 +56,12 @@ export default function DockCard({
           <h1 className="card-rise text-4xl font-bold leading-tight tracking-tight">
             {card.full_name}
           </h1>
-          {card.headline && (
+          {role && (
             <p
               className="card-rise mt-1.5 text-sm font-semibold"
-              style={{ color: accent, ["--d" as string]: "80ms" }}
+              style={{ color: ink, ["--d" as string]: "80ms" }}
             >
-              {card.headline}
+              {role}
             </p>
           )}
           {card.location && (

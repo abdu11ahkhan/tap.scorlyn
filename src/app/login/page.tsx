@@ -8,6 +8,12 @@ import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import BrandLockup from "@/components/layout/BrandLockup";
 
+/** Why /auth/confirm sent someone here instead of into the dashboard. */
+const LINK_ERRORS: Record<string, string> = {
+  "link-expired": "That link has expired or was already used. Request a new one.",
+  "link-invalid": "That link wasn't valid. Request a new one.",
+};
+
 /** Only same-origin relative paths, so ?next= can't bounce to another host. */
 function safeNext(value: string | null): string {
   return value && value.startsWith("/") && !value.startsWith("//") ? value : "/dashboard";
@@ -25,6 +31,10 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
+
+  // An expired reset link drops you back here; without a reason the page just
+  // looks like it forgot you were signing in.
+  const linkError = LINK_ERRORS[searchParams.get("error") ?? ""] ?? null;
 
   const requestedNext = safeNext(searchParams.get("next"));
   // An explicit ?next= wins — it's how Publish carries unsaved work through.
@@ -106,9 +116,9 @@ function LoginForm() {
           </div>
         )}
 
-        {error && (
+        {(error || linkError) && (
           <div className="mt-6 rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
-            {error}
+            {error ?? linkError}
           </div>
         )}
 

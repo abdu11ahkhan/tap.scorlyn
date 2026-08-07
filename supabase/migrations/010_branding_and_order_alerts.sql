@@ -5,7 +5,7 @@
 -- ---------------------------------------------------------------------
 -- 1. Branding choice on an order
 --
--- A card carries a small Tapzar mark by default; paying removes it. The
+-- A card carries a small ScorlynTap mark by default; paying removes it. The
 -- surcharge lives in app_settings so it can be changed without a deploy,
 -- and the amount charged is still computed server-side from that value —
 -- never from the form.
@@ -19,7 +19,7 @@ ALTER TABLE public.app_settings
     CHECK (unbranded_surcharge_pkr >= 0);
 
 COMMENT ON COLUMN public.orders.branding IS
-  'branded = small Tapzar mark on the card back (included). unbranded = customer artwork only, costs unbranded_surcharge_pkr per card.';
+  'branded = small ScorlynTap mark on the card back (included). unbranded = customer artwork only, costs unbranded_surcharge_pkr per card.';
 
 -- ---------------------------------------------------------------------
 -- 2. New-order alerts for the admin console

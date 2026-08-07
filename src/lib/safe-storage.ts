@@ -24,7 +24,7 @@ function store(kind: "local" | "session"): Storage | null {
     // The access itself is what throws — it has to be inside the try.
     const s = kind === "local" ? window.localStorage : window.sessionStorage;
     // Safari Private Browsing exposes the object but rejects writes, so probe.
-    const probe = "__tapzar_probe__";
+    const probe = "__scorlyntap_probe__";
     s.setItem(probe, "1");
     s.removeItem(probe);
     return s;

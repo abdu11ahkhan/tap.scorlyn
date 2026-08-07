@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { roleLine, accentOn, fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -19,6 +19,10 @@ export default function OrbitCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#111111";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const onAccent = readableOn(accent);
 
   return (
@@ -45,7 +49,7 @@ export default function OrbitCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt={card.full_name} className="h-full w-full object-cover" />
             ) : (
-              <span className="text-3xl font-semibold" style={{ color: accent }}>
+              <span className="text-3xl font-semibold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -59,12 +63,12 @@ export default function OrbitCard({
           {card.full_name}
         </h1>
 
-        {card.headline && (
+        {role && (
           <p
             className="card-rise mt-2 text-sm font-medium"
-            style={{ color: accent, ["--d" as string]: "140ms" }}
+            style={{ color: ink, ["--d" as string]: "140ms" }}
           >
-            {card.headline}
+            {role}
           </p>
         )}
 

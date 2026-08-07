@@ -1,5 +1,7 @@
 import { Calendar, Clock, Send } from "lucide-react";
 import {
+  roleLine,
+  accentOn,
   fontStack,
   initialsOf,
   readableOn,
@@ -27,6 +29,10 @@ export default function BookingCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#0D9488";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const onAccent = readableOn(accent);
   const email = card.email?.trim();
 
@@ -60,9 +66,9 @@ export default function BookingCard({
             <h1 className="text-2xl font-black leading-tight tracking-tight">
               {card.full_name}
             </h1>
-            {card.headline && (
-              <p className="text-sm font-bold" style={{ color: accent }}>
-                {card.headline}
+            {role && (
+              <p className="text-sm font-bold" style={{ color: ink }}>
+                {role}
               </p>
             )}
           </div>
@@ -82,7 +88,7 @@ export default function BookingCard({
           style={{ ["--d" as string]: "130ms" }}
         >
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" style={{ color: accent }} />
+            <Calendar className="h-5 w-5" style={{ color: ink }} />
             <h2 className="text-lg font-black tracking-tight">Book a slot</h2>
           </div>
           <p className="mt-1 text-[13px] font-semibold text-black/45">
@@ -161,7 +167,7 @@ export default function BookingCard({
                   rel={button.external ? "noopener noreferrer" : undefined}
                   className="flex items-center gap-2 rounded-full border border-black/12 bg-white px-4 py-2.5 text-[13px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-md"
                 >
-                  <Icon className="h-4 w-4" style={{ color: accent }} />
+                  <Icon className="h-4 w-4" style={{ color: ink }} />
                   {button.label}
                 </a>
               );

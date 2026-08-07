@@ -1,5 +1,6 @@
 import { MessageSquare } from "lucide-react";
 import {
+  roleLine,
   fontStack,
   readableOn,
   type CardProfile,
@@ -23,6 +24,7 @@ export default function QuoteCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#0D9488";
+  const role = roleLine(card);
 
   const asks = [
     "What you need",
@@ -48,9 +50,9 @@ export default function QuoteCard({
           Get a quote from {card.full_name.split(" ")[0]}
         </h1>
 
-        {card.headline && (
+        {role && (
           <p className="card-rise mt-2 text-[15px] font-semibold text-black/45">
-            {card.headline}
+            {role}
             {card.location ? ` · ${card.location}` : ""}
           </p>
         )}

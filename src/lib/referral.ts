@@ -4,7 +4,11 @@ import { createHash } from "crypto";
 export const REF_PARAM = "ref";
 
 /** Cookie the ref code is parked in so it survives the trip to /signup. */
-export const REF_COOKIE = "tapzar_ref";
+export const REF_COOKIE = "scorlyntap_ref";
+
+/** Pre-rename cookie. Still read, never written: a referral tapped before the
+ *  rename has up to 30 days left on it and should still pay out. */
+export const LEGACY_REF_COOKIE = "tapzar_ref";
 
 /** 30 days — long enough for "I'll order one later" to still attribute. */
 export const REF_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
@@ -15,7 +19,8 @@ export const REF_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
  */
 export function visitorHash(ip: string, userAgent: string): string {
   const day = new Date().toISOString().slice(0, 10);
-  const salt = process.env.TAP_HASH_SALT ?? "tapzar-dev-salt";
+  // Production sets TAP_HASH_SALT; this fallback only ever runs locally.
+  const salt = process.env.TAP_HASH_SALT ?? "scorlyntap-dev-salt";
   return createHash("sha256")
     .update(`${salt}:${ip}:${userAgent}:${day}`)
     .digest("hex")

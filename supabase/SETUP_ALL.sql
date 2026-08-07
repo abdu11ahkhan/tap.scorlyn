@@ -1,5 +1,5 @@
 -- ====================================================================
--- Tapzar — complete database setup.
+-- ScorlynTap — complete database setup.
 --
 -- Paste this whole file into the Supabase SQL Editor and run it once.
 -- It is the five migration files concatenated in dependency order.

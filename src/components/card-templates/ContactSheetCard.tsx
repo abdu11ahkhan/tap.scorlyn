@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import {
+  readableOn,
   fontStack,
   initialsOf,
   resolveGallery,
@@ -112,7 +113,7 @@ export default function ContactSheetCard({
         <SaveContact
           card={card}
           className="mt-7 flex h-12 items-center justify-center border-2 border-[#111] text-[13px] font-bold uppercase tracking-widest"
-          style={{ background: accent }}
+          style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts
         </SaveContact>

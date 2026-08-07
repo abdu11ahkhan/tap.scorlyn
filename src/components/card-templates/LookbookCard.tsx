@@ -1,5 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
+  roleLine,
+  accentOn,
   fontStack,
   readableOn,
   resolveGallery,
@@ -23,6 +25,10 @@ export default function LookbookCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#111111";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "dark");
   const gallery = resolveGallery(card.gallery);
   const [lead, ...rest] = gallery;
 
@@ -51,12 +57,12 @@ export default function LookbookCard({
           <h1 className="card-rise text-[clamp(2.2rem,10vw,3.4rem)] font-bold leading-[0.95] tracking-tight">
             {card.full_name}
           </h1>
-          {card.headline && (
+          {role && (
             <p
               className="card-rise mt-2 text-sm font-semibold uppercase tracking-[0.2em]"
-              style={{ color: accent, ["--d" as string]: "80ms" }}
+              style={{ color: ink, ["--d" as string]: "80ms" }}
             >
-              {card.headline}
+              {role}
             </p>
           )}
           {card.location && (

@@ -264,6 +264,69 @@ function defaultLabel(kind: ButtonKind): string {
  * can't hardcode white — a pale accent like #22D3EE leaves white text unreadable.
  * Uses WCAG relative luminance.
  */
+
+/**
+ * The accent, nudged until it is legible as text on a given surface.
+ *
+ * Templates print the headline and small labels in the user's accent. That
+ * works for a mid-tone, and fails at both ends: acid green on a white card, or
+ * near-black on a dark one, is text you cannot read. People pick those colours
+ * — they are in our own preset list — so the template has to cope rather than
+ * assume a sensible choice.
+ *
+ * Only the lightness moves; the hue is what they chose and is left alone.
+ */
+/**
+ * The one-line "who you are" under the name: "Architect · Studio Nine".
+ *
+ * Layouts that only have room for a single line under the name were dropping
+ * `company` on the floor — someone would fill the field in the editor and it
+ * would appear nowhere. Joining is better than picking one: on a business card
+ * the role and the firm are read together, and either half alone is fine.
+ */
+export function roleLine(card: Pick<CardProfile, "headline" | "company">): string | null {
+  const parts = [card.headline, card.company].map((p) => p?.trim()).filter(Boolean);
+  return parts.length ? parts.join(" · ") : null;
+}
+
+export function accentOn(accent: string, surface: "light" | "dark"): string {
+  const hex = accent.replace("#", "");
+  const full =
+    hex.length === 3 ? hex.split("").map((c) => c + c).join("") : hex.slice(0, 6);
+  const n = parseInt(full, 16);
+  if (Number.isNaN(n) || full.length !== 6) return accent;
+
+  let [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+
+  const channel = (v: number) => {
+    const x = v / 255;
+    return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+  };
+  const lum = () => 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  const paper = surface === "light" ? 1 : 0.0086; // #ffffff vs #0a0a0a
+  const contrast = () => {
+    const [hi, lo] = [lum(), paper].sort((a, z) => z - a);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+
+  // Step toward the opposite end until it reads. 4.5 is the text threshold;
+  // stop at 3 so a mid accent keeps its character instead of being crushed.
+  const target = 3;
+  for (let i = 0; i < 24 && contrast() < target; i++) {
+    if (surface === "light") {
+      r = Math.round(r * 0.88);
+      g = Math.round(g * 0.88);
+      b = Math.round(b * 0.88);
+    } else {
+      r = Math.round(r + (255 - r) * 0.14);
+      g = Math.round(g + (255 - g) * 0.14);
+      b = Math.round(b + (255 - b) * 0.14);
+    }
+  }
+
+  return "#" + [r, g, b].map((v) => Math.max(0, Math.min(255, v)).toString(16).padStart(2, "0")).join("");
+}
+
 export function readableOn(background: string | null | undefined): string {
   const hex = (background ?? "#111111").replace("#", "");
   const full =

@@ -1,5 +1,8 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
+  roleLine,
+  readableOn,
+  accentOn,
   fontStack,
   resolveGallery,
   type CardProfile,
@@ -23,6 +26,10 @@ export default function FramesCard({
   buttons: ResolvedButton[];
 }) {
   const accent = card.accent_color || "#B45309";
+  const role = roleLine(card);
+  // Accent used as *text*: a pale accent on a light card, or a dark one
+  // on a dark card, is unreadable. Only the lightness moves.
+  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   return (
@@ -33,9 +40,9 @@ export default function FramesCard({
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
           <h1 className="text-3xl font-bold tracking-tight">{card.full_name}</h1>
-          {card.headline && (
-            <p className="mt-1.5 text-[13px] font-semibold uppercase tracking-[0.22em]" style={{ color: accent }}>
-              {card.headline}
+          {role && (
+            <p className="mt-1.5 text-[13px] font-semibold uppercase tracking-[0.22em]" style={{ color: ink }}>
+              {role}
             </p>
           )}
           {card.location && (
@@ -95,8 +102,8 @@ export default function FramesCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-full text-sm font-bold text-white"
-          style={{ background: accent }}
+          className="mt-6 flex h-12 items-center justify-center rounded-full text-sm font-bold"
+          style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts
         </SaveContact>
