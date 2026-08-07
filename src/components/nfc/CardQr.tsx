@@ -68,7 +68,10 @@ export default function CardQr({
     window.setTimeout(() => setSaved(false), 2500);
 
     const username = (card as { username?: string }).username;
-    const published = Boolean(username) && !String(href).includes("/preview/");
+    // Same test the template button uses: only the public card route is
+    // backed by /api/vcard, which can see published rows only.
+    const published =
+      Boolean(username) && window.location.pathname.startsWith("/u/");
 
     if (published) {
       window.location.href = `/api/vcard/${encodeURIComponent(username as string)}`;
