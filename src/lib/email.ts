@@ -13,6 +13,12 @@ const SMTP_PORT = Number(process.env.SMTP_PORT ?? 587);
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
 const FROM_NAME = process.env.SMTP_FROM_NAME ?? "ScorlynTap";
+/**
+ * The visible sender. Deliberately not SMTP_USER: with Resend the SMTP
+ * username is the literal string "resend", so building the From header out of
+ * it would produce `ScorlynTap <resend>` and every message would bounce.
+ */
+const FROM_EMAIL = process.env.SMTP_FROM ?? "noreply@scorlyn.com";
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tap.scorlyn.com";
 
@@ -109,7 +115,7 @@ export async function sendCampaign(
 
     try {
       await tx.sendMail({
-        from: `${FROM_NAME} <${SMTP_USER}>`,
+        from: `${FROM_NAME} <${FROM_EMAIL}>`,
         to: person.email,
         subject,
         text: `${text}\n\n--\nScorlynTap — NFC digital business cards\ntap.scorlyn.com`,
@@ -117,7 +123,7 @@ export async function sendCampaign(
         headers: {
           // Required by Gmail and Outlook for anything promotional; without it
           // the only way to stop the mail is to report it as spam.
-          "List-Unsubscribe": `<mailto:${SMTP_USER}?subject=unsubscribe>`,
+          "List-Unsubscribe": `<mailto:${FROM_EMAIL}?subject=unsubscribe>`,
         },
       });
       sent += 1;
