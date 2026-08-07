@@ -24,7 +24,13 @@ import { uploadImage } from "@/lib/upload-image";
  * The upload itself goes browser -> Supabase. Storage policies restrict writes
  * to the signing-in user's own folder, so no elevated key is involved.
  */
-const MAX_EDGE = { avatar: 640, cover: 1600, gallery: 1200 };
+// Avatars are drawn up to ~145px CSS, which is ~435px on a 3x phone — and
+// several templates use the same image as a full-bleed header. 640 was below
+// that on a modern screen, which is what made photos look soft.
+const MAX_EDGE = { avatar: 1024, cover: 2000, gallery: 1600 };
+
+/** Higher for the portrait, which is the one people look at closely. */
+const QUALITY = { avatar: 0.92, cover: 0.86, gallery: 0.86 };
 
 export type ImageKind = keyof typeof MAX_EDGE;
 
@@ -36,18 +42,45 @@ async function downscale(file: File, kind: ImageKind): Promise<Blob> {
   const width = Math.round(bitmap.width * scale);
   const height = Math.round(bitmap.height * scale);
 
+  // Halve at a time down to the target rather than one big jump. Canvas uses a
+  // cheap filter for large reductions, so drawing a 4000px photo straight to
+  // 640 samples a fraction of the pixels and throws away detail — which is the
+  // aliased, soft result people were seeing. Each halving averages neighbours,
+  // so the final step lands on an image that is already close to size.
+  let source: ImageBitmap | HTMLCanvasElement = bitmap;
+  let currentW = bitmap.width;
+  let currentH = bitmap.height;
+
+  while (currentW > width * 2 && currentH > height * 2) {
+    const halfW = Math.max(width, Math.round(currentW / 2));
+    const halfH = Math.max(height, Math.round(currentH / 2));
+    const step = document.createElement("canvas");
+    step.width = halfW;
+    step.height = halfH;
+    const stepCtx = step.getContext("2d");
+    if (!stepCtx) break;
+    stepCtx.imageSmoothingEnabled = true;
+    stepCtx.imageSmoothingQuality = "high";
+    stepCtx.drawImage(source, 0, 0, halfW, halfH);
+    if (source !== bitmap) (source as HTMLCanvasElement).width = 0;
+    source = step;
+    currentW = halfW;
+    currentH = halfH;
+  }
+
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
 
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Could not read that image.");
-  ctx.drawImage(bitmap, 0, 0, width, height);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(source, 0, 0, width, height);
   bitmap.close?.();
 
   const blob = await new Promise<Blob | null>((resolve) =>
-    // JPEG at 0.82: visually clean at these sizes and a fraction of a PNG.
-    canvas.toBlob(resolve, "image/jpeg", 0.82)
+    canvas.toBlob(resolve, "image/jpeg", QUALITY[kind])
   );
   if (!blob) throw new Error("Could not process that image.");
   return blob;
