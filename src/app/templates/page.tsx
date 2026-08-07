@@ -32,17 +32,20 @@ const ORIGINAL_COUNT = 5;
 export default async function PublicTemplatesPage() {
   // Anyone can browse. We only read the session to decide what the footer says.
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  const isLoggedIn = Boolean(user);
+  // Independent of each other, so they go together rather than one after the
+  // other — the session is only read to decide what the footer says, and the
+  // overrides don't depend on who is asking.
+  const [{ data: userData }, { data: overrideRows }] = await Promise.all([
+    supabase.auth.getUser(),
+    // Admin overrides from template_settings. Readable by anyone (the gallery
+    // is public), and absent rows just fall back to the compiled-in definition.
+    supabase
+      .from("template_settings")
+      .select("template_id, enabled, name, blurb, category, sort_order, is_new"),
+  ]);
 
-  // Admin overrides from template_settings. Readable by anyone (the gallery is
-  // public), and absent rows just fall back to the compiled-in definition.
-  const { data: overrideRows } = await supabase
-    .from("template_settings")
-    .select("template_id, enabled, name, blurb, category, sort_order, is_new");
+  const isLoggedIn = Boolean(userData.user);
 
   const overrides = new Map(
     (overrideRows ?? []).map((o) => [o.template_id as string, o])
