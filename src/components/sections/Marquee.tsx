@@ -8,9 +8,16 @@ const ITEMS = [
 ];
 
 /**
- * Scrolling ticker. The content is rendered twice and the track translates
- * exactly -50%, so the loop is seamless with no JS measuring widths.
+ * How many times the list is repeated to build one half of the track.
+ *
+ * The loop works by rendering the content twice and translating exactly -50%,
+ * so each half has to be at least as wide as the screen. One pass of the list
+ * measures ~2060px, which is fine on a laptop but leaves a ~500px empty stretch
+ * on a 2560px monitor for part of every cycle — the ribbon looks like it
+ * stopped. Three passes covers displays up to ~6100px.
  */
+const REPEATS = 3;
+
 export function Marquee({
   reverse = false,
   className = "bg-acid text-ink",
@@ -18,7 +25,8 @@ export function Marquee({
   reverse?: boolean;
   className?: string;
 }) {
-  const strip = [...ITEMS, ...ITEMS];
+  const half = Array.from({ length: REPEATS }, () => ITEMS).flat();
+  const strip = [...half, ...half];
 
   return (
     <div

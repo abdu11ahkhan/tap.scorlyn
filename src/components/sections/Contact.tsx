@@ -1,4 +1,5 @@
-import { MessageCircle, Mail, Package } from "lucide-react";
+import { MessageCircle, Package } from "lucide-react";
+import EmailAction from "./EmailAction";
 import { normalizeWhatsapp } from "@/lib/referral";
 
 /**
@@ -65,10 +66,9 @@ export function Contact({
           )}
 
           {mail && (
-            <a href={`mailto:${mail}?subject=${subject}`} className={`${tile} bg-white`}>
-              <Mail className="h-5 w-5 shrink-0" />
-              <span className="min-w-0 truncate text-left">Email us</span>
-            </a>
+            <EmailAction email={mail} subject={subject} className={`${tile} bg-white`}>
+              Email us
+            </EmailAction>
           )}
         </div>
 
@@ -89,11 +89,8 @@ export function Contact({
         </div>
 
         {mail && (
-          <p className="mt-6 text-[13px] font-bold text-ink/40">
-            or write to{" "}
-            <a href={`mailto:${mail}`} className="underline decoration-acid decoration-4">
-              {mail}
-            </a>
+          <p className="mt-6 select-all text-[13px] font-bold text-ink/45">
+            or write to <span className="text-ink underline decoration-acid decoration-4">{mail}</span>
           </p>
         )}
       </div>
