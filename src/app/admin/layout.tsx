@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   CreditCard,
   FileText,
+  Mail,
   HelpCircle,
   LayoutDashboard,
   LayoutTemplate,
@@ -75,6 +76,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/nfc", label: "NFC stock", icon: Nfc },
     { href: "/admin/billing", label: "Billing", icon: Wallet },
     { href: "/admin/content", label: "Content", icon: FileText },
+    { href: "/admin/email", label: "Email", icon: Mail },
     { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
     { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
     { href: "/admin/settings", label: "Settings", icon: Settings },
