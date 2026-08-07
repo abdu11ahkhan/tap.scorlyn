@@ -90,6 +90,7 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     avatar_url: demoAvatar(accent),
     cover_url: demoScene(accent, 0),
     logo_url: null,
+    show_qr: true,
     cover_mode: "cover",
     gallery: captions.map((caption, index) => ({
       url: demoScene(accent, index + 1),

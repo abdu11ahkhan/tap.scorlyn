@@ -146,6 +146,8 @@ export type CardProfile = {
   cover_url: string | null;
   /** Company logo, drawn as a small watermark. Distinct from avatar_url. */
   logo_url: string | null;
+  /** Offers the QR button on the public card. */
+  show_qr: boolean;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];

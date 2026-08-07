@@ -1,6 +1,7 @@
 import type { CardProfile, ResolvedButton } from "@/lib/card";
 import CoverBand from "@/components/nfc/CoverBand";
 import LogoMark from "@/components/nfc/LogoMark";
+import CardQr from "@/components/nfc/CardQr";
 import MinimalCard from "./MinimalCard";
 import BoldCard from "./BoldCard";
 import SplitCard from "./SplitCard";
@@ -148,7 +149,9 @@ export function renderCardTemplate(props: CardTemplateProps) {
     Boolean(card.cover_url) && !TEMPLATES_WITH_OWN_COVER.has(card.template);
   const tone = TEMPLATE_TONE[card.template] ?? "#ffffff";
 
-  if (!needsBand && !card.logo_url) return <Template {...props} />;
+  const wantsQr = card.show_qr !== false;
+
+  if (!needsBand && !card.logo_url && !wantsQr) return <Template {...props} />;
 
   return (
     <>
@@ -160,6 +163,9 @@ export function renderCardTemplate(props: CardTemplateProps) {
       )}
       <Template {...props} />
       {card.logo_url && <LogoMark src={card.logo_url} tone={tone} />}
+      {wantsQr && (
+        <CardQr card={card} tone={tone} accent={card.accent_color || "#111111"} />
+      )}
     </>
   );
 }

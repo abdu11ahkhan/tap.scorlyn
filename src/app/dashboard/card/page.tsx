@@ -90,6 +90,7 @@ function MyCardEditor() {
             avatar_url: data.avatar_url ?? "",
             cover_url: data.cover_url ?? "",
             logo_url: data.logo_url ?? "",
+            show_qr: data.show_qr !== false,
             location: data.location ?? "",
             accent_color: data.accent_color ?? "#111111",
             template: data.template ?? "minimal",

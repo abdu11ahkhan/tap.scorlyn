@@ -34,7 +34,7 @@ export async function GET(
   return new NextResponse(buildVCard(card, origin), {
     headers: {
       "Content-Type": "text/vcard; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${vcardFilename(card)}"`,
+      "Content-Disposition": `inline; filename="${vcardFilename(card)}"`,
     },
   });
 }

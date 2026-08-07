@@ -274,6 +274,23 @@ export default function CardEditorFields({
           </p>
         </div>
 
+        {/* QR code */}
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3.5">
+          <input
+            type="checkbox"
+            checked={form.show_qr !== false}
+            onChange={(e) => onFormChange({ show_qr: e.target.checked })}
+            className="mt-0.5 h-4 w-4"
+          />
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-slate-900">Show QR code</span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              Adds a QR button to your card, so someone can scan it when tapping
+              isn&apos;t an option. Opens their contacts too.
+            </span>
+          </span>
+        </label>
+
         <div className="grid gap-5 sm:grid-cols-2">
           <ImagePicker
             kind="avatar"
