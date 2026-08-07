@@ -7,11 +7,13 @@ import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import BrandLockup from "@/components/layout/BrandLockup";
+import GoogleButton from "@/components/auth/GoogleButton";
 
 /** Why /auth/confirm sent someone here instead of into the dashboard. */
 const LINK_ERRORS: Record<string, string> = {
   "link-expired": "That link has expired or was already used. Request a new one.",
   "link-invalid": "That link wasn't valid. Request a new one.",
+  "oauth-failed": "Google sign-in didn't complete. Try again.",
 };
 
 /** Only same-origin relative paths, so ?next= can't bounce to another host. */
@@ -122,7 +124,17 @@ function LoginForm() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="mt-7 space-y-4">
+        <div className="mt-7">
+          <GoogleButton next={next} />
+        </div>
+
+        <div className="my-6 flex items-center gap-3">
+          <span className="h-0.5 flex-1 bg-ink/10" />
+          <span className="text-[11px] font-black uppercase tracking-widest text-ink/35">or</span>
+          <span className="h-0.5 flex-1 bg-ink/10" />
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-black uppercase tracking-wide text-ink">
               email

@@ -13,6 +13,7 @@ import {
   REF_PARAM,
 } from "@/lib/referral";
 import BrandLockup from "@/components/layout/BrandLockup";
+import GoogleButton from "@/components/auth/GoogleButton";
 
 function SignupForm() {
   const [name, setName] = useState("");
@@ -164,7 +165,17 @@ function SignupForm() {
               </div>
             )}
 
-            <form onSubmit={handleSignup} className="mt-7 space-y-4">
+            <div className="mt-7">
+              <GoogleButton next={next} label="Sign up with Google" />
+            </div>
+
+            <div className="my-6 flex items-center gap-3">
+              <span className="h-0.5 flex-1 bg-ink/10" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-ink/35">or</span>
+              <span className="h-0.5 flex-1 bg-ink/10" />
+            </div>
+
+            <form onSubmit={handleSignup} className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="name" className={label}>
                   full name
