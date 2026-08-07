@@ -4,7 +4,8 @@ import { ArrowLeft, ExternalLink, Mail, MessageCircle, ShieldCheck, Ban } from "
 import { createClient } from "@/lib/supabase/server";
 import { statusTone } from "@/app/dashboard/orders/status";
 import ActionButton from "../../ActionButton";
-import { setAdmin, setSuspended } from "../../actions";
+import { setAdmin, setSuspended, deleteAccount } from "../../actions";
+import ConfirmByName from "../../ConfirmByName";
 
 export const dynamic = "force-dynamic";
 
@@ -122,6 +123,23 @@ export default async function AdminUserDetail({
                   >
                     {person.suspended ? "restore" : "suspend"}
                   </ActionButton>
+
+                  {/* Typing the address is the guard, not a confirm dialog:
+                      this is unrecoverable, and a dialog is dismissed by
+                      reflex on a page full of other buttons. */}
+                  <ConfirmByName
+                    action={async () => {
+                      "use server";
+                      return deleteAccount(person.id);
+                    }}
+                    expected={person.email ?? ""}
+                    title="Delete this account"
+                    body={`Removes ${person.email}, their card and everything on it. Their orders are kept for the record. This cannot be undone — type the email address to confirm.`}
+                    cta="delete account"
+                    variant="danger"
+                  >
+                    delete
+                  </ConfirmByName>
                 </div>
               )}
             </div>

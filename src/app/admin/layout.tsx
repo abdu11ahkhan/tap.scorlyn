@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   Users,
+  UserX,
   Wallet,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -74,6 +75,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/orders", label: "Orders", icon: ShoppingBag, badge: unseenOrders ?? 0 },
     { href: "/admin/cards", label: "Cards", icon: CreditCard },
     { href: "/admin/users", label: "Customers", icon: Users },
+    { href: "/admin/accounts", label: "Suspended", icon: UserX },
     { href: "/admin/nfc", label: "NFC stock", icon: Nfc },
     { href: "/admin/billing", label: "Billing", icon: Wallet },
     { href: "/admin/content", label: "Content", icon: FileText },

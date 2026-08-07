@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -506,6 +507,82 @@ export async function saveSiteContent(input: {
 
     revalidatePath("/admin/content");
     revalidatePath("/", "layout");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Removes a customer account and everything personal attached to it.
+ *
+ * The profile row cascades to their card, NFC assignments and referral events.
+ * Orders are not among them by design — orders.user_id is ON DELETE SET NULL,
+ * so the record of a sale outlives the person asking to be forgotten, which is
+ * what an accounting trail has to do.
+ *
+ * The auth user is removed too, or the address would stay registered and they
+ * could sign in to an account with nothing behind it. That needs the service
+ * role, since a cookie-bound client cannot delete users.
+ */
+export async function deleteAccount(userId: string, reason?: string): Promise<Result> {
+  try {
+    const { supabase, user } = await assertAdmin();
+
+    if (userId === user.id) throw new Error("You can't delete your own account.");
+
+    const { data: target } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, is_admin")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!target) throw new Error("That account no longer exists.");
+    // Removing the last admin would lock everyone out of the console.
+    if (target.is_admin) {
+      throw new Error("Remove admin access first, then delete the account.");
+    }
+
+    const [{ data: card }, { count: orderCount }] = await Promise.all([
+      supabase.from("card_profiles").select("username").eq("user_id", userId).maybeSingle(),
+      supabase.from("orders").select("id", { count: "exact", head: true }).eq("user_id", userId),
+    ]);
+
+    // Written before anything is destroyed, so a failure halfway through still
+    // leaves a record that the attempt happened.
+    const { error: auditError } = await supabase.from("deleted_accounts").insert({
+      former_user_id: userId,
+      email: target.email,
+      full_name: target.full_name,
+      username: card?.username ?? null,
+      orders_kept: orderCount ?? 0,
+      reason: reason?.trim() || null,
+      deleted_by: user.id,
+    });
+    if (auditError) throw new Error(auditError.message);
+
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceKey) {
+      throw new Error(
+        "Account deletion needs SUPABASE_SERVICE_ROLE_KEY on the server."
+      );
+    }
+
+    const admin = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey, {
+      auth: { persistSession: false },
+    });
+
+    // Deleting the auth user cascades to profiles, and profiles cascades on to
+    // the card and the rest. One call, in the right order.
+    const { error: authError } = await admin.auth.admin.deleteUser(userId);
+    if (authError) throw new Error(authError.message);
+
+    // If the profile survived (no cascade from auth in this schema), clear it
+    // explicitly rather than leaving a row pointing at a user that is gone.
+    await admin.from("profiles").delete().eq("id", userId);
+
+    revalidatePath("/admin/users");
+    revalidatePath("/admin/accounts");
     return { ok: true };
   } catch (e) {
     return fail(e);
