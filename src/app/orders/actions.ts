@@ -37,6 +37,10 @@ export async function placeOrder(input: {
   address: string;
   city: string;
   note?: string;
+  /** The artwork the customer approved, for the print run. */
+  finish?: string;
+  fields?: Record<string, boolean> | null;
+  accent?: string | null;
 }): Promise<Result<{ id: string; reference: string }>> {
   try {
     const { supabase, user } = await requireUser();
@@ -97,6 +101,18 @@ export async function placeOrder(input: {
         address: input.address.trim(),
         city: input.city.trim(),
         customer_note: input.note?.trim() || null,
+        // What to actually print. Captured at order time rather than read
+        // from the profile later, because the profile keeps changing and the
+        // printed card has to match what the customer approved.
+        card_design:
+          plan.price_pkr > 0
+            ? {
+                finish: input.finish ?? "minimal",
+                fields: input.fields ?? null,
+                accent: input.accent ?? null,
+                captured_at: new Date().toISOString(),
+              }
+            : null,
         estimated_delivery: estimateDelivery(plan.price_pkr === 0 ? 1 : 5),
       })
       .select("id, reference")

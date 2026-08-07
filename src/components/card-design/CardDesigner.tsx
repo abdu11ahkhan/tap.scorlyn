@@ -24,16 +24,28 @@ export default function CardDesigner({
   profileUrl,
   width = 380,
   compact = false,
+  onChange,
 }: {
   card: CardProfile;
   profileUrl: string;
   /** Upper bound. The card shrinks below this to fit narrow screens. */
   width?: number;
   compact?: boolean;
+  /** Reports the current artwork, so an order can record what was approved. */
+  onChange?: (design: { finish: CardFinish; fields: CardFields }) => void;
 }) {
   const [finish, setFinish] = useState<CardFinish>("minimal");
   const [face, setFace] = useState<"front" | "back">("front");
   const [fields, setFields] = useState<CardFields>(DEFAULT_CARD_FIELDS);
+
+  // Reported on every change rather than only on submit, so the order form
+  // always holds the artwork currently on screen.
+  useEffect(() => {
+    onChange?.({ finish, fields });
+    // onChange is typically an inline arrow; depending on it would re-run this
+    // on every parent render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finish, fields]);
 
   // The card is drawn at a pixel width (every dimension is a fraction of it),
   // so it can't be sized in CSS — it has to be measured.

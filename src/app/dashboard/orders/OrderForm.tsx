@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { placeOrder } from "@/app/orders/actions";
+import CardDesigner from "@/components/card-design/CardDesigner";
+import type { CardFields } from "@/components/card-design/NfcCardArt";
+import type { CardProfile } from "@/lib/card";
 
 type Plan = { id: string; name: string; price_pkr: number; blurb: string | null; perks: string[] };
 
@@ -75,12 +78,15 @@ export default function OrderForm({
   plans,
   defaults,
   hasCard,
+  card,
 }: {
   plans: Plan[];
   defaults: { fullName: string; phone: string };
   /** Whether this account has a card page yet. A printed card is a link to
    *  one, so without it there is nothing to program the chip with. */
   hasCard: boolean;
+  /** The card being printed, so the artwork shown is the real thing. */
+  card: CardProfile | null;
 }) {
   const router = useRouter();
   const [planId, setPlanId] = useState(plans.find((p) => p.price_pkr > 0)?.id ?? plans[0]?.id);
@@ -94,6 +100,10 @@ export default function OrderForm({
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [note, setNote] = useState("");
+  // What actually gets printed. Captured with the order so the print run
+  // matches what was approved, not whatever the profile looks like later.
+  const [finish, setFinish] = useState("minimal");
+  const [fields, setFields] = useState<CardFields | null>(null);
 
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +139,9 @@ export default function OrderForm({
             address,
             city,
             note,
+            finish,
+            fields,
+            accent: card?.accent_color ?? null,
           });
           if (!r.ok) setError(r.error ?? "Could not place the order.");
           else router.push(`/dashboard/orders/${r.data!.id}`);
@@ -136,6 +149,29 @@ export default function OrderForm({
       }}
       className="space-y-7"
     >
+      {plan && plan.price_pkr > 0 && card && (
+        <section className="rounded-2xl border-2 border-white/12 p-5">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+            your printed card
+          </p>
+          <p className="mt-1.5 text-sm font-semibold text-white/50">
+            This is what we print and post to you. Pick a finish — the chip
+            still opens your page either way.
+          </p>
+          <div className="mt-4">
+            <CardDesigner
+              card={card}
+              profileUrl={`https://tap.scorlyn.com/u/${card.username}`}
+              width={340}
+              onChange={(d) => {
+                setFinish(d.finish);
+                setFields(d.fields);
+              }}
+            />
+          </div>
+        </section>
+      )}
+
       {!hasCard && (
         <div className="flex flex-wrap items-center gap-3 rounded-2xl border-2 border-hotpink/40 bg-hotpink/10 p-5">
           <div className="min-w-0 flex-1">

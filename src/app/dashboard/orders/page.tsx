@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Package } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import OrderForm from "./OrderForm";
+import type { CardProfile } from "@/lib/card";
 import { STATUS_STEPS, statusTone } from "./status";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +34,7 @@ export default async function MyOrders() {
     supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
     supabase
       .from("card_profiles")
-      .select("username, published")
+      .select("*")
       .eq("user_id", user.id)
       .maybeSingle(),
   ]);
@@ -102,6 +103,7 @@ export default async function MyOrders() {
           plans={(plans ?? []) as Plan[]}
           defaults={{ fullName: profile?.full_name ?? "", phone: "" }}
           hasCard={Boolean(card?.username)}
+          card={(card as CardProfile | null) ?? null}
         />
       </section>
     </div>

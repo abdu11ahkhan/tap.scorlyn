@@ -87,11 +87,22 @@ export default async function AdminOrderDetail({
             {new Date(order.created_at).toLocaleString("en-GB")}
           </p>
         </div>
-        <span
-          className={`rounded-full px-3 py-1 text-[12px] font-black ${statusTone(order.status)}`}
-        >
-          {STATUS_LABELS[order.status] ?? order.status}
-        </span>
+        <div className="flex items-center gap-2">
+          {/* Only paid orders carry artwork; the free plan prints nothing. */}
+          {order.card_profile_id && (
+            <Link
+              href={`/admin/orders/${order.id}/artwork`}
+              className="app-btn app-btn-ghost"
+            >
+              Artwork
+            </Link>
+          )}
+          <span
+            className={`rounded-full px-3 py-1 text-[12px] font-black ${statusTone(order.status)}`}
+          >
+            {STATUS_LABELS[order.status] ?? order.status}
+          </span>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
