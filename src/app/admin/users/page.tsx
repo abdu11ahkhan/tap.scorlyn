@@ -106,7 +106,7 @@ export default async function AdminUsers({
                 const isMe = row.id === me?.id;
                 return (
                   <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
-                    <td>
+                    <td data-label="Person">
                       <p className="font-black">
                         <a href={`/admin/users/${row.id}`} className="hover:text-acid">
                           {row.full_name || "—"}
@@ -120,10 +120,10 @@ export default async function AdminUsers({
                       </p>
                       <p className="text-xs font-semibold text-white/40">{row.email}</p>
                     </td>
-                    <td className="font-mono text-xs text-white/50">
+                    <td data-label="Referral" className="font-mono text-xs text-white/50">
                       {row.referral_code ?? "—"}
                     </td>
-                    <td>
+                    <td data-label="Status">
                       <div className="flex flex-wrap gap-1.5">
                         {row.is_admin && (
                           <span className="flex items-center gap-1 rounded-full border-2 border-ink bg-acid px-2.5 py-1 text-[10px] font-black uppercase text-ink">
@@ -142,10 +142,10 @@ export default async function AdminUsers({
                         )}
                       </div>
                     </td>
-                    <td className="text-sm font-semibold tabular-nums text-white/45">
+                    <td data-label="Joined" className="text-sm font-semibold tabular-nums text-white/45">
                       {new Date(row.created_at).toLocaleDateString("en-GB")}
                     </td>
-                    <td>
+                    <td data-label="Actions">
                       <div className="flex flex-wrap justify-end gap-2">
                         {/* Typed confirmation, not a confirm() dialog. Granting
                             admin from a table row is one careless tap, and the

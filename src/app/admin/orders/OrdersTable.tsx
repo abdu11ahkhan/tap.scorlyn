@@ -123,7 +123,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                 key={o.id}
                 className={`transition-colors hover:bg-white/[0.03] ${o.flagged ? "bg-hotpink/10" : ""}`}
               >
-                <td className="px-4 py-4">
+                <td data-label="" className="px-4 py-4">
                   <input
                     type="checkbox"
                     checked={selected.has(o.id)}
@@ -132,7 +132,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     className="h-4 w-4 accent-lime-400"
                   />
                 </td>
-                <td className="px-4 py-4">
+                <td data-label="Order" className="px-4 py-4">
                   <div className="flex items-center gap-2">
                     {/* The reference opens the full order — address included,
                         which the table has no room for. */}
@@ -159,7 +159,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     </p>
                   )}
                 </td>
-                <td className="px-4 py-4">
+                <td data-label="Customer" className="px-4 py-4">
                   {/* Through to the customer's record: the question an order
                       raises is almost always about the person who placed it. */}
                   {o.user_id ? (
@@ -181,7 +181,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     </>
                   )}
                 </td>
-                <td className="px-4 py-4 text-sm font-bold lowercase text-white/70">
+                <td data-label="Plan" className="px-4 py-4 text-sm font-bold lowercase text-white/70">
                   {o.quantity} × {o.plan_id}
                   {/* Printing needs to know this before the card goes out. */}
                   {o.branding === "unbranded" && (
@@ -190,10 +190,10 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-4 text-sm font-black tabular-nums text-white">
+                <td data-label="Amount" className="px-4 py-4 text-sm font-black tabular-nums text-white">
                   Rs.{o.amount_pkr.toLocaleString()}
                 </td>
-                <td className="px-4 py-4">
+                <td data-label="Status" className="px-4 py-4">
                   <select
                     value={o.status}
                     disabled={pending}
@@ -214,7 +214,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-4">
+                <td data-label="Actions" className="px-4 py-4">
                   <div className="flex flex-wrap items-center justify-end gap-1.5">
                     {o.payment_proof_url && (
                       <button

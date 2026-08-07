@@ -86,13 +86,13 @@ export default async function AdminNfc() {
             <tbody className="divide-y divide-white/6">
               {rows.map((row) => (
                 <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
-                  <td className="font-mono text-sm font-bold text-acid">
+                  <td data-label="Code" className="font-mono text-sm font-bold text-acid">
                     {row.card_url}
                   </td>
-                  <td className="text-sm font-semibold text-white/45">
+                  <td data-label="Batch" className="text-sm font-semibold text-white/45">
                     {row.batch ?? "—"}
                   </td>
-                  <td>
+                  <td data-label="Assigned to">
                     {row.card_profiles ? (
                       <>
                         <p className="text-sm font-black">{row.card_profiles.full_name}</p>
@@ -106,10 +106,10 @@ export default async function AdminNfc() {
                       </span>
                     )}
                   </td>
-                  <td className="text-sm font-semibold tabular-nums text-white/45">
+                  <td data-label="Issued" className="text-sm font-semibold tabular-nums text-white/45">
                     {new Date(row.created_at).toLocaleDateString("en-GB")}
                   </td>
-                  <td>
+                  <td data-label="Assign / remove">
                     <div className="flex flex-wrap items-start justify-end gap-2">
                       <AssignCell
                         cardId={row.id}

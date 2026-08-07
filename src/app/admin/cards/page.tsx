@@ -109,7 +109,7 @@ export default async function AdminCards({
             <tbody className="divide-y divide-white/6">
               {cards.map((card) => (
                 <tr key={card.id} className="transition-colors hover:bg-white/[0.03]">
-                  <td>
+                  <td data-label="Card">
                     <div className="flex items-center gap-3">
                       <span
                         className="h-8 w-8 shrink-0 rounded-full border-2 border-ink"
@@ -124,10 +124,10 @@ export default async function AdminCards({
                       </div>
                     </div>
                   </td>
-                  <td className="text-sm font-bold lowercase text-white/70">
+                  <td data-label="Template" className="text-sm font-bold lowercase text-white/70">
                     {templateName(card.template)}
                   </td>
-                  <td>
+                  <td data-label="Status">
                     {/* Suspension outranks published: a suspended owner's card
                         is off the internet however the flag reads. Showing
                         "live" here is what hid the fact that suspension was
@@ -148,10 +148,10 @@ export default async function AdminCards({
                           : "hidden"}
                     </span>
                   </td>
-                  <td className="text-sm font-semibold tabular-nums text-white/45">
+                  <td data-label="Created" className="text-sm font-semibold tabular-nums text-white/45">
                     {new Date(card.created_at).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="text-right">
+                  <td data-label="" className="text-right">
                     <Link
                       href={`/u/${card.username}`}
                       target="_blank"

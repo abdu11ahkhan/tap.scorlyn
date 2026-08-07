@@ -35,39 +35,46 @@ export function Contact({
     "Hi ScorlynTap, I'd like a quote for a bulk order of NFC cards."
   );
 
-  const tile =
-    "sticker sticker-press flex items-center gap-3 rounded-2xl border-2 border-ink px-5 py-4 text-[15px] font-black text-ink";
+  // The same button shape the rest of the page uses: h-14, full radius, heavy
+  // ink border, uppercase. Anything else reads as bolted on.
+  const cta =
+    "sticker sticker-press flex h-14 items-center justify-center gap-2.5 rounded-full border-2 border-ink px-6 text-base font-black uppercase tracking-tight";
 
   return (
-    <section id="contact" className="relative px-4 py-20 sm:py-28">
-      <div className="mx-auto max-w-3xl text-center">
-        <p className="text-[12px] font-black uppercase tracking-[0.25em] text-ink/40">
+    <section
+      id="contact"
+      className="grain relative overflow-hidden bg-ink py-28 text-white"
+    >
+      <div className="float-orb pointer-events-none absolute -left-32 top-1/4 h-[420px] w-[420px] rounded-full bg-acid/15 blur-[130px]" />
+
+      <div className="relative mx-auto max-w-4xl px-6 text-center">
+        <p className="text-[12px] font-black uppercase tracking-[0.25em] text-white/40">
           talk to us
         </p>
-        <h2 className="mt-3 text-4xl font-black leading-[1.05] tracking-tighter text-ink sm:text-5xl">
+        <h2 className="mt-4 text-[clamp(2.2rem,7vw,3.5rem)] font-black leading-[0.95] tracking-tighter">
           questions? bulk order?
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-[16px] font-semibold text-ink/55">
-          Message us directly. For teams, clubs and offices we do custom
-          artwork and volume pricing — tell us how many you need.
+        <p className="mx-auto mt-5 max-w-lg text-lg font-medium text-white/60">
+          Message us directly. For teams, clubs and offices we do custom artwork
+          and volume pricing — tell us how many you need.
         </p>
 
-        <div className="mx-auto mt-9 grid max-w-xl gap-3 sm:grid-cols-2">
+        <div className="mx-auto mt-10 grid max-w-xl gap-3 sm:grid-cols-2">
           {wa && (
             <a
               href={`https://wa.me/${wa}?text=${waText}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${tile} bg-acid`}
+              className={`${cta} bg-acid text-ink`}
             >
               <MessageCircle className="h-5 w-5 shrink-0" />
-              <span className="text-left">WhatsApp us</span>
+              whatsapp
             </a>
           )}
 
           {mail && (
-            <EmailAction email={mail} subject={subject} className={`${tile} bg-white`}>
-              Email us
+            <EmailAction email={mail} subject={subject} className={`${cta} bg-white text-ink`}>
+              email
             </EmailAction>
           )}
         </div>
@@ -81,16 +88,19 @@ export function Contact({
             }
             target={wa ? "_blank" : undefined}
             rel={wa ? "noopener noreferrer" : undefined}
-            className={`${tile} w-full justify-center bg-hotpink text-white`}
+            className={`${cta} w-full bg-hotpink text-white`}
           >
             <Package className="h-5 w-5 shrink-0" />
-            Ask about bulk orders
+            bulk orders
           </a>
         </div>
 
         {mail && (
-          <p className="mt-6 select-all text-[13px] font-bold text-ink/45">
-            or write to <span className="text-ink underline decoration-acid decoration-4">{mail}</span>
+          <p className="mt-8 select-all text-[13px] font-bold text-white/35">
+            or write to{" "}
+            <span className="text-white underline decoration-acid decoration-4 underline-offset-4">
+              {mail}
+            </span>
           </p>
         )}
       </div>

@@ -381,23 +381,83 @@ textarea.app-input {
 }
 
 
-/* Admin tables on a phone: the row has to fit the screen, because a table you
-   have to swipe sideways hides the columns you were looking for. Tighter cells
-   and a smaller face buy back the width instead of forcing a scroll. */
+/* Admin tables on a phone.
+   A five-column row cannot fit 390px: compressing it crushed names to a few
+   letters and wrapped badges mid-word, and scrolling sideways hid whichever
+   column you wanted. Below the tablet breakpoint each row becomes its own
+   card, with the column heading carried in as a label via data-label. */
 @media (max-width: 767px) {
-  .app-table th,
+  .app-table,
+  .app-table tbody,
+  .app-table tr,
   .app-table td {
-    padding: 9px 8px;
-    font-size: 0.75rem;
+    display: block;
+    width: 100%;
   }
-  .app-table th {
-    font-size: 0.5625rem;
-    letter-spacing: 0.04em;
+
+  .app-table thead {
+    display: none;
   }
+
+  .app-table tr {
+    padding: 14px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
   .app-table td {
-    word-break: break-word;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 5px 0;
+    border: 0;
+    font-size: 0.8125rem;
+    text-align: right;
+  }
+
+  /* The heading, carried in from the column it came from. */
+  .app-table td[data-label]:not([data-label=""])::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    text-align: left;
+  }
+
+  /* The identity cell leads the card, full width and left aligned. */
+  .app-table td[data-label="Card"],
+  .app-table td[data-label="Person"],
+  .app-table td[data-label="Order"],
+  .app-table td[data-label="Code"] {
+    justify-content: flex-start;
+    text-align: left;
+    padding-bottom: 10px;
+  }
+
+  .app-table td[data-label="Card"]::before,
+  .app-table td[data-label="Person"]::before,
+  .app-table td[data-label="Order"]::before,
+  .app-table td[data-label="Code"]::before {
+    display: none;
+  }
+
+  /* Badges and buttons must never wrap mid-word — "LIVE" was breaking to
+     "LIV / E" and "open" to "op / en". */
+  .app-table td > span,
+  .app-table td > a,
+  .app-table td > button {
+    white-space: nowrap;
+  }
+
+  /* The row no longer needs a minimum width, so the wrapper must not scroll. */
+  .app-panel {
+    overflow-x: visible;
   }
 }
+
 
 /* ------------------------------------------------------------------
    Landing page kit.
