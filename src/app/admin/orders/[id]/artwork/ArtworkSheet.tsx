@@ -16,6 +16,8 @@ import type { CardProfile } from "@/lib/card";
  * out at print dimensions instead of being enlarged after the fact.
  */
 const PRINT_WIDTH = 1011;
+/** ID-1 is 1.586 wide to tall. */
+const PRINT_HEIGHT = Math.round(1011 / 1.586);
 
 export default function ArtworkSheet({
   order,
@@ -66,20 +68,36 @@ export default function ArtworkSheet({
             <figcaption className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-black/45 print:mb-1">
               {face} — {card.full_name}
             </figcaption>
-            {/* Scaled down for the screen only; the artwork itself is drawn at
-                print width, so nothing is enlarged at output time. */}
+            {/* A transform does not change the layout box: the card still
+                occupied its full 1011px however far it was scaled, so on paper
+                it ran off the page and the right edge — the QR and the NFC
+                mark — was cut. The wrapper is sized to the *scaled* result, and
+                the scale itself drops in print so the card lands at exactly
+                85.6mm rather than 1011 CSS pixels. */}
             <div
-              className="origin-top-left print:scale-100"
-              style={{ transform: "scale(0.62)", height: PRINT_WIDTH / 1.586 * 0.62 }}
+              className="artwork-stage"
+              style={{
+                width: `calc(${PRINT_WIDTH}px * var(--card-scale))`,
+                height: `calc(${PRINT_HEIGHT}px * var(--card-scale))`,
+              }}
             >
-              <NfcCardArt
-                card={card}
-                finish={finish as CardFinish}
-                face={face}
-                profileUrl={profileUrl}
-                fields={fields ?? DEFAULT_CARD_FIELDS}
-                width={PRINT_WIDTH}
-              />
+              <div
+                className="origin-top-left"
+                style={{
+                  width: PRINT_WIDTH,
+                  height: PRINT_HEIGHT,
+                  transform: "scale(var(--card-scale))",
+                }}
+              >
+                <NfcCardArt
+                  card={card}
+                  finish={finish as CardFinish}
+                  face={face}
+                  profileUrl={profileUrl}
+                  fields={fields ?? DEFAULT_CARD_FIELDS}
+                  width={PRINT_WIDTH}
+                />
+              </div>
             </div>
           </figure>
         ))}

@@ -676,3 +676,30 @@ textarea.app-input {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.75);
 }
+
+/* Print sheet for an ordered card.
+   The art is drawn at 1011px so its type is laid out at 300dpi. On screen it
+   is scaled to fit the console column; on paper it has to land at the real
+   85.6mm, which is 323.4 CSS px — otherwise it runs past the page edge and the
+   QR and NFC mark are cut off. */
+.artwork-stage {
+  --card-scale: 0.62;
+  overflow: hidden;
+}
+
+@media print {
+  .artwork-stage {
+    --card-scale: 0.3199; /* 85.6mm / 1011px */
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  /* Backgrounds are the artwork here, not decoration. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
