@@ -641,3 +641,26 @@ textarea.app-input {
   transform: none !important;
   animation: none !important;
 }
+
+/* Decorative glow orbs.
+   These are ~500px circles carrying a 100-150px blur(). That is a very large
+   GPU pass, and on some iOS devices it overflows and paints the element as a
+   flat disc rather than a soft glow — which covers the page in solid colour
+   and hides everything behind it. A radial mask gives the same soft-edged
+   falloff using only the element's background, with no filter to go wrong,
+   and is cheaper to composite everywhere else. */
+.float-orb {
+  filter: none !important;
+  -webkit-mask-image: radial-gradient(
+    closest-side,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.55) 45%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    closest-side,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.55) 45%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
