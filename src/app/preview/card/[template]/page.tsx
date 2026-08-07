@@ -4,8 +4,10 @@ import { resolveButtons, TEMPLATE_IDS, type CardProfile } from "@/lib/card";
 import { DEMO_PERSONAS, FALLBACK_PERSONA } from "./demo-data";
 import PreviewChrome from "./PreviewChrome";
 
-// Reads searchParams (accent/font), so this renders per request.
-export const dynamic = "force-dynamic";
+// Pure computation from the route and its query — no database, no session, no
+// per-visitor anything. force-dynamic here only defeated caching, and the
+// gallery loads this route dozens of times per visit.
+export const revalidate = 3600;
 
 /**
  * Placeholder portrait as an inline SVG data URI.

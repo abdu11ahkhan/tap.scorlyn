@@ -29,15 +29,39 @@ export default function TemplateThumb({
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
+  // Every thumbnail is a full page load of the preview route. Mounting all of
+  // them at once fired three dozen server renders the moment the gallery
+  // opened, which is what made this page slow — worst on a desktop, where the
+  // wider grid puts more of them near the viewport and the browser's own lazy
+  // heuristics give up and fetch them anyway.
+  const [near, setNear] = useState(false);
 
   useEffect(() => {
     const el = box.current;
     if (!el) return;
+
     const fit = () => setScale(el.clientWidth / SRC_W);
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
-    return () => ro.disconnect();
+
+    // A screen of margin, so a preview is loading by the time it is scrolled to
+    // and never appears as an empty box.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "600px 0px" }
+    );
+    io.observe(el);
+
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -46,8 +70,8 @@ export default function TemplateThumb({
       className="relative overflow-hidden rounded-[1.4rem] bg-black"
       style={{ aspectRatio: `1 / ${aspect}` }}
     >
-      {/* Rendered only once measured — at scale 0 it would flash full size. */}
-      {scale > 0 && (
+      {/* Measured, and close enough to matter. */}
+      {scale > 0 && near && (
         <iframe
           src={src}
           title={title}
