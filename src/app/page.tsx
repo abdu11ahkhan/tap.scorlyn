@@ -74,10 +74,10 @@ export default async function Home() {
               pricing
             </Link>
             <Link
-              href="/login"
+              href="/#contact"
               className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
             >
-              log in
+              contact
             </Link>
           </div>
 
