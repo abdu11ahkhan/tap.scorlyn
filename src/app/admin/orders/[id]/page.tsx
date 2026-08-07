@@ -4,6 +4,9 @@ import { ArrowLeft, ExternalLink, MapPin, Phone, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { STATUS_LABELS, statusTone } from "@/app/dashboard/orders/status";
 import ProofLink from "./ProofLink";
+import OrderCardArt from "./OrderCardArt";
+import type { CardProfile as CardProfileType } from "@/lib/card";
+import type { CardFields as CardFieldsType } from "@/components/card-design/NfcCardArt";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +49,7 @@ export default async function AdminOrderDetail({
     order.user_id
       ? supabase
           .from("card_profiles")
-          .select("username, published")
+          .select("*")
           .eq("user_id", order.user_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
@@ -153,6 +156,54 @@ export default async function AdminOrderDetail({
             <ProofLink path={order.payment_proof_url} />
           </div>
         </section>
+
+        {/* Everything needed to fulfil this order in one place: where the
+            chip points, what gets printed, and the file to send a printer. */}
+        {card?.username && (
+          <section className="app-panel app-panel-pad lg:col-span-2">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="font-black lowercase">printed card</h2>
+                <p className="mt-1 text-[13px] text-white/45">
+                  Finish: {(order.card_design as { finish?: string } | null)?.finish ?? "minimal"}
+                  {" · "}
+                  {order.branding === "unbranded"
+                    ? "customer artwork only"
+                    : "ScorlynTap mark"}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href={`https://tap.scorlyn.com/u/${card.username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="app-btn app-btn-ghost"
+                >
+                  Open their page
+                </a>
+                <Link
+                  href={`/admin/orders/${order.id}/artwork`}
+                  className="app-btn app-btn-primary"
+                >
+                  Print / PDF
+                </Link>
+              </div>
+            </div>
+
+            <p className="mt-3 break-all font-mono text-[12px] text-white/35">
+              chip URL — https://tap.scorlyn.com/u/{card.username}
+            </p>
+
+            <div className="mt-4">
+              <OrderCardArt
+                card={card as unknown as CardProfileType}
+                finish={(order.card_design as { finish?: string } | null)?.finish ?? "minimal"}
+                fields={(order.card_design as { fields?: CardFieldsType } | null)?.fields ?? null}
+              />
+            </div>
+          </section>
+        )}
 
         <section className="app-panel app-panel-pad">
           <h2 className="font-black lowercase">customer</h2>
