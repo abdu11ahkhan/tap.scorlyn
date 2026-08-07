@@ -161,11 +161,16 @@ export function renderCardTemplate(props: CardTemplateProps) {
           tone={tone}
           />
       )}
-      <Template {...props} />
+      {/* Both are position:fixed, so where they sit in the DOM does not move
+          them — but the template has to stay the last child. The public page
+          collapses `min-h-screen` on `.card-has-extras > :last-child`, and
+          appending anything after the template silently re-armed a full
+          viewport of dead space above the extras. */}
       {card.logo_url && <LogoMark src={card.logo_url} tone={tone} />}
       {wantsQr && (
         <CardQr card={card} tone={tone} accent={card.accent_color || "#111111"} />
       )}
+      <Template {...props} />
     </>
   );
 }
