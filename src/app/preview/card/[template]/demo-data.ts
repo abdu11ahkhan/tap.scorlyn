@@ -437,6 +437,114 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
       ["Call", "phone", tel("0024")],
     ],
   }),
+
+  // ---------------- More portfolio ----------------
+  masonry: person({
+    n: "0025", username: "sanaillus", full_name: "Sana Iqbal",
+    headline: "Illustrator", company: "Freelance",
+    bio: "Editorial illustration and covers. Ink first, colour later.",
+    location: "Lahore",
+    captions: ["Dawn cover", "Series, 2025", "Study", "Commission"],
+    links: [["Instagram", "instagram", "https://instagram.com/example"], ["Behance", "behance", "https://behance.net/example"], ["Email", "email", "sana@example.pk"]],
+  }),
+
+  filmstrip: person({
+    n: "0026", username: "tahaphoto", full_name: "Taha Mehmood",
+    headline: "Photographer", company: "Studio Vertical",
+    bio: "Portraits and street. Available across Punjab.",
+    location: "Rawalpindi",
+    captions: ["Anarkali", "Blue hour", "Studio 04", "Rooftops"],
+    links: [["Instagram", "instagram", "https://instagram.com/example"], ["WhatsApp", "whatsapp", wa("0026")], ["Rates", "link", "https://example.pk/rates"]],
+  }),
+
+  lookbook: person({
+    n: "0027", username: "zaralabel", full_name: "Zara Habib",
+    headline: "Womenswear Designer", company: "Label Zara",
+    bio: "Small-batch pret. Two drops a year, made in Karachi.",
+    location: "Karachi",
+    captions: ["Spring, look 3", "Spring, look 7", "Atelier"],
+    links: [["Shop", "shop", "https://example.pk/shop"], ["Instagram", "instagram", "https://instagram.com/example"], ["WhatsApp", "whatsapp", wa("0027")]],
+  }),
+
+  contactsheet: person({
+    n: "0028", username: "bilalfilm", full_name: "Bilal Nasir",
+    headline: "Film Photographer", company: "Darkroom Lahore",
+    bio: "35mm only. Weddings, editorial, and whatever is on the roll.",
+    location: "Lahore",
+    captions: ["Portra 400", "HP5", "Gold 200", "Ektar", "Tri-X", "Cinestill"],
+    links: [["Instagram", "instagram", "https://instagram.com/example"], ["Book me", "calendar", "https://example.pk/book"], ["Email", "email", "bilal@example.pk"]],
+  }),
+
+  case: person({
+    n: "0029", username: "hamzabuilds", full_name: "Hamza Sheikh",
+    headline: "Interior Architect", company: "Sheikh & Co",
+    bio: "Homes and small commercial. Twelve projects a year, no more.",
+    location: "Islamabad",
+    captions: ["Before: the shell", "Structure and light", "Finished, six months on"],
+    links: [["Portfolio", "link", "https://example.pk/work"], ["WhatsApp", "whatsapp", wa("0029")], ["LinkedIn", "linkedin", "https://linkedin.com/in/example"]],
+  }),
+
+  mosaic: person({
+    n: "0030", username: "raheel3d", full_name: "Raheel Aslam",
+    headline: "3D Artist", company: "Freelance",
+    bio: "Product renders and motion. Blender, mostly.",
+    location: "Karachi",
+    captions: ["Bottle study", "Chrome", "Loop", "Packaging", "Frame 240"],
+    links: [["Dribbble", "dribbble", "https://dribbble.com/example"], ["Reel", "youtube", "https://youtube.com/@example"], ["Email", "email", "raheel@example.pk"]],
+  }),
+
+  frames: person({
+    n: "0031", username: "amnaceramics", full_name: "Amna Yousaf",
+    headline: "Ceramicist", company: "Clay Room",
+    bio: "Wheel-thrown tableware, glazed in small batches.",
+    location: "Multan",
+    captions: ["Bowl, celadon", "Cups, set of four", "Vase"],
+    links: [["Shop", "shop", "https://example.pk/shop"], ["Instagram", "instagram", "https://instagram.com/example"], ["WhatsApp", "whatsapp", wa("0031")]],
+  }),
+
+  // ---------------- More landing / sectioned / form ----------------
+  menu: person({
+    n: "0032", username: "chaiwala", full_name: "Karak Corner",
+    headline: "Chai & Parathas", company: "Since 2019",
+    bio: "Open 6am to midnight. Gulberg and Model Town.",
+    location: "Lahore",
+    captions: ["Doodh patti - Rs.120", "Karak chai - Rs.150", "Aloo paratha - Rs.250", "Omelette - Rs.220"],
+    links: [["Order on WhatsApp", "whatsapp", wa("0032")], ["Directions", "maps", "https://maps.app.goo.gl/example"]],
+  }),
+
+  launch: person({
+    n: "0033", username: "nooracademy", full_name: "Noor Academy",
+    headline: "IELTS in 8 weeks", company: "Enrolling now",
+    bio: "Small batches, band 7 guaranteed or the next course is free.",
+    location: "Islamabad",
+    links: [["Enrol now", "link", "https://example.pk/enrol"], ["Syllabus", "link", "https://example.pk/syllabus"], ["WhatsApp", "whatsapp", wa("0033")]],
+  }),
+
+  studio: person({
+    n: "0034", username: "formstudio", full_name: "Form Studio",
+    headline: "Branding & packaging", company: "Karachi",
+    bio: "A three-person studio. We take four projects at a time.",
+    location: "Karachi",
+    captions: ["Rebrand, 2025", "Packaging system", "Wayfinding"],
+    links: [["Work", "link", "https://example.pk/work"], ["Email", "email", "hello@example.pk"], ["Instagram", "instagram", "https://instagram.com/example"]],
+  }),
+
+  journal: person({
+    n: "0035", username: "saadwrites", full_name: "Saad Rehman",
+    headline: "Writer & Editor", company: "Column, weekly",
+    bio: "I write about cities, water, and the people who move between them. Third book out this winter.",
+    location: "Lahore",
+    captions: ["On the canal, 2024", "Notes from Gwadar"],
+    links: [["Substack", "medium", "https://example.pk/newsletter"], ["X", "x", "https://x.com/example"], ["Email", "email", "saad@example.pk"]],
+  }),
+
+  quote: person({
+    n: "0036", username: "shifamovers", full_name: "Shifa Movers",
+    headline: "Home & office shifting", company: "Since 2016",
+    bio: "Packing, loading, and insurance. Same-day quotes.",
+    location: "Rawalpindi",
+    links: [["WhatsApp a quote", "whatsapp", wa("0036")], ["Call", "phone", tel("0036")], ["Rates", "link", "https://example.pk/rates"]],
+  }),
 };
 
 export const FALLBACK_PERSONA = DEMO_PERSONAS.minimal;

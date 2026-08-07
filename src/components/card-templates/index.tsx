@@ -23,6 +23,18 @@ import BookingCard from "./BookingCard";
 import OrbitCard from "./OrbitCard";
 import TilesCard from "./TilesCard";
 import DockCard from "./DockCard";
+import MasonryCard from "./MasonryCard";
+import FilmstripCard from "./FilmstripCard";
+import LookbookCard from "./LookbookCard";
+import ContactSheetCard from "./ContactSheetCard";
+import CaseCard from "./CaseCard";
+import MosaicCard from "./MosaicCard";
+import FramesCard from "./FramesCard";
+import MenuCard from "./MenuCard";
+import LaunchCard from "./LaunchCard";
+import StudioCard from "./StudioCard";
+import JournalCard from "./JournalCard";
+import QuoteCard from "./QuoteCard";
 
 /**
  * Templates that build the cover photo into their own layout. Everything else
@@ -60,6 +72,18 @@ export const TEMPLATE_TONE: Record<string, string> = {
   orbit: "#0B0B0F",
   tiles: "#F4F4F2",
   dock: "#000000",
+  masonry: "#ffffff",
+  filmstrip: "#0B0B0F",
+  lookbook: "#0A0A0A",
+  contactsheet: "#F2F1EC",
+  case: "#ffffff",
+  mosaic: "#0F0F12",
+  frames: "#EFEAE1",
+  menu: "#FCFBF7",
+  launch: "#08080A",
+  studio: "#ffffff",
+  journal: "#FDFCF8",
+  quote: "#F7F8F8",
 };
 
 export type CardTemplateProps = {
@@ -92,6 +116,18 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   orbit: OrbitCard,
   tiles: TilesCard,
   dock: DockCard,
+  masonry: MasonryCard,
+  filmstrip: FilmstripCard,
+  lookbook: LookbookCard,
+  contactsheet: ContactSheetCard,
+  case: CaseCard,
+  mosaic: MosaicCard,
+  frames: FramesCard,
+  menu: MenuCard,
+  launch: LaunchCard,
+  studio: StudioCard,
+  journal: JournalCard,
+  quote: QuoteCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */
