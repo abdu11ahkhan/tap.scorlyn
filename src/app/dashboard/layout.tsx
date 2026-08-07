@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import BrandMark from "@/components/layout/BrandMark";
+import AreaSwitch from "@/components/layout/AreaSwitch";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -95,9 +96,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
 
         <header className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/8 px-6 md:px-10">
-          <h2 className="text-[13px] font-medium text-white/45">
-            {sidebarLinks.find((l) => l.href === pathname)?.name ?? "dashboard"}
-          </h2>
+          <div className="flex min-w-0 items-center gap-3">
+            <h2 className="truncate text-[13px] font-medium text-white/45">
+              {sidebarLinks.find((l) => l.href === pathname)?.name ?? "dashboard"}
+            </h2>
+            {/* Renders nothing unless you're an admin. */}
+            <AreaSwitch />
+          </div>
 
           {/* Sidebar is hidden on mobile — keep a way out. */}
           <button

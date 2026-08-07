@@ -73,7 +73,7 @@ export default async function AdminNfc() {
         </p>
       ) : (
         <div className="app-panel overflow-x-auto">
-          <table className="app-table w-full min-w-[820px]">
+          <table className="app-table w-full md:min-w-[820px]">
             <thead className="border-b border-white/8">
               <tr>
                 <th>Code</th>

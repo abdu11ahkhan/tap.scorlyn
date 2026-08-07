@@ -91,7 +91,7 @@ export default async function AdminUsers({
         </p>
       ) : (
         <div className="app-panel overflow-x-auto">
-          <table className="app-table w-full min-w-[760px]">
+          <table className="app-table w-full md:min-w-[760px]">
             <thead className="border-b border-white/8">
               <tr>
                 <th>Person</th>

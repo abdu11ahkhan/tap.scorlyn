@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import AreaSwitch from "@/components/layout/AreaSwitch";
 import {
   CreditCard,
   FileText,
@@ -95,12 +96,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <p className="hidden text-[13px] text-white/45 sm:block">
             {profile.full_name || user.email}
           </p>
-          <Link
-            href="/dashboard"
-            className="app-btn app-btn-ghost"
-          >
-            Exit
-          </Link>
+          <AreaSwitch />
         </div>
       </header>
 

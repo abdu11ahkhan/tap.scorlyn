@@ -56,61 +56,45 @@ export const TEMPLATES_WITH_OWN_COVER = new Set([
  * it. Read off the template's own root background.
  */
 export const TEMPLATE_TONE: Record<string, string> = {
-  minimal: "#ffffff",
-  bold: "#ffffff",
-  split: "#ffffff",
-  mono: "#0a0a0a",
-  sticker: "#FFFDF5",
-  aurora: "#0B0B0F",
-  editorial: "#FBF9F4",
-  neon: "#07070A",
-  tape: "#FAF7F0",
-  pitch: "#ffffff",
-  waitlist: "#ffffff",
-  grid: "#ffffff",
-  stack: "#ffffff",
-  reply: "#ffffff",
-  reel: "#0A0A0A",
-  orbit: "#0B0B0F",
-  tiles: "#F4F4F2",
-  dock: "#000000",
-  masonry: "#ffffff",
-  filmstrip: "#0B0B0F",
-  lookbook: "#0A0A0A",
-  contactsheet: "#F2F1EC",
+  agency: "#0D0D0F",
+  app: "#F6F7FB",
+  aurora: "#0B0614",
+  bold: "#FAFAF8",
+  booking: "#F4F7F7",
   case: "#ffffff",
-  mosaic: "#0F0F12",
+  contactsheet: "#F2F1EC",
+  dock: "#000000",
+  editorial: "#FAF6EF",
+  filmstrip: "#0B0B0F",
   frames: "#EFEAE1",
-  menu: "#FCFBF7",
-  launch: "#08080A",
-  studio: "#ffffff",
+  glass: "#05070C",
+  grid: "#FBFBFA",
   journal: "#FDFCF8",
+  launch: "#08080A",
+  lookbook: "#0A0A0A",
+  masonry: "#ffffff",
+  menu: "#FCFBF7",
+  minimal: "#ffffff",
+  mono: "#0C0C0C",
+  mosaic: "#0F0F12",
+  neon: "#000000",
+  orbit: "#0B0B0F",
   quote: "#F7F8F8",
+  reel: "#0B0B0B",
+  reply: "#F7F7FB",
+  showcase: "#0C0A0B",
+  split: "#ffffff",
+  stack: "#ffffff",
+  sticker: "#FFFDF5",
+  studio: "#ffffff",
+  tape: "#F4F1EA",
+  tiles: "#F4F4F2",
+  waitlist: "#08060F",
 };
 
 export type CardTemplateProps = {
   card: CardProfile;
   buttons: ResolvedButton[];
-};
-
-/**
- * The content column each template lays out in, so the cover band can match it.
- * Read off each template's own `max-w-*`; anything missing falls back to md.
- */
-export const TEMPLATE_WIDTH: Record<string, string> = {
-  aurora: "max-w-sm",
-  dock: "max-w-sm",
-  editorial: "max-w-sm",
-  glass: "max-w-sm",
-  minimal: "max-w-sm",
-  neon: "max-w-sm",
-  orbit: "max-w-sm",
-  pitch: "max-w-sm",
-  sticker: "max-w-sm",
-  tape: "max-w-sm",
-  tiles: "max-w-sm",
-  waitlist: "max-w-sm",
-  split: "max-w-lg",
 };
 
 const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
@@ -172,8 +156,7 @@ export function renderCardTemplate(props: CardTemplateProps) {
         <CoverBand
           src={card.cover_url as string}
           tone={tone}
-          width={TEMPLATE_WIDTH[card.template] ?? "max-w-md"}
-        />
+          />
       )}
       <Template {...props} />
       {card.logo_url && <LogoMark src={card.logo_url} tone={tone} />}

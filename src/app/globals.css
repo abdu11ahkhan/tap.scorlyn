@@ -380,6 +380,25 @@ textarea.app-input {
   font-size: 0.875rem;
 }
 
+
+/* Admin tables on a phone: the row has to fit the screen, because a table you
+   have to swipe sideways hides the columns you were looking for. Tighter cells
+   and a smaller face buy back the width instead of forcing a scroll. */
+@media (max-width: 767px) {
+  .app-table th,
+  .app-table td {
+    padding: 9px 8px;
+    font-size: 0.75rem;
+  }
+  .app-table th {
+    font-size: 0.5625rem;
+    letter-spacing: 0.04em;
+  }
+  .app-table td {
+    word-break: break-word;
+  }
+}
+
 /* ------------------------------------------------------------------
    Landing page kit.
    Acid palette, chunky stickers, grain — no photography.

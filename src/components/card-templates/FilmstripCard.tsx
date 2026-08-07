@@ -40,7 +40,7 @@ export default function FilmstripCard({
       <main className="mx-auto w-full max-w-md pb-24 pt-12">
         <header className="card-rise flex items-center gap-3.5 px-5">
           <div
-            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full"
+            className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full"
             style={{ background: `${accent}33` }}
           >
             {card.avatar_url ? (

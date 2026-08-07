@@ -95,7 +95,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
       )}
 
       <div className="overflow-x-auto rounded-2xl border-2 border-white/12">
-        <table className="w-full min-w-[900px] text-left">
+        <table className="w-full md:min-w-[900px] text-left">
           <thead className="bg-white/[0.05]">
             <tr className="text-[11px] font-black uppercase tracking-widest text-white/40">
               <th className="px-4 py-3.5">

@@ -56,7 +56,7 @@ export default function SplitCard({
 
         <div className="card-rise relative" style={{ ["--d" as string]: "0ms" }}>
           <div
-            className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full"
+            className="flex h-36 w-36 items-center justify-center overflow-hidden rounded-full"
             style={{
               backgroundColor: `${onAccent}26`,
               boxShadow: `0 0 0 4px ${onAccent}1F, 0 12px 30px rgba(0,0,0,0.15)`,

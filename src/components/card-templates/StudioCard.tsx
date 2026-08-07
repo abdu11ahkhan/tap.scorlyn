@@ -46,7 +46,7 @@ export default function StudioCard({
       >
         <div className="mx-auto flex w-full max-w-md items-center gap-3 px-5 py-3">
           <div
-            className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full"
+            className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full"
             style={{ background: `${accent}1F` }}
           >
             {card.avatar_url ? (

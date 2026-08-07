@@ -44,7 +44,7 @@ export default function ReplyCard({
           style={{ ["--d" as string]: "0ms" }}
         >
           <div
-            className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
+            className="flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
             style={{ background: accent, color: onAccent }}
           >
             {card.avatar_url ? (

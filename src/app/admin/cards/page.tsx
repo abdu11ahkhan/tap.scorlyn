@@ -96,7 +96,7 @@ export default async function AdminCards({
         </p>
       ) : (
         <div className="app-panel overflow-x-auto">
-          <table className="app-table w-full min-w-[720px]">
+          <table className="app-table w-full md:min-w-[720px]">
             <thead className="border-b border-white/8">
               <tr>
                 <th>Card</th>

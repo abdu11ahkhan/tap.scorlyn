@@ -39,7 +39,7 @@ export default function MonoCard({
       <main className="relative mx-auto w-full max-w-md px-6 pt-20 pb-32">
         <div className="card-rise flex items-start gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div
-            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded border"
+            className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded border"
             style={{
               borderColor: `${accent}44`,
               background: `linear-gradient(140deg, ${accent}1A, transparent)`,

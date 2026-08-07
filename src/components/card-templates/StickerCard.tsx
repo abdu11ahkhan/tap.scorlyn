@@ -43,7 +43,7 @@ export default function StickerCard({
           style={{ background: accent, color: onAccent, ["--d" as string]: "0ms" }}
         >
           <div className="flex items-center gap-4">
-            <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-ink bg-white">
+            <div className="flex h-36 w-36 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-ink bg-white">
               {card.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

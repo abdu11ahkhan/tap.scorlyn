@@ -43,7 +43,7 @@ export default function MinimalCard({
             style={{ borderColor: accent }}
           />
           <div
-            className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full ring-2 ring-offset-4 ring-offset-white"
+            className="relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-full ring-2 ring-offset-4 ring-offset-white"
             style={{
               background: `linear-gradient(140deg, ${accent}1F, ${accent}08)`,
               ["--tw-ring-color" as string]: `${accent}55`,
