@@ -137,3 +137,39 @@ export async function sendCampaign(
   tx.close();
   return { sent, failed };
 }
+
+/**
+ * Tells someone an account now exists in their name.
+ *
+ * Password signup has a confirmation link, so it explains itself. Google
+ * sign-in does not — the address arrives already verified by Google, there is
+ * nothing to confirm, and without this the first they hear of it is nothing at
+ * all. It doubles as the security signal that any account creation should
+ * carry: if it was not you, here is where to say so.
+ *
+ * Failures are swallowed by the caller: nobody should be locked out of a
+ * dashboard because a courtesy email did not send.
+ */
+export async function sendWelcome(to: string, name?: string | null): Promise<void> {
+  const tx = transport();
+  const first = (name ?? "").trim().split(/\s+/)[0];
+
+  const body = `${first ? `Hi ${first},` : "Hi,"}
+
+Your ScorlynTap account is ready. Your digital card lives at a link you choose, and anyone can open it by tapping your NFC card or scanning your QR code — no app needed on either side.
+
+Build your card here:
+${SITE_URL}/dashboard/card
+
+If you didn't create this account, reply to this email and we'll remove it.`;
+
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to,
+    subject: "Your ScorlynTap account is ready",
+    text: `${body}\n\n--\nScorlynTap — NFC digital business cards\ntap.scorlyn.com`,
+    html: renderCampaign(body, `${SITE_URL}/dashboard/card`),
+  });
+
+  tx.close();
+}

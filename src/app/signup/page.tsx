@@ -22,6 +22,8 @@ function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -140,14 +142,45 @@ function SignupForm() {
               check your email.
             </h1>
             <p className="mt-4 text-[15px] font-semibold text-ink/60">
-              We sent a verification link to <strong className="text-ink">{email}</strong>.
-              Click it, then log in.
+              We sent a link to <strong className="text-ink">{email}</strong>.
+              Open it on this device and you&apos;ll be signed straight in — no
+              password to type again.
             </p>
+            <p className="mt-3 text-[13px] font-semibold text-ink/40">
+              It can take a minute. Check spam if it hasn&apos;t arrived.
+            </p>
+
+            {/* A link that never arrives is where signups die, and there was
+                no way to ask for another without starting over. */}
+            <button
+              type="button"
+              disabled={resending || resent}
+              onClick={async () => {
+                setResending(true);
+                const { error: resendError } = await supabase.auth.resend({
+                  type: "signup",
+                  email,
+                });
+                setResending(false);
+                if (resendError) setError(resendError.message);
+                else setResent(true);
+              }}
+              className="sticker sticker-press mt-7 flex h-14 w-full items-center justify-center rounded-full border-2 border-ink bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-60"
+            >
+              {resending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : resent ? (
+                "sent again"
+              ) : (
+                "resend the link"
+              )}
+            </button>
+
             <button
               onClick={() => router.push(`/login?next=${encodeURIComponent(next)}`)}
-              className="sticker sticker-press mt-7 flex h-14 w-full items-center justify-center rounded-full border-2 border-ink bg-acid text-base font-black uppercase tracking-tight text-ink"
+              className="mt-3 text-[13px] font-black uppercase tracking-widest text-ink/45"
             >
-              go to login
+              back to login
             </button>
           </div>
         ) : (
