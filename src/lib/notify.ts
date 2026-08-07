@@ -1,21 +1,17 @@
 import "server-only";
+import { mailerConfigured, sendNotice } from "./email";
 
 /**
  * Outbound notifications.
  *
- * No email provider is configured yet, so nothing is actually sent. A database
- * trigger already queues a row in `notifications` whenever an order lands, and
- * the admin console reads that queue — so the record of "we owe this person an
- * email" exists from day one and nothing is lost in the meantime.
+ * A database trigger queues a row in `notifications` whenever an order lands,
+ * and the admin console reads that queue, so the record of "we owe this person
+ * an email" survives whatever the mail provider is doing. Sending is drained
+ * separately and never blocks placing an order.
  *
- * To turn sending on later:
- *
- *   1. `npm i resend`, set RESEND_API_KEY and ORDER_ALERT_EMAIL.
- *   2. Fill in `deliver()` below.
- *   3. Call `drainNotifications()` from a cron route.
- *
- * Nothing above the queue needs to change — placing an order already works,
- * and it must not start failing because an email provider is down.
+ * Delivery goes through the same SMTP transport as everything else rather than
+ * a second provider SDK: mail already leaves as noreply@scorlyn.com through
+ * Resend, and a second path would be a second thing to keep authenticated.
  */
 
 export type QueuedNotification = {
@@ -25,13 +21,21 @@ export type QueuedNotification = {
   body: string;
 };
 
-/** Where order alerts go. Unset until a provider is wired up. */
+/**
+ * Where order alerts go. Falls back to the sending address, since an alert
+ * that reaches the company inbox is better than one dropped for want of a
+ * variable nobody set.
+ */
 export function alertRecipient(): string | null {
-  return process.env.ORDER_ALERT_EMAIL?.trim() || null;
+  return (
+    process.env.ORDER_ALERT_EMAIL?.trim() ||
+    process.env.SMTP_FROM?.trim() ||
+    null
+  );
 }
 
 export function emailConfigured(): boolean {
-  return Boolean(process.env.RESEND_API_KEY && alertRecipient());
+  return mailerConfigured() && Boolean(alertRecipient());
 }
 
 /**
@@ -43,12 +47,15 @@ export function emailConfigured(): boolean {
 export async function deliver(
   notification: QueuedNotification
 ): Promise<{ sent: boolean; error?: string }> {
-  if (!emailConfigured()) {
+  const to = alertRecipient();
+  if (!emailConfigured() || !to) {
     return { sent: false, error: "No email provider configured." };
   }
 
-  // Provider call goes here. Left unimplemented on purpose rather than
-  // half-written against an API key that doesn't exist yet.
-  void notification;
-  return { sent: false, error: "Email delivery not implemented yet." };
+  try {
+    await sendNotice(to, notification.subject, notification.body);
+    return { sent: true };
+  } catch (e) {
+    return { sent: false, error: e instanceof Error ? e.message : String(e) };
+  }
 }

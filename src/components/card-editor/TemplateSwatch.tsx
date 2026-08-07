@@ -37,7 +37,24 @@ const SKINS: Record<string, Skin> = {
   // form
   reply: { bg: "#F7F7FB", ink: "#111111", shape: "form", paper: true },
   booking: { bg: "#F4F7F7", ink: "#0F1A1A", shape: "form", paper: true },
-};
+
+  // The rest of the library. Fifteen templates had no entry at all and fell
+  // through to a blank white default, so half the picker advertised nothing.
+  case: { bg: "#ffffff", ink: "#111111", shape: "stack", paper: true },
+  contactsheet: { bg: "#F2F1EC", ink: "#111111", shape: "grid", paper: true },
+  dock: { bg: "#000000", ink: "#ffffff", shape: "rows" },
+  filmstrip: { bg: "#0B0B0F", ink: "#ffffff", shape: "reel" },
+  frames: { bg: "#EFEAE1", ink: "#111111", shape: "grid", paper: true },
+  journal: { bg: "#FDFCF8", ink: "#111111", shape: "stack", paper: true },
+  launch: { bg: "#08080A", ink: "#ffffff", shape: "hero" },
+  lookbook: { bg: "#0A0A0A", ink: "#ffffff", shape: "reel" },
+  masonry: { bg: "#ffffff", ink: "#111111", shape: "grid", paper: true },
+  menu: { bg: "#FCFBF7", ink: "#111111", shape: "rows", paper: true },
+  mosaic: { bg: "#0F0F12", ink: "#ffffff", shape: "grid" },
+  orbit: { bg: "#0B0B0F", ink: "#ffffff", shape: "stack" },
+  quote: { bg: "#F7F8F8", ink: "#111111", shape: "form", paper: true },
+  studio: { bg: "#ffffff", ink: "#111111", shape: "split", paper: true },
+  tiles: { bg: "#F4F4F2", ink: "#111111", shape: "grid", paper: true },};
 
 const FALLBACK: Skin = { bg: "#ffffff", ink: "#e5e5e5", shape: "stack", paper: true };
 

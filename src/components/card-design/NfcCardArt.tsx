@@ -27,7 +27,13 @@ export type CardFinish =
   | "split"
   | "frame"
   | "mono"
-  | "luxe";
+  | "luxe"
+  | "executive"
+  | "ivory"
+  | "steel"
+  | "holo"
+  | "tag"
+  | "pixel";
 
 export const CARD_FINISHES: { id: CardFinish; name: string; blurb: string }[] = [
   { id: "minimal", name: "Minimal", blurb: "Name low-left, generous white space." },
@@ -39,6 +45,14 @@ export const CARD_FINISHES: { id: CardFinish; name: string; blurb: string }[] = 
   { id: "frame", name: "Frame", blurb: "Ruled border, centred classic." },
   { id: "mono", name: "Mono", blurb: "Monospace label rows." },
   { id: "luxe", name: "Luxe", blurb: "Centred serif between hairlines." },
+  // Quieter end of the range — boardrooms, clinics, law.
+  { id: "executive", name: "Executive", blurb: "Name left, details ruled off right." },
+  { id: "ivory", name: "Ivory", blurb: "Warm paper, small caps, wide margins." },
+  { id: "steel", name: "Steel", blurb: "Accent spine down the edge." },
+  // Louder end — the card is the whole personality.
+  { id: "holo", name: "Holo", blurb: "Full-bleed colour wash, oversized name." },
+  { id: "tag", name: "Tag", blurb: "Streetwear label with a big handle." },
+  { id: "pixel", name: "Pixel", blurb: "Terminal type on a hard accent block." },
 ];
 
 type Face = "front" | "back";
@@ -100,6 +114,23 @@ function surfaceFor(finish: CardFinish, accent: string) {
       return { bg: "#111311", fg: "#E8EDE8", sub: 0.55, border: "#2A2E2A" };
     case "luxe":
       return { bg: "#16161A", fg: "#F5F3EE", sub: 0.6, border: `${accent}33` };
+    case "executive":
+      return { bg: "#101319", fg: "#EDF1F7", sub: 0.58, border: `${accent}40` };
+    case "ivory":
+      return { bg: "#F7F3EA", fg: "#1A1712", sub: 0.55, border: "#DED5C4" };
+    case "steel":
+      return { bg: "#EEF0F3", fg: "#14181D", sub: 0.55, border: "#D3D8DE" };
+    case "holo":
+      return {
+        bg: `linear-gradient(135deg, ${accent} 0%, #7C3AED 48%, #06B6D4 100%)`,
+        fg: "#FFFFFF",
+        sub: 0.82,
+        border: "transparent",
+      };
+    case "tag":
+      return { bg: "#0E0E0E", fg: "#FAFAFA", sub: 0.6, border: `${accent}55` };
+    case "pixel":
+      return { bg: "#0B0F0B", fg: "#D7FFD9", sub: 0.62, border: `${accent}44` };
     default:
       return { bg: "#FFFFFF", fg: "#111111", sub: 0.56, border: "#E5E5E5" };
   }
@@ -680,6 +711,303 @@ export default function NfcCardArt({
         );
 
       /* Centred serif held between two hairlines. */
+      // ---- quieter finishes -------------------------------------------
+      case "executive": {
+        const pad = u * 7;
+        return (
+          <div className="flex h-full" style={{ padding: pad }}>
+            <div className="flex min-w-0 flex-1 flex-col justify-center">
+              {fields.company && company && (
+                <p
+                  style={{
+                    fontSize: u * 2.2,
+                    letterSpacing: "0.26em",
+                    textTransform: "uppercase",
+                    opacity: s.sub,
+                  }}
+                >
+                  {company}
+                </p>
+              )}
+              <p style={{ fontSize: u * 6.4, fontWeight: 600, lineHeight: 1.02, marginTop: u * 1.4 }}>
+                {card.full_name}
+              </p>
+              {fields.headline && headline && (
+                <p style={{ fontSize: u * 2.6, opacity: s.sub, marginTop: u * 1 }}>{headline}</p>
+              )}
+              <div style={{ width: u * 14, height: 2, background: accent, marginTop: u * 3 }} />
+            </div>
+
+            {/* A ruled column, so the details read as a block rather than as
+                three stray lines under the name. */}
+            <div
+              className="flex flex-col justify-center"
+              style={{
+                paddingLeft: u * 5,
+                marginLeft: u * 5,
+                borderLeft: `1px solid ${s.border}`,
+                maxWidth: "42%",
+              }}
+            >
+              <Contacts size={2.4} gap={1.1} icons={false} />
+              <div className="flex items-center justify-between" style={{ marginTop: u * 3 }}>
+                <NfcMark size={5} opacity={0.55} />
+                <Qr size={13} />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      case "ivory": {
+        const pad = u * 9;
+        return (
+          <div
+            className="relative flex h-full flex-col items-center justify-center text-center"
+            style={{ padding: pad }}
+          >
+            {fields.avatar && <Avatar size={13} radius={6.5} />}
+            <p
+              style={{
+                fontSize: u * 5.6,
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+                marginTop: fields.avatar ? u * 2.4 : 0,
+              }}
+            >
+              {card.full_name}
+            </p>
+            {(headline || company) && (
+              <p
+                style={{
+                  fontSize: u * 2.2,
+                  letterSpacing: "0.24em",
+                  textTransform: "uppercase",
+                  opacity: s.sub,
+                  marginTop: u * 1.4,
+                }}
+              >
+                {[fields.headline && headline, fields.company && company]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            )}
+            <div
+              style={{ width: u * 22, height: 1, background: s.border, margin: `${u * 2.6}px 0` }}
+            />
+            <Contacts size={2.3} gap={0.8} align="center" icons={false} />
+
+            <div
+              className="absolute flex items-end justify-between"
+              style={{ left: pad, right: pad, bottom: u * 5 }}
+            >
+              <NfcMark size={5} opacity={0.45} />
+              <Qr size={11} />
+            </div>
+          </div>
+        );
+      }
+
+      case "steel": {
+        const pad = u * 7;
+        return (
+          <div className="relative flex h-full">
+            {/* The spine carries the colour so the face itself can stay plain. */}
+            <div style={{ width: u * 4.5, background: accent, flexShrink: 0 }} />
+            <div className="flex min-w-0 flex-1 flex-col" style={{ padding: pad }}>
+              <div style={{ marginTop: "auto" }}>
+                <p
+                  style={{
+                    fontSize: u * 6.8,
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    letterSpacing: "-0.015em",
+                  }}
+                >
+                  {card.full_name}
+                </p>
+                {(headline || company) && (
+                  <p style={{ fontSize: u * 2.6, opacity: s.sub, marginTop: u * 1.2 }}>
+                    {[fields.headline && headline, fields.company && company]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                )}
+              </div>
+              <div
+                className="flex items-end justify-between"
+                style={{ marginTop: "auto", paddingTop: u * 2.4 }}
+              >
+                <Contacts size={2.4} gap={0.9} />
+                <Qr size={12} />
+              </div>
+            </div>
+            <div style={{ position: "absolute", left: u * 6.5, top: pad }}>
+              <NfcMark size={5} opacity={0.4} />
+            </div>
+          </div>
+        );
+      }
+
+      // ---- louder finishes --------------------------------------------
+      case "holo": {
+        const pad = u * 7;
+        return (
+          <div className="relative flex h-full flex-col justify-end" style={{ padding: pad }}>
+            <div
+              className="absolute flex items-start justify-between"
+              style={{ left: pad, right: pad, top: pad }}
+            >
+              {fields.avatar ? <Avatar size={11} radius={5.5} /> : <span />}
+              <NfcMark size={6} opacity={0.9} />
+            </div>
+
+            <p
+              style={{
+                fontSize: u * 9.5,
+                fontWeight: 900,
+                lineHeight: 0.9,
+                letterSpacing: "-0.045em",
+                textTransform: "lowercase",
+              }}
+            >
+              {card.full_name}
+            </p>
+            {(headline || company) && (
+              <p
+                style={{
+                  fontSize: u * 2.7,
+                  fontWeight: 700,
+                  opacity: s.sub,
+                  marginTop: u * 1.4,
+                  textTransform: "lowercase",
+                }}
+              >
+                {[fields.headline && headline, fields.company && company]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            )}
+
+            <div className="flex items-end justify-between" style={{ marginTop: u * 2.6 }}>
+              <Contacts size={2.3} gap={0.7} icons={false} />
+              <Qr size={13} />
+            </div>
+          </div>
+        );
+      }
+
+      case "tag": {
+        const pad = u * 6.5;
+        return (
+          <div className="relative flex h-full flex-col" style={{ padding: pad }}>
+            <div className="flex items-start justify-between">
+              <span
+                style={{
+                  background: accent,
+                  color: onAccentFg,
+                  fontSize: u * 2.3,
+                  fontWeight: 900,
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  padding: `${u * 1}px ${u * 2.2}px`,
+                  borderRadius: u * 1.2,
+                }}
+              >
+                {(fields.company && company) || card.username || card.full_name}
+              </span>
+              <NfcMark size={5.5} opacity={0.75} />
+            </div>
+
+            <div style={{ marginTop: "auto" }}>
+              {fields.headline && headline && (
+                <p
+                  style={{
+                    fontSize: u * 3.4,
+                    fontWeight: 800,
+                    letterSpacing: "0.02em",
+                    opacity: s.sub,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {headline}
+                </p>
+              )}
+              <p
+                style={{
+                  fontSize: u * 8.6,
+                  fontWeight: 900,
+                  lineHeight: 0.92,
+                  letterSpacing: "-0.04em",
+                  marginTop: u * 0.6,
+                }}
+              >
+                {card.full_name}
+              </p>
+            </div>
+
+            <div className="flex items-end justify-between" style={{ marginTop: u * 2.6 }}>
+              <span
+                style={{
+                  fontFamily: "ui-monospace, Menlo, monospace",
+                  fontSize: u * 2.4,
+                  letterSpacing: "0.1em",
+                  opacity: s.sub,
+                }}
+              >
+                @{card.username}
+              </span>
+              <Qr size={13} />
+            </div>
+          </div>
+        );
+      }
+
+      case "pixel": {
+        const pad = u * 6.5;
+        const mono = "ui-monospace, Menlo, Consolas, monospace";
+        return (
+          <div
+            className="relative flex h-full flex-col"
+            style={{ padding: pad, fontFamily: mono }}
+          >
+            <div className="flex items-start justify-between">
+              <span
+                style={{
+                  background: accent,
+                  color: onAccentFg,
+                  fontSize: u * 2.4,
+                  fontWeight: 700,
+                  padding: `${u * 0.9}px ${u * 1.8}px`,
+                  letterSpacing: "0.08em",
+                }}
+              >
+                {card.username || card.full_name}
+              </span>
+              <NfcMark size={5.5} opacity={0.7} />
+            </div>
+
+            <div style={{ marginTop: "auto" }}>
+              <p style={{ fontSize: u * 7, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.02em" }}>
+                {card.full_name}
+              </p>
+              {(headline || company) && (
+                <p style={{ fontSize: u * 2.5, opacity: s.sub, marginTop: u * 1.2 }}>
+                  {[fields.headline && headline, fields.company && company]
+                    .filter(Boolean)
+                    .join(" / ")}
+                </p>
+              )}
+            </div>
+
+            <div className="flex items-end justify-between" style={{ marginTop: u * 2.8 }}>
+              <Contacts size={2.3} gap={0.7} icons={false} />
+              <Qr size={13} />
+            </div>
+          </div>
+        );
+      }
+
       case "luxe": {
         const pad = u * 7;
         return (
@@ -783,6 +1111,10 @@ export default function NfcCardArt({
   return (
     <div
       className="relative shrink-0 overflow-hidden"
+      // Addressable: the card is otherwise just one more div, and checking its
+      // proportions from outside meant guessing by aspect ratio.
+      data-nfc-card={finish}
+      data-nfc-face={face}
       style={{
         width,
         height,

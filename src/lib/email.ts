@@ -173,3 +173,16 @@ If you didn't create this account, reply to this email and we'll remove it.`;
 
   tx.close();
 }
+
+/** A plain internal alert — an order landing, and the like. */
+export async function sendNotice(to: string, subject: string, body: string): Promise<void> {
+  const tx = transport();
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to,
+    subject,
+    text: body,
+    html: renderCampaign(body),
+  });
+  tx.close();
+}
