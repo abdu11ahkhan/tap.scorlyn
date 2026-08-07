@@ -42,7 +42,7 @@ export default function BoldCard({
       <main className="relative mx-auto w-full max-w-md px-6 pt-20 pb-32">
         <div className="card-rise flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div
-            className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl shadow-lg"
+            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl shadow-lg"
             style={{
               background: `linear-gradient(140deg, ${accent}, ${accent}99)`,
               color: onAccent,

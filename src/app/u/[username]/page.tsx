@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { resolveButtons, type CardProfile } from "@/lib/card";
-import { renderCardTemplate } from "@/components/card-templates";
+import {
+  renderCardTemplate,
+  TEMPLATES_WITH_OWN_COVER,
+  TEMPLATE_TONE,
+} from "@/components/card-templates";
+import CoverBand from "@/components/nfc/CoverBand";
 import TapTracker from "@/components/nfc/TapTracker";
 import ReferralBanner from "@/components/nfc/ReferralBanner";
 import ProfileExtras, { hasProfileExtras } from "@/components/nfc/ProfileExtras";
@@ -98,6 +103,12 @@ export default async function CardProfilePage({
           short content. Harmless when the template is the whole page; a large
           dead gap once the extras render underneath it. */}
       <div className={hasProfileExtras(card) ? "card-has-extras" : undefined}>
+        {card.cover_url && !TEMPLATES_WITH_OWN_COVER.has(card.template) && (
+          <CoverBand
+            src={card.cover_url}
+            tone={TEMPLATE_TONE[card.template] ?? "#ffffff"}
+          />
+        )}
         {renderCardTemplate({ card, buttons })}
       </div>
 

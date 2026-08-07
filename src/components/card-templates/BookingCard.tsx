@@ -46,7 +46,7 @@ export default function BookingCard({
       <main className={`mx-auto w-full max-w-md px-6 pb-24 ${card.cover_url ? "-mt-10" : "pt-14"}`}>
         <header className="card-rise relative flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div
-            className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-[#F4F7F7]"
+            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-[#F4F7F7]"
             style={{ background: accent, color: onAccent }}
           >
             {card.avatar_url ? (

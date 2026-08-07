@@ -24,6 +24,44 @@ import OrbitCard from "./OrbitCard";
 import TilesCard from "./TilesCard";
 import DockCard from "./DockCard";
 
+/**
+ * Templates that build the cover photo into their own layout. Everything else
+ * gets the shared band, because otherwise the field silently does nothing.
+ */
+export const TEMPLATES_WITH_OWN_COVER = new Set([
+  "agency",
+  "app",
+  "booking",
+  "glass",
+  "poster",
+  "showcase",
+]);
+
+/**
+ * The colour each template's page starts with, so the cover band can fade into
+ * it. Read off the template's own root background.
+ */
+export const TEMPLATE_TONE: Record<string, string> = {
+  minimal: "#ffffff",
+  bold: "#ffffff",
+  split: "#ffffff",
+  mono: "#0a0a0a",
+  sticker: "#FFFDF5",
+  aurora: "#0B0B0F",
+  editorial: "#FBF9F4",
+  neon: "#07070A",
+  tape: "#FAF7F0",
+  pitch: "#ffffff",
+  waitlist: "#ffffff",
+  grid: "#ffffff",
+  stack: "#ffffff",
+  reply: "#ffffff",
+  reel: "#0A0A0A",
+  orbit: "#0B0B0F",
+  tiles: "#F4F4F2",
+  dock: "#000000",
+};
+
 export type CardTemplateProps = {
   card: CardProfile;
   buttons: ResolvedButton[];

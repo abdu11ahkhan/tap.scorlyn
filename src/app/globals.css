@@ -498,8 +498,8 @@ textarea.app-input {
  * room. Padding is applied on the root or an inner <main> depending on the
  * template, hence both.
  */
-.card-has-extras > *,
-.card-has-extras > * > main {
+.card-has-extras > :last-child,
+.card-has-extras > :last-child > main {
   min-height: 0 !important;
   padding-bottom: 1.5rem !important;
 }

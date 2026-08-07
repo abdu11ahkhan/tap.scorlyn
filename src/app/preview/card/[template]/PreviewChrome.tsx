@@ -39,7 +39,7 @@ export default function PreviewChrome({
 
       <div className="flex flex-1 items-start justify-center overflow-auto p-4 sm:p-6">
         <div
-          className="h-[780px] w-[390px] max-w-full overflow-hidden rounded-[2rem] border-2 border-ink bg-black shadow-[7px_7px_0_0_theme(colors.hotpink)]"
+          className="h-[780px] w-[390px] max-w-full overflow-hidden rounded-[2rem] border border-white/12 bg-black"
         >
           <iframe
             src={src}

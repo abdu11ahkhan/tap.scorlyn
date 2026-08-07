@@ -34,7 +34,7 @@ export default function AppCard({
         {/* App header row */}
         <header className="card-rise flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div
-            className="flex h-[68px] w-[68px] shrink-0 items-center justify-center overflow-hidden rounded-[18px] shadow-lg"
+            className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-[18px] shadow-lg"
             style={{ background: accent, color: onAccent }}
           >
             {card.avatar_url ? (

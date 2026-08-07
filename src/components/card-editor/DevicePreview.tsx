@@ -114,7 +114,7 @@ export default function DevicePreview({
               style={{ width: OUTER * fit, height: OUTER_H * fit }}
             >
               <div
-                className="rounded-[2.2rem] border-2 border-ink bg-white/[0.04] p-3 shadow-[7px_7px_0_0_theme(colors.hotpink)]"
+                className="rounded-[2.2rem] border border-white/12 bg-white/[0.04] p-3"
                 style={{
                   width: OUTER,
                   transform: `scale(${fit})`,
