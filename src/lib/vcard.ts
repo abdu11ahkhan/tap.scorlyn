@@ -1,5 +1,5 @@
 import { normalizeWhatsapp } from "./referral";
-import { resolveButtons, type CardButton } from "./card";
+import { KIND_LABELS, resolveButtons, type CardButton } from "./card";
 
 /** vCard escaping: commas, semicolons, backslashes and newlines are special. */
 export function escapeVCard(value: string): string {
@@ -57,6 +57,14 @@ export type VCardSource = {
   buttons?: CardButton[] | null;
 };
 
+/** Networks iOS and macOS file under "Social" instead of a plain link. */
+const SOCIAL_TYPES: Partial<Record<CardButton["kind"], string>> = {
+  x: "twitter",
+  facebook: "facebook",
+  linkedin: "linkedin",
+  instagram: "instagram",
+};
+
 /**
  * Build a vCard 3.0 payload for a profile.
  *
@@ -89,15 +97,59 @@ export function buildVCard(card: VCardSource, origin: string): string {
     lines.push(`PHOTO;VALUE=URI:${escapeVCard(card.avatar_url)}`);
   }
 
-  if (card.username) lines.push(`URL:${origin}/u/${card.username}`);
+  // Item groups let each entry carry its own label. Without them a card with
+  // six links imports as six identical "url" rows and the person cannot tell
+  // the shop from the portfolio.
+  let group = 0;
+  const labelled = (property: string, value: string, label: string) => {
+    group += 1;
+    lines.push(`item${group}.${property}:${value}`);
+    lines.push(`item${group}.X-ABLabel:${escapeVCard(label)}`);
+  };
 
-  // Only web buttons belong in a vCard URL field — tel:/mailto: kinds are
-  // already covered by the TEL/EMAIL properties above.
+  if (card.username) labelled("URL", `${origin}/u/${card.username}`, "Card");
+
+  // Every button, not just the web ones. Extra phone and email buttons used to
+  // be dropped entirely: they are not `external`, so the old web-only filter
+  // silently discarded a second number or address the owner had added.
+  const seen = new Set(
+    [card.phone, card.email, whatsapp].filter(Boolean).map((v) => String(v).replace(/\D/g, "") || String(v))
+  );
+
   for (const button of resolveButtons(card.buttons ?? [])) {
+    const label = button.label?.trim() || KIND_LABELS[button.kind] || "Link";
+    const value = button.value.trim();
+    const key = value.replace(/\D/g, "") || value;
+
+    if (button.kind === "phone" || button.kind === "sms") {
+      if (seen.has(key)) continue;
+      seen.add(key);
+      labelled("TEL", escapeVCard(value), label);
+      continue;
+    }
+
+    if (button.kind === "email") {
+      if (seen.has(value)) continue;
+      seen.add(value);
+      labelled("EMAIL", escapeVCard(value), label);
+      continue;
+    }
+
+    if (button.kind === "whatsapp") continue; // already a TEL above
+
     if (button.external && button.href.startsWith("http")) {
-      lines.push(`URL:${escapeVCard(button.href)}`);
+      labelled("URL", escapeVCard(button.href), label);
+      // iOS files known networks under Social rather than as another link.
+      const social = SOCIAL_TYPES[button.kind];
+      if (social) {
+        lines.push(`X-SOCIALPROFILE;TYPE=${social}:${escapeVCard(button.href)}`);
+      }
     }
   }
+
+  // Lets a contacts app tell an updated card from the one already saved,
+  // instead of creating a duplicate.
+  lines.push(`REV:${new Date().toISOString().replace(/\.\d{3}/, "")}`);
 
   lines.push("END:VCARD");
   return lines.map(fold).join("\r\n");
