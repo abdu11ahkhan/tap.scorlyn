@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { checkoutUrl, createTracker, safepayConfigured } from "@/lib/safepay";
+import { createCheckout, safepayConfigured } from "@/lib/safepay";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -51,7 +51,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const tracker = await createTracker(order.amount_pkr);
+    const origin = new URL(request.url).origin;
+
+    const { tracker, url } = await createCheckout({
+      amountPkr: order.amount_pkr,
+      orderRef: order.reference,
+      redirectUrl: `${origin}/dashboard/orders/${order.id}?pay=done`,
+      cancelUrl: `${origin}/dashboard/orders/${order.id}?pay=cancelled`,
+    });
 
     // Recorded before the redirect: the webhook identifies an order only by
     // its tracker, and it can arrive before the customer's browser comes back.
@@ -64,15 +71,7 @@ export async function GET(request: Request) {
       })
       .eq("id", order.id);
 
-    const origin = new URL(request.url).origin;
-    return NextResponse.redirect(
-      checkoutUrl({
-        tracker,
-        orderRef: order.reference,
-        redirectUrl: `${origin}/dashboard/orders/${order.id}?pay=done`,
-        cancelUrl: `${origin}/dashboard/orders/${order.id}?pay=cancelled`,
-      })
-    );
+    return NextResponse.redirect(url);
   } catch (e) {
     const message = e instanceof Error ? e.message : "checkout-failed";
     return NextResponse.redirect(
