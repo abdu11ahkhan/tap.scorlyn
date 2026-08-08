@@ -1,5 +1,6 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { sendCampaign, mailerConfigured, type Recipient } from "@/lib/email";
+import { drainNotifications } from "@/lib/notify";
 
 /**
  * Sends any campaign whose scheduled time has passed.
@@ -36,7 +37,12 @@ export async function GET(request: Request) {
     .lte("scheduled_for", new Date().toISOString())
     .limit(5);
 
-  if (!due?.length) return Response.json({ sent: 0, campaigns: 0 });
+  // Order alerts share this tick. A database trigger queues one whenever an
+  // order lands, so without something draining them they simply pile up —
+  // which is exactly what had happened.
+  const alerts = await drainNotifications(supabase);
+
+  if (!due?.length) return Response.json({ sent: 0, campaigns: 0, alerts });
 
   let total = 0;
 
@@ -80,5 +86,5 @@ export async function GET(request: Request) {
       .eq("id", campaign.id);
   }
 
-  return Response.json({ sent: total, campaigns: due.length });
+  return Response.json({ sent: total, campaigns: due.length, alerts });
 }

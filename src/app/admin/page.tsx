@@ -136,8 +136,9 @@ export default async function AdminOverview() {
           </ul>
           <p className="mt-3 text-[12px] text-white/30">
             Stays here until you hit &ldquo;mark all read&rdquo; on the orders
-            page. No email is sent yet — set RESEND_API_KEY and
-            ORDER_ALERT_EMAIL to turn that on.
+            page. An email also goes out within fifteen minutes — set
+            ORDER_ALERT_EMAIL to send it somewhere other than the address the
+            site sends from.
           </p>
         </section>
       )}

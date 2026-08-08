@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { mailerConfigured, sendReceipt } from "@/lib/email";
 import { USERNAME_PATTERN } from "@/lib/card-draft";
 
 /**
@@ -278,13 +279,69 @@ export async function setOrderStatus(
     // Marking an order paid is the moment money is confirmed, so stamp it.
     if (status === "paid") patch.payment_verified_at = new Date().toISOString();
 
-    const { error } = await supabase.from("orders").update(patch).in("id", orderIds);
+    // Only the rows that actually moved to paid, so re-confirming an order
+    // that was already paid does not send a second receipt.
+    const { data: moved, error } = await supabase
+      .from("orders")
+      .update(patch)
+      .in("id", orderIds)
+      .neq("status", status)
+      .select("id");
     if (error) throw new Error(error.message);
+
+    if (status === "paid" && moved?.length) {
+      await Promise.all(moved.map((o) => sendOrderReceipt(supabase, o.id)));
+    }
 
     revalidatePath("/admin/orders");
     return { ok: true };
   } catch (e) {
     return fail(e);
+  }
+}
+
+/**
+ * Emails the customer their receipt once a transfer is confirmed.
+ *
+ * Payment is verified by hand here, so this is the only moment we know the
+ * money arrived — there is no gateway to tell us. A failure to send must not
+ * fail the status change: the order really is paid either way, and an admin
+ * retrying would be re-marking something already correct.
+ */
+async function sendOrderReceipt(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  orderId: string
+) {
+  try {
+    if (!mailerConfigured()) return;
+
+    const { data: order } = await supabase
+      .from("orders")
+      .select("id, reference, amount_pkr, quantity, full_name, user_id")
+      .eq("id", orderId)
+      .maybeSingle();
+    if (!order?.user_id) return;
+
+    // The account address, not one typed on the order form — the receipt
+    // should reach whoever can sign in and see the order.
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", order.user_id)
+      .maybeSingle();
+
+    if (!profile?.email) return;
+
+    await sendReceipt({
+      to: profile.email,
+      name: order.full_name || profile.full_name,
+      reference: order.reference,
+      amountPkr: order.amount_pkr,
+      quantity: order.quantity,
+      orderId: order.id,
+    });
+  } catch {
+    // Deliberately swallowed — see above.
   }
 }
 

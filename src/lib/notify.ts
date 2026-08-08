@@ -1,4 +1,5 @@
 import "server-only";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { mailerConfigured, sendNotice } from "./email";
 
 /**
@@ -58,4 +59,60 @@ export async function deliver(
   } catch (e) {
     return { sent: false, error: e instanceof Error ? e.message : String(e) };
   }
+}
+
+/**
+ * Sends whatever is waiting in the queue.
+ *
+ * The queue exists so that placing an order never depends on mail working; the
+ * cost is that something has to come along afterwards and empty it. Each row
+ * is claimed before sending, so two overlapping ticks cannot both send it, and
+ * a failure records the reason and leaves the row for the next run.
+ */
+export async function drainNotifications(
+  supabase: SupabaseClient,
+  max = 20
+): Promise<{ sent: number; failed: number }> {
+  if (!emailConfigured()) return { sent: 0, failed: 0 };
+
+  const { data } = await supabase
+    .from("notifications")
+    .select("id, kind, subject, body")
+    .is("sent_at", null)
+    .order("created_at")
+    .limit(max);
+
+  const rows = (data ?? []) as QueuedNotification[];
+  let sent = 0;
+  let failed = 0;
+
+  for (const row of rows) {
+    // Claimed first: two ticks overlapping would otherwise both send it.
+    const { data: claimed } = await supabase
+      .from("notifications")
+      .update({ sent_at: new Date().toISOString() })
+      .eq("id", row.id)
+      .is("sent_at", null)
+      .select("id");
+
+    if (!Array.isArray(claimed) || claimed.length === 0) continue;
+
+    const result = await deliver(row);
+
+    if (result.sent) {
+      sent += 1;
+    } else {
+      failed += 1;
+      // Released, with the reason, so the next run tries again rather than
+      // silently marking an unsent alert as done.
+      await supabase
+        .from("notifications")
+        .update({ sent_at: null, error: result.error ?? "unknown" })
+        .eq("id", row.id)
+        .is("sent_at", null)
+        .select("id");
+    }
+  }
+
+  return { sent, failed };
 }
