@@ -186,3 +186,46 @@ export async function sendNotice(to: string, subject: string, body: string): Pro
   });
   tx.close();
 }
+
+/**
+ * The receipt, sent once payment clears.
+ *
+ * Sent from the webhook rather than the success page: the page only proves a
+ * browser followed a redirect, and a receipt for money that never arrived is
+ * worse than no receipt. Links to the invoice instead of attaching a PDF —
+ * the invoice is a live page that stays correct if an order is amended, and a
+ * stale attachment would not be.
+ */
+export async function sendReceipt(opts: {
+  to: string;
+  name?: string | null;
+  reference: string;
+  amountPkr: number;
+  quantity: number;
+  orderId: string;
+}): Promise<void> {
+  const tx = transport();
+  const first = (opts.name ?? "").trim().split(/\s+/)[0];
+
+  const body = `${first ? `Hi ${first},` : "Hi,"}
+
+Your payment has cleared and your ScorlynTap card is going to print.
+
+Order: ${opts.reference}
+Amount: Rs.${opts.amountPkr.toLocaleString()}
+Quantity: ${opts.quantity} ${opts.quantity === 1 ? "card" : "cards"}
+
+Quote that order number if you need to ask us anything about it. You can track
+the order and open your invoice here:
+${SITE_URL}/dashboard/orders/${opts.orderId}`;
+
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: opts.to,
+    subject: `Payment received — order ${opts.reference}`,
+    text: `${body}\n\n--\nScorlynTap — NFC digital business cards\ntap.scorlyn.com`,
+    html: renderCampaign(body, `${SITE_URL}/dashboard/orders/${opts.orderId}`),
+  });
+
+  tx.close();
+}
