@@ -6,6 +6,7 @@ import { statusTone } from "@/app/dashboard/orders/status";
 import ActionButton from "../../ActionButton";
 import { setAdmin, setSuspended, deleteAccount } from "../../actions";
 import ConfirmByName from "../../ConfirmByName";
+import SignInAsButton from "./SignInAsButton";
 
 export const dynamic = "force-dynamic";
 
@@ -123,6 +124,17 @@ export default async function AdminUserDetail({
                   >
                     {person.suspended ? "restore" : "suspend"}
                   </ActionButton>
+
+                  {/* Setting a card up for someone means being inside their
+                      dashboard — the editor there already does buttons, links
+                      and photos, and an admin-flavoured copy would drift. */}
+                  {!person.is_admin && (
+                    <SignInAsButton
+                      userId={person.id}
+                      email={person.email ?? ""}
+                      name={person.full_name ?? ""}
+                    />
+                  )}
 
                   {/* Typing the address is the guard, not a confirm dialog:
                       this is unrecoverable, and a dialog is dismissed by

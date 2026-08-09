@@ -806,3 +806,79 @@ function generatePassword(): string {
   const digits = String(Math.floor(1000 + Math.random() * 9000));
   return `${pick()}-${pick()}-${digits}`;
 }
+
+/**
+ * Signs the admin in as a customer, to set their card up for them.
+ *
+ * Selling in person means building the card there and then — buttons, links,
+ * photos — and the dashboard already does all of that. Rebuilding an
+ * admin-flavoured copy of the editor would be a second thing to keep in step
+ * with the first, and it would drift.
+ *
+ * A magic link is generated for the customer and its token handed back, which
+ * /auth/confirm exchanges exactly as it does for a real sign-in. Nothing about
+ * the customer's account changes: no password reset, nothing emailed to them.
+ *
+ * This grants no power an admin lacked — the console already reads and writes
+ * every customer's data — but it does put an admin inside someone's session,
+ * so every use is logged.
+ */
+export async function impersonateCustomer(
+  userId: string,
+  reason?: string
+): Promise<Result<{ url: string; email: string }>> {
+  try {
+    const { supabase, user } = await assertAdmin();
+
+    if (userId === user.id) throw new Error("You're already signed in as yourself.");
+
+    const { data: target } = await supabase
+      .from("profiles")
+      .select("id, email, full_name, is_admin, suspended")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!target?.email) throw new Error("That account has no email address.");
+    // Another admin's session would carry their console access, so a lesser
+    // admin could borrow a greater one. Refused outright.
+    if (target.is_admin) throw new Error("You can't sign in as another admin.");
+
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceKey) {
+      throw new Error("Signing in as a customer needs SUPABASE_SERVICE_ROLE_KEY.");
+    }
+
+    const admin = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey, {
+      auth: { persistSession: false },
+    });
+
+    const { data: link, error: linkError } = await admin.auth.admin.generateLink({
+      type: "magiclink",
+      email: target.email,
+    });
+
+    if (linkError || !link?.properties?.hashed_token) {
+      throw new Error(linkError?.message || "Could not create a sign-in link.");
+    }
+
+    // Logged before the link is handed over, so a session that is opened is
+    // always one that was recorded.
+    await supabase.from("admin_impersonations").insert({
+      admin_id: user.id,
+      admin_email: user.email,
+      target_id: target.id,
+      target_email: target.email,
+      reason: reason?.trim() || null,
+    });
+
+    // Exchanged by our own route rather than Supabase's, so the sign-in stays
+    // on this domain and lands straight in the card editor.
+    const url =
+      `/auth/confirm?token_hash=${encodeURIComponent(link.properties.hashed_token)}` +
+      `&type=magiclink&next=${encodeURIComponent("/dashboard/card")}`;
+
+    return { ok: true, data: { url, email: target.email } };
+  } catch (e) {
+    return fail(e);
+  }
+}
