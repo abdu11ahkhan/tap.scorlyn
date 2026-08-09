@@ -23,6 +23,7 @@ import {
   type CardForm,
 } from "@/lib/card-draft";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
+import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import { uploadPendingImages } from "@/lib/upload-drafts";
@@ -62,6 +63,8 @@ function MyCardEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [draftApplied, setDraftApplied] = useState(false);
+  /** Set when a live card still has no printable design chosen. */
+  const [askNfcFor, setAskNfcFor] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -242,6 +245,13 @@ function MyCardEditor() {
       if (isFirstPublish) {
         window.open(`/u/${data.username}`, "_blank", "noopener");
       }
+
+      // Ask which physical card they want, once, while the card is live and
+      // they are still looking at it. Asked again on a later save only if it
+      // is still unanswered — never once they have chosen.
+      if (data.published !== false && !data.nfc_finish) {
+        setAskNfcFor(data.id);
+      }
     }
 
     setSaving(false);
@@ -420,6 +430,14 @@ function MyCardEditor() {
           {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
         </DevicePreview>
       </div>
+
+      {askNfcFor && (
+        <NfcFormatPrompt
+          card={previewCard}
+          cardId={askNfcFor}
+          onDone={() => setAskNfcFor(null)}
+        />
+      )}
     </div>
   );
 }

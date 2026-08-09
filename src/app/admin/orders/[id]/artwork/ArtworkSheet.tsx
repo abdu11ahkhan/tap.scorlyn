@@ -25,7 +25,18 @@ export default function ArtworkSheet({
   finish,
   fields,
 }: {
-  order: { reference: string; quantity: number; branding: string | null; fullName: string };
+  /**
+   * The order this artwork is for, when there is one. A customer who has
+   * published a card and chosen a finish is printable before they have
+   * ordered anything, so admin can prepare — and check — the artwork without
+   * an order to hang it on.
+   */
+  order?: {
+    reference: string;
+    quantity: number;
+    branding: string | null;
+    fullName: string;
+  } | null;
   card: CardProfile;
   finish: string;
   fields: CardFields | null;
@@ -35,18 +46,25 @@ export default function ArtworkSheet({
   return (
     <div className="space-y-5">
       <div className="print:hidden">
-        <h1 className="app-h1">Artwork — {order.reference}</h1>
+        <h1 className="app-h1">
+          Artwork — {order ? order.reference : `@${card.username}`}
+        </h1>
         <p className="app-sub mt-1">
           Both faces at 300dpi on an 85.6 × 54 mm card. Print this page to PDF
           and send that to the printer — the type stays vector.
         </p>
 
         <div className="mt-4 flex flex-wrap gap-4 text-sm">
-          <span className="app-pill">Quantity: {order.quantity}</span>
+          {order && <span className="app-pill">Quantity: {order.quantity}</span>}
           <span className="app-pill">Finish: {finish}</span>
-          <span className="app-pill">
-            Branding: {order.branding === "unbranded" ? "customer artwork only" : "ScorlynTap mark"}
-          </span>
+          {order && (
+            <span className="app-pill">
+              Branding:{" "}
+              {order.branding === "unbranded"
+                ? "customer artwork only"
+                : "ScorlynTap mark"}
+            </span>
+          )}
           <span className="app-pill">Chip URL: {profileUrl}</span>
         </div>
 

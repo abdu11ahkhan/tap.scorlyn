@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, Search } from "lucide-react";
+import { ExternalLink, Printer, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import ConfirmByName from "../ConfirmByName";
 import { deleteCard } from "../actions";
@@ -19,6 +19,9 @@ type CardRow = {
   owner_suspended: boolean;
   created_at: string;
   accent_color: string | null;
+  /** The physical card they chose at publish, if they have. */
+  nfc_finish: string | null;
+  nfc_chosen_at: string | null;
 };
 
 export default async function AdminCards({
@@ -35,7 +38,7 @@ export default async function AdminCards({
   let query = supabase
     .from("card_profiles")
     .select(
-      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color",
+      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at",
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
@@ -103,6 +106,7 @@ export default async function AdminCards({
               <tr>
                 <th>Card</th>
                 <th>Template</th>
+                <th>NFC card</th>
                 <th>Status</th>
                 <th>Created</th>
                 <th />
@@ -125,6 +129,24 @@ export default async function AdminCards({
                         </p>
                       </div>
                     </div>
+                  </td>
+                  <td data-label="NFC card" className="text-sm font-bold lowercase">
+                    {card.nfc_finish ? (
+                      // Straight to the print sheet: the whole point is that
+                      // admin can get from "who is waiting" to "send this to
+                      // the printer" without hunting for an order.
+                      <Link
+                        href={`/admin/cards/${card.id}/artwork`}
+                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-acid/40 px-3 py-1.5 text-xs font-black text-acid transition-colors hover:bg-acid/10"
+                      >
+                        <Printer className="h-3.5 w-3.5" />
+                        {card.nfc_finish}
+                      </Link>
+                    ) : (
+                      <span className="text-xs font-semibold text-white/25">
+                        not chosen
+                      </span>
+                    )}
                   </td>
                   <td data-label="Template" className="text-sm font-bold lowercase text-white/70">
                     {templateName(card.template)}
