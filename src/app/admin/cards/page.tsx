@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, Printer, Search } from "lucide-react";
+import { ExternalLink, Pencil, Printer, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import ConfirmByName from "../ConfirmByName";
 import { deleteCard } from "../actions";
@@ -186,6 +186,16 @@ export default async function AdminCards({
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                         open
+                      </Link>
+                      {/* Straight into their card. Most support here happens
+                          over WhatsApp, where the customer sends details and
+                          expects someone else to type them in. */}
+                      <Link
+                        href={`/admin/cards/${card.id}/edit`}
+                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3.5 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        edit
                       </Link>
                       {/* Typing the handle is the guard: this frees the name
                           for anyone else and cannot be undone. */}

@@ -654,6 +654,51 @@ export async function deleteAccount(userId: string, reason?: string): Promise<Re
  * down without closing the person's account, and unpublishing only hides it
  * while holding the handle. This frees the handle too.
  */
+/** The finishes NfcCardArt can render. Mirrors the CHECK on the column. */
+const NFC_FINISHES = [
+  "minimal", "bold", "gradient", "midnight", "sticker", "split", "frame",
+  "mono", "luxe", "executive", "ivory", "steel", "holo", "tag", "pixel",
+] as const;
+
+/**
+ * Picks the printed card on a customer's behalf.
+ *
+ * Most people here order over WhatsApp and never touch the picker, so support
+ * needs to be able to set it for them — otherwise there is nothing to print
+ * and the order stalls on a question nobody asked.
+ */
+export async function setCardFinish(
+  cardId: string,
+  finish: string
+): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    // Checked before it reaches the database: the column's CHECK would reject
+    // it anyway, but as a raw constraint error rather than something readable.
+    if (!NFC_FINISHES.includes(finish as (typeof NFC_FINISHES)[number])) {
+      throw new Error(`"${finish}" is not a card design we can print.`);
+    }
+
+    // Confirm a row actually changed. RLS refuses by matching nothing rather
+    // than erroring, so without this a blocked update reports success and the
+    // console would show the new finish until the page was reloaded.
+    const { data: updated, error } = await supabase
+      .from("card_profiles")
+      .update({ nfc_finish: finish, nfc_chosen_at: new Date().toISOString() })
+      .eq("id", cardId)
+      .select("id");
+    if (error) throw new Error(error.message);
+    if (!updated?.length) throw new Error("That card could not be updated.");
+
+    revalidatePath("/admin/cards");
+    revalidatePath(`/admin/cards/${cardId}/artwork`);
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 export async function deleteCard(cardId: string): Promise<Result> {
   try {
     const { supabase } = await assertAdmin();

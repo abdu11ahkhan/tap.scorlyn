@@ -1,0 +1,71 @@
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import AdminCardEditor from "./AdminCardEditor";
+import { EMPTY_CARD_FORM, type CardForm } from "@/lib/card-draft";
+import type { CardButton, GalleryItem } from "@/lib/card";
+import type { ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
+
+export const dynamic = "force-dynamic";
+
+/**
+ * Open a customer's card and change anything on it.
+ *
+ * Reads the row here rather than in the client so the editor arrives filled
+ * in: admin opening a blank form that fills a moment later is how the wrong
+ * field gets typed into.
+ */
+export default async function AdminEditCard({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  const { data: card } = await supabase
+    .from("card_profiles")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!card) notFound();
+
+  const form: CardForm = {
+    ...EMPTY_CARD_FORM,
+    username: card.username ?? "",
+    full_name: card.full_name ?? "",
+    headline: card.headline ?? "",
+    company: card.company ?? "",
+    bio: card.bio ?? "",
+    avatar_url: card.avatar_url ?? "",
+    cover_url: card.cover_url ?? "",
+    logo_url: card.logo_url ?? "",
+    show_qr: card.show_qr !== false,
+    surface_color: card.surface_color ?? "",
+    published: card.published !== false,
+    location: card.location ?? "",
+    accent_color: card.accent_color ?? "#111111",
+    template: card.template ?? "minimal",
+    font: card.font ?? "sans",
+  };
+
+  const extras: ExtrasState = {
+    available_for_work: card.available_for_work ?? false,
+    availability_note: card.availability_note ?? "",
+    business_hours: Array.isArray(card.business_hours) ? card.business_hours : [],
+    video_url: card.video_url ?? "",
+    payment_enabled: card.payment_enabled ?? false,
+    payment_methods: Array.isArray(card.payment_methods) ? card.payment_methods : [],
+  };
+
+  return (
+    <AdminCardEditor
+      cardId={card.id}
+      username={card.username}
+      initialForm={form}
+      initialButtons={(Array.isArray(card.buttons) ? card.buttons : []) as CardButton[]}
+      initialGallery={(Array.isArray(card.gallery) ? card.gallery : []) as GalleryItem[]}
+      initialExtras={extras}
+    />
+  );
+}

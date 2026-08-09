@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ArtworkSheet from "@/app/admin/orders/[id]/artwork/ArtworkSheet";
+import FinishPicker from "./FinishPicker";
+import { setCardFinish } from "@/app/admin/actions";
 import type { CardProfile } from "@/lib/card";
 import type { CardFields } from "@/components/card-design/NfcCardArt";
 
@@ -65,21 +67,32 @@ export default async function CardArtwork({
     </div>
   ) : null;
 
+  const picker = (
+    <FinishPicker
+      card={card as CardProfile}
+      current={finish}
+      profileUrl={`https://tap.scorlyn.com/u/${card.username}`}
+      onSave={async (next: string) => {
+        "use server";
+        return setCardFinish(id, next);
+      }}
+    />
+  );
+
   // A file with no finish chosen is still printable — the file is the design.
   // Returning early on a missing finish would have hidden it completely.
   if (!finish) {
     return (
       <div className="space-y-5">
+        <h1 className="app-h1">Artwork — @{card.username}</h1>
         {artworkPanel}
         {!artworkPanel && (
-          <>
-            <h1 className="app-h1">Artwork — @{card.username}</h1>
-            <p className="app-sub">
-              This customer has not chosen a card design yet. They are asked
-              when they publish; until they answer there is nothing to print.
-            </p>
-          </>
+          <p className="app-sub">
+            This customer has not chosen a card design yet. Pick one for them
+            below and it saves to their profile.
+          </p>
         )}
+        {picker}
         <Link href="/admin/cards" className="app-pill inline-flex">
           Back to cards
         </Link>
@@ -90,6 +103,7 @@ export default async function CardArtwork({
   return (
     <div className="space-y-5">
       {artworkPanel}
+      {picker}
       <ArtworkSheet
         card={card as CardProfile}
         finish={finish}
