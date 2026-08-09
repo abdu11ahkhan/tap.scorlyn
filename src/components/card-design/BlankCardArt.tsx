@@ -15,11 +15,19 @@ export default function BlankCardArt({
   profileUrl,
   width = 340,
   tone = "dark",
+  face = "front",
 }: {
   profileUrl: string;
   width?: number;
   /** Both are sold; showing one of each is what makes the choice concrete. */
   tone?: "dark" | "light";
+  /**
+   * The front is bare — that is what "blank" means, and it is what the card
+   * looks like face up in a wallet. The QR and our mark are on the back,
+   * which is what the feature list beside this has always said; the preview
+   * used to print them on the front and quietly contradict it.
+   */
+  face?: "front" | "back";
 }) {
   const height = width / CARD_ASPECT;
   const u = width / 100;
@@ -41,6 +49,7 @@ export default function BlankCardArt({
         boxShadow: "0 18px 40px rgba(0,0,0,0.28)",
       }}
     >
+      {face === "front" ? null : (
       <div
         className="flex h-full flex-col justify-between"
         style={{ padding: u * 7 }}
@@ -91,6 +100,7 @@ export default function BlankCardArt({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

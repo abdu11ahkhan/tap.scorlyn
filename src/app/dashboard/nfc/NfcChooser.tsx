@@ -53,8 +53,8 @@ export default function NfcChooser({
               <p className="shrink-0 text-xl font-black text-acid">{money(blank.price_pkr)}</p>
             </div>
             <p className="mt-1.5 text-sm font-semibold text-white/50">
-              A plain card carrying your link. Nothing printed on it but our
-              mark and your QR.
+              A plain, unprinted card. Your link lives on the chip inside, so
+              a tap opens your page — nothing on the front at all.
             </p>
 
             <div className="mt-5 flex justify-center rounded-xl bg-black/30 p-5">
