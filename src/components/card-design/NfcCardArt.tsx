@@ -177,6 +177,21 @@ export default function NfcCardArt({
   const height = width / CARD_ASPECT;
   const u = width / 100;
 
+  /**
+   * Long names step down in size. The card is a fixed 85.6×54mm, so a name
+   * twice as long cannot be set at the same size and still fit — at u*9.5 a
+   * 30-character name wrapped to three lines and climbed out of the layout,
+   * over the NFC mark. Ramped rather than stepped, so it never jumps.
+   */
+  const nameScale = (() => {
+    const n = (card.full_name ?? "").trim().length;
+    if (n <= 16) return 1;
+    if (n >= 34) return 0.62;
+    return 1 - ((n - 16) / 18) * 0.38;
+  })();
+  /** Font size for the display name, in the same u units as everything else. */
+  const nameFs = (v: number) => u * v * nameScale;
+
   const isSticker = finish === "sticker";
   const isFrame = finish === "frame";
   const isMono = finish === "mono";
@@ -237,8 +252,12 @@ export default function NfcCardArt({
     </div>
   );
 
-  /** Three nested arcs bulging right. Each needs its own origin — sweeping
-   *  from one x with growing radii draws a crescent, not a signal. */
+  /** The contactless signal: three arcs about one centre, growing outward.
+   *
+   *  They have to be concentric to read as a signal. The previous set gave
+   *  each arc its own origin and made each a full semicircle, so they were
+   *  three unrelated crescents — and the largest bulged to x=26 in a 24-wide
+   *  box, so it was clipped mid-sweep. */
   const NfcMark = ({
     size = 6.5,
     opacity = 0.8,
@@ -254,18 +273,21 @@ export default function NfcCardArt({
       height={u * size}
       viewBox="0 0 24 24"
       fill="none"
+      data-nfc-mark
       // Keeps its right-hand slot in the justify-between rows even when the
       // avatar opposite it has been switched off.
       style={{ opacity, marginLeft: "auto" }}
     >
       {[
-        { x: 8, r: 4, y: 8, h: 8 },
-        { x: 12, r: 7, y: 5, h: 14 },
-        { x: 16, r: 10, y: 2, h: 20 },
+        // Centre (5,12), swept ±52°. The outermost reaches x=17.5, which with
+        // a 2-wide stroke still clears the 24 box.
+        { r: 4.5, x: 7.77, y1: 8.45, y2: 15.55 },
+        { r: 8.5, x: 10.23, y1: 5.3, y2: 18.7 },
+        { r: 12.5, x: 12.7, y1: 2.15, y2: 21.85 },
       ].map((a) => (
         <path
           key={a.r}
-          d={`M${a.x} ${a.y} A ${a.r} ${a.r} 0 0 1 ${a.x} ${a.y + a.h}`}
+          d={`M${a.x} ${a.y1} A ${a.r} ${a.r} 0 0 1 ${a.x} ${a.y2}`}
           stroke={fg}
           strokeWidth={2}
           strokeLinecap="round"
@@ -278,6 +300,7 @@ export default function NfcCardArt({
     showQr ? (
       <div
         className="shrink-0"
+        data-qr
         style={{
           // Padding only earns its space when there's a plate to see. On the
           // light finishes it's invisible, and just floats the QR off the margin.
@@ -314,12 +337,25 @@ export default function NfcCardArt({
       style={{
         display: "grid",
         rowGap: u * gap,
-        justifyItems: align,
+        // Rows are stretched, not sized to their text. As grid items sized to
+        // max-content they overflowed this box and painted straight over the
+        // QR — and because they were never bounded, the ellipsis below could
+        // not engage. Centring moves inside the row instead.
+        justifyItems: "stretch",
         minWidth: 0,
+        maxWidth: "100%",
       }}
     >
       {contacts.map(({ Icon, text }, i) => (
-        <div key={i} className="flex items-center" style={{ gap: u * 1.5, minWidth: 0 }}>
+        <div
+          key={i}
+          className="flex items-center"
+          style={{
+            gap: u * 1.5,
+            minWidth: 0,
+            justifyContent: align === "center" ? "center" : "flex-start",
+          }}
+        >
           {icons && (
             <Icon
               style={{
@@ -364,7 +400,7 @@ export default function NfcCardArt({
             <div style={{ marginTop: "auto" }}>
               <p
                 style={{
-                  fontSize: u * 11,
+                  fontSize: nameFs(11),
                   fontWeight: 900,
                   lineHeight: 0.86,
                   letterSpacing: "-0.045em",
@@ -412,7 +448,7 @@ export default function NfcCardArt({
             <p
               style={{
                 marginTop: u * 2.6,
-                fontSize: u * 6,
+                fontSize: nameFs(6),
                 fontWeight: isFrame ? 700 : 800,
                 letterSpacing: "-0.02em",
                 lineHeight: 1,
@@ -454,7 +490,7 @@ export default function NfcCardArt({
               <div>
                 <p
                   style={{
-                    fontSize: u * 5.6,
+                    fontSize: nameFs(5.6),
                     fontWeight: 800,
                     lineHeight: 0.98,
                     letterSpacing: "-0.025em",
@@ -490,7 +526,7 @@ export default function NfcCardArt({
                 style={{ marginTop: "auto", gap: u * 2.2, minWidth: 0 }}
               >
                 <Contacts size={2.4} gap={1} />
-                <Qr size={12} />
+                <Qr size={13} />
               </div>
             </div>
           </div>
@@ -536,7 +572,7 @@ export default function NfcCardArt({
                 <div style={{ minWidth: 0 }}>
                   <p
                     style={{
-                      fontSize: u * 5.8,
+                      fontSize: nameFs(5.8),
                       fontWeight: 800,
                       lineHeight: 1,
                       letterSpacing: "-0.025em",
@@ -561,7 +597,7 @@ export default function NfcCardArt({
               </div>
               <div className="flex items-end justify-between" style={{ gap: u * 3 }}>
                 <Contacts size={2.5} gap={0.9} />
-                <Qr size={12} />
+                <Qr size={13} />
               </div>
             </div>
           </div>
@@ -586,7 +622,7 @@ export default function NfcCardArt({
               <Avatar size={10} radius={2.2} fg={readableOn(accent)} />
               <div style={{ minWidth: 0 }}>
                 <p
-                  style={{ fontSize: u * 5, fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}
+                  style={{ fontSize: nameFs(5), fontWeight: 900, lineHeight: 1, letterSpacing: "-0.02em" }}
                 >
                   {card.full_name}
                 </p>
@@ -645,7 +681,7 @@ export default function NfcCardArt({
               <div className="flex items-center" style={{ gap: u * 2.4, minWidth: 0 }}>
                 <Avatar size={8} radius={1} />
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ fontSize: u * 4.6, fontWeight: 700, letterSpacing: "-0.01em" }}>
+                  <p style={{ fontSize: nameFs(5.8), fontWeight: 700, letterSpacing: "-0.01em" }}>
                     {card.full_name}
                   </p>
                   <p style={{ fontSize: u * 2.4, opacity: s.sub }}>@{card.username}</p>
@@ -704,7 +740,7 @@ export default function NfcCardArt({
 
             {showQr && (
               <div className="flex justify-end" style={{ marginTop: "auto" }}>
-                <Qr size={12} />
+                <Qr size={13} />
               </div>
             )}
           </div>
@@ -729,7 +765,7 @@ export default function NfcCardArt({
                   {company}
                 </p>
               )}
-              <p style={{ fontSize: u * 6.4, fontWeight: 600, lineHeight: 1.02, marginTop: u * 1.4 }}>
+              <p style={{ fontSize: nameFs(6.4), fontWeight: 600, lineHeight: 1.02, marginTop: u * 1.4 }}>
                 {card.full_name}
               </p>
               {fields.headline && headline && (
@@ -764,15 +800,18 @@ export default function NfcCardArt({
         return (
           <div
             className="relative flex h-full flex-col items-center justify-center text-center"
-            style={{ padding: pad }}
+            // The footer below is absolutely placed, so the centred column has
+            // to be told to stop short of it — otherwise the contact lines run
+            // under the NFC mark, which is where "Lahore,Pakistan" ended up.
+            style={{ padding: pad, paddingBottom: pad + u * 12.5 }}
           >
-            {fields.avatar && <Avatar size={13} radius={6.5} />}
+            {fields.avatar && <Avatar size={10.5} radius={5.25} />}
             <p
               style={{
-                fontSize: u * 5.6,
+                fontSize: nameFs(6.2),
                 fontWeight: 500,
                 letterSpacing: "0.02em",
-                marginTop: fields.avatar ? u * 2.4 : 0,
+                marginTop: fields.avatar ? u * 1.8 : 0,
               }}
             >
               {card.full_name}
@@ -793,7 +832,7 @@ export default function NfcCardArt({
               </p>
             )}
             <div
-              style={{ width: u * 22, height: 1, background: s.border, margin: `${u * 2.6}px 0` }}
+              style={{ width: u * 22, height: 1, background: s.border, margin: `${u * 1.8}px 0` }}
             />
             <Contacts size={2.3} gap={0.8} align="center" icons={false} />
 
@@ -802,7 +841,7 @@ export default function NfcCardArt({
               style={{ left: pad, right: pad, bottom: u * 5 }}
             >
               <NfcMark size={5} opacity={0.45} />
-              <Qr size={11} />
+              <Qr size={13} />
             </div>
           </div>
         );
@@ -818,7 +857,7 @@ export default function NfcCardArt({
               <div style={{ marginTop: "auto" }}>
                 <p
                   style={{
-                    fontSize: u * 6.8,
+                    fontSize: nameFs(6.8),
                     fontWeight: 700,
                     lineHeight: 1,
                     letterSpacing: "-0.015em",
@@ -839,7 +878,7 @@ export default function NfcCardArt({
                 style={{ marginTop: "auto", paddingTop: u * 2.4 }}
               >
                 <Contacts size={2.4} gap={0.9} />
-                <Qr size={12} />
+                <Qr size={13} />
               </div>
             </div>
             <div style={{ position: "absolute", left: u * 6.5, top: pad }}>
@@ -853,7 +892,11 @@ export default function NfcCardArt({
       case "holo": {
         const pad = u * 7;
         return (
-          <div className="relative flex h-full flex-col justify-end" style={{ padding: pad }}>
+          <div
+            className="relative flex h-full flex-col justify-end"
+            // Clears the absolutely-placed avatar/NFC row above.
+            style={{ padding: pad, paddingTop: pad + u * 13 }}
+          >
             <div
               className="absolute flex items-start justify-between"
               style={{ left: pad, right: pad, top: pad }}
@@ -864,7 +907,7 @@ export default function NfcCardArt({
 
             <p
               style={{
-                fontSize: u * 9.5,
+                fontSize: nameFs(9.5),
                 fontWeight: 900,
                 lineHeight: 0.9,
                 letterSpacing: "-0.045em",
@@ -935,7 +978,7 @@ export default function NfcCardArt({
               )}
               <p
                 style={{
-                  fontSize: u * 8.6,
+                  fontSize: nameFs(8.6),
                   fontWeight: 900,
                   lineHeight: 0.92,
                   letterSpacing: "-0.04em",
@@ -988,7 +1031,7 @@ export default function NfcCardArt({
             </div>
 
             <div style={{ marginTop: "auto" }}>
-              <p style={{ fontSize: u * 7, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.02em" }}>
+              <p style={{ fontSize: nameFs(7), fontWeight: 700, lineHeight: 1, letterSpacing: "-0.02em" }}>
                 {card.full_name}
               </p>
               {(headline || company) && (
@@ -1013,7 +1056,7 @@ export default function NfcCardArt({
         return (
           <div
             className="relative flex h-full flex-col items-center justify-center text-center"
-            style={{ padding: pad, paddingBottom: pad + u * 13 }}
+            style={{ padding: pad, paddingBottom: pad + u * 15 }}
           >
             <p
               style={{
@@ -1035,7 +1078,7 @@ export default function NfcCardArt({
               }}
             />
 
-            <p style={{ fontSize: u * 7, fontWeight: 500, letterSpacing: "0.01em", lineHeight: 1 }}>
+            <p style={{ fontSize: nameFs(7), fontWeight: 500, letterSpacing: "0.01em", lineHeight: 1 }}>
               {card.full_name}
             </p>
 
@@ -1055,7 +1098,7 @@ export default function NfcCardArt({
               style={{ left: pad, right: pad, bottom: pad }}
             >
               <NfcMark size={5.5} opacity={0.6} />
-              <Qr size={11} />
+              <Qr size={13} />
             </div>
           </div>
         );
@@ -1073,7 +1116,7 @@ export default function NfcCardArt({
             <div style={{ marginTop: "auto" }}>
               <p
                 style={{
-                  fontSize: u * 6.2,
+                  fontSize: nameFs(6.2),
                   fontWeight: 600,
                   letterSpacing: "-0.02em",
                   lineHeight: 1,
@@ -1100,7 +1143,7 @@ export default function NfcCardArt({
                 style={{ marginTop: u * 3.2, gap: u * 3 }}
               >
                 <Contacts size={2.5} gap={0.9} icons={false} />
-                <Qr size={12} />
+                <Qr size={13} />
               </div>
             </div>
           </div>
