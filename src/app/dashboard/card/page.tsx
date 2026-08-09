@@ -292,22 +292,6 @@ function MyCardEditor() {
       )}
 
       <form onSubmit={handleSave} className="mt-8 space-y-8">
-        <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
-          <Input
-            id="username"
-            value={form.username}
-            onChange={(e) => updateForm({ username: e.target.value })}
-            placeholder="abdullah"
-            required
-            autoFocus={draftApplied}
-            className="border-2 border-white/15 bg-white/[0.04] font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:ring-0"
-          />
-          <p className="text-xs font-semibold text-white/40">
-            Your card will live at /u/{form.username || "username"}
-          </p>
-        </div>
-
         <CardEditorFields
           form={form}
           onFormChange={updateForm}
@@ -326,7 +310,9 @@ function MyCardEditor() {
             setExtras((prev) => ({ ...prev, ...patch }));
             setSaved(false);
           }}
-          showUsername={!cardId}
+          showUsername
+          // Locked once saved: the handle is the card's printed address.
+          lockUsername={Boolean(cardId)}
         />
 
         <button

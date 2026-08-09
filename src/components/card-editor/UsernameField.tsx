@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Loader2, Lock, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { USERNAME_PATTERN } from "@/lib/card-draft";
 
@@ -23,12 +23,21 @@ export default function UsernameField({
   value,
   onChange,
   className,
+  locked = false,
 }: {
   value: string;
   onChange: (next: string) => void;
   className?: string;
+  /**
+   * Set once the handle has been saved. It is the card's public address —
+   * printed on NFC cards, saved into contacts, shared as a link — so changing
+   * it breaks every card already handed out and frees the old handle for
+   * someone else to claim. Enforced by a trigger too; this is the explanation.
+   */
+  locked?: boolean;
 }) {
   const [availability, setAvailability] = useState<Availability>("unknown");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const handle = value.trim().toLowerCase();
   const malformed = handle.length > 0 && !USERNAME_PATTERN.test(handle);
@@ -42,7 +51,10 @@ export default function UsernameField({
       : { kind: availability === "unknown" ? "idle" : availability };
 
   useEffect(() => {
-    if (!handle || malformed) return;
+    if (locked || !handle || malformed) {
+      setSuggestions([]);
+      return;
+    }
 
     let cancelled = false;
     // Marked as checking from inside the timer rather than synchronously, so
@@ -58,8 +70,30 @@ export default function UsernameField({
       if (cancelled) return;
       // A failed check must not claim the name is taken — saving will still
       // catch a genuine clash, and a false "taken" blocks a valid handle.
-      if (error) setAvailability("unknown");
-      else setAvailability(data ? "free" : "taken");
+      if (error) {
+        setAvailability("unknown");
+        return;
+      }
+      setAvailability(data ? "free" : "taken");
+
+      // "Taken — try another" leaves the work to the person who is already
+      // stuck. Offer names that are actually free instead: candidates are
+      // checked before being shown, so tapping one always succeeds.
+      if (data) {
+        setSuggestions([]);
+        return;
+      }
+      const checked = await Promise.all(
+        candidatesFor(handle).map(async (candidate) => {
+          const { data: free } = await createClient().rpc("username_available", {
+            candidate,
+          });
+          return free ? candidate : null;
+        })
+      );
+      if (!cancelled) {
+        setSuggestions(checked.filter((c): c is string => c !== null).slice(0, 3));
+      }
     }, 450);
 
     return () => {
@@ -67,7 +101,7 @@ export default function UsernameField({
       window.clearTimeout(mark);
       window.clearTimeout(timer);
     };
-  }, [handle, malformed]);
+  }, [handle, malformed, locked]);
 
   const border =
     state.kind === "taken" || state.kind === "invalid"
@@ -75,6 +109,23 @@ export default function UsernameField({
       : state.kind === "free"
         ? "border-emerald-400 focus:border-emerald-500"
         : "";
+
+  if (locked) {
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 rounded-xl border-2 border-white/15 bg-white/[0.04] px-3.5 py-2.5">
+          <Lock className="h-4 w-4 shrink-0 text-white/40" />
+          <span className="min-w-0 flex-1 truncate text-sm font-semibold text-white">
+            /u/{handle}
+          </span>
+        </div>
+        <p className="text-xs text-white/45">
+          Your card address is permanent — it is printed on your NFC card and
+          saved in the contacts of everyone you have tapped.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-2">
@@ -93,32 +144,65 @@ export default function UsernameField({
         />
         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
           {state.kind === "checking" && (
-            <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
+            <Loader2 className="h-4 w-4 animate-spin text-white/40" />
           )}
-          {state.kind === "free" && <Check className="h-4 w-4 text-emerald-500" />}
+          {state.kind === "free" && <Check className="h-4 w-4 text-emerald-400" />}
           {(state.kind === "taken" || state.kind === "invalid") && (
-            <X className="h-4 w-4 text-rose-500" />
+            <X className="h-4 w-4 text-rose-300" />
           )}
         </span>
       </div>
 
       <p id="username-status" className="text-xs">
         {state.kind === "taken" ? (
-          <span className="font-semibold text-rose-500">
-            “{handle}” is already taken — try another.
+          <span className="font-semibold text-rose-300">
+            “{handle}” is already taken.
           </span>
         ) : state.kind === "invalid" ? (
-          <span className="font-semibold text-rose-500">{state.message}</span>
+          <span className="font-semibold text-rose-300">{state.message}</span>
         ) : state.kind === "free" ? (
-          <span className="font-semibold text-emerald-600">
+          <span className="font-semibold text-emerald-300">
             Available. Your card will live at /u/{handle}
           </span>
         ) : (
-          <span className="text-slate-500">
+          <span className="text-white/45">
             Your card will live at /u/{handle || "username"}
           </span>
         )}
       </p>
+
+      {state.kind === "taken" && suggestions.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-xs text-white/45">Available:</span>
+          {suggestions.map((suggestion) => (
+            <button
+              key={suggestion}
+              type="button"
+              onClick={() => onChange(suggestion)}
+              className="rounded-full border border-emerald-400/50 bg-emerald-400/10 px-2.5 py-1 text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-400/20"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
+}
+
+/**
+ * Alternatives to offer when a handle is gone. Kept close to what was typed —
+ * someone who wanted "ghulam" will take "ghulammustafa" or "ghulam1", but a
+ * randomly generated string is just a different problem.
+ */
+function candidatesFor(handle: string): string[] {
+  const base = handle.slice(0, 26);
+  const year = new Date().getFullYear();
+  return [
+    `${base}1`,
+    `the${base}`,
+    `${base}_official`,
+    `${base}${year % 100}`,
+    `${base}pk`,
+  ].filter((c) => USERNAME_PATTERN.test(c));
 }

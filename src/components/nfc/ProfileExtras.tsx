@@ -39,7 +39,7 @@ function PaymentRow({ method, accent }: { method: PaymentMethod; accent: string 
   ].filter(Boolean) as { k: string; v: string }[];
 
   return (
-    <div className="rounded-xl border border-black/10 bg-white p-3.5">
+    <div className="rounded-xl border p-3.5" style={{ borderColor: "var(--x-line)", background: "var(--x-panel)" }}>
       <p className="text-sm font-black" style={{ color: accent }}>
         {method.label || method.kind}
       </p>
@@ -48,7 +48,7 @@ function PaymentRow({ method, accent }: { method: PaymentMethod; accent: string 
           <CopyRow key={r.k} label={r.k} value={r.v} accent={accent} />
         ))}
       </div>
-      <p className="mt-1.5 px-0.5 text-[10px] font-semibold text-black/25">
+      <p className="mt-1.5 px-0.5 text-[10px] font-semibold" style={{ color: "var(--x-faint)" }}>
         Tap any line to copy it.
       </p>
     </div>
@@ -75,8 +75,21 @@ export function hasProfileExtras(card: CardProfile): boolean {
   );
 }
 
-export default function ProfileExtras({ card }: { card: CardProfile }) {
+export default function ProfileExtras({
+  card,
+  tone = "#ffffff",
+}: {
+  card: CardProfile;
+  /**
+   * The colour the card above ends on. The extras used to be a fixed white
+   * slab, which on a dark template met it as a hard seam halfway down the
+   * page — and left the QR trigger, styled for the dark card, invisible once
+   * it crossed onto the white.
+   */
+  tone?: string;
+}) {
   const accent = card.accent_color || "#111111";
+  const dark = isDark(tone);
 
   const hours = (Array.isArray(card.business_hours) ? card.business_hours : []).filter(
     (h: BusinessHour) => h?.day?.trim() && h?.hours?.trim()
@@ -92,15 +105,27 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
   if (nothingToShow) return null;
 
   return (
-    <section className="bg-white pb-20 pt-2 text-[#111]">
+    <section
+      className="card-extras pb-20 pt-2"
+      style={
+        {
+          background: tone,
+          color: dark ? "#F5F5F5" : "#111111",
+          "--x-panel": dark ? "rgba(255,255,255,0.055)" : "#ffffff",
+          "--x-line": dark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.10)",
+          "--x-muted": dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)",
+          "--x-faint": dark ? "rgba(255,255,255,0.28)" : "rgba(0,0,0,0.28)",
+        } as React.CSSProperties
+      }
+    >
       <div className="mx-auto w-full max-w-sm space-y-5 px-5">
         {video && (
           <div>
-            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-black/35">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] [color:var(--x-muted)]">
               <PlayCircle className="h-3.5 w-3.5" />
               watch
             </p>
-            <div className="overflow-hidden rounded-2xl border border-black/10 bg-black">
+            <div className="overflow-hidden rounded-2xl border [border-color:var(--x-line)] bg-black">
               <iframe
                 src={video}
                 title="Video"
@@ -115,18 +140,18 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
 
         {hours.length > 0 && (
           <div>
-            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-black/35">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.2em] [color:var(--x-muted)]">
               <Clock className="h-3.5 w-3.5" />
               hours
             </p>
-            <div className="rounded-2xl border border-black/10 bg-white">
+            <div className="rounded-2xl border [border-color:var(--x-line)] [background:var(--x-panel)]">
               {hours.map((h, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between border-b border-black/5 px-4 py-2.5 last:border-0"
+                  className="flex items-center justify-between border-b [border-color:var(--x-line)] px-4 py-2.5 last:border-0"
                 >
                   <span className="text-sm font-bold">{h.day}</span>
-                  <span className="text-sm font-semibold text-black/55">{h.hours}</span>
+                  <span className="text-sm font-semibold [color:var(--x-muted)]">{h.hours}</span>
                 </div>
               ))}
             </div>
@@ -144,7 +169,7 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
                 hairline panel it read as a disabled block rather than the
                 tappable thing it is. */}
             <summary style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
-              className="flex cursor-pointer list-none items-center gap-3 rounded-2xl border-2 border-ink bg-white px-4 py-3 [&::-webkit-details-marker]:hidden group-open:rounded-b-none">
+              className="flex cursor-pointer list-none items-center gap-3 rounded-2xl border-2 border-ink [background:var(--x-panel)] px-4 py-3 [&::-webkit-details-marker]:hidden group-open:rounded-b-none">
               <span
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-ink"
                 style={{ background: accent, color: readableOn(accent) }}
@@ -156,25 +181,25 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
                 <span className="block text-[15px] font-black leading-tight">
                   Pay {card.full_name.split(" ")[0]}
                 </span>
-                <span className="mt-0.5 block text-[11px] font-semibold leading-tight text-black/45">
+                <span className="mt-0.5 block text-[11px] font-semibold leading-tight [color:var(--x-muted)]">
                   {methods.length === 1
                     ? "Tap to see bank details"
                     : `Tap to see ${methods.length} payment options`}
                 </span>
               </span>
 
-              <ChevronDown className="h-4 w-4 shrink-0 text-black/40 transition-transform group-open:rotate-180" />
+              <ChevronDown className="h-4 w-4 shrink-0 [color:var(--x-muted)] transition-transform group-open:rotate-180" />
             </summary>
 
             <div style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
-              className="space-y-2.5 rounded-b-2xl border-2 border-t-0 border-ink bg-white px-4 pb-4 pt-4">
+              className="space-y-2.5 rounded-b-2xl border-2 border-t-0 border-ink [background:var(--x-panel)] px-4 pb-4 pt-4">
               {methods.map((m, i) => (
                 <PaymentRow key={i} method={m} accent={accent} />
               ))}
 
               {/* Anyone can screenshot a public page and reuse the branding with
                   their own number. Saying so costs nothing and prevents real loss. */}
-              <p className="text-[11px] font-semibold leading-relaxed text-black/40">
+              <p className="text-[11px] font-semibold leading-relaxed [color:var(--x-muted)]">
                 Always confirm these details directly with{" "}
                 {card.full_name.split(" ")[0]} before sending money.
               </p>
@@ -185,7 +210,7 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
         <SaveContact
           card={card}
           style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
-          className="flex h-[68px] items-center justify-center gap-2 rounded-2xl border-2 border-ink bg-white text-[15px] font-black"
+          className="flex h-[68px] items-center justify-center gap-2 rounded-2xl border-2 border-ink [background:var(--x-panel)] text-[15px] font-black"
         >
           <Download className="h-4 w-4" />
           Save to contacts
@@ -193,4 +218,15 @@ export default function ProfileExtras({ card }: { card: CardProfile }) {
       </div>
     </section>
   );
+}
+
+
+/** Duplicated rather than imported: this file is a client component and the
+ *  helper in lib/card pulls in server-only neighbours. */
+function isDark(hex: string): boolean {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return false;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b) < 0.4;
 }

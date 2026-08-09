@@ -93,6 +93,16 @@ export const TEMPLATE_TONE: Record<string, string> = {
   waitlist: "#08060F",
 };
 
+/**
+ * The colour a card actually ends on — the chosen ground if there is one, else
+ * the template's own. The extras section below the card used to be a fixed
+ * white, which met a dark template as a hard seam and swallowed the QR trigger
+ * that crosses onto it.
+ */
+export function extrasTone(card: CardProfile): string {
+  return card.surface_color?.trim() || TEMPLATE_TONE[card.template] || "#ffffff";
+}
+
 export type CardTemplateProps = {
   card: CardProfile;
   buttons: ResolvedButton[];
