@@ -32,14 +32,54 @@ export default async function CardArtwork({
 
   const finish = (card.nfc_finish as string | null) ?? null;
 
+  // The bucket is private, so a link only exists if we mint one. An hour is
+  // long enough to download and send to the printer, short enough that a URL
+  // pasted into a chat does not stay live.
+  const artworkPath = (card.nfc_artwork_path as string | null) ?? null;
+  const { data: signed } = artworkPath
+    ? await supabase.storage.from("nfc-artwork").createSignedUrl(artworkPath, 3600)
+    : { data: null };
+
+  const artworkPanel = signed?.signedUrl ? (
+    <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 print:hidden">
+          <div className="min-w-0">
+            <p className="text-sm font-black text-white">
+              This customer supplied their own artwork
+            </p>
+            <p className="mt-1 truncate text-sm font-semibold text-white/50">
+              {(card.nfc_artwork_name as string | null) ?? artworkPath}
+            </p>
+            <p className="mt-1 text-xs font-semibold text-white/35">
+              Print this file. The sheet below is only the fallback finish they
+              picked, in case there is a problem with it.
+            </p>
+          </div>
+          <a
+            href={signed.signedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 text-sm font-black uppercase tracking-tight text-ink"
+          >
+            Download artwork
+          </a>
+    </div>
+  ) : null;
+
+  // A file with no finish chosen is still printable — the file is the design.
+  // Returning early on a missing finish would have hidden it completely.
   if (!finish) {
     return (
-      <div className="space-y-3">
-        <h1 className="app-h1">Artwork — @{card.username}</h1>
-        <p className="app-sub">
-          This customer has not chosen a card design yet. They are asked when
-          they publish; until they answer there is nothing to print.
-        </p>
+      <div className="space-y-5">
+        {artworkPanel}
+        {!artworkPanel && (
+          <>
+            <h1 className="app-h1">Artwork — @{card.username}</h1>
+            <p className="app-sub">
+              This customer has not chosen a card design yet. They are asked
+              when they publish; until they answer there is nothing to print.
+            </p>
+          </>
+        )}
         <Link href="/admin/cards" className="app-pill inline-flex">
           Back to cards
         </Link>
@@ -48,10 +88,13 @@ export default async function CardArtwork({
   }
 
   return (
-    <ArtworkSheet
-      card={card as CardProfile}
-      finish={finish}
-      fields={(card.nfc_fields as CardFields | null) ?? null}
-    />
+    <div className="space-y-5">
+      {artworkPanel}
+      <ArtworkSheet
+        card={card as CardProfile}
+        finish={finish}
+        fields={(card.nfc_fields as CardFields | null) ?? null}
+      />
+    </div>
   );
 }

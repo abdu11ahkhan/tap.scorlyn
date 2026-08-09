@@ -53,16 +53,16 @@ export default function NfcChooser({
               <p className="shrink-0 text-xl font-black text-acid">{money(blank.price_pkr)}</p>
             </div>
             <p className="mt-1.5 text-sm font-semibold text-white/50">
-              A plain, unprinted card. Your link lives on the chip inside, so
-              a tap opens your page — nothing on the front at all.
+              A completely blank card. Your link lives on the chip inside, so
+              a tap opens your page — nothing is printed on either face.
             </p>
 
             <div className="mt-5 flex justify-center rounded-xl bg-black/30 p-5">
-              <BlankCardArt profileUrl={profileUrl} width={300} />
+              <BlankCardArt width={300} />
             </div>
 
             <ul className="mt-5 space-y-2 text-sm font-semibold text-white/60">
-              {["Tap opens your page", "QR on the back for phones that won't tap", "Posted anywhere in Pakistan"].map(
+              {["Tap opens your page", "Nothing printed — blank on both faces", "Posted anywhere in Pakistan"].map(
                 (line) => (
                   <li key={line} className="flex gap-2">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-acid" />

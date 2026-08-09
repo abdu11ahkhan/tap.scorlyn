@@ -22,6 +22,8 @@ type CardRow = {
   /** The physical card they chose at publish, if they have. */
   nfc_finish: string | null;
   nfc_chosen_at: string | null;
+  /** Set when they sent us their own print file. */
+  nfc_artwork_path: string | null;
 };
 
 export default async function AdminCards({
@@ -38,7 +40,7 @@ export default async function AdminCards({
   let query = supabase
     .from("card_profiles")
     .select(
-      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at",
+      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path",
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
@@ -140,7 +142,7 @@ export default async function AdminCards({
                         className="inline-flex items-center gap-1.5 rounded-full border-2 border-acid/40 px-3 py-1.5 text-xs font-black text-acid transition-colors hover:bg-acid/10"
                       >
                         <Printer className="h-3.5 w-3.5" />
-                        {card.nfc_finish}
+                        {card.nfc_artwork_path ? "own file" : card.nfc_finish}
                       </Link>
                     ) : (
                       <span className="text-xs font-semibold text-white/25">

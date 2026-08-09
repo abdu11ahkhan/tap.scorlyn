@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, FileUp, Loader2, Trash2, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import NfcCardArt, {
   CARD_FINISHES,
@@ -34,6 +34,9 @@ export default function NfcFormatPrompt({
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** A design the customer supplied themselves, instead of one of ours. */
+  const [ownFile, setOwnFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const profileUrl =
     typeof window === "undefined"
@@ -43,12 +46,43 @@ export default function NfcFormatPrompt({
   const save = async () => {
     setSaving(true);
     setError(null);
-    const { error: saveError } = await createClient()
+    const supabase = createClient();
+
+    let artwork: { nfc_artwork_path: string; nfc_artwork_name: string } | null = null;
+    if (ownFile) {
+      setUploading(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setUploading(false);
+        setSaving(false);
+        setError("Your session expired — sign in again and retry.");
+        return;
+      }
+      // <user_id>/... is what the storage policies key off; any other shape
+      // is rejected rather than silently landing somewhere unreadable.
+      const safe = ownFile.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80);
+      const path = `${user.id}/${Date.now()}-${safe}`;
+      const { error: upErr } = await supabase.storage
+        .from("nfc-artwork")
+        .upload(path, ownFile, { upsert: false });
+      setUploading(false);
+      if (upErr) {
+        setSaving(false);
+        setError(`Could not upload that file: ${upErr.message}`);
+        return;
+      }
+      artwork = { nfc_artwork_path: path, nfc_artwork_name: ownFile.name };
+    }
+
+    const { error: saveError } = await supabase
       .from("card_profiles")
       .update({
         nfc_finish: picked,
         nfc_fields: DEFAULT_CARD_FIELDS,
         nfc_chosen_at: new Date().toISOString(),
+        ...(artwork ?? {}),
       })
       .eq("id", cardId);
 
@@ -85,7 +119,67 @@ export default function NfcFormatPrompt({
           </button>
         </div>
 
-        <div className="grid flex-1 gap-3 overflow-y-auto p-5 sm:grid-cols-2 sm:p-6">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6">
+          {/* Own artwork first: someone who already has a design should not
+              have to scroll fifteen of ours to find out we accept it. */}
+          <div className="mb-5 rounded-2xl border-2 border-dashed border-white/15 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-black text-white">
+                  Have your own design?
+                </p>
+                <p className="mt-0.5 text-xs font-semibold text-white/45">
+                  Send us a print-ready file — PDF, PNG, JPG or SVG, up to
+                  20&nbsp;MB. We print that instead.
+                </p>
+              </div>
+              {ownFile ? (
+                <div className="flex items-center gap-2">
+                  <span className="max-w-[14rem] truncate rounded-full bg-acid/15 px-3 py-1.5 text-xs font-bold text-acid">
+                    {ownFile.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setOwnFile(null)}
+                    aria-label="Remove file"
+                    className="rounded-full p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid">
+                  <FileUp className="h-4 w-4" />
+                  Upload file
+                  <input
+                    type="file"
+                    accept=".pdf,.png,.jpg,.jpeg,.svg,image/*,application/pdf"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      // Checked here as well as in the bucket: a 40MB file
+                      // otherwise uploads for a minute before being refused.
+                      if (file.size > 20 * 1024 * 1024) {
+                        setError("That file is over 20 MB — send a smaller one.");
+                        return;
+                      }
+                      setError(null);
+                      setOwnFile(file);
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+            {ownFile && (
+              <p className="mt-3 text-xs font-semibold text-white/45">
+                We will print your file. Still pick a finish below — it is what
+                we fall back to if there is a problem with the artwork.
+              </p>
+            )}
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
           {CARD_FINISHES.map((f) => {
             const active = picked === f.id;
             return (
@@ -124,6 +218,7 @@ export default function NfcFormatPrompt({
               </button>
             );
           })}
+          </div>
         </div>
 
         {error && (
@@ -147,7 +242,7 @@ export default function NfcFormatPrompt({
             className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid px-7 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
           >
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-            Save my card design
+            {uploading ? "Uploading…" : "Save my card design"}
           </button>
         </div>
       </div>
