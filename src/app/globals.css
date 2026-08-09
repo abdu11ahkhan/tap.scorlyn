@@ -748,3 +748,25 @@ textarea.app-input {
 .card-template .truncate {
   overflow-wrap: normal;
 }
+
+/* Profile photo, Instagram-style.
+   A circle reads as "this is a person" the way a rounded square does not, and
+   it is the shape everyone already recognises from every other profile they
+   have. Templates set their own radius — square, squircle, whatever suited the
+   layout — so this overrides all of them in one place rather than editing
+   twenty-two files.
+
+   The photo inside is cropped to fill: an off-square portrait would otherwise
+   letterbox inside the circle and sit off-centre. */
+.card-template .card-avatar {
+  border-radius: 9999px !important;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+}
+
+.card-template .card-avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}

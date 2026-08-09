@@ -40,7 +40,7 @@ export default function StackCard({
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-black/50 transition-colors hover:bg-black/5 hover:text-black"
+              className="card-avatar shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-black/50 transition-colors hover:bg-black/5 hover:text-black"
             >
               {section.label}
             </a>
@@ -52,7 +52,7 @@ export default function StackCard({
         {/* Hero */}
         <section id="top" className="scroll-mt-16 py-14 text-center">
           <div
-            className="card-rise mx-auto flex h-36 w-36 items-center justify-center overflow-hidden rounded-3xl"
+            className="card-avatar card-rise mx-auto flex h-36 w-36 items-center justify-center overflow-hidden rounded-3xl"
             style={{ background: `${accent}1F`, color: ink, ["--d" as string]: "0ms" }}
           >
             {card.avatar_url ? (

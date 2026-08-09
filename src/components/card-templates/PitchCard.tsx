@@ -96,11 +96,11 @@ export default function PitchCard({
               <img
                 src={card.avatar_url}
                 alt={card.full_name}
-                className="h-16 w-16 rounded-full border-2 border-white/20 object-cover"
+                className="card-avatar h-16 w-16 rounded-full border-2 border-white/20 object-cover"
               />
             ) : (
               <span
-                className="flex h-16 w-16 items-center justify-center rounded-full text-[11px] font-black"
+                className="card-avatar flex h-16 w-16 items-center justify-center rounded-full text-[11px] font-black"
                 style={{ background: accent, color: onAccent }}
               >
                 {initialsOf(card.full_name)}

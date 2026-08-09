@@ -43,7 +43,7 @@ export default function GridCard({
           style={{ ["--d" as string]: "0ms" }}
         >
           <div
-            className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full"
+            className="card-avatar flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full"
             style={{ background: `${accent}1F`, color: ink }}
           >
             {card.avatar_url ? (
