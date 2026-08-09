@@ -53,6 +53,8 @@ function MyCardEditor() {
 
   // Set when arriving from the public editor via Publish.
   const fromDraft = searchParams.get("from") === "draft";
+  /** Which of their cards to edit. Absent means their first. */
+  const requestedCardId = searchParams.get("id");
 
   const [form, setForm] = useState<CardForm>(EMPTY_CARD_FORM);
   const [buttons, setButtons] = useState<CardButton[]>([]);
@@ -78,11 +80,13 @@ function MyCardEditor() {
         return;
       }
 
-      const { data } = await supabase
-        .from("card_profiles")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      // RLS scopes this to their own cards, so an id from the URL cannot
+      // reach anyone else's — but it is still filtered by user_id so a wrong
+      // id returns nothing rather than the first card of someone else's.
+      const base = supabase.from("card_profiles").select("*").eq("user_id", user.id);
+      const { data } = requestedCardId
+        ? await base.eq("id", requestedCardId).maybeSingle()
+        : await base.order("created_at", { ascending: true }).limit(1).maybeSingle();
 
       const saved: CardForm | null = data
         ? {
@@ -139,7 +143,7 @@ function MyCardEditor() {
 
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [requestedCardId]);
 
   const updateForm = (patch: Partial<CardForm>) => {
     setForm((prev) => ({ ...prev, ...patch }));

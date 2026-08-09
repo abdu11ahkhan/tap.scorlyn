@@ -14,6 +14,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { readStorage, writeStorage } from "@/lib/safe-storage";
 import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
+import CardList, { type CardSummary } from "@/components/dashboard/CardList";
 import type { CardProfile } from "@/lib/card";
 
 /** Dismissal of the "choose your printed card" banner. */
@@ -30,6 +31,8 @@ type CardRow = CardProfile & {
 export default function DashboardPage() {
   const [name, setName] = useState("there");
   const [card, setCard] = useState<CardRow | null>(null);
+  /** Every card they own — the dashboard used to assume exactly one. */
+  const [cards, setCards] = useState<CardSummary[]>([]);
   const [taps, setTaps] = useState(0);
   const [nfcCount, setNfcCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -64,8 +67,7 @@ export default function DashboardPage() {
           .from("card_profiles")
           .select("*")
           .eq("user_id", user.id)
-          .maybeSingle()
-          .then((r) => ({ data: r.data ? [r.data] : [] })),
+          .order("created_at", { ascending: true }),
         supabase.from("card_taps").select("id", { count: "exact", head: true }),
         supabase
           .from("nfc_cards")
@@ -73,7 +75,8 @@ export default function DashboardPage() {
           .eq("user_id", user.id),
       ]);
 
-      setCard(cards[0] ?? null);
+      setCard(cards?.[0] ?? null);
+      setCards((cards ?? []) as CardSummary[]);
       setTaps(tapCount ?? 0);
       setNfcCount(cardCount ?? 0);
       setLoading(false);
@@ -148,7 +151,13 @@ export default function DashboardPage() {
             </motion.div>
           )}
 
-          {/* The card itself */}
+          {/* Always: this is also where "new card" lives, so gating it on
+              already having two made a second card impossible to create. */}
+          <CardList cards={cards} />
+
+          {/* The card itself — only when there is exactly one, otherwise the
+              list above already says everything this does. */}
+          {cards.length <= 1 && (
           <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-5">
             <div className="flex items-center gap-4">
               <span
@@ -184,6 +193,7 @@ export default function DashboardPage() {
               </Link>
             </div>
           </div>
+          )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {stats.map((s) => {

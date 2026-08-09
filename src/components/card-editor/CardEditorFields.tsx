@@ -51,6 +51,7 @@ export default function CardEditorFields({
   onExtrasChange,
   showUsername = true,
   lockUsername = false,
+  ownHandle,
 }: {
   form: CardForm;
   onFormChange: (patch: Partial<CardForm>) => void;
@@ -62,6 +63,7 @@ export default function CardEditorFields({
   onExtrasChange: (patch: Partial<ExtrasState>) => void;
   showUsername?: boolean;
   lockUsername?: boolean;
+  ownHandle?: string;
 }) {
   // Shown on the collapsed section headers so it's obvious what's already
   // filled in without opening each one.
@@ -276,6 +278,7 @@ export default function CardEditorFields({
               onChange={(username) => onFormChange({ username })}
               className={FIELD}
               locked={lockUsername}
+              ownHandle={ownHandle}
             />
           </div>
         )}

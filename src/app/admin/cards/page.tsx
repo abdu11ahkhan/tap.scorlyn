@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { ExternalLink, Pencil, Printer, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import ActionButton from "../ActionButton";
 import ConfirmByName from "../ConfirmByName";
-import { deleteCard } from "../actions";
+import { deleteCard, setCardApproval } from "../actions";
 import { CARD_TEMPLATES } from "@/lib/card";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,8 @@ type CardRow = {
   nfc_chosen_at: string | null;
   /** Set when they sent us their own print file. */
   nfc_artwork_path: string | null;
+  approval_status: string;
+  approval_fee_pkr: number | null;
 };
 
 export default async function AdminCards({
@@ -40,7 +43,7 @@ export default async function AdminCards({
   let query = supabase
     .from("card_profiles")
     .select(
-      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path",
+      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path, approval_status, approval_fee_pkr",
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
@@ -109,6 +112,7 @@ export default async function AdminCards({
                 <th>Card</th>
                 <th>Template</th>
                 <th>NFC card</th>
+                <th>Approval</th>
                 <th>Status</th>
                 <th>Created</th>
                 <th />
@@ -152,6 +156,33 @@ export default async function AdminCards({
                   </td>
                   <td data-label="Template" className="text-sm font-bold lowercase text-white/70">
                     {templateName(card.template)}
+                  </td>
+                  <td data-label="Approval" className="text-sm">
+                    {card.approval_status === "approved" ? (
+                      <span className="text-xs font-bold text-white/35">approved</span>
+                    ) : (
+                      <div className="flex flex-col items-start gap-1.5">
+                        <span className="rounded-full bg-amber-400/15 px-2.5 py-1 text-[11px] font-black uppercase text-amber-300">
+                          {card.approval_status === "awaiting_payment"
+                            ? `Rs.${card.approval_fee_pkr ?? 500} unpaid`
+                            : card.approval_status === "awaiting_review"
+                              ? "check payment"
+                              : "rejected"}
+                        </span>
+                        {/* The only route from built to live: the trigger
+                            stops the customer publishing it themselves. */}
+                        <ActionButton
+                          action={async () => {
+                            "use server";
+                            return setCardApproval(card.id, "approved");
+                          }}
+                          variant="acid"
+                          confirm="Approve this card so the customer can publish it?"
+                        >
+                          approve
+                        </ActionButton>
+                      </div>
+                    )}
                   </td>
                   <td data-label="Status">
                     {/* Suspension outranks published: a suspended owner's card

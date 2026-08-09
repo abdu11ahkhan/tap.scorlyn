@@ -24,6 +24,7 @@ export default function UsernameField({
   onChange,
   className,
   locked = false,
+  ownHandle,
 }: {
   value: string;
   onChange: (next: string) => void;
@@ -35,6 +36,13 @@ export default function UsernameField({
    * someone else to claim. Enforced by a trigger too; this is the explanation.
    */
   locked?: boolean;
+  /**
+   * The handle this card already holds. The availability lookup hides your own
+   * cards from you, but only yours — an admin editing someone else's card was
+   * told that customer's own handle was taken, because to the database the
+   * admin is a different user.
+   */
+  ownHandle?: string;
 }) {
   const [availability, setAvailability] = useState<Availability>("unknown");
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -50,7 +58,16 @@ export default function UsernameField({
       ? { kind: "idle" }
       : { kind: availability === "unknown" ? "idle" : availability };
 
+  const isOwnHandle =
+    !!ownHandle && handle === ownHandle.trim().toLowerCase();
+
   useEffect(() => {
+    // Keeping the handle you already have is not a clash.
+    if (isOwnHandle) {
+      setAvailability("free");
+      setSuggestions([]);
+      return;
+    }
     if (locked || !handle || malformed) {
       setSuggestions([]);
       return;
@@ -101,7 +118,7 @@ export default function UsernameField({
       window.clearTimeout(mark);
       window.clearTimeout(timer);
     };
-  }, [handle, malformed, locked]);
+  }, [handle, malformed, locked, isOwnHandle]);
 
   const border =
     state.kind === "taken" || state.kind === "invalid"
@@ -162,7 +179,9 @@ export default function UsernameField({
           <span className="font-semibold text-rose-300">{state.message}</span>
         ) : state.kind === "free" ? (
           <span className="font-semibold text-emerald-300">
-            Available. Your card will live at /u/{handle}
+            {isOwnHandle
+              ? `This card already lives at /u/${handle}`
+              : `Available. Your card will live at /u/${handle}`}
           </span>
         ) : (
           <span className="text-white/45">

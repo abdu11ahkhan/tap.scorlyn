@@ -144,6 +144,7 @@ export default function AdminCardEditor({
         // Admin is exactly who should be able to fix a handle — the lock is
         // there to stop a customer breaking cards already handed out.
         lockUsername={false}
+        ownHandle={username}
       />
 
       <div className="sticky bottom-4 flex items-center gap-3">

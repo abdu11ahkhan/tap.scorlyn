@@ -654,6 +654,42 @@ export async function deleteAccount(userId: string, reason?: string): Promise<Re
  * down without closing the person's account, and unpublishing only hides it
  * while holding the handle. This frees the handle too.
  */
+/**
+ * Releases a paid second card, or refuses it.
+ *
+ * The customer builds the card and pays; nothing they can do puts it live.
+ * The trigger enforces that, so this is the only route from built to live.
+ */
+export async function setCardApproval(
+  cardId: string,
+  status: "approved" | "awaiting_payment" | "awaiting_review" | "rejected",
+  note?: string
+): Promise<Result> {
+  try {
+    const { supabase, user } = await assertAdmin();
+
+    const { data: updated, error } = await supabase
+      .from("card_profiles")
+      .update({
+        approval_status: status,
+        approval_note: note?.trim() || null,
+        approved_at: status === "approved" ? new Date().toISOString() : null,
+        approved_by: status === "approved" ? user.id : null,
+      })
+      .eq("id", cardId)
+      // RLS refuses by matching nothing rather than erroring, so a blocked
+      // approval would otherwise report success and stay unpublishable.
+      .select("id");
+    if (error) throw new Error(error.message);
+    if (!updated?.length) throw new Error("That card could not be updated.");
+
+    revalidatePath("/admin/cards");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 /** The finishes NfcCardArt can render. Mirrors the CHECK on the column. */
 const NFC_FINISHES = [
   "minimal", "bold", "gradient", "midnight", "sticker", "split", "frame",
