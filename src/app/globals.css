@@ -724,3 +724,27 @@ textarea.app-input {
   background-color: transparent !important;
   background-image: none !important;
 }
+
+/* Long unbroken names.
+   A handle like "zainulabideen" is one word with nothing to wrap at, so it
+   runs straight out of whatever box it is in — 26 of the 36 templates had no
+   protection. Done here rather than in each of them: it is the same rule
+   everywhere, and a per-template fix is 26 chances to miss one.
+
+   `anywhere` rather than `break-word`: break-word refuses to break a word that
+   is alone on its line, which is exactly the case here. Applied to the text
+   elements only, so flex and grid tracks are untouched. */
+.card-template h1,
+.card-template h2,
+.card-template h3,
+.card-template p,
+.card-template span,
+.card-template a {
+  overflow-wrap: anywhere;
+}
+
+/* Truncation is a deliberate choice where a template uses it, and it must
+   still win — `truncate` sets its own overflow-wrap expectations. */
+.card-template .truncate {
+  overflow-wrap: normal;
+}

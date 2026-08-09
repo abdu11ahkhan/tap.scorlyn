@@ -19,6 +19,7 @@ import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
 import ImagePicker from "./ImagePicker";
 import UsernameField from "./UsernameField";
+import { detectKind } from "@/lib/detect-link";
 import { TEMPLATE_TONE } from "@/components/card-templates";
 import PaymentFields from "./PaymentFields";
 import EditorSection from "./EditorSection";
@@ -70,6 +71,35 @@ export default function CardEditorFields({
 
   const updateButton = (index: number, patch: Partial<CardButton>) => {
     onButtonsChange(buttons.map((b, i) => (i === index ? { ...b, ...patch } : b)));
+  };
+
+  /**
+   * Sets a button's value and works out what it is.
+   *
+   * Pasting a link left the kind on "Link", which decides the icon and the
+   * default label — so a card ended up with six identical grey "Link" rows
+   * because nobody went back to set each one.
+   *
+   * Only ever moves a button *off* the generic kind, and only while its label
+   * is still empty or the previous kind's default. Someone who picked a kind
+   * or typed their own label has said what they want, and a paste should not
+   * argue with them.
+   */
+  const updateButtonValue = (index: number, value: string) => {
+    const button = buttons[index];
+    const detected = detectKind(value);
+
+    const patch: Partial<CardButton> = { value };
+
+    const untouched =
+      !button.label.trim() || button.label.trim() === KIND_LABELS[button.kind];
+
+    if (detected && detected !== button.kind && button.kind === "link" && untouched) {
+      patch.kind = detected;
+      patch.label = KIND_LABELS[detected];
+    }
+
+    updateButton(index, patch);
   };
 
   const moveButton = (index: number, direction: -1 | 1) => {
@@ -520,7 +550,7 @@ export default function CardEditorFields({
 
               <Input
                 value={button.value}
-                onChange={(e) => updateButton(index, { value: e.target.value })}
+                onChange={(e) => updateButtonValue(index, e.target.value)}
                 placeholder={KIND_PLACEHOLDERS[button.kind]}
                 className={`${FIELD} flex-1`}
               />

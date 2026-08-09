@@ -152,9 +152,15 @@ export function renderCardTemplate(props: CardTemplateProps) {
   const wantsQr = card.show_qr !== false;
   const surface = card.surface_color?.trim() || null;
 
-  if (!needsBand && !card.logo_url && !wantsQr && !surface) {
-    return <Template {...props} />;
-  }
+  // Always wrapped now: the wrapper carries the class that stops long unbroken
+  // names running out of their box, which every template needs.
+  const body = (
+    <div className="card-template contents">
+      <Template {...props} />
+    </div>
+  );
+
+  if (!needsBand && !card.logo_url && !wantsQr && !surface) return body;
 
   return (
     <>
@@ -178,13 +184,13 @@ export function renderCardTemplate(props: CardTemplateProps) {
           fades into it too, otherwise the seam comes back. */}
       {surface ? (
         <div
-          className="card-surface"
+          className="card-surface card-template"
           style={{ ["--card-surface" as string]: surface }}
         >
           <Template {...props} />
         </div>
       ) : (
-        <Template {...props} />
+        body
       )}
     </>
   );
