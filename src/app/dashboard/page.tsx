@@ -12,14 +12,19 @@ import {
   SmartphoneNfc,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { readStorage, writeStorage } from "@/lib/safe-storage";
+import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
+import type { CardProfile } from "@/lib/card";
 
-type CardRow = {
-  username: string;
-  full_name: string;
-  headline: string | null;
-  template: string;
+/** Dismissal of the "choose your printed card" banner. */
+const NFC_BANNER_KEY = "scorlyntap_nfc_banner_dismissed";
+
+/** The whole row: the NFC picker below renders the real card art from it. */
+type CardRow = CardProfile & {
+  id: string;
+  /** Not on CardProfile: the templates never need to know. */
   published: boolean;
-  accent_color: string | null;
+  nfc_finish: string | null;
 };
 
 export default function DashboardPage() {
@@ -28,6 +33,16 @@ export default function DashboardPage() {
   const [taps, setTaps] = useState(0);
   const [nfcCount, setNfcCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  /** Open when they act on the banner, not on arrival — nobody wants a modal
+   *  thrown at them for something they did not ask for. */
+  const [choosing, setChoosing] = useState(false);
+  const [dismissed, setDismissed] = useState(true);
+
+  // Read after mount: localStorage does not exist during the server render,
+  // and defaulting to dismissed keeps the banner from flashing in and out.
+  useEffect(() => {
+    setDismissed(readStorage("local", NFC_BANNER_KEY) === "1");
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -47,7 +62,7 @@ export default function DashboardPage() {
       const [{ data: cards }, { count: tapCount }, { count: cardCount }] = await Promise.all([
         supabase
           .from("card_profiles")
-          .select("username, full_name, headline, template, published, accent_color")
+          .select("*")
           .eq("user_id", user.id)
           .maybeSingle()
           .then((r) => ({ data: r.data ? [r.data] : [] })),
@@ -92,6 +107,47 @@ export default function DashboardPage() {
         <div className="app-panel h-28 animate-pulse" />
       ) : card ? (
         <>
+          {/* Everyone who published before the design question existed never
+              got asked, so there is nothing on their profile to print. This
+              reaches them once, then gets out of the way. */}
+          {card.published && !card.nfc_finish && !dismissed && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 border-acid/40"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-black text-white">
+                  Pick the NFC card you want printed
+                </p>
+                <p className="mt-1 text-sm font-semibold text-white/45">
+                  Choose a design and we will keep it on your profile, ready
+                  whenever you order. Takes a few seconds.
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    writeStorage("local", NFC_BANNER_KEY, "1");
+                    setDismissed(true);
+                  }}
+                  className="text-sm font-bold text-white/45 transition-colors hover:text-white"
+                >
+                  Not now
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setChoosing(true)}
+                  className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 text-sm font-black uppercase tracking-tight text-ink"
+                >
+                  <SmartphoneNfc className="h-4 w-4" />
+                  Choose design
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {/* The card itself */}
           <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-5">
             <div className="flex items-center gap-4">
@@ -159,6 +215,16 @@ export default function DashboardPage() {
             Build my card
           </Link>
         </div>
+      )}
+      {choosing && card && (
+        <NfcFormatPrompt
+          card={card}
+          cardId={card.id}
+          onDone={(finish) => {
+            setChoosing(false);
+            if (finish) setCard({ ...card, nfc_finish: finish });
+          }}
+        />
       )}
     </div>
   );
