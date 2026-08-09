@@ -112,6 +112,40 @@ export const ACCENT_PRESETS = [
   { name: "Clay", value: "#B45309" },
 ] as const;
 
+/**
+ * Backgrounds a card can sit on, grouped by lightness.
+ *
+ * Split rather than one list because the templates hardcode their text
+ * colours: a dark template's white text is unreadable on a pale ground, and a
+ * light template's black text on a dark one. Staying within a family keeps
+ * every one of those colours correct without touching the templates.
+ */
+export const SURFACE_PRESETS: {
+  dark: { name: string; value: string }[];
+  light: { name: string; value: string }[];
+} = {
+  dark: [
+    { name: "Ink", value: "#0A0A0A" },
+    { name: "Charcoal", value: "#16181D" },
+    { name: "Navy", value: "#0B1220" },
+    { name: "Forest", value: "#0C1712" },
+    { name: "Plum", value: "#140B18" },
+    { name: "Espresso", value: "#17110C" },
+    { name: "Slate", value: "#12171C" },
+    { name: "Wine", value: "#1A0B10" },
+  ],
+  light: [
+    { name: "Paper", value: "#FFFFFF" },
+    { name: "Bone", value: "#F7F4ED" },
+    { name: "Mist", value: "#F1F4F7" },
+    { name: "Sand", value: "#F6F1E7" },
+    { name: "Blush", value: "#FBF1F1" },
+    { name: "Sage", value: "#EFF4EF" },
+    { name: "Sky", value: "#EEF3FA" },
+    { name: "Stone", value: "#F2F2F0" },
+  ],
+};
+
 export type CardButton = {
   label: string;
   kind: ButtonKind;
@@ -148,6 +182,8 @@ export type CardProfile = {
   logo_url: string | null;
   /** Offers the QR button on the public card. */
   show_qr: boolean;
+  /** Background chosen by the owner. Null keeps the template as designed. */
+  surface_color: string | null;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];

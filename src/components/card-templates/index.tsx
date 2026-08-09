@@ -150,15 +150,18 @@ export function renderCardTemplate(props: CardTemplateProps) {
   const tone = TEMPLATE_TONE[card.template] ?? "#ffffff";
 
   const wantsQr = card.show_qr !== false;
+  const surface = card.surface_color?.trim() || null;
 
-  if (!needsBand && !card.logo_url && !wantsQr) return <Template {...props} />;
+  if (!needsBand && !card.logo_url && !wantsQr && !surface) {
+    return <Template {...props} />;
+  }
 
   return (
     <>
       {needsBand && (
         <CoverBand
           src={card.cover_url as string}
-          tone={tone}
+          tone={surface ?? tone}
           />
       )}
       {/* Both are position:fixed, so where they sit in the DOM does not move
@@ -166,11 +169,23 @@ export function renderCardTemplate(props: CardTemplateProps) {
           collapses `min-h-screen` on `.card-has-extras > :last-child`, and
           appending anything after the template silently re-armed a full
           viewport of dead space above the extras. */}
-      {card.logo_url && <LogoMark src={card.logo_url} tone={tone} />}
+      {card.logo_url && <LogoMark src={card.logo_url} tone={surface ?? tone} />}
       {wantsQr && (
-        <CardQr card={card} tone={tone} accent={card.accent_color || "#111111"} />
+        <CardQr card={card} tone={surface ?? tone} accent={card.accent_color || "#111111"} />
       )}
-      <Template {...props} />
+      {/* The chosen ground goes behind the template rather than into it, so
+          none of the thirty-six needs to know about the feature. The band
+          fades into it too, otherwise the seam comes back. */}
+      {surface ? (
+        <div
+          className="card-surface"
+          style={{ ["--card-surface" as string]: surface }}
+        >
+          <Template {...props} />
+        </div>
+      ) : (
+        <Template {...props} />
+      )}
     </>
   );
 }

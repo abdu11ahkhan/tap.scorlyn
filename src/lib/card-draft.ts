@@ -13,6 +13,7 @@ export type CardForm = {
   cover_url: string;
   logo_url: string;
   show_qr: boolean;
+  surface_color: string;
   published: boolean;
   location: string;
   accent_color: string;
@@ -30,6 +31,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   cover_url: "",
   logo_url: "",
   show_qr: true,
+  surface_color: "",
   published: true,
   location: "",
   accent_color: "#111111",
@@ -101,6 +103,7 @@ export function draftToCardProfile(
     cover_url: form.cover_url || null,
     logo_url: form.logo_url || null,
     show_qr: form.show_qr !== false,
+    surface_color: form.surface_color || null,
     cover_mode: "cover",
     gallery,
     location: form.location || null,

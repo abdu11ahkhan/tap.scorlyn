@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   ACCENT_PRESETS,
+  SURFACE_PRESETS,
   BUTTON_KIND_GROUPS,
   KIND_LABELS,
   KIND_PLACEHOLDERS,
@@ -18,6 +19,7 @@ import type { CardForm } from "@/lib/card-draft";
 import TemplatePicker from "./TemplatePicker";
 import ImagePicker from "./ImagePicker";
 import UsernameField from "./UsernameField";
+import { TEMPLATE_TONE } from "@/components/card-templates";
 import PaymentFields from "./PaymentFields";
 import EditorSection from "./EditorSection";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
@@ -99,6 +101,17 @@ export default function CardEditorFields({
     setDragOver(null);
   };
 
+  // Read off the template's real background rather than a hand-kept list, so
+  // a new template cannot be offered the wrong half of the palette.
+  const tone = TEMPLATE_TONE[form.template] ?? "#ffffff";
+  const surfaceFamily: "dark" | "light" = (() => {
+    const h = tone.replace("#", "");
+    if (h.length < 6) return "light";
+    const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+    const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b) < 0.4 ? "dark" : "light";
+  })();
+
   return (
     <div className="min-w-0 space-y-3">
       <TemplatePicker
@@ -151,6 +164,48 @@ export default function CardEditorFields({
             ))}
           </div>
         </div>
+
+        {/* Background. Offered only in the template's own lightness family:
+            every template hardcodes its text as white-on-dark or
+            black-on-light, so crossing over would make text unreadable in
+            places nobody would think to check. */}
+        <div className="space-y-2">
+          <Label>Background</Label>
+          <p className="-mt-1 text-xs text-white/40">
+            {surfaceFamily === "dark"
+              ? "This template is a dark one, so these are the shades that keep its text readable."
+              : "This template is a light one, so these are the shades that keep its text readable."}
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <button
+              type="button"
+              onClick={() => onFormChange({ surface_color: "" })}
+              className={`h-11 rounded-full border-2 px-3 text-[11px] font-black lowercase transition-colors sm:h-7 ${
+                !form.surface_color
+                  ? "border-acid text-acid"
+                  : "border-white/20 text-white/50 hover:text-white"
+              }`}
+            >
+              as designed
+            </button>
+            {SURFACE_PRESETS[surfaceFamily].map((preset) => (
+              <button
+                key={preset.value}
+                type="button"
+                title={preset.name}
+                aria-label={preset.name}
+                onClick={() => onFormChange({ surface_color: preset.value })}
+                className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
+                  form.surface_color.toLowerCase() === preset.value.toLowerCase()
+                    ? "border-acid"
+                    : "border-white/20"
+                }`}
+                style={{ background: preset.value }}
+              />
+            ))}
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label>Font</Label>
           <div className="flex gap-2">

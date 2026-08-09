@@ -91,6 +91,7 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     cover_url: demoScene(accent, 0),
     logo_url: null,
     show_qr: true,
+    surface_color: null,
     cover_mode: "cover",
     gallery: captions.map((caption, index) => ({
       url: demoScene(accent, index + 1),

@@ -92,6 +92,7 @@ function MyCardEditor() {
             cover_url: data.cover_url ?? "",
             logo_url: data.logo_url ?? "",
             show_qr: data.show_qr !== false,
+            surface_color: data.surface_color ?? "",
             published: data.published !== false,
             location: data.location ?? "",
             accent_color: data.accent_color ?? "#111111",

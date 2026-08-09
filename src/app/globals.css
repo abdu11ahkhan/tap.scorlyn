@@ -578,7 +578,13 @@ textarea.app-input {
  * template, hence both.
  */
 .card-has-extras > :last-child,
-.card-has-extras > :last-child > main {
+.card-has-extras > :last-child > main,
+/* A chosen surface wraps the template in one more element, which would put
+   the template's own min-h-screen back out of reach of the two rules above
+   and re-open the dead gap this exists to close. */
+.card-has-extras > :last-child > .card-surface,
+.card-has-extras > :last-child > *,
+.card-has-extras > :last-child > * > main {
   min-height: 0 !important;
   padding-bottom: 1.5rem !important;
 }
@@ -702,4 +708,19 @@ textarea.app-input {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+}
+
+/* A card sitting on a colour its owner picked.
+   The wrapper paints the chosen ground and the template's own root is made
+   transparent, so none of the thirty-six templates has to know this exists.
+   `>` is deliberate: only the template's outermost element gives up its
+   background — every panel, button and badge inside keeps its own. */
+.card-surface {
+  background: var(--card-surface);
+  min-height: 100vh;
+}
+
+.card-surface > * {
+  background-color: transparent !important;
+  background-image: none !important;
 }
