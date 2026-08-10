@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ExternalLink, Pencil, Printer, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import ActionButton from "../ActionButton";
+import ProofLink from "../orders/[id]/ProofLink";
 import ConfirmByName from "../ConfirmByName";
 import { deleteCard, setCardApproval } from "../actions";
 import { CARD_TEMPLATES } from "@/lib/card";
@@ -27,6 +28,7 @@ type CardRow = {
   nfc_artwork_path: string | null;
   approval_status: string;
   approval_fee_pkr: number | null;
+  approval_proof_path: string | null;
 };
 
 export default async function AdminCards({
@@ -43,7 +45,7 @@ export default async function AdminCards({
   let query = supabase
     .from("card_profiles")
     .select(
-      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path, approval_status, approval_fee_pkr",
+      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path, approval_status, approval_fee_pkr, approval_proof_path",
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
@@ -169,6 +171,11 @@ export default async function AdminCards({
                               ? "check payment"
                               : "rejected"}
                         </span>
+                        {/* The receipt the customer attached, shown here so
+                            approving does not mean opening another page. */}
+                        {card.approval_proof_path && (
+                          <ProofLink path={card.approval_proof_path} />
+                        )}
                         {/* The only route from built to live: the trigger
                             stops the customer publishing it themselves. */}
                         <ActionButton

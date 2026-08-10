@@ -24,6 +24,7 @@ import {
 } from "@/lib/card-draft";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
+import CardFeePanel from "@/components/dashboard/CardFeePanel";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import { uploadPendingImages } from "@/lib/upload-drafts";
@@ -67,6 +68,12 @@ function MyCardEditor() {
   const [draftApplied, setDraftApplied] = useState(false);
   /** Set when a live card still has no printable design chosen. */
   const [askNfcFor, setAskNfcFor] = useState<string | null>(null);
+  /** Approval state for this card. Extra cards are paid for before going live. */
+  const [approval, setApproval] = useState<{
+    status: string;
+    fee: number | null;
+    note: string | null;
+  }>({ status: "approved", fee: null, note: null });
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -110,6 +117,11 @@ function MyCardEditor() {
 
       if (data) {
         setCardId(data.id);
+        setApproval({
+          status: data.approval_status ?? "approved",
+          fee: data.approval_fee_pkr ?? null,
+          note: data.approval_note ?? null,
+        });
         setExtras({
           available_for_work: data.available_for_work ?? false,
           availability_note: data.availability_note ?? "",
@@ -302,6 +314,20 @@ function MyCardEditor() {
       {error && (
         <div className="mt-6 rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
           {error}
+        </div>
+      )}
+
+      {cardId && approval.status !== "approved" && (
+        <div className="mt-6">
+          <CardFeePanel
+            cardId={cardId}
+            status={approval.status}
+            fee={approval.fee}
+            note={approval.note}
+            onSubmitted={() =>
+              setApproval((prev) => ({ ...prev, status: "awaiting_review" }))
+            }
+          />
         </div>
       )}
 

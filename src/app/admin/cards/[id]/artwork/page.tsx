@@ -71,10 +71,11 @@ export default async function CardArtwork({
     <FinishPicker
       card={card as CardProfile}
       current={finish}
+      currentFields={(card.nfc_fields as CardFields | null) ?? null}
       profileUrl={`https://tap.scorlyn.com/u/${card.username}`}
-      onSave={async (next: string) => {
+      onSave={async (next: string, nextFields: CardFields) => {
         "use server";
-        return setCardFinish(id, next);
+        return setCardFinish(id, next, nextFields as unknown as Record<string, boolean>);
       }}
     />
   );

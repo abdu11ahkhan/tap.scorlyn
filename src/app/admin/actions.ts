@@ -705,7 +705,9 @@ const NFC_FINISHES = [
  */
 export async function setCardFinish(
   cardId: string,
-  finish: string
+  finish: string,
+  /** Which details to print. Omitted leaves whatever is already stored. */
+  fields?: Record<string, boolean>
 ): Promise<Result> {
   try {
     const { supabase } = await assertAdmin();
@@ -721,7 +723,11 @@ export async function setCardFinish(
     // console would show the new finish until the page was reloaded.
     const { data: updated, error } = await supabase
       .from("card_profiles")
-      .update({ nfc_finish: finish, nfc_chosen_at: new Date().toISOString() })
+      .update({
+        nfc_finish: finish,
+        nfc_chosen_at: new Date().toISOString(),
+        ...(fields ? { nfc_fields: fields } : {}),
+      })
       .eq("id", cardId)
       .select("id");
     if (error) throw new Error(error.message);
