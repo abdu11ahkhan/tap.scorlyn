@@ -139,25 +139,23 @@ export default async function AdminCards({
                     </div>
                   </td>
                   <td data-label="NFC card" className="text-sm font-bold lowercase">
-                    {card.nfc_finish ? (
-                      // Straight to the print sheet: the whole point is that
-                      // admin can get from "who is waiting" to "send this to
-                      // the printer" without hunting for an order.
-                      <Link
-                        href={`/admin/cards/${card.id}/artwork`}
-                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-acid/40 px-3 py-1.5 text-xs font-black text-acid transition-colors hover:bg-acid/10"
-                      >
-                        <Printer className="h-3.5 w-3.5" />
-                        {card.nfc_artwork_path ? "own file" : card.nfc_finish}
-                      </Link>
-                    ) : (
-                      <span className="text-xs font-semibold text-white/25">
-                        not chosen
-                      </span>
-                    )}
-                  </td>
-                  <td data-label="Template" className="text-sm font-bold lowercase text-white/70">
-                    {templateName(card.template)}
+                    {/* Always a link. It used to appear only once a finish was
+                        set, which put the picker for choosing one behind a
+                        link that needed a finish to exist — so the cards that
+                        most needed it were the ones that could not reach it. */}
+                    <Link
+                      href={`/admin/cards/${card.id}/artwork`}
+                      className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-xs font-black transition-colors ${
+                        card.nfc_finish
+                          ? "border-acid/40 text-acid hover:bg-acid/10"
+                          : "border-white/20 text-white/50 hover:border-acid hover:text-acid"
+                      }`}
+                    >
+                      <Printer className="h-3.5 w-3.5" />
+                      {card.nfc_artwork_path
+                        ? "own file"
+                        : card.nfc_finish || "choose & print"}
+                    </Link>
                   </td>
                   <td data-label="Approval" className="text-sm">
                     {card.approval_status === "approved" ? (
