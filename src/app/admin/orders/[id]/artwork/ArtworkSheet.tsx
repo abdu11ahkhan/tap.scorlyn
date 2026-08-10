@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Printer } from "lucide-react";
 import NfcCardArt, {
   DEFAULT_CARD_FIELDS,
@@ -43,6 +44,37 @@ export default function ArtworkSheet({
 }) {
   const profileUrl = `https://tap.scorlyn.com/u/${card.username}`;
 
+  /**
+   * "Save as PDF" names the file after the document title, so every sheet
+   * came out as the same page name and a folder of them was unidentifiable.
+   * Set around the print itself rather than permanently, so the browser tab
+   * still reads normally while someone is working.
+   */
+  const printName = [
+    (card.full_name || card.username).replace(/[^a-zA-Z0-9 _-]/g, "").trim(),
+    order ? order.reference : `@${card.username}`,
+    finish,
+  ]
+    .filter(Boolean)
+    .join(" - ");
+
+  useEffect(() => {
+    const original = document.title;
+    const before = () => {
+      document.title = printName;
+    };
+    const after = () => {
+      document.title = original;
+    };
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+      document.title = original;
+    };
+  }, [printName]);
+
   return (
     <div className="space-y-5">
       <div className="print:hidden">
@@ -80,7 +112,7 @@ export default function ArtworkSheet({
 
       {/* White ground: the console is dark, and a dark page prints as a dark
           page unless the browser is told to drop backgrounds. */}
-      <div className="space-y-8 rounded-2xl bg-white p-8 print:rounded-none print:p-0">
+      <div className="artwork-print space-y-8 rounded-2xl bg-white p-8 print:rounded-none print:p-0">
         {(["front", "back"] as const).map((face) => (
           <figure key={face} className="break-inside-avoid">
             <figcaption className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-black/45 print:mb-1">

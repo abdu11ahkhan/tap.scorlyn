@@ -142,18 +142,39 @@ function surfaceFor(finish: CardFinish, accent: string) {
  * Pulled from the buttons the profile already has, so a card can never print a
  * number the digital profile doesn't carry.
  */
+/**
+ * A value worth printing.
+ *
+ * `"."`, `"-"` and `"n/a"` are what people type into a field they do not want
+ * to fill in. They survive a trim, so the card printed an icon beside a lone
+ * dot — worse than leaving the line off, because it looks like a fault.
+ */
+function meaningful(value: string | null | undefined): string | undefined {
+  const text = value?.trim();
+  if (!text) return undefined;
+  if (!/[a-z0-9]/i.test(text)) return undefined;
+  if (/^(n\/?a|none|nil|null|-+|\.+)$/i.test(text)) return undefined;
+  return text;
+}
+
 function contactLines(card: CardProfile, fields: CardFields) {
   const find = (kind: string) =>
-    card.buttons.find((b) => b.kind === kind && b.value?.trim())?.value.trim();
+    meaningful(card.buttons.find((b) => b.kind === kind && meaningful(b.value))?.value);
 
-  const phone = find("phone") ?? find("whatsapp") ?? card.phone ?? undefined;
-  const email = find("email") ?? card.email ?? undefined;
+  const phone = find("phone") ?? find("whatsapp") ?? meaningful(card.phone);
+  const email = find("email") ?? meaningful(card.email);
+  const location = meaningful(card.location);
 
+  // The kind travels with the value. Layouts that label these used to pair a
+  // fixed list against this array by index, so dropping an empty phone number
+  // relabelled the location as "tel".
   return [
-    fields.phone && phone ? { Icon: Phone, text: phone } : null,
-    fields.email && email ? { Icon: Mail, text: email } : null,
-    fields.location && card.location ? { Icon: MapPin, text: card.location } : null,
-  ].filter(Boolean) as { Icon: typeof Phone; text: string }[];
+    fields.phone && phone ? { Icon: Phone, text: phone, kind: "tel" } : null,
+    fields.email && email ? { Icon: Mail, text: email, kind: "mail" } : null,
+    fields.location && location
+      ? { Icon: MapPin, text: location, kind: "loc" }
+      : null,
+  ].filter(Boolean) as { Icon: typeof Phone; text: string; kind: string }[];
 }
 
 export default function NfcCardArt({
@@ -526,7 +547,7 @@ export default function NfcCardArt({
                 style={{ marginTop: "auto", gap: u * 2.2, minWidth: 0 }}
               >
                 <Contacts size={2.4} gap={1} />
-                <Qr size={13} />
+                <Qr size={12} />
               </div>
             </div>
           </div>
@@ -572,7 +593,7 @@ export default function NfcCardArt({
                 <div style={{ minWidth: 0 }}>
                   <p
                     style={{
-                      fontSize: nameFs(5.8),
+                      fontSize: nameFs(4.6),
                       fontWeight: 800,
                       lineHeight: 1,
                       letterSpacing: "-0.025em",
@@ -597,7 +618,7 @@ export default function NfcCardArt({
               </div>
               <div className="flex items-end justify-between" style={{ gap: u * 3 }}>
                 <Contacts size={2.5} gap={0.9} />
-                <Qr size={13} />
+                <Qr size={12} />
               </div>
             </div>
           </div>
@@ -681,7 +702,7 @@ export default function NfcCardArt({
               <div className="flex items-center" style={{ gap: u * 2.4, minWidth: 0 }}>
                 <Avatar size={8} radius={1} />
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ fontSize: nameFs(5.8), fontWeight: 700, letterSpacing: "-0.01em" }}>
+                  <p style={{ fontSize: nameFs(4.6), fontWeight: 700, letterSpacing: "-0.01em" }}>
                     {card.full_name}
                   </p>
                   <p style={{ fontSize: u * 2.4, opacity: s.sub }}>@{card.username}</p>
@@ -701,10 +722,7 @@ export default function NfcCardArt({
             >
               {[
                 headline ? { k: "role", v: headline } : null,
-                ...contacts.map((c, i) => ({
-                  k: ["tel", "mail", "loc"][i] ?? "info",
-                  v: c.text,
-                })),
+                ...contacts.map((c) => ({ k: c.kind, v: c.text })),
               ]
                 .filter(Boolean)
                 .slice(0, 4)
@@ -740,7 +758,7 @@ export default function NfcCardArt({
 
             {showQr && (
               <div className="flex justify-end" style={{ marginTop: "auto" }}>
-                <Qr size={13} />
+                <Qr size={12} />
               </div>
             )}
           </div>
@@ -841,7 +859,7 @@ export default function NfcCardArt({
               style={{ left: pad, right: pad, bottom: u * 5 }}
             >
               <NfcMark size={5} opacity={0.45} />
-              <Qr size={13} />
+              <Qr size={11} />
             </div>
           </div>
         );
@@ -878,7 +896,7 @@ export default function NfcCardArt({
                 style={{ marginTop: "auto", paddingTop: u * 2.4 }}
               >
                 <Contacts size={2.4} gap={0.9} />
-                <Qr size={13} />
+                <Qr size={12} />
               </div>
             </div>
             <div style={{ position: "absolute", left: u * 6.5, top: pad }}>
@@ -1098,7 +1116,7 @@ export default function NfcCardArt({
               style={{ left: pad, right: pad, bottom: pad }}
             >
               <NfcMark size={5.5} opacity={0.6} />
-              <Qr size={13} />
+              <Qr size={11} />
             </div>
           </div>
         );
