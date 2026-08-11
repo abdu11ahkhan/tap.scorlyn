@@ -73,3 +73,56 @@ export function usableItems(items: InvoiceItem[]): InvoiceItem[] {
     (item) => item.description?.trim() || lineTotal(item) > 0
   );
 }
+
+
+/**
+ * Which parts of an invoice get printed.
+ *
+ * Not every invoice wants every field: a corporate batch billed to an account
+ * has no use for a home address, a cash sale has no due date, and some jobs
+ * are quoted as a single figure with no unit price broken out.
+ */
+export type InvoiceDisplay = {
+  phone: boolean;
+  email: boolean;
+  address: boolean;
+  due_date: boolean;
+  quantity: boolean;
+  unit_price: boolean;
+  notes: boolean;
+  footer: boolean;
+};
+
+export const INVOICE_DISPLAY_OPTIONS: {
+  id: keyof InvoiceDisplay;
+  label: string;
+}[] = [
+  { id: "phone", label: "phone" },
+  { id: "email", label: "email" },
+  { id: "address", label: "address" },
+  { id: "due_date", label: "due date" },
+  { id: "quantity", label: "qty column" },
+  { id: "unit_price", label: "unit price column" },
+  { id: "notes", label: "notes" },
+  { id: "footer", label: "footer" },
+];
+
+const ALL_ON: InvoiceDisplay = {
+  phone: true,
+  email: true,
+  address: true,
+  due_date: true,
+  quantity: true,
+  unit_price: true,
+  notes: true,
+  footer: true,
+};
+
+/**
+ * Missing keys mean on, so an invoice written before these toggles existed
+ * prints exactly as it always did rather than losing half its fields.
+ */
+export function resolveDisplay(raw: unknown): InvoiceDisplay {
+  const value = (raw ?? {}) as Partial<InvoiceDisplay>;
+  return { ...ALL_ON, ...value };
+}

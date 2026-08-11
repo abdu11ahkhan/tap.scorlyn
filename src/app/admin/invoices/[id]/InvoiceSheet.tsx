@@ -6,6 +6,7 @@ import {
   invoiceTotals,
   lineTotal,
   money,
+  resolveDisplay,
   usableItems,
   type InvoiceItem,
 } from "@/lib/invoice";
@@ -25,6 +26,7 @@ export type InvoiceRow = {
   tax_percent: number;
   notes: string | null;
   status: string;
+  display?: Record<string, boolean> | null;
 };
 
 const date = (value: string | null) =>
@@ -41,6 +43,7 @@ const date = (value: string | null) =>
  */
 export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
   const items = usableItems(invoice.items ?? []);
+  const show = resolveDisplay(invoice.display);
   const totals = invoiceTotals({
     items,
     discount_pkr: invoice.discount_pkr,
@@ -102,7 +105,7 @@ export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
             <p className="mt-1 text-sm font-semibold opacity-60">
               Issued {date(invoice.issued_on)}
             </p>
-            {invoice.due_on && (
+            {show.due_date && invoice.due_on && (
               <p className="text-sm font-semibold opacity-60">
                 Due {date(invoice.due_on)}
               </p>
@@ -120,17 +123,17 @@ export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
             billed to
           </p>
           <p className="mt-2 font-black">{invoice.customer_name}</p>
-          {invoice.customer_phone && (
+          {show.phone && invoice.customer_phone && (
             <p className="text-sm font-semibold opacity-70">
               {invoice.customer_phone}
             </p>
           )}
-          {invoice.customer_email && (
+          {show.email && invoice.customer_email && (
             <p className="text-sm font-semibold opacity-70">
               {invoice.customer_email}
             </p>
           )}
-          {invoice.customer_address && (
+          {show.address && invoice.customer_address && (
             <p className="text-sm font-semibold opacity-70">
               {invoice.customer_address}
             </p>
@@ -143,12 +146,16 @@ export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
               <th className="pb-2 text-xs font-black uppercase tracking-widest opacity-50">
                 description
               </th>
-              <th className="pb-2 text-right text-xs font-black uppercase tracking-widest opacity-50">
-                qty
-              </th>
-              <th className="pb-2 text-right text-xs font-black uppercase tracking-widest opacity-50">
-                unit
-              </th>
+              {show.quantity && (
+                <th className="pb-2 text-right text-xs font-black uppercase tracking-widest opacity-50">
+                  qty
+                </th>
+              )}
+              {show.unit_price && (
+                <th className="pb-2 text-right text-xs font-black uppercase tracking-widest opacity-50">
+                  unit
+                </th>
+              )}
               <th className="pb-2 text-right text-xs font-black uppercase tracking-widest opacity-50">
                 amount
               </th>
@@ -158,12 +165,16 @@ export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
             {items.map((item, index) => (
               <tr key={index} className="border-b border-black/15">
                 <td className="py-2.5 font-semibold">{item.description}</td>
-                <td className="py-2.5 text-right font-semibold tabular-nums">
-                  {item.quantity}
-                </td>
-                <td className="py-2.5 text-right font-semibold tabular-nums">
-                  {money(item.unit_price_pkr)}
-                </td>
+                {show.quantity && (
+                  <td className="py-2.5 text-right font-semibold tabular-nums">
+                    {item.quantity}
+                  </td>
+                )}
+                {show.unit_price && (
+                  <td className="py-2.5 text-right font-semibold tabular-nums">
+                    {money(item.unit_price_pkr)}
+                  </td>
+                )}
                 <td className="py-2.5 text-right font-black tabular-nums">
                   {money(lineTotal(item))}
                 </td>
@@ -198,7 +209,7 @@ export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
           </div>
         </div>
 
-        {invoice.notes && (
+        {show.notes && invoice.notes && (
           <div className="mt-8 border-t border-black/15 pt-4">
             <p className="text-xs font-black uppercase tracking-widest opacity-50">
               notes
@@ -209,9 +220,11 @@ export default function InvoiceSheet({ invoice }: { invoice: InvoiceRow }) {
           </div>
         )}
 
-        <p className="mt-8 text-center text-xs font-semibold opacity-45">
-          Thank you. ScorlynTap · tap.scorlyn.com
-        </p>
+        {show.footer && (
+          <p className="mt-8 text-center text-xs font-semibold opacity-45">
+            Thank you. ScorlynTap · tap.scorlyn.com
+          </p>
+        )}
       </div>
     </div>
   );

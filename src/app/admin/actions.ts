@@ -669,6 +669,8 @@ export type InvoiceFields = {
   tax_percent: number;
   notes: string | null;
   status: "unpaid" | "paid" | "void";
+  /** Which parts to print. Missing keys mean on. */
+  display: Record<string, boolean>;
 };
 
 /** Rejects what the table would reject anyway, but with a readable message. */
@@ -699,6 +701,7 @@ function cleanInvoice(fields: InvoiceFields) {
     tax_percent: Math.max(0, Number(fields.tax_percent) || 0),
     notes: fields.notes?.trim() || null,
     status: fields.status,
+    display: fields.display ?? {},
   };
 }
 

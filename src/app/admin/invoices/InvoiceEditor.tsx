@@ -5,9 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import {
+  INVOICE_DISPLAY_OPTIONS,
   invoiceTotals,
   lineTotal,
   money,
+  resolveDisplay,
+  type InvoiceDisplay,
   type InvoiceItem,
 } from "@/lib/invoice";
 import type { InvoiceFields } from "../actions";
@@ -32,6 +35,7 @@ export const EMPTY_INVOICE: InvoiceFields = {
   tax_percent: 0,
   notes: null,
   status: "unpaid",
+  display: {},
 };
 
 /**
@@ -42,15 +46,20 @@ export const EMPTY_INVOICE: InvoiceFields = {
  * that gets printed. Typing a total by hand is how an invoice ends up
  * disagreeing with its own lines.
  */
+export type CatalogueItem = { id: string; name: string; price_pkr: number };
+
 export default function InvoiceEditor({
   initial,
   invoiceId,
   number,
+  catalogue = [],
   onSave,
 }: {
   initial: InvoiceFields;
   invoiceId?: string;
   number?: string;
+  /** What you sell, so a line can be picked instead of typed. */
+  catalogue?: CatalogueItem[];
   onSave: (fields: InvoiceFields) => Promise<{
     ok: boolean;
     error?: string;
@@ -63,6 +72,13 @@ export default function InvoiceEditor({
   const [error, setError] = useState<string | null>(null);
 
   const totals = useMemo(() => invoiceTotals(form), [form]);
+  const display = useMemo(() => resolveDisplay(form.display), [form.display]);
+
+  const toggle = (key: keyof InvoiceDisplay) =>
+    setForm((prev) => ({
+      ...prev,
+      display: { ...resolveDisplay(prev.display), [key]: !display[key] },
+    }));
 
   const set = <K extends keyof InvoiceFields>(key: K, value: InvoiceFields[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -263,6 +279,44 @@ export default function InvoiceEditor({
           </div>
         ))}
 
+        {catalogue.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-3">
+            <span className="text-xs font-black uppercase tracking-[0.15em] text-white/35">
+              add from catalogue
+            </span>
+            {catalogue.map((product) => (
+              <button
+                key={product.id}
+                type="button"
+                onClick={() =>
+                  setForm((prev) => {
+                    const line = {
+                      description: product.name,
+                      quantity: 1,
+                      unit_price_pkr: product.price_pkr,
+                    };
+                    // Fill the empty starter row rather than adding below it,
+                    // otherwise every invoice begins with a blank line.
+                    const blank = prev.items.findIndex(
+                      (i) => !i.description.trim() && !i.unit_price_pkr
+                    );
+                    const items = [...prev.items];
+                    if (blank === -1) items.push(line);
+                    else items[blank] = line;
+                    return { ...prev, items };
+                  })
+                }
+                className="rounded-full border-2 border-white/20 px-3 py-1.5 text-xs font-bold text-white/70 transition-colors hover:border-acid hover:text-acid"
+              >
+                {product.name}
+                <span className="ml-1.5 text-white/40">
+                  {money(product.price_pkr)}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <button
           type="button"
           onClick={() =>
@@ -273,6 +327,37 @@ export default function InvoiceEditor({
           <Plus className="h-4 w-4" />
           add line
         </button>
+      </section>
+
+      {/* ---------------- what appears on it ---------------- */}
+      <section className="app-panel app-panel-pad space-y-3">
+        <div>
+          <h2 className={LABEL}>on the invoice</h2>
+          <p className="mt-1 text-sm font-semibold text-white/45">
+            Switch off anything this customer does not need. A line with no
+            value is left out either way.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {INVOICE_DISPLAY_OPTIONS.map((opt) => {
+            const on = display[opt.id];
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => toggle(opt.id)}
+                aria-pressed={on}
+                className={`rounded-full border-2 px-3.5 py-1.5 text-xs font-black lowercase transition-colors ${
+                  on
+                    ? "border-acid bg-acid/10 text-acid"
+                    : "border-white/15 text-white/40 hover:border-white/30"
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
       </section>
 
       {/* ---------------- the money ---------------- */}
