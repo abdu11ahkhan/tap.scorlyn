@@ -22,9 +22,9 @@ export const metadata: Metadata = {
 //
 // Visible frame height as a fraction of width. These pages are taller than one
 // screen, so the preview always crops; this is where it crops.
-/** Tile shape, matched to the 390x1014 the thumbnail renders so it fills
- *  edge to edge. Taller than the old 1.59, which stopped above the links. */
-const THUMB_ASPECT = 1014 / 390;
+/** Tile shape, matched to the 390x624 the thumbnail renders so it fills edge
+ *  to edge with content and no dead space below it. */
+const THUMB_ASPECT = 624 / 390;
 
 /** Three 320px cards plus their gaps — the widest the grid ever needs to be. */
 const COLUMN_W = 1060;

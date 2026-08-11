@@ -6,17 +6,20 @@ import { useEffect, useRef, useState } from "react";
  *  out the way they actually would rather than for a 150px column. */
 const SRC_W = 390;
 /**
- * How much of the card the thumbnail shows.
+ * How much of the card the thumbnail shows, starting from that template's own
+ * content (see thumb-frames.ts).
  *
- * Measured, not guessed: at 390px wide the first link button starts around
- * 950px down on a typical template, so 1014 reaches the buttons on fourteen
- * of the nineteen measured. It was 620 — a height that showed portrait and
- * headline and nothing about what a template does with its links, and cut
- * names mid-word because no card is laid out around that number.
+ * Measured: from the name down, a typical card runs about 550-600px before it
+ * runs out of buttons. 1014 was tried and is far too tall once the frame
+ * starts at the name rather than at zero — it left half a tile of blank page
+ * under every card. This is the content, and little else.
  *
  * Kept at exactly SRC_W x tile aspect so the frame fills without letterboxing.
  */
-const SRC_H = 1014;
+const SRC_H = 624;
+/** The height every preview is rendered at, and the height the offsets in
+ *  thumb-frames.ts were measured against. The two must match. */
+const RENDER_H = 4200;
 
 /**
  * A template preview that fits whatever column it lands in.
@@ -103,8 +106,12 @@ export default function TemplateThumb({
           className="pointer-events-none absolute left-0 top-0 origin-top-left border-0"
           style={{
             width: SRC_W,
-            // Tall enough to reach the framed region; the wrapper clips it.
-            height: SRC_H + top,
+            // Constant, never SRC_H + top. Sizing the iframe to the offset
+            // changed the viewport height per template, so pages built around
+            // min-h-screen laid out differently than they did when measured
+            // and the window landed on empty page. The offsets are measured at
+            // this exact height, so this is what they mean.
+            height: RENDER_H,
             transform: `scale(${scale}) translateY(${-top}px)`,
           }}
         />
