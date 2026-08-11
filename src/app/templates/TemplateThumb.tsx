@@ -5,7 +5,18 @@ import { useEffect, useRef, useState } from "react";
 /** The viewport the preview renders at. A real phone width, so templates lay
  *  out the way they actually would rather than for a 150px column. */
 const SRC_W = 390;
-const SRC_H = 620;
+/**
+ * How much of the card the thumbnail shows.
+ *
+ * Measured, not guessed: at 390px wide the first link button starts around
+ * 950px down on a typical template, so 1014 reaches the buttons on fourteen
+ * of the nineteen measured. It was 620 — a height that showed portrait and
+ * headline and nothing about what a template does with its links, and cut
+ * names mid-word because no card is laid out around that number.
+ *
+ * Kept at exactly SRC_W x tile aspect so the frame fills without letterboxing.
+ */
+const SRC_H = 1014;
 
 /**
  * A template preview that fits whatever column it lands in.
@@ -23,8 +34,8 @@ export default function TemplateThumb({
 }: {
   src: string;
   title: string;
-  /** Visible height as a fraction of width. These pages are taller than one
-   *  screen, so the frame deliberately crops. */
+  /** Visible height as a fraction of width, matched to the phone screen
+   *  above so nothing is cut. */
   aspect: number;
 }) {
   const box = useRef<HTMLDivElement>(null);
@@ -40,6 +51,10 @@ export default function TemplateThumb({
     const el = box.current;
     if (!el) return;
 
+    // The tile is shaped to this source (SRC_H / SRC_W), so fitting to width
+    // fills it exactly. Contain-fitting was tried and left black bars down
+    // both sides, which reads as a card floating in a box rather than a
+    // phone screen.
     const fit = () => setScale(el.clientWidth / SRC_W);
     fit();
     const ro = new ResizeObserver(fit);

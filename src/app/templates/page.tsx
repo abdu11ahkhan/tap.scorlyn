@@ -21,7 +21,9 @@ export const metadata: Metadata = {
 //
 // Visible frame height as a fraction of width. These pages are taller than one
 // screen, so the preview always crops; this is where it crops.
-const THUMB_ASPECT = 470 / 296;
+/** Tile shape, matched to the 390x1014 the thumbnail renders so it fills
+ *  edge to edge. Taller than the old 1.59, which stopped above the links. */
+const THUMB_ASPECT = 1014 / 390;
 
 /** Three 320px cards plus their gaps — the widest the grid ever needs to be. */
 const COLUMN_W = 1060;
@@ -216,15 +218,6 @@ export default async function PublicTemplatesPage() {
                           aspect={THUMB_ASPECT}
                         />
 
-                        {/* These pages are taller than one phone screen, so the
-                            preview always cuts off. A frosted bar reads as
-                            deliberate chrome — a black fade would smear over
-                            the light templates like a stain. */}
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-7 items-center justify-center rounded-b-[1.4rem] border-t border-white/15 bg-ink/70 backdrop-blur-md sm:h-9">
-                          <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/70 sm:text-[10px]">
-                            scrolls on
-                          </span>
-                        </div>
                       </Link>
                     </div>
 
