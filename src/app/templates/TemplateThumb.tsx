@@ -31,9 +31,16 @@ export default function TemplateThumb({
   src,
   title,
   aspect,
+  top = 0,
 }: {
   src: string;
   title: string;
+  /**
+   * Where to start the frame, in card pixels. Templates open in very
+   * different places — some with the name, some behind a full-bleed cover —
+   * so this is measured per template rather than assumed to be zero.
+   */
+  top?: number;
   /** Visible height as a fraction of width, matched to the phone screen
    *  above so nothing is cut. */
   aspect: number;
@@ -94,7 +101,12 @@ export default function TemplateThumb({
           tabIndex={-1}
           aria-hidden="true"
           className="pointer-events-none absolute left-0 top-0 origin-top-left border-0"
-          style={{ width: SRC_W, height: SRC_H, transform: `scale(${scale})` }}
+          style={{
+            width: SRC_W,
+            // Tall enough to reach the framed region; the wrapper clips it.
+            height: SRC_H + top,
+            transform: `scale(${scale}) translateY(${-top}px)`,
+          }}
         />
       )}
     </div>

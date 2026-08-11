@@ -6,6 +6,7 @@ import { DEMO_PERSONAS } from "@/app/preview/card/[template]/demo-data";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
 import TemplateThumb from "./TemplateThumb";
+import { thumbTop } from "./thumb-frames";
 
 export const dynamic = "force-dynamic";
 
@@ -216,6 +217,7 @@ export default async function PublicTemplatesPage() {
                           src={`/preview/card/${template.id}?accent=${encodeURIComponent(accent)}&raw=1`}
                           title={`${template.name} template preview`}
                           aspect={THUMB_ASPECT}
+                          top={thumbTop(template.id)}
                         />
 
                       </Link>
