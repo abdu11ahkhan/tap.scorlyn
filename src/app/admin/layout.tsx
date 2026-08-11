@@ -4,16 +4,17 @@ import AreaSwitch from "@/components/layout/AreaSwitch";
 import {
   CreditCard,
   FileText,
-  Mail,
   HelpCircle,
   LayoutDashboard,
   LayoutTemplate,
+  Mail,
   Nfc,
+  Receipt,
   Settings,
   ShieldCheck,
   ShoppingBag,
-  Users,
   UserX,
+  Users,
   Wallet,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -77,6 +78,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/users", label: "Customers", icon: Users },
     { href: "/admin/accounts", label: "Suspended", icon: UserX },
     { href: "/admin/nfc", label: "NFC stock", icon: Nfc },
+    { href: "/admin/invoices", label: "Invoices", icon: Receipt },
     { href: "/admin/billing", label: "Billing", icon: Wallet },
     { href: "/admin/content", label: "Content", icon: FileText },
     { href: "/admin/email", label: "Email", icon: Mail },

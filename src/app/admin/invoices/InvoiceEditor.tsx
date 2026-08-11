@@ -1,0 +1,374 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Loader2, Plus, Trash2 } from "lucide-react";
+import {
+  invoiceTotals,
+  lineTotal,
+  money,
+  type InvoiceItem,
+} from "@/lib/invoice";
+import type { InvoiceFields } from "../actions";
+
+const FIELD =
+  "w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:outline-none";
+
+const LABEL = "text-xs font-black uppercase tracking-[0.15em] text-white/40";
+
+const BLANK_ITEM: InvoiceItem = { description: "", quantity: 1, unit_price_pkr: 0 };
+
+export const EMPTY_INVOICE: InvoiceFields = {
+  customer_name: "",
+  customer_phone: null,
+  customer_email: null,
+  customer_address: null,
+  issued_on: new Date().toISOString().slice(0, 10),
+  due_on: null,
+  items: [{ ...BLANK_ITEM }],
+  discount_pkr: 0,
+  shipping_pkr: 0,
+  tax_percent: 0,
+  notes: null,
+  status: "unpaid",
+};
+
+/**
+ * Writing an invoice.
+ *
+ * Totals are never typed — they come from the same helper the printed page
+ * uses, so the figure someone is looking at while they edit is the figure
+ * that gets printed. Typing a total by hand is how an invoice ends up
+ * disagreeing with its own lines.
+ */
+export default function InvoiceEditor({
+  initial,
+  invoiceId,
+  number,
+  onSave,
+}: {
+  initial: InvoiceFields;
+  invoiceId?: string;
+  number?: string;
+  onSave: (fields: InvoiceFields) => Promise<{
+    ok: boolean;
+    error?: string;
+    data?: { id: string };
+  }>;
+}) {
+  const router = useRouter();
+  const [form, setForm] = useState<InvoiceFields>(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const totals = useMemo(() => invoiceTotals(form), [form]);
+
+  const set = <K extends keyof InvoiceFields>(key: K, value: InvoiceFields[K]) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
+
+  const setItem = (index: number, patch: Partial<InvoiceItem>) =>
+    setForm((prev) => ({
+      ...prev,
+      items: prev.items.map((item, i) =>
+        i === index ? { ...item, ...patch } : item
+      ),
+    }));
+
+  const submit = async () => {
+    setSaving(true);
+    setError(null);
+    const result = await onSave(form);
+    setSaving(false);
+    if (!result.ok) {
+      setError(result.error ?? "Could not save that.");
+      return;
+    }
+    // Straight to the printable copy: making an invoice and then hunting for
+    // it in a list is a step nobody wants.
+    router.push(`/admin/invoices/${result.data?.id ?? invoiceId}`);
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="app-h1">{invoiceId ? `Invoice ${number}` : "New invoice"}</h1>
+          <p className="app-sub mt-1">
+            {invoiceId
+              ? "Changes are saved against the same invoice number."
+              : "The number is issued when you save."}
+          </p>
+        </div>
+        <Link href="/admin/invoices" className="app-pill inline-flex">
+          all invoices
+        </Link>
+      </div>
+
+      {error && (
+        <p className="rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm font-bold text-rose-200">
+          {error}
+        </p>
+      )}
+
+      {/* ---------------- who it is for ---------------- */}
+      <section className="app-panel app-panel-pad space-y-4">
+        <h2 className={LABEL}>billed to</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Name</label>
+            <input
+              className={FIELD}
+              value={form.customer_name}
+              onChange={(e) => set("customer_name", e.target.value)}
+              placeholder="Customer or company"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Phone</label>
+            <input
+              className={FIELD}
+              value={form.customer_phone ?? ""}
+              onChange={(e) => set("customer_phone", e.target.value)}
+              placeholder="03xx xxxxxxx"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Email</label>
+            <input
+              className={FIELD}
+              value={form.customer_email ?? ""}
+              onChange={(e) => set("customer_email", e.target.value)}
+              placeholder="name@company.com"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Address</label>
+            <input
+              className={FIELD}
+              value={form.customer_address ?? ""}
+              onChange={(e) => set("customer_address", e.target.value)}
+              placeholder="Street, city"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Issued</label>
+            <input
+              type="date"
+              className={FIELD}
+              value={form.issued_on}
+              onChange={(e) => set("issued_on", e.target.value)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Due</label>
+            <input
+              type="date"
+              className={FIELD}
+              value={form.due_on ?? ""}
+              onChange={(e) => set("due_on", e.target.value || null)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Status</label>
+            <select
+              className={FIELD}
+              value={form.status}
+              onChange={(e) =>
+                set("status", e.target.value as InvoiceFields["status"])
+              }
+            >
+              <option value="unpaid">unpaid</option>
+              <option value="paid">paid</option>
+              <option value="void">void</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------- what they are paying for ---------------- */}
+      <section className="app-panel app-panel-pad space-y-3">
+        <h2 className={LABEL}>lines</h2>
+
+        {form.items.map((item, index) => (
+          <div key={index} className="flex flex-wrap items-end gap-2 sm:flex-nowrap">
+            <div className="min-w-0 flex-1 space-y-1.5">
+              {index === 0 && (
+                <label className="text-xs font-bold text-white/50">Description</label>
+              )}
+              <input
+                className={FIELD}
+                value={item.description}
+                onChange={(e) => setItem(index, { description: e.target.value })}
+                placeholder="NFC cards — matte black, 50 pcs"
+              />
+            </div>
+            <div className="w-20 space-y-1.5">
+              {index === 0 && (
+                <label className="text-xs font-bold text-white/50">Qty</label>
+              )}
+              <input
+                type="number"
+                min={0}
+                className={FIELD}
+                value={item.quantity}
+                onChange={(e) =>
+                  setItem(index, { quantity: Number(e.target.value) })
+                }
+              />
+            </div>
+            <div className="w-28 space-y-1.5">
+              {index === 0 && (
+                <label className="text-xs font-bold text-white/50">Unit Rs.</label>
+              )}
+              <input
+                type="number"
+                min={0}
+                className={FIELD}
+                value={item.unit_price_pkr}
+                onChange={(e) =>
+                  setItem(index, { unit_price_pkr: Number(e.target.value) })
+                }
+              />
+            </div>
+            <div className="w-28 shrink-0 space-y-1.5 text-right">
+              {index === 0 && (
+                <label className="block text-xs font-bold text-white/50">Line</label>
+              )}
+              <p className="py-2.5 text-sm font-black text-white">
+                {money(lineTotal(item))}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() =>
+                setForm((prev) => ({
+                  ...prev,
+                  // Never leave zero rows: an invoice with no line to type in
+                  // looks broken.
+                  items:
+                    prev.items.length === 1
+                      ? [{ ...BLANK_ITEM }]
+                      : prev.items.filter((_, i) => i !== index),
+                }))
+              }
+              aria-label="Remove line"
+              className="mb-1 shrink-0 rounded-full p-2.5 text-white/40 transition-colors hover:bg-white/10 hover:text-rose-300"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={() =>
+            setForm((prev) => ({ ...prev, items: [...prev.items, { ...BLANK_ITEM }] }))
+          }
+          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+        >
+          <Plus className="h-4 w-4" />
+          add line
+        </button>
+      </section>
+
+      {/* ---------------- the money ---------------- */}
+      <section className="app-panel app-panel-pad grid gap-5 sm:grid-cols-2">
+        <div className="space-y-4">
+          <h2 className={LABEL}>adjustments</h2>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-white/50">Discount</label>
+              <input
+                type="number"
+                min={0}
+                className={FIELD}
+                value={form.discount_pkr}
+                onChange={(e) => set("discount_pkr", Number(e.target.value))}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-white/50">Delivery</label>
+              <input
+                type="number"
+                min={0}
+                className={FIELD}
+                value={form.shipping_pkr}
+                onChange={(e) => set("shipping_pkr", Number(e.target.value))}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-white/50">Tax %</label>
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                className={FIELD}
+                value={form.tax_percent}
+                onChange={(e) => set("tax_percent", Number(e.target.value))}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-white/50">Notes</label>
+            <textarea
+              rows={3}
+              className={FIELD}
+              value={form.notes ?? ""}
+              onChange={(e) => set("notes", e.target.value)}
+              placeholder="Payment terms, bank details, thanks…"
+            />
+          </div>
+        </div>
+
+        {/* The same numbers the printed invoice will show, from the same
+            function — so what is on screen while editing is what prints. */}
+        <div className="space-y-2 self-start rounded-2xl border-2 border-white/12 p-5">
+          <Row label="Subtotal" value={money(totals.subtotal)} />
+          {totals.discount > 0 && (
+            <Row label="Discount" value={`− ${money(totals.discount)}`} />
+          )}
+          {totals.tax > 0 && (
+            <Row label={`Tax (${form.tax_percent}%)`} value={money(totals.tax)} />
+          )}
+          {totals.shipping > 0 && (
+            <Row label="Delivery" value={money(totals.shipping)} />
+          )}
+          <div className="mt-2 flex items-baseline justify-between border-t-2 border-white/12 pt-3">
+            <span className="text-sm font-black uppercase tracking-tight text-white">
+              Total
+            </span>
+            <span className="text-2xl font-black text-acid">
+              {money(totals.total)}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <div className="sticky bottom-4 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={submit}
+          disabled={saving}
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid px-7 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
+        >
+          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {invoiceId ? "save & view" : "create invoice"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4">
+      <span className="text-sm font-semibold text-white/50">{label}</span>
+      <span className="text-sm font-bold text-white">{value}</span>
+    </div>
+  );
+}

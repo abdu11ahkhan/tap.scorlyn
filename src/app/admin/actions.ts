@@ -654,6 +654,125 @@ export async function deleteAccount(userId: string, reason?: string): Promise<Re
  * down without closing the person's account, and unpublishing only hides it
  * while holding the handle. This frees the handle too.
  */
+// ---------------------------------------------------------------- invoices
+
+export type InvoiceFields = {
+  customer_name: string;
+  customer_phone: string | null;
+  customer_email: string | null;
+  customer_address: string | null;
+  issued_on: string;
+  due_on: string | null;
+  items: { description: string; quantity: number; unit_price_pkr: number }[];
+  discount_pkr: number;
+  shipping_pkr: number;
+  tax_percent: number;
+  notes: string | null;
+  status: "unpaid" | "paid" | "void";
+};
+
+/** Rejects what the table would reject anyway, but with a readable message. */
+function cleanInvoice(fields: InvoiceFields) {
+  const name = fields.customer_name?.trim();
+  if (!name) throw new Error("An invoice needs a customer name.");
+
+  const items = (fields.items ?? [])
+    .map((item) => ({
+      description: (item.description ?? "").trim(),
+      quantity: Math.max(0, Math.round(Number(item.quantity) || 0)),
+      unit_price_pkr: Math.max(0, Math.round(Number(item.unit_price_pkr) || 0)),
+    }))
+    .filter((item) => item.description || item.unit_price_pkr > 0);
+
+  if (items.length === 0) throw new Error("Add at least one line to the invoice.");
+
+  return {
+    customer_name: name,
+    customer_phone: fields.customer_phone?.trim() || null,
+    customer_email: fields.customer_email?.trim() || null,
+    customer_address: fields.customer_address?.trim() || null,
+    issued_on: fields.issued_on,
+    due_on: fields.due_on || null,
+    items,
+    discount_pkr: Math.max(0, Math.round(Number(fields.discount_pkr) || 0)),
+    shipping_pkr: Math.max(0, Math.round(Number(fields.shipping_pkr) || 0)),
+    tax_percent: Math.max(0, Number(fields.tax_percent) || 0),
+    notes: fields.notes?.trim() || null,
+    status: fields.status,
+  };
+}
+
+export async function createInvoice(
+  fields: InvoiceFields
+): Promise<Result<{ id: string }>> {
+  try {
+    const { supabase, user } = await assertAdmin();
+    const row = cleanInvoice(fields);
+
+    // The number comes from a sequence, so two invoices started at the same
+    // moment cannot collide on it.
+    const { data: number, error: numberError } = await supabase.rpc(
+      "next_invoice_number"
+    );
+    if (numberError) throw new Error(numberError.message);
+
+    const { data, error } = await supabase
+      .from("invoices")
+      .insert({ ...row, number, created_by: user.id })
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/admin/invoices");
+    return { ok: true, data: { id: data.id } };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function saveInvoice(
+  id: string,
+  fields: InvoiceFields
+): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const { data, error } = await supabase
+      .from("invoices")
+      .update(cleanInvoice(fields))
+      .eq("id", id)
+      // RLS refuses by matching nothing rather than erroring, so a blocked
+      // save would otherwise report success and lose the edit.
+      .select("id");
+    if (error) throw new Error(error.message);
+    if (!data?.length) throw new Error("That invoice could not be saved.");
+
+    revalidatePath("/admin/invoices");
+    revalidatePath(`/admin/invoices/${id}`);
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function deleteInvoice(id: string): Promise<Result> {
+  try {
+    const { supabase } = await assertAdmin();
+    const { data, error } = await supabase
+      .from("invoices")
+      .delete()
+      .eq("id", id)
+      .select("id");
+    if (error) throw new Error(error.message);
+    if (!data?.length) throw new Error("That invoice could not be deleted.");
+
+    revalidatePath("/admin/invoices");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 /**
  * Releases a paid second card, or refuses it.
  *
