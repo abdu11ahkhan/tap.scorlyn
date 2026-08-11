@@ -264,7 +264,7 @@ function SignupForm() {
               Already have an account?{" "}
               <Link
                 href={`/login?next=${encodeURIComponent(next)}`}
-                className="font-black text-ink underline decoration-acid decoration-4 underline-offset-2"
+                className="inline-flex min-h-[44px] items-center font-black text-ink underline decoration-acid decoration-4 underline-offset-2"
               >
                 log in
               </Link>

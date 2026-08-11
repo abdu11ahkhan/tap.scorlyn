@@ -293,6 +293,11 @@ export const KIND_LABELS: Record<ButtonKind, string> = {
   pay: "Pay me",
 };
 
+/** The name a kind goes by, for anything building a button from scratch. */
+export function defaultLabelFor(kind: ButtonKind): string {
+  return defaultLabel(kind);
+}
+
 function defaultLabel(kind: ButtonKind): string {
   return KIND_LABELS[kind] ?? "Link";
 }

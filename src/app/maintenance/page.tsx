@@ -15,7 +15,7 @@ export default async function Maintenance() {
       <span className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-acid">
         <Wrench className="h-6 w-6 text-ink" />
       </span>
-      <h1 className="text-4xl font-black tracking-tighter">back shortly.</h1>
+      <h1 className="text-4xl font-black tracking-tighter">Back shortly.</h1>
       <p className="max-w-sm font-medium text-white/50">
         {data?.maintenance_message ||
           "We're making some changes. Existing cards keep working — only the site is paused."}

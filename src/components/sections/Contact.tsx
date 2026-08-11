@@ -119,7 +119,7 @@ export function Contact({
         <div className="mt-14 rounded-[1.75rem] border-2 border-white/12 bg-white/[0.03] p-7 sm:p-9">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-sm">
-              <h3 className="text-2xl font-black tracking-tight">start a conversation</h3>
+              <h3 className="text-2xl font-black tracking-tight">Start a conversation</h3>
               <p className="mt-2 flex items-center gap-2 text-[15px] font-semibold text-white/50">
                 <Clock className="h-4 w-4 shrink-0" />
                 We usually reply within a few hours.

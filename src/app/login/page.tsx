@@ -180,7 +180,7 @@ function LoginForm() {
           No account yet?{" "}
           <Link
             href={`/signup?next=${encodeURIComponent(next)}`}
-            className="font-black text-ink underline decoration-acid decoration-4 underline-offset-2"
+            className="inline-flex min-h-[44px] items-center font-black text-ink underline decoration-acid decoration-4 underline-offset-2"
           >
             sign up
           </Link>

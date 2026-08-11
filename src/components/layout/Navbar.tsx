@@ -33,7 +33,12 @@ export function Navbar() {
           scrolled ? "sticker bg-white/95 backdrop-blur-xl" : "bg-white"
         }`}
       >
-        <Link href="/" className="group flex min-w-0 items-center gap-2.5">
+        {/* min-h keeps the home link a comfortable touch target on a phone;
+            the mark itself is only 32px tall. */}
+        <Link
+          href="/"
+          className="group flex min-h-[44px] min-w-0 items-center gap-2.5"
+        >
           <BrandMark size={32} className="transition-transform group-hover:rotate-12 sm:h-9 sm:w-9" />
           <span className="truncate text-lg font-black tracking-tighter text-ink sm:text-xl">
             ScorlynTap

@@ -33,12 +33,19 @@ const HOSTS: { kind: ButtonKind; hosts: string[] }[] = [
   { kind: "whatsapp", hosts: ["wa.me", "whatsapp.com", "api.whatsapp.com"] },
 ];
 
-/** Pakistani mobile: 11 digits starting 03, or the same in international form. */
+/**
+ * Pakistani mobile: 11 digits starting 03, or the same internationally.
+ *
+ * The three forms are 03001234567 (11), 923001234567 (12) and
+ * 00923001234567 (14). The last was written as 13, which is 0092 plus nine
+ * digits — a number that does not exist — so anyone who wrote their number
+ * that way never had it recognised.
+ */
 function looksLikePakistaniMobile(digits: string): boolean {
   return (
     (digits.length === 11 && digits.startsWith("03")) ||
     (digits.length === 12 && digits.startsWith("92")) ||
-    (digits.length === 13 && digits.startsWith("0092"))
+    (digits.length === 14 && digits.startsWith("0092"))
   );
 }
 

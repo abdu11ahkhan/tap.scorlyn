@@ -737,7 +737,17 @@ textarea.app-input {
 
   @page {
     size: A4 portrait;
-    margin: 14mm;
+    margin: 12mm;
+  }
+
+  /* Keep an invoice on one sheet. A table row splitting across a page break
+     puts a customer's total on a page by itself, which reads as a second
+     invoice. */
+  .artwork-print table,
+  .artwork-print tr,
+  .artwork-print figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   /* Backgrounds are the artwork here, not decoration. */

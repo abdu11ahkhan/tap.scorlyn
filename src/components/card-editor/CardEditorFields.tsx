@@ -23,6 +23,7 @@ import { detectKind } from "@/lib/detect-link";
 import { TEMPLATE_TONE } from "@/components/card-templates";
 import PaymentFields from "./PaymentFields";
 import EditorSection from "./EditorSection";
+import PasteLinks from "./PasteLinks";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
 
 
@@ -470,9 +471,13 @@ export default function CardEditorFields({
         defaultOpen
       >
       <section className="space-y-3">
+        {/* Before the list, not after: someone with links to add should see
+            the fast way first rather than after typing three by hand. */}
+        <PasteLinks buttons={buttons} onButtonsChange={onButtonsChange} />
+
         <div>
           <Label>Buttons</Label>
-          <p className="text-xs text-slate-500 mt-1">Shown in this order on your card.</p>
+          <p className="text-xs text-white/45 mt-1">Shown in this order on your card.</p>
         </div>
 
         {buttons.map((button, index) => {

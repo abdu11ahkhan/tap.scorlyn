@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Pencil } from "lucide-react";
+import ShareInvoice from "./ShareInvoice";
 import { createClient } from "@/lib/supabase/server";
 import InvoiceSheet, { type InvoiceRow } from "./InvoiceSheet";
 
@@ -33,6 +34,7 @@ export default async function ViewInvoice({
             <Pencil className="h-3.5 w-3.5" />
             edit
           </Link>
+          <ShareInvoice invoiceId={id} existingToken={invoice.share_token} />
           <Link href="/admin/invoices" className="app-pill inline-flex">
             all invoices
           </Link>

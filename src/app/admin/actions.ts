@@ -758,6 +758,47 @@ export async function saveInvoice(
   }
 }
 
+/**
+ * Turns on a public link for one invoice.
+ *
+ * Opt-in per invoice, and the token is long and random: invoices carry a
+ * customer's name, phone and address, so the table stays admin-only and this
+ * is the only way anything leaves it.
+ */
+export async function shareInvoice(
+  id: string
+): Promise<Result<{ token: string }>> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const { data: existing } = await supabase
+      .from("invoices")
+      .select("share_token")
+      .eq("id", id)
+      .maybeSingle();
+
+    // Reuse the token if one exists, so a link already sent to a customer
+    // keeps working instead of quietly dying the next time Share is pressed.
+    if (existing?.share_token) {
+      return { ok: true, data: { token: existing.share_token } };
+    }
+
+    const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().slice(0, 8);
+    const { data, error } = await supabase
+      .from("invoices")
+      .update({ share_token: token })
+      .eq("id", id)
+      .select("share_token");
+    if (error) throw new Error(error.message);
+    if (!data?.length) throw new Error("That invoice could not be shared.");
+
+    revalidatePath(`/admin/invoices/${id}`);
+    return { ok: true, data: { token } };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 export async function deleteInvoice(id: string): Promise<Result> {
   try {
     const { supabase } = await assertAdmin();
