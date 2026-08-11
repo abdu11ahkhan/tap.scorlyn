@@ -10,6 +10,12 @@
  * These are not interchangeable. glass ends at 806, dock at 4607 — one number
  * for all of them is what put a gradient and nothing else on sixteen tiles.
  *
+ * Nine are pulled up to their avatar so the photo is not sliced by the top
+ * edge — a face cut in half is the first thing anyone notices, and losing a
+ * little space at the bottom is the cheaper trade. dock is framed from the
+ * top because its content sits past the height the preview is rendered at,
+ * so no offset can reach it.
+ *
  * To re-measure after changing a template: load /preview/card/<id>?raw=1 at
  * 390px wide, find the bottom of the lowest non-fixed text or link, and set
  * this to that value + 24 - the window height in TemplateThumb.
@@ -17,16 +23,16 @@
 export const THUMB_TOP: Record<string, number> = {
   agency: 1096,
   app: 22,
-  aurora: 603,
+  aurora: 496,
   bold: 646,
   booking: 257,
   case: 449,
   contactsheet: 628,
-  dock: 4279,
-  editorial: 717,
+  dock: 0,
+  editorial: 666,
   filmstrip: 436,
   frames: 412,
-  glass: 206,
+  glass: 93,
   grid: 986,
   journal: 449,
   launch: 2293,
@@ -36,21 +42,21 @@ export const THUMB_TOP: Record<string, number> = {
   minimal: 723,
   mono: 438,
   mosaic: 436,
-  neon: 536,
-  orbit: 608,
-  pitch: 963,
+  neon: 480,
+  orbit: 496,
+  pitch: 896,
   poster: 3537,
   quote: 664,
   reel: 1427,
   reply: 666,
   showcase: 2301,
-  split: 644,
+  split: 464,
   stack: 1076,
-  sticker: 602,
+  sticker: 490,
   studio: 493,
   tape: 742,
   tiles: 467,
-  waitlist: 2261,
+  waitlist: 2217,
 };
 
 /*
