@@ -817,3 +817,26 @@ textarea.app-input {
   object-fit: cover;
   object-position: center;
 }
+
+/* ---------------------------------------------------------------
+   Viewport height on phones.
+
+   Android Chrome (and iOS Safari) report 100vh as the viewport with the
+   address bar *hidden* — the tallest it ever gets. A `min-h-screen` hero is
+   therefore taller than what you can actually see, so its last line sits
+   below the fold on load and the whole page shifts as the bar collapses.
+
+   100dvh is the height available right now, which is what these layouts
+   always meant. Done here rather than at 135 call sites: one rule, and no
+   chance of missing one. Guarded, so a browser without dvh keeps 100vh
+   rather than losing the height entirely.
+   --------------------------------------------------------------- */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+
+  .h-screen {
+    height: 100dvh;
+  }
+}

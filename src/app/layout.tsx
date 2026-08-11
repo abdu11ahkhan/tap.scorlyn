@@ -1,9 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import HydrationFlag from "@/components/layout/HydrationFlag";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+export const viewport: Viewport = {
+  // Android Chrome tints its toolbar with this; without it the browser
+  // frame stays grey while the site is black, which looks like a seam.
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0B0B0B" },
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  // Pinch-zoom stays available: capping it is an accessibility failure, and
+  // nothing here needs it disabled.
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: "ScorlynTap - Professional Portfolio Builder",
