@@ -933,10 +933,17 @@ textarea.app-input {
     min-height: 2lh;
   }
 
-  .card-template .card-company,
-  .card-template .card-location {
-    min-height: 1lh;
-  }
+  /* No min-height on these two. They are single-line by nature and the clamp
+     above already caps them, but reserving a line made the company pill a
+     different height from the location pill beside it — and in a flex row the
+     shorter one rides up to the top instead of sitting level with it. */
+}
+
+/* Level with whatever they sit next to, rather than aligning to the top of
+   the row. Harmless outside a flex parent. */
+.card-template .card-company,
+.card-template .card-location {
+  align-self: center;
 }
 
 /* An empty field reserves nothing. Someone who left their company blank
