@@ -61,9 +61,7 @@ export default function StickerCard({
             <div className="min-w-0">
               <h1 className="card-name text-3xl font-black leading-[0.9] tracking-tighter">{card.full_name}</h1>
               {card.headline && (
-                <p className="mt-1.5 text-sm font-black uppercase tracking-tight opacity-80">
-                  {card.headline}
-                </p>
+                <p className="card-headline mt-1.5 text-sm font-black uppercase tracking-tight opacity-80">{card.headline}</p>
               )}
             </div>
           </div>
@@ -71,12 +69,10 @@ export default function StickerCard({
           {(card.company || card.location) && (
             <div className="mt-5 flex flex-wrap gap-2">
               {card.company && (
-                <span className="rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black text-ink">
-                  {card.company}
-                </span>
+                <span className="card-company rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black text-ink">{card.company}</span>
               )}
               {card.location && (
-                <span className="flex items-center gap-1 rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black text-ink">
+                <span className="card-location flex items-center gap-1 rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black text-ink">
                   <MapPin className="h-3 w-3" />
                   {card.location}
                 </span>
@@ -87,11 +83,9 @@ export default function StickerCard({
 
         {card.bio && (
           <p
-            className="card-rise sticker mt-4 rounded-2xl border-2 border-ink bg-white p-5 text-[15px] font-semibold leading-relaxed"
+            className="card-bio card-rise sticker mt-4 rounded-2xl border-2 border-ink bg-white p-5 text-[15px] font-semibold leading-relaxed"
             style={{ ["--d" as string]: "90ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <nav className="mt-4 space-y-3">

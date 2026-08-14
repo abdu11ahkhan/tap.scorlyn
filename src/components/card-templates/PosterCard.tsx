@@ -50,11 +50,9 @@ export default function PosterCard({
 
       <main className="relative flex min-h-screen w-full max-w-md flex-col justify-end px-6 pb-16 pt-24 mx-auto">
         <span
-          className="card-rise w-fit rounded-full border-2 border-ink px-4 py-1.5 text-[11px] font-black uppercase tracking-widest"
+          className="card-company card-rise w-fit rounded-full border-2 border-ink px-4 py-1.5 text-[11px] font-black uppercase tracking-widest"
           style={{ background: accent, color: onAccent, ["--d" as string]: "0ms" }}
-        >
-          {card.company || "featured"}
-        </span>
+        >{card.company || "featured"}</span>
 
         <h1
           className="card-name card-rise mt-5 text-[3.4rem] font-black uppercase leading-[0.85] tracking-tighter"
@@ -63,16 +61,14 @@ export default function PosterCard({
 
         {card.headline && (
           <p
-            className="card-rise mt-4 text-lg font-bold leading-snug text-white/80"
+            className="card-headline card-rise mt-4 text-lg font-bold leading-snug text-white/80"
             style={{ ["--d" as string]: "130ms" }}
-          >
-            {card.headline}
-          </p>
+          >{card.headline}</p>
         )}
 
         {card.location && (
           <p
-            className="card-rise mt-3 flex items-center gap-1.5 text-sm font-semibold text-white/50"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-sm font-semibold text-white/50"
             style={{ ["--d" as string]: "170ms" }}
           >
             <MapPin className="h-4 w-4" />
@@ -82,11 +78,9 @@ export default function PosterCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-5 text-[15px] leading-relaxed text-white/60"
+            className="card-bio card-rise mt-5 text-[15px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "210ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {primary && (

@@ -49,12 +49,10 @@ export default function TilesCard({
           <div className="min-w-0">
             <h1 className="card-name truncate text-2xl font-bold tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="truncate text-sm font-medium" style={{ color: ink }}>
-                {role}
-              </p>
+              <p className="card-headline truncate text-sm font-medium" style={{ color: ink }}>{role}</p>
             )}
             {card.location && (
-              <p className="mt-0.5 flex items-center gap-1 text-xs font-medium text-neutral-400">
+              <p className="card-location mt-0.5 flex items-center gap-1 text-xs font-medium text-neutral-400">
                 <MapPin className="h-3 w-3" />
                 {card.location}
               </p>
@@ -64,11 +62,9 @@ export default function TilesCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
             style={{ ["--d" as string]: "80ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <nav className="mt-8 grid grid-cols-3 gap-3">

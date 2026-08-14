@@ -36,9 +36,7 @@ export default function ContactSheetCard({
             <div className="min-w-0">
               <h1 className="card-name text-2xl font-bold uppercase tracking-tight">{card.full_name}</h1>
               {card.headline && (
-                <p className="mt-0.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-black/45">
-                  {card.headline}
-                </p>
+                <p className="card-headline mt-0.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-black/45">{card.headline}</p>
               )}
             </div>
             <div
@@ -55,19 +53,17 @@ export default function ContactSheetCard({
           </div>
 
           <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-semibold uppercase tracking-widest text-black/40">
-            {card.company && <span>{card.company}</span>}
-            {card.location && <span>{card.location}</span>}
+            {card.company && <span className="card-company">{card.company}</span>}
+            {card.location && <span className="card-location">{card.location}</span>}
             {gallery.length > 0 && <span>{gallery.length} frames</span>}
           </div>
         </header>
 
         {card.bio && (
           <p
-            className="card-rise mt-5 text-[14px] leading-relaxed text-black/65"
+            className="card-bio card-rise mt-5 text-[14px] leading-relaxed text-black/65"
             style={{ ["--d" as string]: "60ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {gallery.length > 0 && (

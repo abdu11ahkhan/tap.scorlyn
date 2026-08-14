@@ -63,16 +63,14 @@ export default function OrbitCard({
 
         {role && (
           <p
-            className="card-rise mt-2 text-sm font-medium"
+            className="card-headline card-rise mt-2 text-sm font-medium"
             style={{ color: ink, ["--d" as string]: "140ms" }}
-          >
-            {role}
-          </p>
+          >{role}</p>
         )}
 
         {card.location && (
           <p
-            className="card-rise mt-3 flex items-center gap-1.5 text-xs font-medium text-white/40"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-xs font-medium text-white/40"
             style={{ ["--d" as string]: "180ms" }}
           >
             <MapPin className="h-3 w-3" />
@@ -82,11 +80,9 @@ export default function OrbitCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-5 max-w-[19rem] text-[15px] leading-relaxed text-white/55"
+            className="card-bio card-rise mt-5 max-w-[19rem] text-[15px] leading-relaxed text-white/55"
             style={{ ["--d" as string]: "220ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {/* The links. Wraps to as many rows as it needs — a card with twelve

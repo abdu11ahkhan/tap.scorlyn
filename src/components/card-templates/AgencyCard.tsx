@@ -88,12 +88,10 @@ export default function AgencyCard({
 
           <h1 className="card-name mt-4 text-4xl font-black leading-[0.95] tracking-tighter">{card.full_name}</h1>
           {card.headline && (
-            <p className="mt-2 text-sm font-black uppercase tracking-[0.18em]" style={{ color: ink }}>
-              {card.headline}
-            </p>
+            <p className="card-headline mt-2 text-sm font-black uppercase tracking-[0.18em]" style={{ color: ink }}>{card.headline}</p>
           )}
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-white/45">
-            {card.company && <span>{card.company}</span>}
+          <div className="card-location mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-white/45">
+            {card.company && <span className="card-company">{card.company}</span>}
             {card.location && (
               <span className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -102,7 +100,7 @@ export default function AgencyCard({
             )}
           </div>
           {card.bio && (
-            <p className="mt-5 text-[15px] leading-relaxed text-white/65">{card.bio}</p>
+            <p className="card-bio mt-5 text-[15px] leading-relaxed text-white/65">{card.bio}</p>
           )}
         </div>
       </section>

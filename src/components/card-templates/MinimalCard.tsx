@@ -71,25 +71,21 @@ export default function MinimalCard({
 
         {card.headline && (
           <p
-            className="card-rise mt-2 text-sm uppercase tracking-[0.18em]"
+            className="card-headline card-rise mt-2 text-sm uppercase tracking-[0.18em]"
             style={{ color: ink, ["--d" as string]: "140ms" }}
-          >
-            {card.headline}
-          </p>
+          >{card.headline}</p>
         )}
 
         {card.company && (
           <p
-            className="card-rise mt-1.5 text-sm text-neutral-500"
+            className="card-company card-rise mt-1.5 text-sm text-neutral-500"
             style={{ ["--d" as string]: "180ms" }}
-          >
-            {card.company}
-          </p>
+          >{card.company}</p>
         )}
 
         {card.location && (
           <p
-            className="card-rise mt-3 flex items-center gap-1.5 text-xs text-neutral-400"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-xs text-neutral-400"
             style={{ ["--d" as string]: "220ms" }}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -99,11 +95,9 @@ export default function MinimalCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
             style={{ ["--d" as string]: "260ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {/* A live status line and a rule — the page was mostly whitespace

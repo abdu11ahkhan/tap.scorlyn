@@ -26,11 +26,9 @@ export default function EditorialCard({
     >
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">
         <p
-          className="card-rise text-center text-[11px] uppercase tracking-[0.35em]"
+          className="card-company card-rise text-center text-[11px] uppercase tracking-[0.35em]"
           style={{ color: ink, ["--d" as string]: "0ms" }}
-        >
-          {card.company || "Contact"}
-        </p>
+        >{card.company || "Contact"}</p>
 
         <div
           className="card-rise mt-5 border-y py-7 text-center"
@@ -38,9 +36,7 @@ export default function EditorialCard({
         >
           <h1 className="card-name text-[2.6rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
-            <p className="mt-3 text-sm italic tracking-wide text-[#1C1A17]/65">
-              {card.headline}
-            </p>
+            <p className="card-headline mt-3 text-sm italic tracking-wide text-[#1C1A17]/65">{card.headline}</p>
           )}
         </div>
 
@@ -85,7 +81,7 @@ export default function EditorialCard({
 
         {card.location && (
           <p
-            className="card-rise mt-7 flex items-center justify-center gap-1.5 text-xs uppercase tracking-[0.2em] text-[#1C1A17]/45"
+            className="card-location card-rise mt-7 flex items-center justify-center gap-1.5 text-xs uppercase tracking-[0.2em] text-[#1C1A17]/45"
             style={{ ["--d" as string]: "230ms" }}
           >
             <MapPin className="h-3 w-3" />

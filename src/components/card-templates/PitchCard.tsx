@@ -47,26 +47,20 @@ export default function PitchCard({
 
         <div className="relative mx-auto max-w-sm">
           <span
-            className="card-rise inline-block rounded-full border-2 border-ink px-4 py-1.5 text-[11px] font-black uppercase tracking-widest"
+            className="card-company card-rise inline-block rounded-full border-2 border-ink px-4 py-1.5 text-[11px] font-black uppercase tracking-widest"
             style={{ background: accent, color: onAccent, ["--d" as string]: "0ms" }}
-          >
-            {card.company || card.location || "now live"}
-          </span>
+          >{card.company || card.location || "now live"}</span>
 
           <h1
-            className="card-rise mt-6 text-[2.9rem] font-black leading-[0.92] tracking-tighter"
+            className="card-headline card-rise mt-6 text-[2.9rem] font-black leading-[0.92] tracking-tighter"
             style={{ ["--d" as string]: "70ms" }}
-          >
-            {card.headline || card.full_name}
-          </h1>
+          >{card.headline || card.full_name}</h1>
 
           {card.bio && (
             <p
-              className="card-rise mt-5 text-[15px] font-medium leading-relaxed text-white/60"
+              className="card-bio card-rise mt-5 text-[15px] font-medium leading-relaxed text-white/60"
               style={{ ["--d" as string]: "130ms" }}
-            >
-              {card.bio}
-            </p>
+            >{card.bio}</p>
           )}
 
           {primary && (
@@ -109,9 +103,7 @@ export default function PitchCard({
             <span className="text-left">
               <span className="card-name block text-[13px] font-black leading-tight">{card.full_name}</span>
               {card.location && (
-                <span className="block text-[11px] font-semibold text-white/40">
-                  {card.location}
-                </span>
+                <span className="card-location block text-[11px] font-semibold text-white/40">{card.location}</span>
               )}
             </span>
           </div>

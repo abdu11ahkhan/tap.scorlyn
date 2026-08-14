@@ -61,14 +61,12 @@ export default function GridCard({
           <div className="min-w-0 flex-1">
             <h1 className="card-name truncate text-lg font-black tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="truncate text-[13px] font-semibold" style={{ color: ink }}>
-                {role}
-              </p>
+              <p className="card-headline truncate text-[13px] font-semibold" style={{ color: ink }}>{role}</p>
             )}
           </div>
 
           {card.location && (
-            <span className="hidden items-center gap-1 text-[11px] font-bold text-black/40 sm:flex">
+            <span className="card-location hidden items-center gap-1 text-[11px] font-bold text-black/40 sm:flex">
               <MapPin className="h-3 w-3" />
               {card.location}
             </span>
@@ -77,11 +75,9 @@ export default function GridCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-6 text-[15px] leading-relaxed text-black/60"
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-black/60"
             style={{ ["--d" as string]: "80ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <p

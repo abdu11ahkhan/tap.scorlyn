@@ -51,16 +51,14 @@ export default function QuoteCard({
         </h1>
 
         {role && (
-          <p className="card-rise mt-2 text-[15px] font-semibold text-black/45">
+          <p className="card-location card-rise mt-2 text-[15px] font-semibold text-black/45">
             {role}
             {card.location ? ` · ${card.location}` : ""}
           </p>
         )}
 
         {card.bio && (
-          <p className="card-rise mt-5 text-[16px] leading-relaxed text-black/65">
-            {card.bio}
-          </p>
+          <p className="card-bio card-rise mt-5 text-[16px] leading-relaxed text-black/65">{card.bio}</p>
         )}
 
         <section className="card-rise mt-8 rounded-2xl border border-black/10 bg-white p-5">

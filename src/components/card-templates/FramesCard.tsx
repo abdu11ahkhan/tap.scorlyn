@@ -41,20 +41,16 @@ export default function FramesCard({
         <header className="card-rise text-center">
           <h1 className="card-name text-3xl font-bold tracking-tight">{card.full_name}</h1>
           {role && (
-            <p className="mt-1.5 text-[13px] font-semibold uppercase tracking-[0.22em]" style={{ color: ink }}>
-              {role}
-            </p>
+            <p className="card-headline mt-1.5 text-[13px] font-semibold uppercase tracking-[0.22em]" style={{ color: ink }}>{role}</p>
           )}
           {card.location && (
-            <p className="mt-2 flex items-center justify-center gap-1.5 text-[12px] font-medium text-black/40">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[12px] font-medium text-black/40">
               <MapPin className="h-3 w-3" />
               {card.location}
             </p>
           )}
           {card.bio && (
-            <p className="mx-auto mt-4 max-w-[20rem] text-[15px] leading-relaxed text-black/60">
-              {card.bio}
-            </p>
+            <p className="card-bio mx-auto mt-4 max-w-[20rem] text-[15px] leading-relaxed text-black/60">{card.bio}</p>
           )}
         </header>
 

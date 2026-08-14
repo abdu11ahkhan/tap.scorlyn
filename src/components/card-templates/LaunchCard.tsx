@@ -41,10 +41,8 @@ export default function LaunchCard({
       <main className="relative mx-auto w-full max-w-md px-6 py-20 text-center">
         {card.company && (
           <p
-            className="card-rise text-[11px] font-bold uppercase tracking-[0.32em] text-white/40"
-          >
-            {card.company}
-          </p>
+            className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.32em] text-white/40"
+          >{card.company}</p>
         )}
 
         <h1
@@ -54,20 +52,16 @@ export default function LaunchCard({
 
         {card.headline && (
           <p
-            className="card-rise mt-3 text-lg font-semibold"
+            className="card-headline card-rise mt-3 text-lg font-semibold"
             style={{ color: ink, ["--d" as string]: "110ms" }}
-          >
-            {card.headline}
-          </p>
+          >{card.headline}</p>
         )}
 
         {card.bio && (
           <p
-            className="card-rise mx-auto mt-5 max-w-[22rem] text-[16px] leading-relaxed text-white/55"
+            className="card-bio card-rise mx-auto mt-5 max-w-[22rem] text-[16px] leading-relaxed text-white/55"
             style={{ ["--d" as string]: "160ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {primary && (

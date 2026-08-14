@@ -71,19 +71,15 @@ export default function StudioCard({
 
       <main className="mx-auto w-full max-w-md px-5 pb-24">
         <section className="card-rise scroll-mt-16 pt-12">
-          <h1 className="text-[2.5rem] font-bold leading-[1.05] tracking-tight">
-            {card.headline || card.full_name}
-          </h1>
+          <h1 className="card-headline text-[2.5rem] font-bold leading-[1.05] tracking-tight">{card.headline || card.full_name}</h1>
           {card.company && (
-            <p className="mt-2 text-[14px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>
-              {card.company}
-            </p>
+            <p className="card-company mt-2 text-[14px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>{card.company}</p>
           )}
           {card.bio && (
-            <p className="mt-5 text-[16px] leading-relaxed text-neutral-600">{card.bio}</p>
+            <p className="card-bio mt-5 text-[16px] leading-relaxed text-neutral-600">{card.bio}</p>
           )}
           {card.location && (
-            <p className="mt-3 text-[13px] font-semibold text-neutral-400">{card.location}</p>
+            <p className="card-location mt-3 text-[13px] font-semibold text-neutral-400">{card.location}</p>
           )}
         </section>
 

@@ -56,12 +56,10 @@ export default function MasonryCard({
           <div className="min-w-0">
             <h1 className="card-name truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="truncate text-[13px] font-semibold" style={{ color: ink }}>
-                {role}
-              </p>
+              <p className="card-headline truncate text-[13px] font-semibold" style={{ color: ink }}>{role}</p>
             )}
             {card.location && (
-              <p className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-neutral-400">
+              <p className="card-location mt-0.5 flex items-center gap-1 text-[11px] font-medium text-neutral-400">
                 <MapPin className="h-3 w-3" />
                 {card.location}
               </p>
@@ -71,11 +69,9 @@ export default function MasonryCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-5 text-[15px] leading-relaxed text-neutral-600"
+            className="card-bio card-rise mt-5 text-[15px] leading-relaxed text-neutral-600"
             style={{ ["--d" as string]: "60ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {gallery.length > 0 && (

@@ -857,14 +857,76 @@ textarea.app-input {
    Guarded, because a browser without `lh` should keep today's behaviour
    rather than lose the name's height entirely.
    --------------------------------------------------------------- */
-.card-template .card-name {
-  /* Split evenly instead of leaving one orphan word on the second line. */
+.card-template .card-name,
+.card-template .card-headline,
+.card-template .card-company,
+.card-template .card-location,
+.card-template .card-bio {
+  /* Split evenly instead of leaving one orphan word on the last line. */
   text-wrap: balance;
   overflow-wrap: anywhere;
+}
+
+/* Every field keeps its own place whatever it contains.
+   The box is CAPPED, not merely reserved. min-height alone was measured and
+   changed nothing: it sets a floor, and a name that wraps to three lines in a
+   wider font simply grows past it, pushing everything below exactly as before.
+   Clamping to a line count fixes the height in both directions, so the block
+   under it starts in the same place in every font.
+
+   Line counts come from what each field actually holds: a name or a bio can
+   run to two lines, a role or a city almost never does. Heights are in `lh`,
+   so each reserves lines in its own type size — the 36 templates set type at
+   21 different sizes and a pixel height would be wrong on nearly all. */
+.card-template .card-name,
+.card-template .card-headline,
+.card-template .card-company,
+.card-template .card-location,
+.card-template .card-bio {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-template .card-name {
+  -webkit-line-clamp: 2;
+}
+
+/* The bio gets three, not two. It is the one field people write prose into,
+   and clipping a sentence to keep a layout tidy trades their words for our
+   neatness. Three lines holds a normal introduction whole. */
+.card-template .card-bio {
+  -webkit-line-clamp: 3;
+}
+
+.card-template .card-headline,
+.card-template .card-company,
+.card-template .card-location {
+  -webkit-line-clamp: 1;
 }
 
 @supports (height: 1lh) {
   .card-template .card-name {
     min-height: 2lh;
   }
+
+  .card-template .card-bio {
+    min-height: 3lh;
+  }
+
+  .card-template .card-headline,
+  .card-template .card-company,
+  .card-template .card-location {
+    min-height: 1lh;
+  }
+}
+
+/* An empty field reserves nothing. Someone who left their company blank
+   should not get a gap where it would have been. */
+.card-template .card-name:empty,
+.card-template .card-headline:empty,
+.card-template .card-company:empty,
+.card-template .card-location:empty,
+.card-template .card-bio:empty {
+  min-height: 0;
 }

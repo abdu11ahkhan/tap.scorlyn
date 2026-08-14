@@ -77,17 +77,15 @@ export default function TapeCard({
           <h1 className="card-name text-3xl font-black leading-tight tracking-tight">{card.full_name}</h1>
           {card.headline && (
             <span
-              className="mt-2 inline-block -rotate-1 px-2 py-0.5 text-sm font-bold"
+              className="card-headline mt-2 inline-block -rotate-1 px-2 py-0.5 text-sm font-bold"
               style={{ background: `${accent}66` }}
-            >
-              {card.headline}
-            </span>
+            >{card.headline}</span>
           )}
           {card.company && (
-            <p className="mt-2 text-sm text-[#1A1A1A]/55">{card.company}</p>
+            <p className="card-company mt-2 text-sm text-[#1A1A1A]/55">{card.company}</p>
           )}
           {card.location && (
-            <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-[#1A1A1A]/45">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-xs text-[#1A1A1A]/45">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
@@ -96,11 +94,9 @@ export default function TapeCard({
 
         {card.bio && (
           <p
-            className="card-rise mx-auto mt-6 max-w-[19rem] rotate-[0.6deg] bg-white p-5 text-center text-[15px] leading-relaxed text-[#1A1A1A]/75 shadow-[0_6px_18px_rgba(0,0,0,0.1)]"
+            className="card-bio card-rise mx-auto mt-6 max-w-[19rem] rotate-[0.6deg] bg-white p-5 text-center text-[15px] leading-relaxed text-[#1A1A1A]/75 shadow-[0_6px_18px_rgba(0,0,0,0.1)]"
             style={{ ["--d" as string]: "150ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {/* Generous gap: the tape tab sits above each strip, so tight spacing

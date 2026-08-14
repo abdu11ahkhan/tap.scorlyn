@@ -36,11 +36,9 @@ export default function CaseCard({
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <p
-          className="card-rise text-[11px] font-bold uppercase tracking-[0.28em]"
+          className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.28em]"
           style={{ color: ink }}
-        >
-          {card.company || "Selected work"}
-        </p>
+        >{card.company || "Selected work"}</p>
 
         <h1
           className="card-name card-rise mt-3 text-[2.4rem] font-bold leading-[1.05] tracking-tight"
@@ -49,7 +47,7 @@ export default function CaseCard({
 
         {card.headline && (
           <p
-            className="card-rise mt-2 text-[15px] font-semibold text-neutral-500"
+            className="card-location card-rise mt-2 text-[15px] font-semibold text-neutral-500"
             style={{ ["--d" as string]: "110ms" }}
           >
             {card.headline}
@@ -59,11 +57,9 @@ export default function CaseCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-6 border-l-2 pl-4 text-[16px] leading-relaxed text-neutral-700"
+            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[16px] leading-relaxed text-neutral-700"
             style={{ borderColor: accent, ["--d" as string]: "160ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {gallery.length > 0 && (

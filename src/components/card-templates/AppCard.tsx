@@ -54,9 +54,7 @@ export default function AppCard({
           <div className="min-w-0 flex-1">
             <h1 className="card-name truncate text-xl font-black tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="truncate text-[13px] font-semibold text-black/50">
-                {role}
-              </p>
+              <p className="card-headline truncate text-[13px] font-semibold text-black/50">{role}</p>
             )}
             <div className="mt-1 flex items-center gap-1">
               {[0, 1, 2, 3, 4].map((i) => (
@@ -106,11 +104,9 @@ export default function AppCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-7 text-[15px] leading-relaxed text-black/65"
+            className="card-bio card-rise mt-7 text-[15px] leading-relaxed text-black/65"
             style={{ ["--d" as string]: "190ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {rest.length > 0 && (

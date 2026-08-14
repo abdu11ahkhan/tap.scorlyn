@@ -74,18 +74,16 @@ export default function StackCard({
 
           {card.headline && (
             <p
-              className="card-rise mt-2.5 text-sm font-black uppercase tracking-[0.18em]"
+              className="card-headline card-rise mt-2.5 text-sm font-black uppercase tracking-[0.18em]"
               style={{ color: ink, ["--d" as string]: "120ms" }}
-            >
-              {card.headline}
-            </p>
+            >{card.headline}</p>
           )}
 
           <div
-            className="card-rise mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-black/45"
+            className="card-location card-rise mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-black/45"
             style={{ ["--d" as string]: "160ms" }}
           >
-            {card.company && <span>{card.company}</span>}
+            {card.company && <span className="card-company">{card.company}</span>}
             {card.location && (
               <span className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -101,7 +99,7 @@ export default function StackCard({
             <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
               about
             </h2>
-            <p className="mt-4 text-[17px] leading-[1.7] text-black/75">{card.bio}</p>
+            <p className="card-bio mt-4 text-[17px] leading-[1.7] text-black/75">{card.bio}</p>
           </section>
         )}
 

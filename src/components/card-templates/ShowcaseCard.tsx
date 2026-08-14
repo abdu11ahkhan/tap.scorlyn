@@ -59,17 +59,15 @@ export default function ShowcaseCard({
           >{card.full_name}</h1>
           {card.headline && (
             <p
-              className="card-rise mt-2 text-sm font-black uppercase tracking-[0.2em]"
+              className="card-headline card-rise mt-2 text-sm font-black uppercase tracking-[0.2em]"
               style={{ color: ink, ["--d" as string]: "70ms" }}
-            >
-              {card.headline}
-            </p>
+            >{card.headline}</p>
           )}
           <div
-            className="card-rise mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-white/50"
+            className="card-location card-rise mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-white/50"
             style={{ ["--d" as string]: "110ms" }}
           >
-            {card.company && <span>{card.company}</span>}
+            {card.company && <span className="card-company">{card.company}</span>}
             {card.location && (
               <span className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -83,11 +81,9 @@ export default function ShowcaseCard({
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-8">
         {card.bio && (
           <p
-            className="card-rise text-[15px] leading-relaxed text-white/65"
+            className="card-bio card-rise text-[15px] leading-relaxed text-white/65"
             style={{ ["--d" as string]: "150ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <div className="mt-9 space-y-3">

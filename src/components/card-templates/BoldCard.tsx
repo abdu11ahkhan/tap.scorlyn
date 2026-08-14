@@ -60,7 +60,7 @@ export default function BoldCard({
             )}
           </div>
           {card.location && (
-            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-neutral-400">
+            <p className="card-location flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-neutral-400">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
@@ -74,32 +74,26 @@ export default function BoldCard({
 
         {card.headline && (
           <p
-            className="card-rise mt-4 inline-block bg-clip-text text-lg font-bold leading-snug text-transparent"
+            className="card-headline card-rise mt-4 inline-block bg-clip-text text-lg font-bold leading-snug text-transparent"
             style={{
               backgroundImage: `linear-gradient(100deg, ${accent}, ${accent}AA)`,
               ["--d" as string]: "160ms",
             }}
-          >
-            {card.headline}
-          </p>
+          >{card.headline}</p>
         )}
 
         {card.company && (
           <p
-            className="card-rise mt-1 text-sm font-semibold text-neutral-500"
+            className="card-company card-rise mt-1 text-sm font-semibold text-neutral-500"
             style={{ ["--d" as string]: "200ms" }}
-          >
-            {card.company}
-          </p>
+          >{card.company}</p>
         )}
 
         {card.bio && (
           <p
-            className="card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
             style={{ ["--d" as string]: "240ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <nav className="mt-10 space-y-2.5">

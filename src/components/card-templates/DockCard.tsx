@@ -56,15 +56,13 @@ export default function DockCard({
           <h1 className="card-name card-rise text-4xl font-bold leading-tight tracking-tight">{card.full_name}</h1>
           {role && (
             <p
-              className="card-rise mt-1.5 text-sm font-semibold"
+              className="card-headline card-rise mt-1.5 text-sm font-semibold"
               style={{ color: ink, ["--d" as string]: "80ms" }}
-            >
-              {role}
-            </p>
+            >{role}</p>
           )}
           {card.location && (
             <p
-              className="card-rise mt-2 flex items-center gap-1.5 text-xs font-medium text-white/45"
+              className="card-location card-rise mt-2 flex items-center gap-1.5 text-xs font-medium text-white/45"
               style={{ ["--d" as string]: "120ms" }}
             >
               <MapPin className="h-3 w-3" />
@@ -73,11 +71,9 @@ export default function DockCard({
           )}
           {card.bio && (
             <p
-              className="card-rise mt-3 max-w-sm text-[14px] leading-relaxed text-white/60"
+              className="card-bio card-rise mt-3 max-w-sm text-[14px] leading-relaxed text-white/60"
               style={{ ["--d" as string]: "160ms" }}
-            >
-              {card.bio}
-            </p>
+            >{card.bio}</p>
           )}
         </div>
       </div>

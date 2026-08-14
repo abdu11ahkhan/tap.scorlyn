@@ -82,25 +82,21 @@ export default function SplitCard({
 
         {card.headline && (
           <p
-            className="card-rise relative mt-3 text-base font-medium opacity-90"
+            className="card-headline card-rise relative mt-3 text-base font-medium opacity-90"
             style={{ ["--d" as string]: "150ms" }}
-          >
-            {card.headline}
-          </p>
+          >{card.headline}</p>
         )}
 
         {card.company && (
           <p
-            className="card-rise relative mt-1 text-sm opacity-70"
+            className="card-company card-rise relative mt-1 text-sm opacity-70"
             style={{ ["--d" as string]: "190ms" }}
-          >
-            {card.company}
-          </p>
+          >{card.company}</p>
         )}
 
         {card.location && (
           <p
-            className="card-rise relative mt-4 flex items-center gap-1.5 text-xs opacity-70"
+            className="card-location card-rise relative mt-4 flex items-center gap-1.5 text-xs opacity-70"
             style={{ ["--d" as string]: "230ms" }}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -113,11 +109,9 @@ export default function SplitCard({
       <main className="px-6 py-12 md:flex md:max-w-lg md:flex-1 md:flex-col md:justify-center md:px-12">
         {card.bio && (
           <p
-            className="card-rise mb-8 text-[15px] leading-relaxed text-neutral-600"
+            className="card-bio card-rise mb-8 text-[15px] leading-relaxed text-neutral-600"
             style={{ ["--d" as string]: "260ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <nav className="space-y-2.5">

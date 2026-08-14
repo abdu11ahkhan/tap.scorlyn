@@ -55,9 +55,7 @@ export default function ReelCard({
         <div className="min-w-0 flex-1">
           <p className="card-name truncate text-sm font-black tracking-tight">{card.full_name}</p>
           {role && (
-            <p className="truncate text-[11px] font-semibold text-white/45">
-              {role}
-            </p>
+            <p className="card-headline truncate text-[11px] font-semibold text-white/45">{role}</p>
           )}
         </div>
         <SaveContact
@@ -70,7 +68,7 @@ export default function ReelCard({
       </header>
 
       {card.bio && (
-        <p className="px-5 py-6 text-[15px] leading-relaxed text-white/60">{card.bio}</p>
+        <p className="card-bio px-5 py-6 text-[15px] leading-relaxed text-white/60">{card.bio}</p>
       )}
 
       {/* The reel */}

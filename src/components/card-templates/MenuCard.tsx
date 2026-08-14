@@ -49,16 +49,12 @@ export default function MenuCard({
           <h1 className="card-name text-[2.6rem] font-bold leading-none tracking-tight">{card.full_name}</h1>
           {role && (
             <p
-              className="mt-2 text-[12px] font-bold uppercase tracking-[0.28em]"
+              className="card-headline mt-2 text-[12px] font-bold uppercase tracking-[0.28em]"
               style={{ color: ink }}
-            >
-              {role}
-            </p>
+            >{role}</p>
           )}
           {card.bio && (
-            <p className="mx-auto mt-4 max-w-[21rem] text-[15px] leading-relaxed text-black/55">
-              {card.bio}
-            </p>
+            <p className="card-bio mx-auto mt-4 max-w-[21rem] text-[15px] leading-relaxed text-black/55">{card.bio}</p>
           )}
         </header>
 

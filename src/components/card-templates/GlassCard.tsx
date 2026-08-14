@@ -84,23 +84,21 @@ export default function GlassCard({
 
           {card.headline && (
             <p
-              className="mt-1.5 text-sm font-semibold"
+              className="card-headline mt-1.5 text-sm font-semibold"
               style={{ color: ink, textShadow: `0 0 22px ${accent}66` }}
-            >
-              {card.headline}
-            </p>
+            >{card.headline}</p>
           )}
 
-          {card.company && <p className="mt-1 text-sm text-slate-400">{card.company}</p>}
+          {card.company && <p className="card-company mt-1 text-sm text-slate-400">{card.company}</p>}
 
           {card.location && (
-            <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-500">
+            <p className="card-location mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-500">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
           )}
 
-          {card.bio && <p className="mt-5 text-sm leading-relaxed text-slate-300">{card.bio}</p>}
+          {card.bio && <p className="card-bio mt-5 text-sm leading-relaxed text-slate-300">{card.bio}</p>}
         </div>
 
         <nav className="mt-4 space-y-2.5">

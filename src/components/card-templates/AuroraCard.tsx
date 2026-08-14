@@ -56,19 +56,19 @@ export default function AuroraCard({
           <h1 className="card-name mt-7 text-4xl font-bold leading-tight tracking-tight drop-shadow-lg">{card.full_name}</h1>
 
           {card.headline && (
-            <p className="mt-2 text-base font-medium text-white/85">{card.headline}</p>
+            <p className="card-headline mt-2 text-base font-medium text-white/85">{card.headline}</p>
           )}
-          {card.company && <p className="mt-0.5 text-sm text-white/60">{card.company}</p>}
+          {card.company && <p className="card-company mt-0.5 text-sm text-white/60">{card.company}</p>}
 
           {card.location && (
-            <p className="mt-3 flex items-center gap-1.5 text-xs text-white/60">
+            <p className="card-location mt-3 flex items-center gap-1.5 text-xs text-white/60">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
           )}
 
           {card.bio && (
-            <p className="mt-5 text-sm leading-relaxed text-white/75">{card.bio}</p>
+            <p className="card-bio mt-5 text-sm leading-relaxed text-white/75">{card.bio}</p>
           )}
         </div>
 

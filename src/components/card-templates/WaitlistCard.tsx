@@ -40,19 +40,15 @@ export default function WaitlistCard({
         </div>
 
         <h1
-          className="card-rise mt-7 text-5xl font-black leading-[0.9] tracking-tighter"
+          className="card-headline card-rise mt-7 text-5xl font-black leading-[0.9] tracking-tighter"
           style={{ ["--d" as string]: "70ms" }}
-        >
-          {card.headline || card.full_name}
-        </h1>
+        >{card.headline || card.full_name}</h1>
 
         {card.bio && (
           <p
-            className="card-rise mt-5 text-[15px] leading-relaxed text-white/60"
+            className="card-bio card-rise mt-5 text-[15px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "130ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {/* No backend: a GET mailto form still opens a pre-addressed email. */}

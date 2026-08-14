@@ -84,7 +84,7 @@ export default function MonoCard({
             </div>
           )}
           {card.location && (
-            <div className="card-rise flex gap-3" style={{ ["--d" as string]: "170ms" }}>
+            <div className="card-location card-rise flex gap-3" style={{ ["--d" as string]: "170ms" }}>
               <dt className="w-20 shrink-0 text-neutral-600">loc</dt>
               <dd className="text-neutral-300">{card.location}</dd>
             </div>
@@ -93,11 +93,9 @@ export default function MonoCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-6 border-l-2 pl-4 text-[13px] leading-relaxed text-neutral-400"
+            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[13px] leading-relaxed text-neutral-400"
             style={{ borderColor: `${accent}55`, ["--d" as string]: "210ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         <nav

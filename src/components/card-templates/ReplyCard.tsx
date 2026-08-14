@@ -61,20 +61,16 @@ export default function ReplyCard({
           <div className="min-w-0">
             <h1 className="card-name text-2xl font-black leading-tight tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="text-sm font-bold" style={{ color: ink }}>
-                {role}
-              </p>
+              <p className="card-headline text-sm font-bold" style={{ color: ink }}>{role}</p>
             )}
           </div>
         </header>
 
         {card.bio && (
           <p
-            className="card-rise mt-6 text-[15px] leading-relaxed text-black/60"
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-black/60"
             style={{ ["--d" as string]: "70ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {/* The form is the point of this template. */}

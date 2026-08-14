@@ -55,20 +55,16 @@ export default function FilmstripCard({
           <div className="min-w-0">
             <h1 className="card-name truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="truncate text-[13px] font-semibold" style={{ color: ink }}>
-                {role}
-              </p>
+              <p className="card-headline truncate text-[13px] font-semibold" style={{ color: ink }}>{role}</p>
             )}
           </div>
         </header>
 
         {card.bio && (
           <p
-            className="card-rise mt-5 px-5 text-[15px] leading-relaxed text-white/55"
+            className="card-bio card-rise mt-5 px-5 text-[15px] leading-relaxed text-white/55"
             style={{ ["--d" as string]: "60ms" }}
-          >
-            {card.bio}
-          </p>
+          >{card.bio}</p>
         )}
 
         {gallery.length > 0 && (
