@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import ActionButton from "../ActionButton";
 import ProofLink from "../orders/[id]/ProofLink";
 import ConfirmByName from "../ConfirmByName";
-import { deleteCard, setCardApproval } from "../actions";
+import { deleteCard, setCardApproval, assignMissingFinishes } from "../actions";
 import { CARD_TEMPLATES } from "@/lib/card";
 
 export const dynamic = "force-dynamic";
@@ -36,9 +36,11 @@ type CardRow = {
 export default async function AdminCards({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; needs?: string }>;
 }) {
-  const { q, page } = await searchParams;
+  const { q, page, needs } = await searchParams;
+  /** Show only the cards that cannot be printed yet. */
+  const needsOnly = needs === "design";
   const currentPage = Math.max(1, Number(page) || 1);
   const from = (currentPage - 1) * PAGE_SIZE;
 
@@ -60,7 +62,11 @@ export default async function AdminCards({
   }
 
   const { data, count, error } = await query;
-  const cards: CardRow[] = data ?? [];
+  const all: CardRow[] = data ?? [];
+  const needsDesign = all.filter((c) => !c.nfc_finish && !c.nfc_artwork_path);
+  // Filtered after fetching rather than in the query: the banner has to show a
+  // true count even while the list is narrowed to it.
+  const cards: CardRow[] = needsOnly ? needsDesign : all;
   const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -104,19 +110,42 @@ export default async function AdminCards({
         </div>
       )}
 
-        {/* The ones that cannot be printed yet. Without this they are invisible
-          until someone scrolls the whole list looking for "choose & print". */}
-      {cards.filter((c) => !c.nfc_finish && !c.nfc_artwork_path).length > 0 && (
+        {/* The ones that cannot be printed yet, and the two things worth doing
+          about them: see just those cards, or give them all a design that
+          matches their page. Counting a problem is not solving it. */}
+      {needsDesign.length > 0 && (
         <div className="app-panel app-panel-pad mb-4 flex flex-wrap items-center justify-between gap-3 border-amber-400/40">
-          <p className="text-sm font-semibold text-white/70">
-            <span className="font-black text-amber-300">
-              {cards.filter((c) => !c.nfc_finish && !c.nfc_artwork_path).length} cards
-            </span>{" "}
-            have no NFC design chosen — there is nothing to print for them yet.
-          </p>
-          <span className="text-xs font-semibold text-white/40">
-            Open any one and pick a design on their behalf.
-          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white/70">
+              <span className="font-black text-amber-300">
+                {needsDesign.length} card{needsDesign.length === 1 ? "" : "s"}
+              </span>{" "}
+              have no NFC design — nothing to print for them yet.
+            </p>
+            <p className="mt-1 text-xs font-semibold text-white/40">
+              Assigning gives each one a design matching their page. Anyone can
+              change it afterwards.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <Link
+              href={needsOnly ? "/admin/cards" : "/admin/cards?needs=design"}
+              className="app-pill inline-flex"
+            >
+              {needsOnly ? "show all cards" : "show only these"}
+            </Link>
+            <ActionButton
+              action={async () => {
+                "use server";
+                const r = await assignMissingFinishes();
+                return { ok: r.ok, error: r.error };
+              }}
+              variant="acid"
+              confirm={`Give all ${needsDesign.length} a design matching their page? Each can be changed afterwards.`}
+            >
+              assign designs
+            </ActionButton>
+          </div>
         </div>
       )}
 

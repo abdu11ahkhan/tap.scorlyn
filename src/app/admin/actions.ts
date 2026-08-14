@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { suggestedFinish } from "@/lib/nfc-finish";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { mailerConfigured, sendReceipt } from "@/lib/email";
@@ -848,6 +849,57 @@ export async function setCardApproval(
 
     revalidatePath("/admin/cards");
     return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Gives every card without a design one that matches its page.
+ *
+ * Six of ten live cards had none, so there was nothing to print for them and
+ * no way to act on it short of opening each in turn. This picks a defensible
+ * default per card — an exact match where the template shares a finish name,
+ * otherwise a dark or light card to match their page — and the customer or
+ * admin can change it afterwards like any other choice.
+ *
+ * Only touches cards that have no design at all. A choice someone already
+ * made is never overwritten.
+ */
+export async function assignMissingFinishes(): Promise<
+  Result<{ assigned: number }>
+> {
+  try {
+    const { supabase } = await assertAdmin();
+
+    const { data: cards, error: readError } = await supabase
+      .from("card_profiles")
+      .select("id, template")
+      .is("nfc_finish", null)
+      .is("nfc_artwork_path", null);
+    if (readError) throw new Error(readError.message);
+    if (!cards?.length) return { ok: true, data: { assigned: 0 } };
+
+    // One statement per card: the finish differs per row, so a single update
+    // cannot express it, and a wrong bulk value would be worse than slow.
+    let assigned = 0;
+    for (const card of cards) {
+      const { data, error } = await supabase
+        .from("card_profiles")
+        .update({
+          nfc_finish: suggestedFinish(card.template),
+          nfc_chosen_at: new Date().toISOString(),
+        })
+        .eq("id", card.id)
+        // RLS refuses by matching nothing rather than erroring, so a blocked
+        // write would otherwise be counted as a success.
+        .select("id");
+      if (error) throw new Error(error.message);
+      if (data?.length) assigned += 1;
+    }
+
+    revalidatePath("/admin/cards");
+    return { ok: true, data: { assigned } };
   } catch (e) {
     return fail(e);
   }
