@@ -44,7 +44,7 @@ export default function FramesCard({
             <p className="card-headline mt-1.5 text-[13px] font-semibold uppercase tracking-[0.25em]" style={{ color: ink }}>{role}</p>
           )}
           {card.location && (
-            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-black/40">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-black/35">
               <MapPin className="h-3 w-3" />
               {card.location}
             </p>
@@ -73,7 +73,7 @@ export default function FramesCard({
                     className="aspect-square w-full object-cover"
                   />
                 </div>
-                <figcaption className="mt-3 text-center text-[13px] font-semibold text-black/50">
+                <figcaption className="mt-3 text-center text-[13px] font-semibold text-black/45">
                   {item.caption || `No. ${index + 1}`}
                 </figcaption>
               </figure>

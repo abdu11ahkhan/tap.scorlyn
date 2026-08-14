@@ -68,7 +68,7 @@ export default function PosterCard({
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[13px] font-semibold text-white/50"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[13px] font-semibold text-white/45"
             style={{ ["--d" as string]: "170ms" }}
           >
             <MapPin className="h-4 w-4" />
@@ -121,7 +121,7 @@ export default function PosterCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 text-[11px] font-black uppercase tracking-[0.25em] text-white/40 hover:text-white"
+          className="card-rise mt-8 text-[11px] font-black uppercase tracking-[0.25em] text-white/35 hover:text-white"
           style={{ ["--d" as string]: "360ms" }}
         >
           save to contacts

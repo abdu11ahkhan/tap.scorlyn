@@ -62,7 +62,7 @@ export default function FilmstripCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 px-5 text-[15px] leading-relaxed text-white/55"
+            className="card-bio card-rise mt-5 px-5 text-[15px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}

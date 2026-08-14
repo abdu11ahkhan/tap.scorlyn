@@ -62,7 +62,7 @@ export default function MosaicCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 px-1 text-[15px] leading-relaxed text-white/55"
+            className="card-bio card-rise mt-5 px-1 text-[15px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
@@ -86,7 +86,7 @@ export default function MosaicCard({
                     className={`w-full object-cover ${wide ? "aspect-[2/1]" : "aspect-square"}`}
                   />
                   {item.caption && (
-                    <figcaption className="px-3 py-2 text-[11px] font-semibold text-white/40">
+                    <figcaption className="px-3 py-2 text-[11px] font-semibold text-white/35">
                       {item.caption}
                     </figcaption>
                   )}

@@ -48,7 +48,7 @@ export default function AgencyCard({
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-white/45 transition-colors hover:bg-white/10 hover:text-white"
             >
               {section.label}
             </a>
@@ -100,7 +100,7 @@ export default function AgencyCard({
             )}
           </div>
           {card.bio && (
-            <p className="card-bio mt-5 text-[15px] leading-relaxed text-white/65">{card.bio}</p>
+            <p className="card-bio mt-5 text-[15px] leading-relaxed text-white/60">{card.bio}</p>
           )}
         </div>
       </section>

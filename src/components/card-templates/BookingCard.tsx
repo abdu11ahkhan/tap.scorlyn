@@ -94,7 +94,7 @@ export default function BookingCard({
           <form action={email ? `mailto:${email}` : undefined} method="get" className="mt-5">
             <input type="hidden" name="subject" value="Booking request" />
 
-            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-black/40">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-black/35">
               <Clock className="h-3 w-3" />
               preferred time
             </p>
@@ -131,7 +131,7 @@ export default function BookingCard({
               placeholder="Your email"
               aria-label="Your email"
               disabled={!email}
-              className="mt-4 h-13 w-full rounded-xl border border-black/12 bg-[#FAFCFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/30 focus:border-black/40 disabled:opacity-50"
+              className="mt-4 h-13 w-full rounded-xl border border-black/12 bg-[#FAFCFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/25 focus:border-black/40 disabled:opacity-50"
             />
 
             <button

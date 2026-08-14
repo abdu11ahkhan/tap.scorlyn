@@ -52,7 +52,7 @@ export default function ContactSheetCard({
             </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-semibold uppercase tracking-widest text-black/40">
+          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-semibold uppercase tracking-widest text-black/35">
             {card.company && <span className="card-company">{card.company}</span>}
             {card.location && <span className="card-location">{card.location}</span>}
             {gallery.length > 0 && <span>{gallery.length} frames</span>}
@@ -61,7 +61,7 @@ export default function ContactSheetCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 text-[13px] leading-relaxed text-black/65"
+            className="card-bio card-rise mt-5 text-[13px] leading-relaxed text-black/60"
             style={{ ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}

@@ -54,7 +54,7 @@ export default function MenuCard({
             >{role}</p>
           )}
           {card.bio && (
-            <p className="card-bio mx-auto mt-4 max-w-[21rem] text-[15px] leading-relaxed text-black/55">{card.bio}</p>
+            <p className="card-bio mx-auto mt-4 max-w-[21rem] text-[15px] leading-relaxed text-black/60">{card.bio}</p>
           )}
         </header>
 

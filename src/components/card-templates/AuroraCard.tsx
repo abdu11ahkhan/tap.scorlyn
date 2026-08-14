@@ -56,7 +56,7 @@ export default function AuroraCard({
           <h1 className="card-name mt-7 text-[36px] font-bold leading-tight tracking-tight drop-shadow-lg">{card.full_name}</h1>
 
           {card.headline && (
-            <p className="card-headline mt-2 text-[15px] font-medium text-white/85">{card.headline}</p>
+            <p className="card-headline mt-2 text-[15px] font-medium text-white/80">{card.headline}</p>
           )}
           {card.company && <p className="card-company mt-0.5 text-[13px] text-white/60">{card.company}</p>}
 
@@ -68,7 +68,7 @@ export default function AuroraCard({
           )}
 
           {card.bio && (
-            <p className="card-bio mt-5 text-[13px] leading-relaxed text-white/75">{card.bio}</p>
+            <p className="card-bio mt-5 text-[13px] leading-relaxed text-white/80">{card.bio}</p>
           )}
         </div>
 
@@ -94,7 +94,7 @@ export default function AuroraCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] text-white/50 transition-colors hover:text-white"
+          className="card-rise mt-6 block text-center text-[11px] text-white/45 transition-colors hover:text-white"
           style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts

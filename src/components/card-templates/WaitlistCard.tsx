@@ -111,14 +111,14 @@ export default function WaitlistCard({
               />
             ))}
           </div>
-          <p className="text-[13px] font-bold text-white/50">
+          <p className="text-[13px] font-bold text-white/45">
             <span className="text-white">248 people</span> already on the list
           </p>
         </div>
 
         <div className="my-8 h-px w-full bg-white/10" />
 
-        <p className="text-[11px] font-black uppercase tracking-[0.25em] text-white/30">
+        <p className="text-[11px] font-black uppercase tracking-[0.25em] text-white/25">
           find me elsewhere
         </p>
 
@@ -144,7 +144,7 @@ export default function WaitlistCard({
           })}
         </div>
 
-        <p className="mt-12 text-[11px] font-bold text-white/30">
+        <p className="mt-12 text-[11px] font-bold text-white/25">
           {card.full_name}
           {card.company ? ` · ${card.company}` : ""}
         </p>

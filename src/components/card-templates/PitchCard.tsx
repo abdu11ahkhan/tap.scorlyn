@@ -103,7 +103,7 @@ export default function PitchCard({
             <span className="text-left">
               <span className="card-name block text-[13px] font-black leading-tight">{card.full_name}</span>
               {card.location && (
-                <span className="card-location block text-[11px] font-semibold text-white/40">{card.location}</span>
+                <span className="card-location block text-[11px] font-semibold text-white/35">{card.location}</span>
               )}
             </span>
           </div>
@@ -133,7 +133,7 @@ export default function PitchCard({
       {/* Supporting links, read as proof points */}
       {rest.length > 0 && (
         <section className="px-6 py-12">
-          <p className="mx-auto mb-4 max-w-sm text-[11px] font-black uppercase tracking-[0.25em] text-white/30">
+          <p className="mx-auto mb-4 max-w-sm text-[11px] font-black uppercase tracking-[0.25em] text-white/25">
             also here
           </p>
           <div className="mx-auto max-w-sm space-y-3">
@@ -166,7 +166,7 @@ export default function PitchCard({
       <footer className="px-6 pb-20 pt-4 text-center">
         <SaveContact
           card={card}
-          className="text-[11px] font-black uppercase tracking-widest text-white/30 hover:text-white"
+          className="text-[11px] font-black uppercase tracking-widest text-white/25 hover:text-white"
         >
           save to contacts
         </SaveContact>

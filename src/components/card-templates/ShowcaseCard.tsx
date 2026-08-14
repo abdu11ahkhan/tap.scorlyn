@@ -43,7 +43,7 @@ export default function ShowcaseCard({
               backgroundImage: `radial-gradient(at 25% 25%, ${accent} 0px, transparent 60%), radial-gradient(at 75% 75%, ${accent}88 0px, transparent 60%)`,
             }}
           >
-            <span className="absolute inset-0 flex items-center justify-center text-8xl font-black text-white/15">
+            <span className="absolute inset-0 flex items-center justify-center text-8xl font-black text-white/25">
               {initialsOf(card.full_name)}
             </span>
           </div>
@@ -64,7 +64,7 @@ export default function ShowcaseCard({
             >{card.headline}</p>
           )}
           <div
-            className="card-location card-rise mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-white/50"
+            className="card-location card-rise mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-white/45"
             style={{ ["--d" as string]: "110ms" }}
           >
             {card.company && <span className="card-company">{card.company}</span>}
@@ -81,7 +81,7 @@ export default function ShowcaseCard({
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-8">
         {card.bio && (
           <p
-            className="card-bio card-rise text-[15px] leading-relaxed text-white/65"
+            className="card-bio card-rise text-[15px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "150ms" }}
           >{card.bio}</p>
         )}
@@ -112,7 +112,7 @@ export default function ShowcaseCard({
                     {String(index + 1).padStart(2, "0")} · view
                   </span>
                 </span>
-                <ArrowUpRight className="h-4 w-4 shrink-0 text-white/30 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
             );
           })}
@@ -120,7 +120,7 @@ export default function ShowcaseCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-9 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-white/30 hover:text-white"
+          className="card-rise mt-9 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-white/25 hover:text-white"
           style={{ ["--d" as string]: `${230 + buttons.length * 60}ms` }}
         >
           save to contacts

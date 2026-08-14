@@ -96,7 +96,7 @@ export default function ReplyCard({
               placeholder="Subject"
               aria-label="Subject"
               disabled={!email}
-              className="h-13 w-full rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/30 focus:border-black/40 disabled:opacity-50"
+              className="h-13 w-full rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/25 focus:border-black/40 disabled:opacity-50"
             />
             <textarea
               name="body"
@@ -105,7 +105,7 @@ export default function ReplyCard({
               placeholder="What's on your mind?"
               aria-label="Message"
               disabled={!email}
-              className="w-full resize-none rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/30 focus:border-black/40 disabled:opacity-50"
+              className="w-full resize-none rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/25 focus:border-black/40 disabled:opacity-50"
             />
             <button
               type="submit"

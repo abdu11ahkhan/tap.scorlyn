@@ -66,7 +66,7 @@ export default function GridCard({
           </div>
 
           {card.location && (
-            <span className="card-location hidden items-center gap-1 text-[11px] font-bold text-black/40 sm:flex">
+            <span className="card-location hidden items-center gap-1 text-[11px] font-bold text-black/35 sm:flex">
               <MapPin className="h-3 w-3" />
               {card.location}
             </span>

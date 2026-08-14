@@ -70,7 +70,7 @@ export default function OrbitCard({
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] font-medium text-white/40"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] font-medium text-white/35"
             style={{ ["--d" as string]: "180ms" }}
           >
             <MapPin className="h-3 w-3" />
@@ -80,7 +80,7 @@ export default function OrbitCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 max-w-[19rem] text-[15px] leading-relaxed text-white/55"
+            className="card-bio card-rise mt-5 max-w-[19rem] text-[15px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "220ms" }}
           >{card.bio}</p>
         )}
@@ -104,7 +104,7 @@ export default function OrbitCard({
                 }}
               >
                 <Icon
-                  className="h-5 w-5 text-white/75 transition-colors group-hover:text-white"
+                  className="h-5 w-5 text-white/80 transition-colors group-hover:text-white"
                   style={{ color: undefined }}
                 />
                 <span

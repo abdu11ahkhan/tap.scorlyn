@@ -78,14 +78,14 @@ export default function NeonCard({
 
         {card.company && (
           <p
-            className="card-company card-rise mt-2 text-[13px] text-white/50"
+            className="card-company card-rise mt-2 text-[13px] text-white/45"
             style={{ ["--d" as string]: "180ms" }}
           >{card.company}</p>
         )}
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center justify-center gap-1.5 text-[11px] text-white/40"
+            className="card-location card-rise mt-3 flex items-center justify-center gap-1.5 text-[11px] text-white/35"
             style={{ ["--d" as string]: "220ms" }}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -95,7 +95,7 @@ export default function NeonCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-[13px] leading-relaxed text-white/65"
+            className="card-bio card-rise mt-6 text-[13px] leading-relaxed text-white/60"
             style={{ ["--d" as string]: "260ms" }}
           >{card.bio}</p>
         )}

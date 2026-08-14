@@ -37,7 +37,7 @@ export default function JournalCard({
           <p className="card-company text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: ink }}>{card.company || "Notes"}</p>
           <h1 className="card-name mt-3 font-serif text-[2.7rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
-            <p className="card-location mt-2 font-serif text-[18px] italic text-black/50">
+            <p className="card-location mt-2 font-serif text-[18px] italic text-black/45">
               {card.headline}
               {card.location ? `, ${card.location}` : ""}
             </p>
@@ -46,7 +46,7 @@ export default function JournalCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-7 font-serif text-[18px] leading-[1.7] text-black/75"
+            className="card-bio card-rise mt-7 font-serif text-[18px] leading-[1.7] text-black/80"
             style={{ ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
@@ -65,7 +65,7 @@ export default function JournalCard({
                   <img src={item.url} alt={item.caption ?? ""} className="w-full" />
                 </div>
                 {item.caption && (
-                  <p className="mt-3 font-serif text-[15px] italic leading-relaxed text-black/50">
+                  <p className="mt-3 font-serif text-[15px] italic leading-relaxed text-black/45">
                     {item.caption}
                   </p>
                 )}

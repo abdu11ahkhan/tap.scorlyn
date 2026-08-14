@@ -40,7 +40,7 @@ export default function StackCard({
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="card-avatar shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-black/50 transition-colors hover:bg-black/5 hover:text-black"
+              className="card-avatar shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-black/45 transition-colors hover:bg-black/5 hover:text-black"
             >
               {section.label}
             </a>
@@ -99,7 +99,7 @@ export default function StackCard({
             <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
               about
             </h2>
-            <p className="card-bio mt-4 text-[18px] leading-[1.7] text-black/75">{card.bio}</p>
+            <p className="card-bio mt-4 text-[18px] leading-[1.7] text-black/80">{card.bio}</p>
           </section>
         )}
 
