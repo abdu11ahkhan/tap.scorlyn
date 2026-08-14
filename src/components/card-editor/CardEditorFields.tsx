@@ -153,6 +153,7 @@ export default function CardEditorFields({
       <TemplatePicker
         value={form.template}
         accent={form.accent_color}
+        surface={form.surface_color}
         onChange={(template) => onFormChange({ template })}
       />
 

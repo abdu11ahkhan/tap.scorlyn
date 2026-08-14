@@ -56,10 +56,40 @@ const SKINS: Record<string, Skin> = {
   studio: { bg: "#ffffff", ink: "#111111", shape: "split", paper: true },
   tiles: { bg: "#F4F4F2", ink: "#111111", shape: "grid", paper: true },};
 
+/** Same threshold the card templates use to decide their own text colour. */
+function isDarkHex(hex: string): boolean {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return false;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b) < 0.4;
+}
+
 const FALLBACK: Skin = { bg: "#ffffff", ink: "#e5e5e5", shape: "stack", paper: true };
 
-export default function TemplateSwatch({ id, accent }: { id: string; accent: string }) {
-  const skin = SKINS[id] ?? FALLBACK;
+export default function TemplateSwatch({
+  id,
+  accent,
+  surface,
+}: {
+  id: string;
+  accent: string;
+  /**
+   * The background the person actually chose, if they chose one.
+   *
+   * Without it the picker drew every template on its stock ground — and 20 of
+   * the 34 are light, so it read as a wall of white that told you nothing
+   * about your own card. Previewing their colour is the point of a preview.
+   */
+  surface?: string;
+}) {
+  const base = SKINS[id] ?? FALLBACK;
+  const picked = surface?.trim();
+  // Their colour wins, but the ink has to follow it or the miniature turns
+  // into pale marks on a pale ground.
+  const skin = picked
+    ? { ...base, bg: picked, ink: isDarkHex(picked) ? "#ffffff" : "#111111", paper: !isDarkHex(picked) }
+    : base;
   const line = skin.paper ? `${skin.ink}` : `${skin.ink}44`;
 
   const bar = (w: string, color = line, h = "h-1") => (

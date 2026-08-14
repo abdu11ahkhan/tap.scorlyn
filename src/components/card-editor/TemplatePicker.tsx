@@ -17,10 +17,13 @@ export default function TemplatePicker({
   value,
   accent,
   onChange,
+  surface,
 }: {
   value: string;
   accent: string;
   onChange: (templateId: string) => void;
+  /** The background they picked, so every miniature shows it. */
+  surface?: string;
 }) {
   const [open, setOpen] = useState(false);
   const current = CARD_TEMPLATES.find((t) => t.id === value) ?? CARD_TEMPLATES[0];
@@ -46,7 +49,7 @@ export default function TemplatePicker({
         className="flex w-full items-center gap-3 rounded-2xl border-2 border-white/15 bg-white/[0.04] p-3 text-left transition-colors hover:border-white/35"
       >
         <div className="h-14 w-11 shrink-0 overflow-hidden rounded-lg border-2 border-white/15">
-          <TemplateSwatch id={current.id} accent={accent} />
+          <TemplateSwatch id={current.id} accent={accent} surface={surface} />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -92,7 +95,7 @@ export default function TemplatePicker({
                         }`}
                       >
                         <div className="aspect-[3/4]">
-                          <TemplateSwatch id={template.id} accent={accent} />
+                          <TemplateSwatch id={template.id} accent={accent} surface={surface} />
                         </div>
                         <div
                           className={`flex items-center justify-between gap-1 px-2 py-1.5 ${
