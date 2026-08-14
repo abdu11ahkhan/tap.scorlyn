@@ -36,6 +36,7 @@ export default function CardFeePanel({
 }) {
   const [methods, setMethods] = useState<ShopMethod[]>([]);
   const [file, setFile] = useState<File | null>(null);
+  const [reference, setReference] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
@@ -92,6 +93,11 @@ export default function CardFeePanel({
         approval_proof_name: file.name,
         approval_status: "awaiting_review",
         approval_submitted_at: new Date().toISOString(),
+        // What they say they sent. Nothing here talks to a bank, but it turns
+        // approving from "the screenshot looks right" into "this matches a
+        // line on the statement".
+        approval_amount_pkr: fee ?? 500,
+        approval_reference: reference.trim() || null,
       })
       .eq("id", cardId)
       .select("id");
@@ -192,6 +198,21 @@ export default function CardFeePanel({
           {error}
         </p>
       )}
+
+      <div className="mt-4">
+        <label className="text-xs font-bold text-white/50">
+          Transfer reference or last 4 digits
+        </label>
+        <input
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
+          placeholder="e.g. TRX8842991"
+          className="mt-1.5 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:outline-none"
+        />
+        <p className="mt-1 text-xs font-semibold text-white/35">
+          Helps us find your payment on the statement, so it is approved faster.
+        </p>
+      </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid">

@@ -29,6 +29,8 @@ type CardRow = {
   approval_status: string;
   approval_fee_pkr: number | null;
   approval_proof_path: string | null;
+  approval_amount_pkr: number | null;
+  approval_reference: string | null;
 };
 
 export default async function AdminCards({
@@ -45,7 +47,7 @@ export default async function AdminCards({
   let query = supabase
     .from("card_profiles")
     .select(
-      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path, approval_status, approval_fee_pkr, approval_proof_path",
+      "id, username, full_name, headline, template, published, owner_suspended, created_at, accent_color, nfc_finish, nfc_chosen_at, nfc_artwork_path, approval_status, approval_fee_pkr, approval_proof_path, approval_amount_pkr, approval_reference",
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
@@ -102,12 +104,28 @@ export default async function AdminCards({
         </div>
       )}
 
+        {/* The ones that cannot be printed yet. Without this they are invisible
+          until someone scrolls the whole list looking for "choose & print". */}
+      {cards.filter((c) => !c.nfc_finish && !c.nfc_artwork_path).length > 0 && (
+        <div className="app-panel app-panel-pad mb-4 flex flex-wrap items-center justify-between gap-3 border-amber-400/40">
+          <p className="text-sm font-semibold text-white/70">
+            <span className="font-black text-amber-300">
+              {cards.filter((c) => !c.nfc_finish && !c.nfc_artwork_path).length} cards
+            </span>{" "}
+            have no NFC design chosen — there is nothing to print for them yet.
+          </p>
+          <span className="text-xs font-semibold text-white/40">
+            Open any one and pick a design on their behalf.
+          </span>
+        </div>
+      )}
+
       {cards.length === 0 ? (
         <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
           No cards match that.
         </p>
       ) : (
-        <div className="app-panel overflow-x-auto">
+<div className="app-panel overflow-x-auto">
           <table className="app-table w-full md:min-w-[720px]">
             <thead className="border-b border-white/8">
               <tr>
@@ -173,6 +191,15 @@ export default async function AdminCards({
                             approving does not mean opening another page. */}
                         {card.approval_proof_path && (
                           <ProofLink path={card.approval_proof_path} />
+                        )}
+                        {/* What to look for on the statement before approving. */}
+                        {(card.approval_amount_pkr || card.approval_reference) && (
+                          <span className="text-[11px] font-semibold text-white/50">
+                            claims Rs.{card.approval_amount_pkr ?? "?"}
+                            {card.approval_reference
+                              ? ` · ref ${card.approval_reference}`
+                              : " · no reference"}
+                          </span>
                         )}
                         {/* The only route from built to live: the trigger
                             stops the customer publishing it themselves. */}
