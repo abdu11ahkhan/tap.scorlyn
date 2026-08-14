@@ -120,6 +120,35 @@ export const ACCENT_PRESETS = [
  * light template's black text on a dark one. Staying within a family keeps
  * every one of those colours correct without touching the templates.
  */
+/**
+ * How readable a template's own text would be on a chosen background.
+ *
+ * The presets are safe by construction. A free colour is not, and a template
+ * hardcodes its text as white-on-dark or black-on-light — so a picked colour
+ * that lands in the wrong half turns type invisible in places nobody would
+ * think to check. This returns the contrast ratio the text would actually
+ * have, so the editor can say so before the card goes live.
+ */
+export function surfaceReadability(
+  surface: string,
+  family: "dark" | "light"
+): { ratio: number; ok: boolean } {
+  const hex = surface.trim().replace("#", "");
+  if (hex.length !== 6) return { ratio: 21, ok: true };
+  const channel = (i: number) => {
+    const v = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const bg =
+    0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
+  // What the template paints its text with, at the extremes it assumes.
+  const fg = family === "dark" ? 1 : 0;
+  const [light, dark] = bg > fg ? [bg, fg] : [fg, bg];
+  const ratio = (light + 0.05) / (dark + 0.05);
+  // 4.5:1 is the WCAG AA threshold for body text.
+  return { ratio: Math.round(ratio * 10) / 10, ok: ratio >= 4.5 };
+}
+
 export const SURFACE_PRESETS: {
   dark: { name: string; value: string }[];
   light: { name: string; value: string }[];

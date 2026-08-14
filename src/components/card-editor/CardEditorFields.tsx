@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import {
   ACCENT_PRESETS,
   SURFACE_PRESETS,
+  surfaceReadability,
   BUTTON_KIND_GROUPS,
   KIND_LABELS,
   KIND_PLACEHOLDERS,
@@ -238,6 +239,37 @@ export default function CardEditorFields({
                 style={{ background: preset.value }}
               />
             ))}
+          </div>
+
+          {/* Any colour, not just the safe ones — but the template's text is
+              hardcoded light or dark, so a free pick can make it unreadable.
+              Rather than forbidding it, say what the contrast actually is. */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <input
+              type="color"
+              aria-label="Pick any background colour"
+              value={form.surface_color || (surfaceFamily === "dark" ? "#0A0A0A" : "#FFFFFF")}
+              onChange={(e) => onFormChange({ surface_color: e.target.value })}
+              className="h-11 w-14 cursor-pointer rounded-lg border-2 border-white/20 bg-transparent p-1 sm:h-9 sm:w-12"
+            />
+            <input
+              value={form.surface_color}
+              onChange={(e) => onFormChange({ surface_color: e.target.value })}
+              placeholder="any hex, e.g. #123456"
+              className="h-11 w-40 rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 text-sm font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:outline-none sm:h-9"
+            />
+            {form.surface_color && (() => {
+              const check = surfaceReadability(form.surface_color, surfaceFamily);
+              return (
+                <span
+                  className={`text-xs font-bold ${check.ok ? "text-emerald-300" : "text-amber-300"}`}
+                >
+                  {check.ok
+                    ? `text contrast ${check.ratio}:1 — readable`
+                    : `text contrast ${check.ratio}:1 — too low, your text will be hard to read`}
+                </span>
+              );
+            })()}
           </div>
         </div>
 
