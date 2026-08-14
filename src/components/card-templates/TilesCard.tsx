@@ -40,19 +40,19 @@ export default function TilesCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt={card.full_name} className="h-full w-full object-cover" />
             ) : (
-              <span className="text-xl font-bold" style={{ color: ink }}>
+              <span className="text-[18px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
 
           <div className="min-w-0">
-            <h1 className="card-name truncate text-2xl font-bold tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-[24px] font-bold tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="card-headline truncate text-sm font-medium" style={{ color: ink }}>{role}</p>
+              <p className="card-headline truncate text-[13px] font-medium" style={{ color: ink }}>{role}</p>
             )}
             {card.location && (
-              <p className="card-location mt-0.5 flex items-center gap-1 text-xs font-medium text-neutral-400">
+              <p className="card-location mt-0.5 flex items-center gap-1 text-[11px] font-medium text-neutral-400">
                 <MapPin className="h-3 w-3" />
                 {card.location}
               </p>
@@ -89,7 +89,7 @@ export default function TilesCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 flex h-13 items-center justify-center rounded-2xl py-4 text-sm font-semibold"
+          className="card-rise mt-8 flex h-13 items-center justify-center rounded-2xl py-4 text-[13px] font-semibold"
           style={{
             background: accent,
             color: onAccent,

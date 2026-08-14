@@ -70,33 +70,33 @@ export default function SplitCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl font-bold">{initialsOf(card.full_name)}</span>
+              <span className="text-[24px] font-bold">{initialsOf(card.full_name)}</span>
             )}
           </div>
         </div>
 
         <h1
-          className="card-name card-rise relative mt-6 text-4xl font-bold leading-[1.05] tracking-tight"
+          className="card-name card-rise relative mt-6 text-[36px] font-bold leading-[1.05] tracking-tight"
           style={{ ["--d" as string]: "90ms" }}
         >{card.full_name}</h1>
 
         {card.headline && (
           <p
-            className="card-headline card-rise relative mt-3 text-base font-medium opacity-90"
+            className="card-headline card-rise relative mt-3 text-[15px] font-medium opacity-90"
             style={{ ["--d" as string]: "150ms" }}
           >{card.headline}</p>
         )}
 
         {card.company && (
           <p
-            className="card-company card-rise relative mt-1 text-sm opacity-70"
+            className="card-company card-rise relative mt-1 text-[13px] opacity-70"
             style={{ ["--d" as string]: "190ms" }}
           >{card.company}</p>
         )}
 
         {card.location && (
           <p
-            className="card-location card-rise relative mt-4 flex items-center gap-1.5 text-xs opacity-70"
+            className="card-location card-rise relative mt-4 flex items-center gap-1.5 text-[11px] opacity-70"
             style={{ ["--d" as string]: "230ms" }}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -144,7 +144,7 @@ export default function SplitCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 text-xs font-semibold tracking-wide text-neutral-400 transition-colors hover:text-neutral-900"
+          className="card-rise mt-8 text-[11px] font-semibold tracking-wide text-neutral-400 transition-colors hover:text-neutral-900"
           style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts

@@ -53,16 +53,16 @@ export default function DockCard({
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
         <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
-          <h1 className="card-name card-rise text-4xl font-bold leading-tight tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name card-rise text-[36px] font-bold leading-tight tracking-tight">{card.full_name}</h1>
           {role && (
             <p
-              className="card-headline card-rise mt-1.5 text-sm font-semibold"
+              className="card-headline card-rise mt-1.5 text-[13px] font-semibold"
               style={{ color: ink, ["--d" as string]: "80ms" }}
             >{role}</p>
           )}
           {card.location && (
             <p
-              className="card-location card-rise mt-2 flex items-center gap-1.5 text-xs font-medium text-white/45"
+              className="card-location card-rise mt-2 flex items-center gap-1.5 text-[11px] font-medium text-white/45"
               style={{ ["--d" as string]: "120ms" }}
             >
               <MapPin className="h-3 w-3" />
@@ -71,7 +71,7 @@ export default function DockCard({
           )}
           {card.bio && (
             <p
-              className="card-bio card-rise mt-3 max-w-sm text-[14px] leading-relaxed text-white/60"
+              className="card-bio card-rise mt-3 max-w-sm text-[13px] leading-relaxed text-white/60"
               style={{ ["--d" as string]: "160ms" }}
             >{card.bio}</p>
           )}
@@ -107,7 +107,7 @@ export default function DockCard({
               right edge as soon as there were more than four links. */}
           <SaveContact
             card={card}
-            className="card-rise flex h-14 shrink-0 items-center justify-center rounded-2xl px-5 text-sm font-bold"
+            className="card-rise flex h-14 shrink-0 items-center justify-center rounded-2xl px-5 text-[13px] font-bold"
             style={{
               background: accent,
               color: onAccent,

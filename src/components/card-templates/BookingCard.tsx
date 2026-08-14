@@ -59,13 +59,13 @@ export default function BookingCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-xl font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[18px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="card-name text-2xl font-black leading-tight tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name text-[24px] font-black leading-tight tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="card-headline text-sm font-bold" style={{ color: ink }}>{role}</p>
+              <p className="card-headline text-[13px] font-bold" style={{ color: ink }}>{role}</p>
             )}
           </div>
         </header>
@@ -83,7 +83,7 @@ export default function BookingCard({
         >
           <div className="flex items-center gap-2">
             <Calendar className="h-5 w-5" style={{ color: ink }} />
-            <h2 className="text-lg font-black tracking-tight">Book a slot</h2>
+            <h2 className="text-[18px] font-black tracking-tight">Book a slot</h2>
           </div>
           <p className="mt-1 text-[13px] font-semibold text-black/45">
             {email

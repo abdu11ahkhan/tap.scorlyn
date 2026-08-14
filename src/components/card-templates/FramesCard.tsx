@@ -39,12 +39,12 @@ export default function FramesCard({
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
-          <h1 className="card-name text-3xl font-bold tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name text-[30px] font-bold tracking-tight">{card.full_name}</h1>
           {role && (
-            <p className="card-headline mt-1.5 text-[13px] font-semibold uppercase tracking-[0.22em]" style={{ color: ink }}>{role}</p>
+            <p className="card-headline mt-1.5 text-[13px] font-semibold uppercase tracking-[0.25em]" style={{ color: ink }}>{role}</p>
           )}
           {card.location && (
-            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[12px] font-medium text-black/40">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-black/40">
               <MapPin className="h-3 w-3" />
               {card.location}
             </p>
@@ -98,7 +98,7 @@ export default function FramesCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-full text-sm font-bold"
+          className="mt-6 flex h-12 items-center justify-center rounded-full text-[13px] font-bold"
           style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts

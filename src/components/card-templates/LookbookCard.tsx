@@ -57,12 +57,12 @@ export default function LookbookCard({
           <h1 className="card-name card-rise text-[clamp(2.2rem,10vw,3.4rem)] font-bold leading-[0.95] tracking-tight">{card.full_name}</h1>
           {role && (
             <p
-              className="card-headline card-rise mt-2 text-sm font-semibold uppercase tracking-[0.2em]"
+              className="card-headline card-rise mt-2 text-[13px] font-semibold uppercase tracking-[0.2em]"
               style={{ color: ink, ["--d" as string]: "80ms" }}
             >{role}</p>
           )}
           {card.location && (
-            <p className="card-location card-rise mt-2 flex items-center gap-1.5 text-[12px] font-medium text-white/45">
+            <p className="card-location card-rise mt-2 flex items-center gap-1.5 text-[11px] font-medium text-white/45">
               <MapPin className="h-3 w-3" />
               {card.location}
             </p>
@@ -72,7 +72,7 @@ export default function LookbookCard({
 
       <main className="mx-auto w-full max-w-md px-5 pb-24 pt-8">
         {card.bio && (
-          <p className="card-bio text-[16px] leading-relaxed text-white/60">{card.bio}</p>
+          <p className="card-bio text-[15px] leading-relaxed text-white/60">{card.bio}</p>
         )}
 
         {rest.length > 0 && (
@@ -84,7 +84,7 @@ export default function LookbookCard({
                   <img src={item.url} alt={item.caption ?? ""} className="w-full" />
                 </div>
                 {item.caption && (
-                  <figcaption className="mt-2.5 text-[12px] font-semibold uppercase tracking-[0.15em] text-white/35">
+                  <figcaption className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/35">
                     {item.caption}
                   </figcaption>
                 )}
@@ -110,7 +110,7 @@ export default function LookbookCard({
 
         <SaveContact
           card={card}
-          className="mt-8 flex h-12 items-center justify-center rounded-full text-sm font-bold"
+          className="mt-8 flex h-12 items-center justify-center rounded-full text-[13px] font-bold"
           style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts

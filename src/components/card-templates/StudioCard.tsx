@@ -53,13 +53,13 @@ export default function StudioCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-[12px] font-bold" style={{ color: ink }}>
+              <span className="text-[11px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
-          <span className="card-name min-w-0 flex-1 truncate text-[14px] font-bold">{card.full_name}</span>
-          <nav className="flex gap-3 text-[12px] font-semibold text-black/45">
+          <span className="card-name min-w-0 flex-1 truncate text-[13px] font-bold">{card.full_name}</span>
+          <nav className="flex gap-3 text-[11px] font-semibold text-black/45">
             {sections.map((s) => (
               <a key={s.id} href={`#${s.id}`} className="hover:text-black">
                 {s.label}
@@ -73,10 +73,10 @@ export default function StudioCard({
         <section className="card-rise scroll-mt-16 pt-12">
           <h1 className="card-headline text-[2.5rem] font-bold leading-[1.05] tracking-tight">{card.headline || card.full_name}</h1>
           {card.company && (
-            <p className="card-company mt-2 text-[14px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>{card.company}</p>
+            <p className="card-company mt-2 text-[13px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>{card.company}</p>
           )}
           {card.bio && (
-            <p className="card-bio mt-5 text-[16px] leading-relaxed text-neutral-600">{card.bio}</p>
+            <p className="card-bio mt-5 text-[15px] leading-relaxed text-neutral-600">{card.bio}</p>
           )}
           {card.location && (
             <p className="card-location mt-3 text-[13px] font-semibold text-neutral-400">{card.location}</p>
@@ -130,7 +130,7 @@ export default function StudioCard({
 
             <SaveContact
               card={card}
-              className="mt-5 flex h-12 items-center justify-center rounded-xl text-sm font-bold"
+              className="mt-5 flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
               style={{ background: accent, color: readableOn(accent) }}
             >
               Save to contacts

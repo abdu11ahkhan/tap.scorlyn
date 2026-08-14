@@ -41,7 +41,7 @@ export default function LaunchCard({
       <main className="relative mx-auto w-full max-w-md px-6 py-20 text-center">
         {card.company && (
           <p
-            className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.32em] text-white/40"
+            className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.3em] text-white/40"
           >{card.company}</p>
         )}
 
@@ -52,14 +52,14 @@ export default function LaunchCard({
 
         {card.headline && (
           <p
-            className="card-headline card-rise mt-3 text-lg font-semibold"
+            className="card-headline card-rise mt-3 text-[18px] font-semibold"
             style={{ color: ink, ["--d" as string]: "110ms" }}
           >{card.headline}</p>
         )}
 
         {card.bio && (
           <p
-            className="card-bio card-rise mx-auto mt-5 max-w-[22rem] text-[16px] leading-relaxed text-white/55"
+            className="card-bio card-rise mx-auto mt-5 max-w-[22rem] text-[15px] leading-relaxed text-white/55"
             style={{ ["--d" as string]: "160ms" }}
           >{card.bio}</p>
         )}
@@ -69,7 +69,7 @@ export default function LaunchCard({
             href={primary.href}
             target={primary.external ? "_blank" : undefined}
             rel={primary.external ? "noopener noreferrer" : undefined}
-            className="card-rise mt-9 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full text-lg font-bold"
+            className="card-rise mt-9 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full text-[18px] font-bold"
             style={{
               background: accent,
               color: readableOn(accent),
@@ -89,7 +89,7 @@ export default function LaunchCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="text-[14px] font-semibold text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
+                className="text-[13px] font-semibold text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
               >
                 {button.label}
               </a>

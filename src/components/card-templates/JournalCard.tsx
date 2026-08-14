@@ -35,9 +35,9 @@ export default function JournalCard({
       <main className="mx-auto w-full max-w-[34rem] px-6 pb-24 pt-16">
         <header className="card-rise border-b border-black/10 pb-7">
           <p className="card-company text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: ink }}>{card.company || "Notes"}</p>
-          <h1 className="card-name mt-3 font-serif text-[2.7rem] font-normal leading-[1.08] tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name mt-3 font-serif text-[2.7rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
-            <p className="card-location mt-2 font-serif text-[17px] italic text-black/50">
+            <p className="card-location mt-2 font-serif text-[18px] italic text-black/50">
               {card.headline}
               {card.location ? `, ${card.location}` : ""}
             </p>
@@ -46,7 +46,7 @@ export default function JournalCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-7 font-serif text-[19px] leading-[1.65] text-black/75"
+            className="card-bio card-rise mt-7 font-serif text-[18px] leading-[1.7] text-black/75"
             style={{ ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
@@ -85,7 +85,7 @@ export default function JournalCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="flex items-center justify-between py-2.5 font-serif text-[17px] transition-colors hover:text-black"
+                className="flex items-center justify-between py-2.5 font-serif text-[18px] transition-colors hover:text-black"
                 style={{ color: ink }}
               >
                 {button.label}

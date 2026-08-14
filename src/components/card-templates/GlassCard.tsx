@@ -73,32 +73,32 @@ export default function GlassCard({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span className="text-2xl font-black text-white/80">
+                <span className="text-[24px] font-black text-white/80">
                   {initialsOf(card.full_name)}
                 </span>
               )}
             </div>
           </div>
 
-          <h1 className="card-name mt-6 text-3xl font-black tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name mt-6 text-[30px] font-black tracking-tight">{card.full_name}</h1>
 
           {card.headline && (
             <p
-              className="card-headline mt-1.5 text-sm font-semibold"
+              className="card-headline mt-1.5 text-[13px] font-semibold"
               style={{ color: ink, textShadow: `0 0 22px ${accent}66` }}
             >{card.headline}</p>
           )}
 
-          {card.company && <p className="card-company mt-1 text-sm text-slate-400">{card.company}</p>}
+          {card.company && <p className="card-company mt-1 text-[13px] text-slate-400">{card.company}</p>}
 
           {card.location && (
-            <p className="card-location mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-500">
+            <p className="card-location mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
           )}
 
-          {card.bio && <p className="card-bio mt-5 text-sm leading-relaxed text-slate-300">{card.bio}</p>}
+          {card.bio && <p className="card-bio mt-5 text-[13px] leading-relaxed text-slate-300">{card.bio}</p>}
         </div>
 
         <nav className="mt-4 space-y-2.5">
@@ -131,7 +131,7 @@ export default function GlassCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-xs text-slate-500 transition-colors hover:text-white"
+          className="card-rise mt-6 block text-center text-[11px] text-slate-500 transition-colors hover:text-white"
           style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts

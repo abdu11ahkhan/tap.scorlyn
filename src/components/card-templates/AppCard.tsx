@@ -47,12 +47,12 @@ export default function AppCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-xl font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[18px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
 
           <div className="min-w-0 flex-1">
-            <h1 className="card-name truncate text-xl font-black tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-[18px] font-black tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="card-headline truncate text-[13px] font-semibold text-black/50">{role}</p>
             )}

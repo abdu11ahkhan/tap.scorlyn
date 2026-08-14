@@ -55,20 +55,20 @@ export default function PosterCard({
         >{card.company || "featured"}</span>
 
         <h1
-          className="card-name card-rise mt-5 text-[3.4rem] font-black uppercase leading-[0.85] tracking-tighter"
+          className="card-name card-rise mt-5 text-[3.4rem] font-black uppercase leading-[0.9] tracking-tighter"
           style={{ ["--d" as string]: "70ms" }}
         >{card.full_name}</h1>
 
         {card.headline && (
           <p
-            className="card-headline card-rise mt-4 text-lg font-bold leading-snug text-white/80"
+            className="card-headline card-rise mt-4 text-[18px] font-bold leading-snug text-white/80"
             style={{ ["--d" as string]: "130ms" }}
           >{card.headline}</p>
         )}
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-sm font-semibold text-white/50"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[13px] font-semibold text-white/50"
             style={{ ["--d" as string]: "170ms" }}
           >
             <MapPin className="h-4 w-4" />
@@ -88,7 +88,7 @@ export default function PosterCard({
             href={primary.href}
             target={primary.external ? "_blank" : undefined}
             rel={primary.external ? "noopener noreferrer" : undefined}
-            className="card-rise sticker-lg sticker-press mt-8 inline-flex h-16 items-center justify-center gap-2 rounded-full border-2 border-ink text-lg font-black uppercase tracking-tight"
+            className="card-rise sticker-lg sticker-press mt-8 inline-flex h-16 items-center justify-center gap-2 rounded-full border-2 border-ink text-[18px] font-black uppercase tracking-tight"
             style={{ background: accent, color: onAccent, ["--d" as string]: "260ms" }}
           >
             {primary.label}

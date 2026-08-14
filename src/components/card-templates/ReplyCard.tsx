@@ -55,13 +55,13 @@ export default function ReplyCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-xl font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[18px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="card-name text-2xl font-black leading-tight tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name text-[24px] font-black leading-tight tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="card-headline text-sm font-bold" style={{ color: ink }}>{role}</p>
+              <p className="card-headline text-[13px] font-bold" style={{ color: ink }}>{role}</p>
             )}
           </div>
         </header>
@@ -78,7 +78,7 @@ export default function ReplyCard({
           className="card-rise mt-8 rounded-3xl border border-black/10 bg-white p-6 shadow-[0_14px_40px_rgba(0,0,0,0.06)]"
           style={{ ["--d" as string]: "130ms" }}
         >
-          <h2 className="text-lg font-black tracking-tight">Send a message</h2>
+          <h2 className="text-[18px] font-black tracking-tight">Send a message</h2>
           <p className="mt-1 text-[13px] font-semibold text-black/45">
             {email
               ? "Opens in your mail app — nothing is stored here."

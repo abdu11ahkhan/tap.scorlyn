@@ -49,7 +49,7 @@ export default function OrbitCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt={card.full_name} className="h-full w-full object-cover" />
             ) : (
-              <span className="text-3xl font-semibold" style={{ color: ink }}>
+              <span className="text-[30px] font-semibold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -57,20 +57,20 @@ export default function OrbitCard({
         </div>
 
         <h1
-          className="card-name card-rise mt-7 text-4xl font-bold tracking-tight"
+          className="card-name card-rise mt-7 text-[36px] font-bold tracking-tight"
           style={{ ["--d" as string]: "80ms" }}
         >{card.full_name}</h1>
 
         {role && (
           <p
-            className="card-headline card-rise mt-2 text-sm font-medium"
+            className="card-headline card-rise mt-2 text-[13px] font-medium"
             style={{ color: ink, ["--d" as string]: "140ms" }}
           >{role}</p>
         )}
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-xs font-medium text-white/40"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] font-medium text-white/40"
             style={{ ["--d" as string]: "180ms" }}
           >
             <MapPin className="h-3 w-3" />
@@ -118,7 +118,7 @@ export default function OrbitCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-10 inline-flex h-12 items-center justify-center rounded-full px-7 text-sm font-semibold"
+          className="card-rise mt-10 inline-flex h-12 items-center justify-center rounded-full px-7 text-[13px] font-semibold"
           style={{
             background: accent,
             color: onAccent,

@@ -57,7 +57,7 @@ export default function MinimalCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl font-light tracking-wide" style={{ color: ink }}>
+              <span className="text-[24px] font-light tracking-wide" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -65,27 +65,27 @@ export default function MinimalCard({
         </div>
 
         <h1
-          className="card-name card-rise mt-8 text-[28px] font-light leading-tight tracking-tight"
+          className="card-name card-rise mt-8 text-[30px] font-light leading-tight tracking-tight"
           style={{ ["--d" as string]: "80ms" }}
         >{card.full_name}</h1>
 
         {card.headline && (
           <p
-            className="card-headline card-rise mt-2 text-sm uppercase tracking-[0.18em]"
+            className="card-headline card-rise mt-2 text-[13px] uppercase tracking-[0.2em]"
             style={{ color: ink, ["--d" as string]: "140ms" }}
           >{card.headline}</p>
         )}
 
         {card.company && (
           <p
-            className="card-company card-rise mt-1.5 text-sm text-neutral-500"
+            className="card-company card-rise mt-1.5 text-[13px] text-neutral-500"
             style={{ ["--d" as string]: "180ms" }}
           >{card.company}</p>
         )}
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-xs text-neutral-400"
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] text-neutral-400"
             style={{ ["--d" as string]: "220ms" }}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -107,7 +107,7 @@ export default function MinimalCard({
           style={{ ["--d" as string]: "280ms" }}
         >
           <span className="h-px flex-1 bg-neutral-200" />
-          <span className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-400">
+          <span className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
             <span className="relative flex h-2 w-2">
               <span
                 className="pulse-ring absolute inline-flex h-full w-full rounded-full"
@@ -134,7 +134,7 @@ export default function MinimalCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 // bg-white keeps the pill readable on top of the accent wash —
                 // a bare border disappears against the tint.
-                className="card-rise group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full border border-neutral-200/90 bg-white/80 py-3.5 text-sm font-medium shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-lg active:scale-[0.98]"
+                className="card-rise group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full border border-neutral-200/90 bg-white/80 py-3.5 text-[13px] font-medium shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-neutral-300 hover:shadow-lg active:scale-[0.98]"
                 style={{
                   ["--d" as string]: `${300 + index * 60}ms`,
                   ["--hover" as string]: accent,
@@ -158,7 +158,7 @@ export default function MinimalCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-7 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-5 py-2.5 text-xs font-semibold tracking-wide text-neutral-500 transition-colors hover:border-neutral-900 hover:text-neutral-900"
+          className="card-rise mt-7 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white/70 px-5 py-2.5 text-[11px] font-semibold tracking-wide text-neutral-500 transition-colors hover:border-neutral-900 hover:text-neutral-900"
           style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           <Download className="h-3.5 w-3.5" />
@@ -166,7 +166,7 @@ export default function MinimalCard({
         </SaveContact>
 
         <p
-          className="card-rise mt-10 text-[10px] uppercase tracking-[0.3em] text-neutral-400"
+          className="card-rise mt-10 text-[11px] uppercase tracking-[0.3em] text-neutral-400"
           style={{ ["--d" as string]: `${360 + buttons.length * 60}ms` }}
         >
           @{card.username}

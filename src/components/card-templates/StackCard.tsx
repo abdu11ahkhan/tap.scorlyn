@@ -63,24 +63,24 @@ export default function StackCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[24px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
 
           <h1
-            className="card-name card-rise mt-6 text-4xl font-black leading-[0.95] tracking-tighter"
+            className="card-name card-rise mt-6 text-[36px] font-black leading-[0.95] tracking-tighter"
             style={{ ["--d" as string]: "70ms" }}
           >{card.full_name}</h1>
 
           {card.headline && (
             <p
-              className="card-headline card-rise mt-2.5 text-sm font-black uppercase tracking-[0.18em]"
+              className="card-headline card-rise mt-2.5 text-[13px] font-black uppercase tracking-[0.2em]"
               style={{ color: ink, ["--d" as string]: "120ms" }}
             >{card.headline}</p>
           )}
 
           <div
-            className="card-location card-rise mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-semibold text-black/45"
+            className="card-location card-rise mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-semibold text-black/45"
             style={{ ["--d" as string]: "160ms" }}
           >
             {card.company && <span className="card-company">{card.company}</span>}
@@ -99,7 +99,7 @@ export default function StackCard({
             <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
               about
             </h2>
-            <p className="card-bio mt-4 text-[17px] leading-[1.7] text-black/75">{card.bio}</p>
+            <p className="card-bio mt-4 text-[18px] leading-[1.7] text-black/75">{card.bio}</p>
           </section>
         )}
 
@@ -135,12 +135,12 @@ export default function StackCard({
           <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
             get in touch
           </h2>
-          <p className="mt-4 text-2xl font-black tracking-tight">
+          <p className="mt-4 text-[24px] font-black tracking-tight">
             Let&apos;s make something.
           </p>
           <SaveContact
             card={card}
-            className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-sm font-black uppercase tracking-tight"
+            className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-[13px] font-black uppercase tracking-tight"
             style={{ background: accent, color: readableOn(accent) }}
           >
             save to contacts

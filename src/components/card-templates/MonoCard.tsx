@@ -53,24 +53,24 @@ export default function MonoCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-sm font-bold" style={{ color: ink }}>
+              <span className="text-[13px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
 
           <div className="min-w-0">
-            <h1 className="truncate text-xl font-bold tracking-tight text-white">
+            <h1 className="truncate text-[18px] font-bold tracking-tight text-white">
               {card.full_name}
               <span className="caret-blink ml-1 font-normal" style={{ color: ink }}>
                 _
               </span>
             </h1>
-            <p className="mt-0.5 text-xs text-neutral-500">@{card.username}</p>
+            <p className="mt-0.5 text-[11px] text-neutral-500">@{card.username}</p>
           </div>
         </div>
 
-        <dl className="mt-8 space-y-1.5 text-xs">
+        <dl className="mt-8 space-y-1.5 text-[11px]">
           {card.headline && (
             <div className="card-rise flex gap-3" style={{ ["--d" as string]: "90ms" }}>
               <dt className="w-20 shrink-0 text-neutral-600">role</dt>

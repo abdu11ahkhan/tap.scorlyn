@@ -54,12 +54,12 @@ export default function GridCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-sm font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[13px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
 
           <div className="min-w-0 flex-1">
-            <h1 className="card-name truncate text-lg font-black tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-[18px] font-black tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="card-headline truncate text-[13px] font-semibold" style={{ color: ink }}>{role}</p>
             )}

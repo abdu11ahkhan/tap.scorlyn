@@ -60,12 +60,12 @@ export default function TapeCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-4xl font-black text-[#1A1A1A]/25">
+              <span className="text-[36px] font-black text-[#1A1A1A]/25">
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
-          <p className="absolute bottom-2.5 left-0 right-0 text-center text-sm font-bold italic">
+          <p className="absolute bottom-2.5 left-0 right-0 text-center text-[13px] font-bold italic">
             {card.full_name.split(" ")[0]}
           </p>
         </div>
@@ -74,18 +74,18 @@ export default function TapeCard({
           className="card-rise mt-8 text-center"
           style={{ ["--d" as string]: "90ms" }}
         >
-          <h1 className="card-name text-3xl font-black leading-tight tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name text-[30px] font-black leading-tight tracking-tight">{card.full_name}</h1>
           {card.headline && (
             <span
-              className="card-headline mt-2 inline-block -rotate-1 px-2 py-0.5 text-sm font-bold"
+              className="card-headline mt-2 inline-block -rotate-1 px-2 py-0.5 text-[13px] font-bold"
               style={{ background: `${accent}66` }}
             >{card.headline}</span>
           )}
           {card.company && (
-            <p className="card-company mt-2 text-sm text-[#1A1A1A]/55">{card.company}</p>
+            <p className="card-company mt-2 text-[13px] text-[#1A1A1A]/55">{card.company}</p>
           )}
           {card.location && (
-            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-xs text-[#1A1A1A]/45">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] text-[#1A1A1A]/45">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
@@ -133,7 +133,7 @@ export default function TapeCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-xs font-bold text-[#1A1A1A]/40 hover:text-[#1A1A1A]"
+          className="card-rise mt-8 block text-center text-[11px] font-bold text-[#1A1A1A]/40 hover:text-[#1A1A1A]"
           style={{ ["--d" as string]: `${240 + buttons.length * 60}ms` }}
         >
           save to contacts

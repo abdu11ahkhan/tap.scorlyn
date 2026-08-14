@@ -56,11 +56,11 @@ export default function BoldCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-xl font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[18px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
           {card.location && (
-            <p className="card-location flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-neutral-400">
+            <p className="card-location flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-neutral-400">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
@@ -68,13 +68,13 @@ export default function BoldCard({
         </div>
 
         <h1
-          className="card-name card-rise mt-8 text-6xl font-black leading-[0.92] tracking-[-0.04em]"
+          className="card-name card-rise mt-8 text-[60px] font-black leading-[0.9] tracking-[-0.04em]"
           style={{ ["--d" as string]: "90ms" }}
         >{card.full_name}</h1>
 
         {card.headline && (
           <p
-            className="card-headline card-rise mt-4 inline-block bg-clip-text text-lg font-bold leading-snug text-transparent"
+            className="card-headline card-rise mt-4 inline-block bg-clip-text text-[18px] font-bold leading-snug text-transparent"
             style={{
               backgroundImage: `linear-gradient(100deg, ${accent}, ${accent}AA)`,
               ["--d" as string]: "160ms",
@@ -84,7 +84,7 @@ export default function BoldCard({
 
         {card.company && (
           <p
-            className="card-company card-rise mt-1 text-sm font-semibold text-neutral-500"
+            className="card-company card-rise mt-1 text-[13px] font-semibold text-neutral-500"
             style={{ ["--d" as string]: "200ms" }}
           >{card.company}</p>
         )}
@@ -122,7 +122,7 @@ export default function BoldCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 inline-block text-xs font-bold uppercase tracking-widest text-neutral-400 transition-colors hover:text-neutral-900"
+          className="card-rise mt-6 inline-block text-[11px] font-bold uppercase tracking-widest text-neutral-400 transition-colors hover:text-neutral-900"
           style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts

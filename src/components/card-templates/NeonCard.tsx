@@ -57,7 +57,7 @@ export default function NeonCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl font-bold" style={{ color: ink, textShadow: glow }}>
+              <span className="text-[24px] font-bold" style={{ color: ink, textShadow: glow }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -65,27 +65,27 @@ export default function NeonCard({
         </div>
 
         <h1
-          className="card-name card-rise mt-7 text-4xl font-bold uppercase tracking-[0.02em]"
+          className="card-name card-rise mt-7 text-[36px] font-bold uppercase tracking-[0.02em]"
           style={{ textShadow: glow, ["--d" as string]: "80ms" }}
         >{card.full_name}</h1>
 
         {card.headline && (
           <p
-            className="card-headline card-rise mt-3 text-xs uppercase tracking-[0.3em]"
+            className="card-headline card-rise mt-3 text-[11px] uppercase tracking-[0.3em]"
             style={{ color: ink, ["--d" as string]: "140ms" }}
           >{card.headline}</p>
         )}
 
         {card.company && (
           <p
-            className="card-company card-rise mt-2 text-sm text-white/50"
+            className="card-company card-rise mt-2 text-[13px] text-white/50"
             style={{ ["--d" as string]: "180ms" }}
           >{card.company}</p>
         )}
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center justify-center gap-1.5 text-xs text-white/40"
+            className="card-location card-rise mt-3 flex items-center justify-center gap-1.5 text-[11px] text-white/40"
             style={{ ["--d" as string]: "220ms" }}
           >
             <MapPin className="h-3.5 w-3.5" />
@@ -95,7 +95,7 @@ export default function NeonCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-sm leading-relaxed text-white/65"
+            className="card-bio card-rise mt-6 text-[13px] leading-relaxed text-white/65"
             style={{ ["--d" as string]: "260ms" }}
           >{card.bio}</p>
         )}
@@ -109,7 +109,7 @@ export default function NeonCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="card-rise group flex w-full items-center gap-3 rounded-full border-2 bg-black/60 px-5 py-3.5 text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5"
+                className="card-rise group flex w-full items-center gap-3 rounded-full border-2 bg-black/60 px-5 py-3.5 text-[13px] font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   borderColor: `${accent}66`,
                   color: ink,

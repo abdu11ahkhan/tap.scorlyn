@@ -47,13 +47,13 @@ export default function FilmstripCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt={card.full_name} className="h-full w-full object-cover" />
             ) : (
-              <span className="text-lg font-bold" style={{ color: ink }}>
+              <span className="text-[18px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="card-name truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-[18px] font-bold tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="card-headline truncate text-[13px] font-semibold" style={{ color: ink }}>{role}</p>
             )}
@@ -87,7 +87,7 @@ export default function FilmstripCard({
                     />
                   </div>
                   {item.caption && (
-                    <figcaption className="mt-2 text-[12px] font-semibold text-white/45">
+                    <figcaption className="mt-2 text-[11px] font-semibold text-white/45">
                       {item.caption}
                     </figcaption>
                   )}
@@ -119,7 +119,7 @@ export default function FilmstripCard({
         <div className="mt-6 px-5">
           <SaveContact
             card={card}
-            className="flex h-12 items-center justify-center rounded-xl text-sm font-bold"
+            className="flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
             style={{ background: accent, color: readableOn(accent) }}
           >
             Save to contacts

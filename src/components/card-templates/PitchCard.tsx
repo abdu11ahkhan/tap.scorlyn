@@ -52,7 +52,7 @@ export default function PitchCard({
           >{card.company || card.location || "now live"}</span>
 
           <h1
-            className="card-headline card-rise mt-6 text-[2.9rem] font-black leading-[0.92] tracking-tighter"
+            className="card-headline card-rise mt-6 text-[2.9rem] font-black leading-[0.9] tracking-tighter"
             style={{ ["--d" as string]: "70ms" }}
           >{card.headline || card.full_name}</h1>
 
@@ -68,7 +68,7 @@ export default function PitchCard({
               href={primary.href}
               target={primary.external ? "_blank" : undefined}
               rel={primary.external ? "noopener noreferrer" : undefined}
-              className="card-rise sticker-lg sticker-press mt-8 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full border-2 border-ink text-lg font-black uppercase tracking-tight"
+              className="card-rise sticker-lg sticker-press mt-8 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full border-2 border-ink text-[18px] font-black uppercase tracking-tight"
               style={{
                 background: accent,
                 color: onAccent,
@@ -119,10 +119,10 @@ export default function PitchCard({
             { value: "0", label: "apps needed" },
           ].map((stat) => (
             <div key={stat.label} className="px-2">
-              <p className="text-3xl font-black tracking-tighter" style={{ color: ink }}>
+              <p className="text-[30px] font-black tracking-tighter" style={{ color: ink }}>
                 {stat.value}
               </p>
-              <p className="mt-1 text-[10px] font-black uppercase leading-tight tracking-widest text-white/35">
+              <p className="mt-1 text-[11px] font-black uppercase leading-tight tracking-widest text-white/35">
                 {stat.label}
               </p>
             </div>
@@ -166,7 +166,7 @@ export default function PitchCard({
       <footer className="px-6 pb-20 pt-4 text-center">
         <SaveContact
           card={card}
-          className="text-xs font-black uppercase tracking-widest text-white/30 hover:text-white"
+          className="text-[11px] font-black uppercase tracking-widest text-white/30 hover:text-white"
         >
           save to contacts
         </SaveContact>

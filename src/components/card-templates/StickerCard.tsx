@@ -52,16 +52,16 @@ export default function StickerCard({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span className="text-2xl font-black text-ink">
+                <span className="text-[24px] font-black text-ink">
                   {initialsOf(card.full_name)}
                 </span>
               )}
             </div>
 
             <div className="min-w-0">
-              <h1 className="card-name text-3xl font-black leading-[0.9] tracking-tighter">{card.full_name}</h1>
+              <h1 className="card-name text-[30px] font-black leading-[0.9] tracking-tighter">{card.full_name}</h1>
               {card.headline && (
-                <p className="card-headline mt-1.5 text-sm font-black uppercase tracking-tight opacity-80">{card.headline}</p>
+                <p className="card-headline mt-1.5 text-[13px] font-black uppercase tracking-tight opacity-80">{card.headline}</p>
               )}
             </div>
           </div>
@@ -69,10 +69,10 @@ export default function StickerCard({
           {(card.company || card.location) && (
             <div className="mt-5 flex flex-wrap gap-2">
               {card.company && (
-                <span className="card-company rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black text-ink">{card.company}</span>
+                <span className="card-company rounded-full border-2 border-ink bg-white px-3 py-1 text-[11px] font-black text-ink">{card.company}</span>
               )}
               {card.location && (
-                <span className="card-location flex items-center gap-1 rounded-full border-2 border-ink bg-white px-3 py-1 text-xs font-black text-ink">
+                <span className="card-location flex items-center gap-1 rounded-full border-2 border-ink bg-white px-3 py-1 text-[11px] font-black text-ink">
                   <MapPin className="h-3 w-3" />
                   {card.location}
                 </span>
@@ -115,7 +115,7 @@ export default function StickerCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-xs font-black uppercase tracking-widest text-ink/50 hover:text-ink"
+          className="card-rise mt-6 block text-center text-[11px] font-black uppercase tracking-widest text-ink/50 hover:text-ink"
           style={{ ["--d" as string]: `${190 + buttons.length * 60}ms` }}
         >
           save to contacts

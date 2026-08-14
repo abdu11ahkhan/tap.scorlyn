@@ -40,7 +40,7 @@ export default function WaitlistCard({
         </div>
 
         <h1
-          className="card-headline card-rise mt-7 text-5xl font-black leading-[0.9] tracking-tighter"
+          className="card-headline card-rise mt-7 text-[48px] font-black leading-[0.9] tracking-tighter"
           style={{ ["--d" as string]: "70ms" }}
         >{card.headline || card.full_name}</h1>
 
@@ -144,7 +144,7 @@ export default function WaitlistCard({
           })}
         </div>
 
-        <p className="mt-12 text-xs font-bold text-white/30">
+        <p className="mt-12 text-[11px] font-bold text-white/30">
           {card.full_name}
           {card.company ? ` · ${card.company}` : ""}
         </p>

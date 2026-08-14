@@ -34,9 +34,9 @@ export default function ContactSheetCard({
         <header className="card-rise border-b-2 border-[#111] pb-4">
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
-              <h1 className="card-name text-2xl font-bold uppercase tracking-tight">{card.full_name}</h1>
+              <h1 className="card-name text-[24px] font-bold uppercase tracking-tight">{card.full_name}</h1>
               {card.headline && (
-                <p className="card-headline mt-0.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-black/45">{card.headline}</p>
+                <p className="card-headline mt-0.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-black/45">{card.headline}</p>
               )}
             </div>
             <div
@@ -61,7 +61,7 @@ export default function ContactSheetCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 text-[14px] leading-relaxed text-black/65"
+            className="card-bio card-rise mt-5 text-[13px] leading-relaxed text-black/65"
             style={{ ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
@@ -82,7 +82,7 @@ export default function ContactSheetCard({
                     className="aspect-square w-full object-cover"
                   />
                 </div>
-                <figcaption className="mt-1 truncate text-[9px] font-bold uppercase tracking-widest text-black/35">
+                <figcaption className="mt-1 truncate text-[11px] font-bold uppercase tracking-widest text-black/35">
                   {String(index + 1).padStart(2, "0")}
                   {item.caption ? ` ${item.caption}` : ""}
                 </figcaption>
@@ -98,7 +98,7 @@ export default function ContactSheetCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between border-b border-black/15 py-3 text-[14px] font-bold uppercase tracking-wide transition-colors hover:border-[#111]"
+              className="flex items-center justify-between border-b border-black/15 py-3 text-[13px] font-bold uppercase tracking-wide transition-colors hover:border-[#111]"
             >
               {button.label}
               <ArrowUpRight className="h-3.5 w-3.5" />

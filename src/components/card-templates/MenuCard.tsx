@@ -49,7 +49,7 @@ export default function MenuCard({
           <h1 className="card-name text-[2.6rem] font-bold leading-none tracking-tight">{card.full_name}</h1>
           {role && (
             <p
-              className="card-headline mt-2 text-[12px] font-bold uppercase tracking-[0.28em]"
+              className="card-headline mt-2 text-[11px] font-bold uppercase tracking-[0.3em]"
               style={{ color: ink }}
             >{role}</p>
           )}
@@ -75,11 +75,11 @@ export default function MenuCard({
                   className="card-rise flex items-baseline gap-3"
                   style={{ ["--d" as string]: `${100 + index * 55}ms` }}
                 >
-                  <span className="text-[16px] font-semibold">{item.name || "—"}</span>
+                  <span className="text-[15px] font-semibold">{item.name || "—"}</span>
                   {/* Dotted leader, the way a printed menu does it. */}
                   <span className="min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-black/25" />
                   {item.price && (
-                    <span className="text-[16px] font-bold tabular-nums" style={{ color: ink }}>
+                    <span className="text-[15px] font-bold tabular-nums" style={{ color: ink }}>
                       {item.price}
                     </span>
                   )}
@@ -106,7 +106,7 @@ export default function MenuCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-lg text-sm font-bold"
+          className="mt-6 flex h-12 items-center justify-center rounded-lg text-[13px] font-bold"
           style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts

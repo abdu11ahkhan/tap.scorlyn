@@ -46,29 +46,29 @@ export default function AuroraCard({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span className="text-3xl font-light tracking-wide">
+                <span className="text-[30px] font-light tracking-wide">
                   {initialsOf(card.full_name)}
                 </span>
               )}
             </div>
           </div>
 
-          <h1 className="card-name mt-7 text-4xl font-bold leading-tight tracking-tight drop-shadow-lg">{card.full_name}</h1>
+          <h1 className="card-name mt-7 text-[36px] font-bold leading-tight tracking-tight drop-shadow-lg">{card.full_name}</h1>
 
           {card.headline && (
-            <p className="card-headline mt-2 text-base font-medium text-white/85">{card.headline}</p>
+            <p className="card-headline mt-2 text-[15px] font-medium text-white/85">{card.headline}</p>
           )}
-          {card.company && <p className="card-company mt-0.5 text-sm text-white/60">{card.company}</p>}
+          {card.company && <p className="card-company mt-0.5 text-[13px] text-white/60">{card.company}</p>}
 
           {card.location && (
-            <p className="card-location mt-3 flex items-center gap-1.5 text-xs text-white/60">
+            <p className="card-location mt-3 flex items-center gap-1.5 text-[11px] text-white/60">
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
           )}
 
           {card.bio && (
-            <p className="card-bio mt-5 text-sm leading-relaxed text-white/75">{card.bio}</p>
+            <p className="card-bio mt-5 text-[13px] leading-relaxed text-white/75">{card.bio}</p>
           )}
         </div>
 
@@ -94,7 +94,7 @@ export default function AuroraCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-xs text-white/50 transition-colors hover:text-white"
+          className="card-rise mt-6 block text-center text-[11px] text-white/50 transition-colors hover:text-white"
           style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts

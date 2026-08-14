@@ -47,13 +47,13 @@ export default function MosaicCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-lg font-bold" style={{ color: ink }}>
+              <span className="text-[18px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="card-name truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-[18px] font-bold tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="card-headline truncate text-[13px] font-semibold text-white/45">{role}</p>
             )}
@@ -103,7 +103,7 @@ export default function MosaicCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="card-rise flex items-center justify-between gap-2 rounded-xl border border-white/12 px-3.5 py-3 text-[14px] font-semibold transition-colors hover:border-white/40"
+              className="card-rise flex items-center justify-between gap-2 rounded-xl border border-white/12 px-3.5 py-3 text-[13px] font-semibold transition-colors hover:border-white/40"
               style={{ ["--d" as string]: `${220 + index * 45}ms` }}
             >
               <span className="truncate">{button.label}</span>
@@ -114,7 +114,7 @@ export default function MosaicCard({
 
         <SaveContact
           card={card}
-          className="mt-5 flex h-12 items-center justify-center rounded-xl text-sm font-bold"
+          className="mt-5 flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
           style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts

@@ -54,17 +54,17 @@ export default function ShowcaseCard({
 
         <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
           <h1
-            className="card-name card-rise text-[2.6rem] font-black leading-[0.92] tracking-tighter"
+            className="card-name card-rise text-[2.6rem] font-black leading-[0.9] tracking-tighter"
             style={{ ["--d" as string]: "0ms" }}
           >{card.full_name}</h1>
           {card.headline && (
             <p
-              className="card-headline card-rise mt-2 text-sm font-black uppercase tracking-[0.2em]"
+              className="card-headline card-rise mt-2 text-[13px] font-black uppercase tracking-[0.2em]"
               style={{ color: ink, ["--d" as string]: "70ms" }}
             >{card.headline}</p>
           )}
           <div
-            className="card-location card-rise mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-white/50"
+            className="card-location card-rise mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-white/50"
             style={{ ["--d" as string]: "110ms" }}
           >
             {card.company && <span className="card-company">{card.company}</span>}

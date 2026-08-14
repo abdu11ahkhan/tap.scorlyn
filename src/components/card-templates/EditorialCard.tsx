@@ -26,7 +26,7 @@ export default function EditorialCard({
     >
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">
         <p
-          className="card-company card-rise text-center text-[11px] uppercase tracking-[0.35em]"
+          className="card-company card-rise text-center text-[11px] uppercase tracking-[0.3em]"
           style={{ color: ink, ["--d" as string]: "0ms" }}
         >{card.company || "Contact"}</p>
 
@@ -36,7 +36,7 @@ export default function EditorialCard({
         >
           <h1 className="card-name text-[2.6rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
-            <p className="card-headline mt-3 text-sm italic tracking-wide text-[#1C1A17]/65">{card.headline}</p>
+            <p className="card-headline mt-3 text-[13px] italic tracking-wide text-[#1C1A17]/65">{card.headline}</p>
           )}
         </div>
 
@@ -56,7 +56,7 @@ export default function EditorialCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-2xl" style={{ color: ink }}>
+              <span className="text-[24px]" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
@@ -65,12 +65,12 @@ export default function EditorialCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-8 text-center text-[17px] leading-[1.75] text-[#1C1A17]/80"
+            className="card-rise mt-8 text-center text-[18px] leading-[1.7] text-[#1C1A17]/80"
             style={{ ["--d" as string]: "190ms" }}
           >
             {/* Drop cap — the one flourish this template gets. */}
             <span
-              className="float-left mr-2 mt-1 text-[3.2rem] font-bold leading-[0.75]"
+              className="float-left mr-2 mt-1 text-[3.2rem] font-bold leading-[0.9]"
               style={{ color: ink }}
             >
               {card.bio.trim().charAt(0)}
@@ -81,7 +81,7 @@ export default function EditorialCard({
 
         {card.location && (
           <p
-            className="card-location card-rise mt-7 flex items-center justify-center gap-1.5 text-xs uppercase tracking-[0.2em] text-[#1C1A17]/45"
+            className="card-location card-rise mt-7 flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-[#1C1A17]/45"
             style={{ ["--d" as string]: "230ms" }}
           >
             <MapPin className="h-3 w-3" />
@@ -108,7 +108,7 @@ export default function EditorialCard({
                 <span className="flex-1 text-[15px] tracking-wide transition-transform group-hover:translate-x-1">
                   {button.label}
                 </span>
-                <span className="text-xs uppercase tracking-[0.2em] text-[#1C1A17]/35">
+                <span className="text-[11px] uppercase tracking-[0.2em] text-[#1C1A17]/35">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </a>

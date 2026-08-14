@@ -46,7 +46,7 @@ export default function QuoteCard({
           <MessageSquare className="h-5 w-5" />
         </span>
 
-        <h1 className="card-rise mt-5 text-[2.3rem] font-bold leading-[1.1] tracking-tight">
+        <h1 className="card-rise mt-5 text-[2.3rem] font-bold leading-[1.05] tracking-tight">
           Get a quote from {card.full_name.split(" ")[0]}
         </h1>
 
@@ -58,11 +58,11 @@ export default function QuoteCard({
         )}
 
         {card.bio && (
-          <p className="card-bio card-rise mt-5 text-[16px] leading-relaxed text-black/65">{card.bio}</p>
+          <p className="card-bio card-rise mt-5 text-[15px] leading-relaxed text-black/65">{card.bio}</p>
         )}
 
         <section className="card-rise mt-8 rounded-2xl border border-black/10 bg-white p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-black/35">
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-black/35">
             include in your message
           </p>
           <ul className="mt-3 space-y-2.5">
@@ -106,7 +106,7 @@ export default function QuoteCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-xl border border-black/12 bg-white text-sm font-bold"
+          className="mt-6 flex h-12 items-center justify-center rounded-xl border border-black/12 bg-white text-[13px] font-bold"
         >
           Save to contacts
         </SaveContact>

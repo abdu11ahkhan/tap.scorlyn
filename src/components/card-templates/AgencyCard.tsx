@@ -82,15 +82,15 @@ export default function AgencyCard({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={card.avatar_url} alt="" className="h-full w-full object-cover" />
             ) : (
-              <span className="text-2xl font-black">{initialsOf(card.full_name)}</span>
+              <span className="text-[24px] font-black">{initialsOf(card.full_name)}</span>
             )}
           </div>
 
-          <h1 className="card-name mt-4 text-4xl font-black leading-[0.95] tracking-tighter">{card.full_name}</h1>
+          <h1 className="card-name mt-4 text-[36px] font-black leading-[0.95] tracking-tighter">{card.full_name}</h1>
           {card.headline && (
-            <p className="card-headline mt-2 text-sm font-black uppercase tracking-[0.18em]" style={{ color: ink }}>{card.headline}</p>
+            <p className="card-headline mt-2 text-[13px] font-black uppercase tracking-[0.2em]" style={{ color: ink }}>{card.headline}</p>
           )}
-          <div className="card-location mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-white/45">
+          <div className="card-location mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-white/45">
             {card.company && <span className="card-company">{card.company}</span>}
             {card.location && (
               <span className="flex items-center gap-1">
@@ -177,10 +177,10 @@ export default function AgencyCard({
         <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/35">
           work with us
         </h2>
-        <p className="mt-4 text-2xl font-black tracking-tight">Let&apos;s talk.</p>
+        <p className="mt-4 text-[24px] font-black tracking-tight">Let&apos;s talk.</p>
         <SaveContact
           card={card}
-          className="mt-6 inline-flex items-center justify-center rounded-full px-8 py-4 text-sm font-black uppercase tracking-tight"
+          className="mt-6 inline-flex items-center justify-center rounded-full px-8 py-4 text-[13px] font-black uppercase tracking-tight"
           style={{ background: accent, color: onAccent }}
         >
           save to contacts

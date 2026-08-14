@@ -899,7 +899,13 @@ textarea.app-input {
   -webkit-line-clamp: 3;
 }
 
-.card-template .card-headline,
+/* The headline gets two. On a single line it was cutting real ones —
+   "Qawwali Nights — every Friday at Alhamra" became "every Friday at…" —
+   and a headline is a sentence people wrote, not a label. */
+.card-template .card-headline {
+  -webkit-line-clamp: 2;
+}
+
 .card-template .card-company,
 .card-template .card-location {
   -webkit-line-clamp: 1;
@@ -914,7 +920,10 @@ textarea.app-input {
     min-height: 3lh;
   }
 
-  .card-template .card-headline,
+  .card-template .card-headline {
+    min-height: 2lh;
+  }
+
   .card-template .card-company,
   .card-template .card-location {
     min-height: 1lh;

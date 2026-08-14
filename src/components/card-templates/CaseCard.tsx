@@ -36,7 +36,7 @@ export default function CaseCard({
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <p
-          className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.28em]"
+          className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.3em]"
           style={{ color: ink }}
         >{card.company || "Selected work"}</p>
 
@@ -57,7 +57,7 @@ export default function CaseCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[16px] leading-relaxed text-neutral-700"
+            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[15px] leading-relaxed text-neutral-700"
             style={{ borderColor: accent, ["--d" as string]: "160ms" }}
           >{card.bio}</p>
         )}
@@ -86,7 +86,7 @@ export default function CaseCard({
                 </div>
 
                 {item.caption && (
-                  <p className="mt-3 text-[14px] leading-relaxed text-neutral-600">
+                  <p className="mt-3 text-[13px] leading-relaxed text-neutral-600">
                     {item.caption}
                   </p>
                 )}
@@ -112,7 +112,7 @@ export default function CaseCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-lg text-sm font-bold"
+          className="mt-6 flex h-12 items-center justify-center rounded-lg text-[13px] font-bold"
           style={{ background: accent, color: readableOn(accent) }}
         >
           Save to contacts
