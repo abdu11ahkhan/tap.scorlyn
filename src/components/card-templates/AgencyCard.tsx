@@ -86,9 +86,7 @@ export default function AgencyCard({
             )}
           </div>
 
-          <h1 className="mt-4 text-4xl font-black leading-[0.95] tracking-tighter">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name mt-4 text-4xl font-black leading-[0.95] tracking-tighter">{card.full_name}</h1>
           {card.headline && (
             <p className="mt-2 text-sm font-black uppercase tracking-[0.18em]" style={{ color: ink }}>
               {card.headline}

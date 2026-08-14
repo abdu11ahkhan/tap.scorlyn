@@ -53,9 +53,7 @@ export default function AuroraCard({
             </div>
           </div>
 
-          <h1 className="mt-7 text-4xl font-bold leading-tight tracking-tight drop-shadow-lg">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name mt-7 text-4xl font-bold leading-tight tracking-tight drop-shadow-lg">{card.full_name}</h1>
 
           {card.headline && (
             <p className="mt-2 text-base font-medium text-white/85">{card.headline}</p>

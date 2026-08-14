@@ -54,9 +54,7 @@ export default function LookbookCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
         <div className="absolute inset-x-0 bottom-0 p-6">
-          <h1 className="card-rise text-[clamp(2.2rem,10vw,3.4rem)] font-bold leading-[0.95] tracking-tight">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name card-rise text-[clamp(2.2rem,10vw,3.4rem)] font-bold leading-[0.95] tracking-tight">{card.full_name}</h1>
           {role && (
             <p
               className="card-rise mt-2 text-sm font-semibold uppercase tracking-[0.2em]"

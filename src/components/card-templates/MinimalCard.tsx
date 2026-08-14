@@ -65,11 +65,9 @@ export default function MinimalCard({
         </div>
 
         <h1
-          className="card-rise mt-8 text-[28px] font-light leading-tight tracking-tight"
+          className="card-name card-rise mt-8 text-[28px] font-light leading-tight tracking-tight"
           style={{ ["--d" as string]: "80ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

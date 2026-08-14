@@ -57,11 +57,9 @@ export default function OrbitCard({
         </div>
 
         <h1
-          className="card-rise mt-7 text-4xl font-bold tracking-tight"
+          className="card-name card-rise mt-7 text-4xl font-bold tracking-tight"
           style={{ ["--d" as string]: "80ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {role && (
           <p

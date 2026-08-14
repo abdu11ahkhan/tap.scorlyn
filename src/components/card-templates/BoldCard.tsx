@@ -68,11 +68,9 @@ export default function BoldCard({
         </div>
 
         <h1
-          className="card-rise mt-8 text-6xl font-black leading-[0.92] tracking-[-0.04em]"
+          className="card-name card-rise mt-8 text-6xl font-black leading-[0.92] tracking-[-0.04em]"
           style={{ ["--d" as string]: "90ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

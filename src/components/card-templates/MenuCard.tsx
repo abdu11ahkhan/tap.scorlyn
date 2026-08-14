@@ -46,9 +46,7 @@ export default function MenuCard({
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
-          <h1 className="text-[2.6rem] font-bold leading-none tracking-tight">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name text-[2.6rem] font-bold leading-none tracking-tight">{card.full_name}</h1>
           {role && (
             <p
               className="mt-2 text-[12px] font-bold uppercase tracking-[0.28em]"

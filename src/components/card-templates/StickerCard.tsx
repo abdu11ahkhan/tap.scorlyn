@@ -59,9 +59,7 @@ export default function StickerCard({
             </div>
 
             <div className="min-w-0">
-              <h1 className="text-3xl font-black leading-[0.9] tracking-tighter">
-                {card.full_name}
-              </h1>
+              <h1 className="card-name text-3xl font-black leading-[0.9] tracking-tighter">{card.full_name}</h1>
               {card.headline && (
                 <p className="mt-1.5 text-sm font-black uppercase tracking-tight opacity-80">
                   {card.headline}

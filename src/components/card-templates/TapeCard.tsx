@@ -74,9 +74,7 @@ export default function TapeCard({
           className="card-rise mt-8 text-center"
           style={{ ["--d" as string]: "90ms" }}
         >
-          <h1 className="text-3xl font-black leading-tight tracking-tight">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name text-3xl font-black leading-tight tracking-tight">{card.full_name}</h1>
           {card.headline && (
             <span
               className="mt-2 inline-block -rotate-1 px-2 py-0.5 text-sm font-bold"

@@ -80,7 +80,7 @@ export default function GlassCard({
             </div>
           </div>
 
-          <h1 className="mt-6 text-3xl font-black tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name mt-6 text-3xl font-black tracking-tight">{card.full_name}</h1>
 
           {card.headline && (
             <p

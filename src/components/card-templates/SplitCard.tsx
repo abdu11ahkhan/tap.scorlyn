@@ -76,11 +76,9 @@ export default function SplitCard({
         </div>
 
         <h1
-          className="card-rise relative mt-6 text-4xl font-bold leading-[1.05] tracking-tight"
+          className="card-name card-rise relative mt-6 text-4xl font-bold leading-[1.05] tracking-tight"
           style={{ ["--d" as string]: "90ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

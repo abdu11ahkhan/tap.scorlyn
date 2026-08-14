@@ -37,9 +37,7 @@ export default function JournalCard({
           <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: ink }}>
             {card.company || "Notes"}
           </p>
-          <h1 className="mt-3 font-serif text-[2.7rem] font-normal leading-[1.08] tracking-tight">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name mt-3 font-serif text-[2.7rem] font-normal leading-[1.08] tracking-tight">{card.full_name}</h1>
           {card.headline && (
             <p className="mt-2 font-serif text-[17px] italic text-black/50">
               {card.headline}

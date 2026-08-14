@@ -54,11 +54,9 @@ export default function ShowcaseCard({
 
         <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
           <h1
-            className="card-rise text-[2.6rem] font-black leading-[0.92] tracking-tighter"
+            className="card-name card-rise text-[2.6rem] font-black leading-[0.92] tracking-tighter"
             style={{ ["--d" as string]: "0ms" }}
-          >
-            {card.full_name}
-          </h1>
+          >{card.full_name}</h1>
           {card.headline && (
             <p
               className="card-rise mt-2 text-sm font-black uppercase tracking-[0.2em]"

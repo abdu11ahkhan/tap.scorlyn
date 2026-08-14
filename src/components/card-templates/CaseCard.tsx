@@ -43,11 +43,9 @@ export default function CaseCard({
         </p>
 
         <h1
-          className="card-rise mt-3 text-[2.4rem] font-bold leading-[1.05] tracking-tight"
+          className="card-name card-rise mt-3 text-[2.4rem] font-bold leading-[1.05] tracking-tight"
           style={{ ["--d" as string]: "60ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

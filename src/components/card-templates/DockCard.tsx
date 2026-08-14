@@ -53,9 +53,7 @@ export default function DockCard({
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
         <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
-          <h1 className="card-rise text-4xl font-bold leading-tight tracking-tight">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name card-rise text-4xl font-bold leading-tight tracking-tight">{card.full_name}</h1>
           {role && (
             <p
               className="card-rise mt-1.5 text-sm font-semibold"

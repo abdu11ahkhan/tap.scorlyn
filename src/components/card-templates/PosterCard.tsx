@@ -57,11 +57,9 @@ export default function PosterCard({
         </span>
 
         <h1
-          className="card-rise mt-5 text-[3.4rem] font-black uppercase leading-[0.85] tracking-tighter"
+          className="card-name card-rise mt-5 text-[3.4rem] font-black uppercase leading-[0.85] tracking-tighter"
           style={{ ["--d" as string]: "70ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

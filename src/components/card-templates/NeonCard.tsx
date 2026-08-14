@@ -65,11 +65,9 @@ export default function NeonCard({
         </div>
 
         <h1
-          className="card-rise mt-7 text-4xl font-bold uppercase tracking-[0.02em]"
+          className="card-name card-rise mt-7 text-4xl font-bold uppercase tracking-[0.02em]"
           style={{ textShadow: glow, ["--d" as string]: "80ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

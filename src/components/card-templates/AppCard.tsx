@@ -52,7 +52,7 @@ export default function AppCard({
           </div>
 
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-xl font-black tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-xl font-black tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="truncate text-[13px] font-semibold text-black/50">
                 {role}

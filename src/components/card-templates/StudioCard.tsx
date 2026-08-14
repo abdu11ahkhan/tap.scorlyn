@@ -58,9 +58,7 @@ export default function StudioCard({
               </span>
             )}
           </div>
-          <span className="min-w-0 flex-1 truncate text-[14px] font-bold">
-            {card.full_name}
-          </span>
+          <span className="card-name min-w-0 flex-1 truncate text-[14px] font-bold">{card.full_name}</span>
           <nav className="flex gap-3 text-[12px] font-semibold text-black/45">
             {sections.map((s) => (
               <a key={s.id} href={`#${s.id}`} className="hover:text-black">

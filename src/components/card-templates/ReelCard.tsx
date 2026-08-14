@@ -53,7 +53,7 @@ export default function ReelCard({
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-black tracking-tight">{card.full_name}</p>
+          <p className="card-name truncate text-sm font-black tracking-tight">{card.full_name}</p>
           {role && (
             <p className="truncate text-[11px] font-semibold text-white/45">
               {role}

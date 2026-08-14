@@ -36,9 +36,7 @@ export default function EditorialCard({
           className="card-rise mt-5 border-y py-7 text-center"
           style={{ borderColor: `${accent}44`, ["--d" as string]: "70ms" }}
         >
-          <h1 className="text-[2.6rem] font-normal leading-[1.05] tracking-tight">
-            {card.full_name}
-          </h1>
+          <h1 className="card-name text-[2.6rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
             <p className="mt-3 text-sm italic tracking-wide text-[#1C1A17]/65">
               {card.headline}

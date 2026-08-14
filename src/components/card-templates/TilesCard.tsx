@@ -47,7 +47,7 @@ export default function TilesCard({
           </div>
 
           <div className="min-w-0">
-            <h1 className="truncate text-2xl font-bold tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-2xl font-bold tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="truncate text-sm font-medium" style={{ color: ink }}>
                 {role}

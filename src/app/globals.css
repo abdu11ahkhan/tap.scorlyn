@@ -840,3 +840,31 @@ textarea.app-input {
     height: 100dvh;
   }
 }
+
+/* ---------------------------------------------------------------
+   The display name gets its own box.
+
+   The name is one free-text string with no reserved space, so changing the
+   font re-wrapped it — "Hamza Tariq" on one line in a narrow face, two in a
+   wide one — and everything below shifted with it. Two people on the same
+   template got different layouts, and so did one person after changing font.
+
+   Two lines are reserved in the name's own line-height, so the block below
+   starts at the same place whether the name wraps or not. `lh` makes that
+   proportional: it scales with the template's own type size rather than a
+   pixel value that would be wrong on 36 different scales.
+
+   Guarded, because a browser without `lh` should keep today's behaviour
+   rather than lose the name's height entirely.
+   --------------------------------------------------------------- */
+.card-template .card-name {
+  /* Split evenly instead of leaving one orphan word on the second line. */
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+@supports (height: 1lh) {
+  .card-template .card-name {
+    min-height: 2lh;
+  }
+}

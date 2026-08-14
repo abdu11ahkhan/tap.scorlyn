@@ -53,7 +53,7 @@ export default function MosaicCard({
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
+            <h1 className="card-name truncate text-xl font-bold tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="truncate text-[13px] font-semibold text-white/45">
                 {role}

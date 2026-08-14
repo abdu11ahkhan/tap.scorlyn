@@ -34,7 +34,7 @@ export default function ContactSheetCard({
         <header className="card-rise border-b-2 border-[#111] pb-4">
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
-              <h1 className="text-2xl font-bold uppercase tracking-tight">{card.full_name}</h1>
+              <h1 className="card-name text-2xl font-bold uppercase tracking-tight">{card.full_name}</h1>
               {card.headline && (
                 <p className="mt-0.5 text-[12px] font-semibold uppercase tracking-[0.2em] text-black/45">
                   {card.headline}

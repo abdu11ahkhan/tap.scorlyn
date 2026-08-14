@@ -107,9 +107,7 @@ export default function PitchCard({
               </span>
             )}
             <span className="text-left">
-              <span className="block text-[13px] font-black leading-tight">
-                {card.full_name}
-              </span>
+              <span className="card-name block text-[13px] font-black leading-tight">{card.full_name}</span>
               {card.location && (
                 <span className="block text-[11px] font-semibold text-white/40">
                   {card.location}

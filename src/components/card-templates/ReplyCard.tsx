@@ -59,9 +59,7 @@ export default function ReplyCard({
             )}
           </div>
           <div className="min-w-0">
-            <h1 className="text-2xl font-black leading-tight tracking-tight">
-              {card.full_name}
-            </h1>
+            <h1 className="card-name text-2xl font-black leading-tight tracking-tight">{card.full_name}</h1>
             {role && (
               <p className="text-sm font-bold" style={{ color: ink }}>
                 {role}

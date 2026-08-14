@@ -68,11 +68,9 @@ export default function StackCard({
           </div>
 
           <h1
-            className="card-rise mt-6 text-4xl font-black leading-[0.95] tracking-tighter"
+            className="card-name card-rise mt-6 text-4xl font-black leading-[0.95] tracking-tighter"
             style={{ ["--d" as string]: "70ms" }}
-          >
-            {card.full_name}
-          </h1>
+          >{card.full_name}</h1>
 
           {card.headline && (
             <p

@@ -48,11 +48,9 @@ export default function LaunchCard({
         )}
 
         <h1
-          className="card-rise mt-4 text-[clamp(2.6rem,11vw,4rem)] font-bold leading-[0.95] tracking-tight"
+          className="card-name card-rise mt-4 text-[clamp(2.6rem,11vw,4rem)] font-bold leading-[0.95] tracking-tight"
           style={{ ["--d" as string]: "60ms" }}
-        >
-          {card.full_name}
-        </h1>
+        >{card.full_name}</h1>
 
         {card.headline && (
           <p

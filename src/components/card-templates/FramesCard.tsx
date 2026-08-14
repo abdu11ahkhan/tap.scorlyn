@@ -39,7 +39,7 @@ export default function FramesCard({
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
-          <h1 className="text-3xl font-bold tracking-tight">{card.full_name}</h1>
+          <h1 className="card-name text-3xl font-bold tracking-tight">{card.full_name}</h1>
           {role && (
             <p className="mt-1.5 text-[13px] font-semibold uppercase tracking-[0.22em]" style={{ color: ink }}>
               {role}
