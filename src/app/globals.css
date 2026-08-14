@@ -878,14 +878,28 @@ textarea.app-input {
    run to two lines, a role or a city almost never does. Heights are in `lh`,
    so each reserves lines in its own type size — the 36 templates set type at
    21 different sizes and a pixel height would be wrong on nearly all. */
-.card-template .card-name,
-.card-template .card-headline,
-.card-template .card-company,
-.card-template .card-location,
-.card-template .card-bio {
+/* Clamping must not change how a field is laid out.
+   -webkit-box was applied to all five, and the location and company sit in a
+   flex row next to a pin or building icon — so the override dropped the row
+   and stacked the icon above the text. Only the fields that are plain prose
+   get the box; anything holding an icon keeps its own display and is capped
+   on one line instead. */
+.card-template .card-name:not(:has(svg)),
+.card-template .card-headline:not(:has(svg)),
+.card-template .card-bio:not(:has(svg)) {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.card-template .card-company,
+.card-template .card-location,
+.card-template .card-name:has(svg),
+.card-template .card-headline:has(svg),
+.card-template .card-bio:has(svg) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .card-template .card-name {
@@ -904,11 +918,6 @@ textarea.app-input {
    and a headline is a sentence people wrote, not a label. */
 .card-template .card-headline {
   -webkit-line-clamp: 2;
-}
-
-.card-template .card-company,
-.card-template .card-location {
-  -webkit-line-clamp: 1;
 }
 
 @supports (height: 1lh) {

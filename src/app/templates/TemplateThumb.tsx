@@ -19,7 +19,7 @@ const SRC_W = 390;
 const SRC_H = 624;
 /** The height every preview is rendered at, and the height the offsets in
  *  thumb-frames.ts were measured against. The two must match. */
-const RENDER_H = 4200;
+const RENDER_H = 4800;
 
 /**
  * A template preview that fits whatever column it lands in.
