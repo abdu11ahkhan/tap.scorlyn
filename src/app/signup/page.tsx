@@ -5,19 +5,16 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
-import { Check, Loader2, Mail, X } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import {
   LEGACY_REF_COOKIE,
   REF_COOKIE,
   REF_COOKIE_MAX_AGE,
   REF_PARAM,
 } from "@/lib/referral";
-import { COMPANY_SLUG_MAX, COMPANY_SLUG_PATTERN, slugify } from "@/lib/org";
 import BrandLockup from "@/components/layout/BrandLockup";
 import GoogleButton from "@/components/auth/GoogleButton";
-
-type AccountType = "individual" | "corporate";
-type SlugStatus = "idle" | "checking" | "free" | "taken" | "invalid";
+import AccountTypePicker, { type AccountTypeValue } from "@/components/auth/AccountTypePicker";
 
 function SignupForm() {
   const [name, setName] = useState("");
@@ -32,55 +29,17 @@ function SignupForm() {
   const [verifying, setVerifying] = useState(false);
   const [codeError, setCodeError] = useState<string | null>(null);
 
-  const [accountType, setAccountType] = useState<AccountType>("individual");
-  const [companyName, setCompanyName] = useState("");
-  // Only the async result is state — "idle"/"invalid" are fully determined by
-  // accountType/companyName already, and setting them from the effect below
-  // was a synchronous setState in an effect body for no reason: derived below
-  // instead, the same fix used elsewhere in this codebase for the same rule.
-  const [checkedStatus, setCheckedStatus] = useState<SlugStatus>("idle");
-  const companySlug = slugify(companyName, COMPANY_SLUG_MAX);
-
-  const staticSlugStatus: SlugStatus | null =
-    accountType !== "corporate" || !companyName.trim()
-      ? "idle"
-      : !COMPANY_SLUG_PATTERN.test(companySlug)
-        ? "invalid"
-        : null; // null = needs the async availability check below
-
-  const slugStatus = staticSlugStatus ?? checkedStatus;
+  const [account, setAccount] = useState<AccountTypeValue>({
+    accountType: "individual",
+    companyName: "",
+    companySlug: "",
+    valid: true,
+  });
+  const { accountType, companyName, companySlug, valid: accountValid } = account;
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
-
-  // Debounced the same way the handle field checks availability while typing
-  // (src/components/card-editor/UsernameField.tsx) — checking on every
-  // keystroke would fire a query for every half-typed business name.
-  useEffect(() => {
-    if (staticSlugStatus !== null) return;
-
-    let cancelled = false;
-    // Marked as checking from inside the timer rather than synchronously, so
-    // the effect does not set state during the render it was scheduled by —
-    // same trick UsernameField.tsx uses for its own availability check.
-    const timer = setTimeout(async () => {
-      setCheckedStatus("checking");
-      const { data, error: rpcError } = await supabase.rpc("company_slug_available", {
-        candidate: companySlug,
-      });
-      if (cancelled) return;
-      // Same failure mode as the username check: a failed lookup must not
-      // claim the name is taken, since signup itself will still catch a
-      // genuine clash.
-      setCheckedStatus(rpcError ? "idle" : data ? "free" : "taken");
-    }, 450);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [staticSlugStatus, companySlug, supabase]);
 
   // A visitor who tapped someone's card arrives as /signup?ref=<code>. Park the
   // code in a cookie so attribution survives an email-confirmation round trip.
@@ -161,12 +120,8 @@ function SignupForm() {
     e.preventDefault();
     setError(null);
 
-    if (accountType === "corporate" && slugStatus !== "free") {
-      setError(
-        slugStatus === "taken"
-          ? "That business name is already in use — try a variation."
-          : "Give the business a name first."
-      );
+    if (accountType === "corporate" && !accountValid) {
+      setError("Give the business a valid, available name first — see above.");
       return;
     }
 
@@ -345,57 +300,9 @@ function SignupForm() {
             {/* Decided before anything else: a corporate account needs a
                 business name up front, and Google sign-in doesn't carry this
                 choice through, so it has to be settled before either path. */}
-            <div className="mt-6 inline-flex w-full rounded-full border-2 border-ink bg-white p-1">
-              {(["individual", "corporate"] as const).map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => setAccountType(type)}
-                  className={`flex-1 rounded-full py-2.5 text-sm font-black uppercase tracking-tight transition-colors ${
-                    accountType === type ? "bg-ink text-acid" : "text-ink/45"
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
+            <div className="mt-6">
+              <AccountTypePicker onChange={setAccount} fieldClassName={field} labelClassName={label} />
             </div>
-
-            {accountType === "corporate" && (
-              <div className="mt-4 space-y-2">
-                <label htmlFor="company" className={label}>
-                  business name
-                </label>
-                <div className="relative">
-                  <input
-                    id="company"
-                    placeholder="Acme Studio"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    required={accountType === "corporate"}
-                    className={`${field} pr-11`}
-                  />
-                  <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2">
-                    {slugStatus === "checking" && (
-                      <Loader2 className="h-4 w-4 animate-spin text-ink/30" />
-                    )}
-                    {slugStatus === "free" && <Check className="h-4 w-4 text-emerald-600" />}
-                    {slugStatus === "taken" && <X className="h-4 w-4 text-rose-600" />}
-                  </span>
-                </div>
-                {/* Company name alone doesn't say what employees' cards will
-                    look like — showing the prefix now is cheaper than a
-                    surprise the first time someone adds staff. */}
-                {companySlug && (
-                  <p className="px-1 text-[12px] font-semibold text-ink/40">
-                    Employees will get cards like{" "}
-                    <span className="font-mono text-ink/70">/u/{companySlug}-jane</span>
-                    {slugStatus === "taken" && (
-                      <span className="text-rose-600"> — that name is taken</span>
-                    )}
-                  </p>
-                )}
-              </div>
-            )}
 
             {error && (
               <div className="mt-6 rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
@@ -457,9 +364,7 @@ function SignupForm() {
               </div>
 
               <button
-                disabled={
-                  loading || (accountType === "corporate" && slugStatus !== "free")
-                }
+                disabled={loading || (accountType === "corporate" && !accountValid)}
                 type="submit"
                 className="sticker sticker-press flex h-14 w-full items-center justify-center rounded-full border-2 border-ink bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-60"
               >

@@ -45,7 +45,36 @@ export async function GET(request: NextRequest) {
 
   await welcomeOnce(supabase);
 
+  // Google never asks individual vs. corporate the way /signup's form does —
+  // handle_new_user() (043_account_type_confirmed.sql) defaults it silently
+  // rather than block OAuth. Anyone still unconfirmed gets asked here, once,
+  // before ever reaching the dashboard; `next` is carried through so they
+  // land wherever they were originally headed.
+  if (await needsAccountType(supabase)) {
+    redirect(`/onboarding/account-type?next=${encodeURIComponent(next)}`);
+  }
+
   redirect(next);
+}
+
+async function needsAccountType(supabase: Awaited<ReturnType<typeof createClient>>): Promise<boolean> {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("account_type_confirmed")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    return profile ? !profile.account_type_confirmed : false;
+  } catch {
+    // Never block a sign-in over this check failing.
+    return false;
+  }
 }
 
 /**
