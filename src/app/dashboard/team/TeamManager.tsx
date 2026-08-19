@@ -1,0 +1,551 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  Camera,
+  Check,
+  Copy,
+  ExternalLink,
+  Keyboard,
+  Loader2,
+  Pencil,
+  Plus,
+  UserX,
+  UserCheck,
+  Trash2,
+} from "lucide-react";
+import { createEmployee, deleteEmployeeCard, setHouseStyle, suspendEmployee } from "./actions";
+import { downscale } from "@/components/card-editor/ImagePicker";
+import { extractPalette, suggestTemplate } from "@/lib/card-scan-color";
+import { scanCardText } from "@/lib/card-ocr";
+
+export type EmployeeCard = {
+  id: string;
+  username: string;
+  full_name: string;
+  email: string | null;
+  published: boolean;
+  owner_suspended: boolean;
+  created_at: string;
+};
+
+/** Shown once, right after creating a login — this is the only time the
+ *  password is ever visible anywhere. */
+type FreshCredentials = { email: string; password: string; username: string };
+
+export default function TeamManager({
+  companySlug,
+  companyName,
+  houseTemplate,
+  houseAccentColor,
+  employees,
+}: {
+  companySlug: string;
+  companyName: string;
+  houseTemplate: string | null;
+  houseAccentColor: string | null;
+  employees: EmployeeCard[];
+}) {
+  const router = useRouter();
+  const [showAdd, setShowAdd] = useState(false);
+  const [mode, setMode] = useState<"type" | "scan">("type");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [headline, setHeadline] = useState("");
+  const [phone, setPhone] = useState("");
+  const [scanning, setScanning] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fresh, setFresh] = useState<FreshCredentials | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const resetAddForm = () => {
+    setFullName("");
+    setEmail("");
+    setHeadline("");
+    setPhone("");
+    setMode("type");
+  };
+
+  // The employee's card photo — only read for their own contact details
+  // (name/headline/phone/email). Colour and template stay uniform across the
+  // company, set once below via the company's own card, not re-derived per
+  // employee.
+  const scanEmployeeCard = async (file: File) => {
+    setScanning(true);
+    setError(null);
+    try {
+      const blob = await downscale(file, "cover");
+      const result = await scanCardText([blob]);
+      if (result.full_name) setFullName(result.full_name.text);
+      if (result.headline) setHeadline(result.headline.text);
+      if (result.phone) setPhone(result.phone.text);
+      if (result.email) setEmail(result.email.text);
+      if (!result.ok) {
+        setError("Couldn't read that photo automatically — check the fields below and fill in anything missing.");
+      }
+    } catch {
+      setError("Something went wrong reading that photo — fill the fields in manually below.");
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const addEmployee = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreating(true);
+    setError(null);
+
+    const r = await createEmployee({
+      fullName,
+      email,
+      headline: headline.trim() || undefined,
+      phone: phone.trim() || undefined,
+    });
+
+    setCreating(false);
+    if (!r.ok || !r.data) {
+      setError(r.error ?? "Could not create that account.");
+      return;
+    }
+
+    setFresh(r.data);
+    resetAddForm();
+    setShowAdd(false);
+    router.refresh();
+  };
+
+  const toggleSuspend = async (card: EmployeeCard) => {
+    setBusyId(card.id);
+    const r = await suspendEmployee(card.id, !card.owner_suspended);
+    setBusyId(null);
+    if (!r.ok) {
+      setError(r.error ?? "That didn't go through.");
+      return;
+    }
+    router.refresh();
+  };
+
+  const remove = async (card: EmployeeCard) => {
+    if (
+      !confirm(
+        `Remove ${card.full_name || card.username}? This deletes their card and their login — they won't be able to sign in again. Can't be undone.`
+      )
+    )
+      return;
+    setBusyId(card.id);
+    const r = await deleteEmployeeCard(card.id);
+    setBusyId(null);
+    if (!r.ok) {
+      setError(r.error ?? "That card could not be deleted.");
+      return;
+    }
+    router.refresh();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-white">Team</h1>
+          <p className="mt-1 text-sm font-medium text-white/45">
+            {companyName || "Your company"}&apos;s cards live at{" "}
+            <span className="font-mono text-white/70">/u/{companySlug}-…</span>
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowAdd((v) => !v)}
+          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+        >
+          <Plus className="h-4 w-4" />
+          add employee
+        </button>
+      </div>
+
+      <HouseStyleSection
+        houseTemplate={houseTemplate}
+        houseAccentColor={houseAccentColor}
+        onError={setError}
+      />
+
+      {/* The one moment this password is visible. Closing it does not delete
+          the account — only the on-screen copy of the credentials goes away. */}
+      {fresh && (
+        <div className="app-panel app-panel-pad border-acid/40">
+          <p className="text-sm font-black text-acid">Account created — copy this now.</p>
+          <p className="mt-1 text-xs font-semibold text-white/50">
+            It won&apos;t be shown again. Send it to them directly.
+          </p>
+          <div className="mt-3 space-y-2 font-mono text-sm text-white">
+            <CredentialLine label="email" value={fresh.email} />
+            <CredentialLine label="password" value={fresh.password} />
+            <CredentialLine label="card" value={"/u/" + fresh.username} />
+          </div>
+          <button
+            type="button"
+            onClick={() => setFresh(null)}
+            className="mt-4 text-xs font-black uppercase tracking-widest text-white/40"
+          >
+            done
+          </button>
+        </div>
+      )}
+
+      {showAdd && (
+        <form onSubmit={addEmployee} className="app-panel app-panel-pad space-y-3">
+          {/* Type it, or read it off their card — either way lands in the
+              same fields below, editable either way. */}
+          <div className="inline-flex rounded-full border-2 border-white/15 bg-white/[0.03] p-1">
+            {(
+              [
+                { id: "type", label: "type their details", icon: Keyboard },
+                { id: "scan", label: "scan their card", icon: Camera },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => setMode(opt.id)}
+                className={
+                  "flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black uppercase tracking-tight transition-colors " +
+                  (mode === opt.id ? "bg-acid text-ink" : "text-white/50")
+                }
+              >
+                <opt.icon className="h-3.5 w-3.5" />
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {mode === "scan" && (
+            <label className="flex h-24 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/20 bg-white/[0.02] text-sm font-bold text-white/50 transition-colors hover:border-acid/50">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) scanEmployeeCard(file);
+                }}
+              />
+              {scanning ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> reading…
+                </>
+              ) : (
+                <>
+                  <Camera className="h-4 w-4" /> tap to photograph their card
+                </>
+              )}
+            </label>
+          )}
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <label htmlFor="emp-name" className="text-xs font-bold uppercase tracking-wide text-white/50">
+                full name
+              </label>
+              <input
+                id="emp-name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Jane Doe"
+                required
+                className="app-input"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="emp-email" className="text-xs font-bold uppercase tracking-wide text-white/50">
+                email
+              </label>
+              <input
+                id="emp-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="jane@company.com"
+                required
+                className="app-input"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="emp-headline" className="text-xs font-bold uppercase tracking-wide text-white/50">
+                headline / title <span className="normal-case text-white/30">(optional)</span>
+              </label>
+              <input
+                id="emp-headline"
+                value={headline}
+                onChange={(e) => setHeadline(e.target.value)}
+                placeholder="Sales Manager"
+                className="app-input"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="emp-phone" className="text-xs font-bold uppercase tracking-wide text-white/50">
+                phone <span className="normal-case text-white/30">(optional)</span>
+              </label>
+              <input
+                id="emp-phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+92 300 1234567"
+                className="app-input"
+              />
+            </div>
+          </div>
+          {fullName.trim() && (
+            <p className="text-xs font-semibold text-white/40">
+              Card address:{" "}
+              <span className="font-mono text-white/60">
+                /u/{companySlug}-{fullName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "…"}
+              </span>
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={creating}
+            className="app-btn app-btn-primary disabled:opacity-60"
+          >
+            {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            create login
+          </button>
+        </form>
+      )}
+
+      {error && (
+        <p className="rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm font-bold text-rose-200">
+          {error}
+        </p>
+      )}
+
+      {employees.length === 0 ? (
+        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
+          No employees yet — add the first one above.
+        </p>
+      ) : (
+        <div className="space-y-2.5">
+          {employees.map((card) => (
+            <div key={card.id} className="app-panel flex flex-wrap items-center gap-3 p-4">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-black text-white">
+                  {card.full_name || "Untitled"}
+                </p>
+                <p className="truncate text-xs font-semibold text-white/40">
+                  /u/{card.username}
+                  {card.email ? " · " + card.email : ""}
+                </p>
+              </div>
+
+              <span
+                className={
+                  "shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight " +
+                  (card.owner_suspended
+                    ? "bg-rose-400/15 text-rose-300"
+                    : card.published
+                      ? "bg-acid/15 text-acid"
+                      : "bg-white/10 text-white/50")
+                }
+              >
+                {card.owner_suspended ? "suspended" : card.published ? "live" : "draft"}
+              </span>
+
+              <div className="flex shrink-0 items-center gap-1.5">
+                <Link
+                  href={"/dashboard/team/" + card.id + "/edit"}
+                  title="Edit card"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Link>
+                <a
+                  href={"/u/" + card.username}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="View card"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => toggleSuspend(card)}
+                  disabled={busyId === card.id}
+                  title={card.owner_suspended ? "Reactivate" : "Suspend"}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white disabled:opacity-50"
+                >
+                  {busyId === card.id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : card.owner_suspended ? (
+                    <UserCheck className="h-4 w-4" />
+                  ) : (
+                    <UserX className="h-4 w-4" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => remove(card)}
+                  disabled={busyId === card.id}
+                  title="Remove"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-rose-400/10 hover:text-rose-300 disabled:opacity-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Sets the look new employee cards start from — read from a photo of the
+ * company's own card, not typed in. Deliberately no OCR here (see
+ * src/lib/card-ocr.ts / card-scan-color.ts): only the photo's colours and
+ * mood matter for this, not its text.
+ */
+function HouseStyleSection({
+  houseTemplate,
+  houseAccentColor,
+  onError,
+}: {
+  houseTemplate: string | null;
+  houseAccentColor: string | null;
+  onError: (message: string | null) => void;
+}) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [preview, setPreview] = useState<{ template: string; accent: string; surface: string } | null>(
+    null
+  );
+
+  const pick = async (file: File) => {
+    setBusy(true);
+    onError(null);
+    try {
+      const blob = await downscale(file, "cover");
+      const bitmap = await createImageBitmap(blob);
+      const vibe = extractPalette(bitmap);
+      bitmap.close?.();
+      setPreview({ template: suggestTemplate(vibe), accent: vibe.accent, surface: vibe.surface });
+    } catch {
+      onError("Couldn't read that photo — try a clearer, better-lit shot of the card.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirm = async () => {
+    if (!preview) return;
+    setBusy(true);
+    const r = await setHouseStyle({
+      template: preview.template,
+      accentColor: preview.accent,
+      surfaceColor: preview.surface,
+    });
+    setBusy(false);
+    if (!r.ok) {
+      onError(r.error ?? "That didn't save.");
+      return;
+    }
+    setPreview(null);
+    router.refresh();
+  };
+
+  return (
+    <div className="app-panel app-panel-pad space-y-3">
+      <div>
+        <p className="text-sm font-black text-white">Company card</p>
+        <p className="mt-1 text-xs font-semibold text-white/50">
+          {houseTemplate ? (
+            <>
+              New employee cards start as{" "}
+              <span className="font-black text-white/80">{houseTemplate}</span>, coloured from
+              your card. Upload a new photo any time to change it — only affects employees
+              added afterward.
+            </>
+          ) : (
+            "Photograph your company's card once to set the default look every new employee card starts from."
+          )}
+        </p>
+      </div>
+
+      {houseAccentColor && !preview && (
+        <span
+          className="inline-block h-6 w-6 rounded-full border-2 border-white/20"
+          style={{ background: houseAccentColor }}
+        />
+      )}
+
+      {preview ? (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-acid/30 bg-acid/5 p-3">
+          <span className="h-8 w-8 shrink-0 rounded-full border-2 border-white/20" style={{ background: preview.accent }} />
+          <p className="min-w-0 flex-1 text-xs font-semibold text-white/60">
+            Looks like <span className="font-black text-white">{preview.template}</span>
+          </p>
+          <button
+            type="button"
+            onClick={confirm}
+            disabled={busy}
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-acid px-4 text-xs font-black uppercase tracking-tight text-ink disabled:opacity-60"
+          >
+            {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+            use this
+          </button>
+          <button
+            type="button"
+            onClick={() => setPreview(null)}
+            className="text-xs font-black uppercase tracking-widest text-white/40"
+          >
+            cancel
+          </button>
+        </div>
+      ) : (
+        <label className="flex h-12 w-fit cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white/70 transition-colors hover:border-acid hover:text-acid">
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) pick(file);
+            }}
+          />
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+          {houseTemplate ? "change the look" : "photograph company card"}
+        </label>
+      )}
+    </div>
+  );
+}
+
+function CredentialLine({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        navigator.clipboard.writeText(value).catch(() => {});
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      className="flex w-full items-center justify-between gap-3 rounded-lg bg-black/30 px-3 py-2 text-left transition-colors hover:bg-black/45"
+    >
+      <span className="truncate">
+        <span className="text-white/40">{label}: </span>
+        {value}
+      </span>
+      {copied ? (
+        <Check className="h-3.5 w-3.5 shrink-0 text-acid" />
+      ) : (
+        <Copy className="h-3.5 w-3.5 shrink-0 text-white/30" />
+      )}
+    </button>
+  );
+}

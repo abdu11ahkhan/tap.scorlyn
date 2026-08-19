@@ -45,33 +45,41 @@ export default function UsernameField({
   ownHandle?: string;
 }) {
   const [availability, setAvailability] = useState<Availability>("unknown");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  /**
+   * Tagged with the handle they were found for. Suggestions used to be a bare
+   * list cleared from the effect, which meant the ones for the previous handle
+   * stayed on screen for the moment between a keystroke and the next check —
+   * and cost a render on every keystroke to clear something that is only shown
+   * when the name comes back taken anyway.
+   */
+  const [suggestions, setSuggestions] = useState<{ for: string; list: string[] }>({
+    for: "",
+    list: [],
+  });
 
   const handle = value.trim().toLowerCase();
   const malformed = handle.length > 0 && !USERNAME_PATTERN.test(handle);
 
   // Derived, not stored: a value that can be computed from props during render
   // has no business being set from an effect.
+  const isOwnHandle =
+    !!ownHandle && handle === ownHandle.trim().toLowerCase();
+
   const state: { kind: string; message?: string } = malformed
     ? { kind: "invalid", message: "3–30 characters: lowercase letters, numbers, - and _." }
     : !handle
       ? { kind: "idle" }
-      : { kind: availability === "unknown" ? "idle" : availability };
+      : // Keeping the handle you already have is not a clash. Derived here
+        // rather than pushed into state from the effect, which is the same
+        // reason the rest of this block is derived.
+        isOwnHandle
+        ? { kind: "free" }
+        : { kind: availability === "unknown" ? "idle" : availability };
 
-  const isOwnHandle =
-    !!ownHandle && handle === ownHandle.trim().toLowerCase();
+  const shownSuggestions = suggestions.for === handle ? suggestions.list : [];
 
   useEffect(() => {
-    // Keeping the handle you already have is not a clash.
-    if (isOwnHandle) {
-      setAvailability("free");
-      setSuggestions([]);
-      return;
-    }
-    if (locked || !handle || malformed) {
-      setSuggestions([]);
-      return;
-    }
+    if (isOwnHandle || locked || !handle || malformed) return;
 
     let cancelled = false;
     // Marked as checking from inside the timer rather than synchronously, so
@@ -96,10 +104,7 @@ export default function UsernameField({
       // "Taken — try another" leaves the work to the person who is already
       // stuck. Offer names that are actually free instead: candidates are
       // checked before being shown, so tapping one always succeeds.
-      if (data) {
-        setSuggestions([]);
-        return;
-      }
+      if (data) return;
       const checked = await Promise.all(
         candidatesFor(handle).map(async (candidate) => {
           const { data: free } = await createClient().rpc("username_available", {
@@ -109,7 +114,10 @@ export default function UsernameField({
         })
       );
       if (!cancelled) {
-        setSuggestions(checked.filter((c): c is string => c !== null).slice(0, 3));
+        setSuggestions({
+          for: handle,
+          list: checked.filter((c): c is string => c !== null).slice(0, 3),
+        });
       }
     }, 450);
 
@@ -190,10 +198,10 @@ export default function UsernameField({
         )}
       </p>
 
-      {state.kind === "taken" && suggestions.length > 0 && (
+      {state.kind === "taken" && shownSuggestions.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-xs text-white/45">Available:</span>
-          {suggestions.map((suggestion) => (
+          {shownSuggestions.map((suggestion) => (
             <button
               key={suggestion}
               type="button"

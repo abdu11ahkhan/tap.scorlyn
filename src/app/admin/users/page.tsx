@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ShieldCheck, Ban, Search, UserPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import ActionButton from "../ActionButton";
 import ConfirmByName from "../ConfirmByName";
 import { setAdmin, setSuspended, deleteAccount } from "../actions";
 

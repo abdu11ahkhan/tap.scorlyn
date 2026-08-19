@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Download, Flag, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 import OrdersTable, { type AdminOrder } from "./OrdersTable";
 import MarkSeen from "./MarkSeen";
 
@@ -42,12 +43,20 @@ export default async function AdminOrders({
     .select("id", { count: "exact", head: true })
     .is("admin_seen_at", null);
 
-  // Money figures come from every row, not just this page.
-  const { data: allRows } = await supabase
-    .from("orders")
-    .select("amount_pkr, status, plan_id, created_at");
-
-  const all = allRows ?? [];
+  // Money figures come from every row, not just this page. A bare .select()
+  // truncates silently at Postgrest's 1000-row cap — fetchAll pages past it so
+  // "revenue all time" is not quietly wrong the day order #1001 ships.
+  const all = await fetchAll<{
+    amount_pkr: number;
+    status: string;
+    plan_id: string | null;
+    created_at: string;
+  }>((from, to) =>
+    supabase
+      .from("orders")
+      .select("amount_pkr, status, plan_id, created_at")
+      .range(from, to)
+  );
   const paidStatuses = ["paid", "printing", "shipped", "delivered"];
   const revenueAll = all
     .filter((o) => paidStatuses.includes(o.status))

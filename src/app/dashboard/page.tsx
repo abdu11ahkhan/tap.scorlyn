@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  ArrowUpRight,
   BarChart3,
   ExternalLink,
   IdCard,
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { readStorage, writeStorage } from "@/lib/safe-storage";
+import { useClientValue } from "@/lib/use-client-value";
 import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
 import CardList, { type CardSummary } from "@/components/dashboard/CardList";
 import type { CardProfile } from "@/lib/card";
@@ -39,13 +39,15 @@ export default function DashboardPage() {
   /** Open when they act on the banner, not on arrival — nobody wants a modal
    *  thrown at them for something they did not ask for. */
   const [choosing, setChoosing] = useState(false);
-  const [dismissed, setDismissed] = useState(true);
-
-  // Read after mount: localStorage does not exist during the server render,
-  // and defaulting to dismissed keeps the banner from flashing in and out.
-  useEffect(() => {
-    setDismissed(readStorage("local", NFC_BANNER_KEY) === "1");
-  }, []);
+  /**
+   * localStorage does not exist during the server render, and defaulting to
+   * dismissed keeps the banner from flashing in and out. Read through the
+   * store rather than filled in from an effect, so it arrives on the first
+   * client render instead of costing a second one.
+   */
+  const stored = useClientValue(() => readStorage("local", NFC_BANNER_KEY) === "1", true);
+  const [dismissedNow, setDismissedNow] = useState(false);
+  const dismissed = stored || dismissedNow;
 
   useEffect(() => {
     const load = async () => {
@@ -133,7 +135,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={() => {
                     writeStorage("local", NFC_BANNER_KEY, "1");
-                    setDismissed(true);
+                    setDismissedNow(true);
                   }}
                   className="text-sm font-bold text-white/45 transition-colors hover:text-white"
                 >

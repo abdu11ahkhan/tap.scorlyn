@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, type Transition } from "framer-motion";
 import { readStorage, writeStorage } from "@/lib/safe-storage";
+import { useClientValue } from "@/lib/use-client-value";
 import { ArrowRight, SmartphoneNfc, X } from "lucide-react";
 import { referralOrderUrl, referralTemplateUrl } from "@/lib/referral";
 
@@ -43,39 +44,51 @@ export default function ReferralBanner({
   /** Cheapest physical plan, so the CTA can quote a real number. */
   cardPrice?: number | null;
 }) {
+  /**
+   * Whether they dismissed it recently enough that it should stay a pill.
+   * Read through the store rather than set from the effect below, which had to
+   * render twice to say "actually, hidden" on every quiet visit.
+   */
+  const stillQuiet = useClientValue(() => {
+    const dismissedAt = Number(readStorage("local", DISMISS_KEY) ?? 0);
+    return (
+      dismissedAt > 0 && Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000
+    );
+  }, false);
+
   const [stage, setStage] = useState<Stage>("hidden");
 
+  /** A recent dismissal means it opens as the pill rather than not at all. */
+  const shown: Stage = stage === "hidden" && stillQuiet ? "pill" : stage;
+
   useEffect(() => {
-    const dismissedAt = Number(readStorage("local", DISMISS_KEY) ?? 0);
-    const stillQuiet =
-      dismissedAt > 0 &&
-      Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000;
-
-    if (stillQuiet) {
-      setStage("pill");
-      return;
-    }
-
+    if (stillQuiet) return;
     // Let the card land first — an instant banner reads as a popup ad.
     const timer = setTimeout(() => setStage("full"), 1800);
     return () => clearTimeout(timer);
-  }, []);
+  }, [stillQuiet]);
+
+  // Declared above the effect that calls it. As a const below, the effect
+  // closed over a binding that did not exist yet at the point it was written —
+  // it happened to work because effects run after the whole body, but it is
+  // exactly the shape that breaks the moment anything calls it during render.
+  const track = useCallback(
+    (eventType: "banner_view" | "banner_click" | "order") => {
+      if (!refCode) return;
+      fetch("/api/referral", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refCode, cardProfileId, eventType }),
+        keepalive: true,
+      }).catch(() => {});
+    },
+    [refCode, cardProfileId]
+  );
 
   useEffect(() => {
     if (stage !== "full" || !refCode) return;
     track("banner_view");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, refCode]);
-
-  const track = (eventType: "banner_view" | "banner_click" | "order") => {
-    if (!refCode) return;
-    fetch("/api/referral", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refCode, cardProfileId, eventType }),
-      keepalive: true,
-    }).catch(() => {});
-  };
+  }, [stage, refCode, track]);
 
   const dismiss = () => {
     writeStorage("local", DISMISS_KEY, String(Date.now()));
@@ -86,7 +99,7 @@ export default function ReferralBanner({
 
   return (
     <AnimatePresence mode="wait">
-      {stage === "full" && (
+      {shown === "full" && (
         <motion.div
           key="full"
           initial={{ y: 120, opacity: 0 }}
@@ -157,7 +170,7 @@ export default function ReferralBanner({
         </motion.div>
       )}
 
-      {stage === "pill" && (
+      {shown === "pill" && (
         <motion.button
           key="pill"
           type="button"

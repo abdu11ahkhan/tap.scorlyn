@@ -90,6 +90,9 @@ export default function ProfileExtras({
 }) {
   const accent = card.accent_color || "#111111";
   const dark = isDark(tone);
+  /** The hard offset shadow only draws on light ground; on black it is black
+   *  on black. */
+  const stamp = dark ? undefined : { boxShadow: "4px 4px 0 0 #0a0a0a" };
 
   const hours = (Array.isArray(card.business_hours) ? card.business_hours : []).filter(
     (h: BusinessHour) => h?.day?.trim() && h?.hours?.trim()
@@ -106,12 +109,33 @@ export default function ProfileExtras({
 
   return (
     <section
-      className="card-extras pb-20 pt-2"
+      // relative + z-10: templates that paint a full-bleed backdrop do it with
+      // a `fixed inset-0` layer carrying no z-index. A positioned element
+      // inside an earlier sibling paints above a later static one, so that
+      // backdrop was laid over this whole section — on glass it veiled the
+      // hours, the pay control and the save button alike, which reads as the
+      // buttons being transparent when they are simply underneath something.
+      className="card-extras relative z-10 pb-20 pt-2"
       style={
         {
           background: tone,
           color: dark ? "#F5F5F5" : "#111111",
           "--x-panel": dark ? "rgba(255,255,255,0.055)" : "#ffffff",
+          // Controls get their own fill, because a panel tint and a button are
+          // not the same job. At 5.5% white over a near-black card the panel
+          // colour is a wash, which left "Pay ..." and "Save to contacts"
+          // looking like outlines with a hole in them rather than things you
+          // press. Lifted off the card's own ground rather than a fixed grey,
+          // so it still sits right when the owner has picked a surface colour.
+          "--x-button": dark ? lift(tone, 0.12) : "#ffffff",
+          // The controls are drawn in the sticker language — ink border, hard
+          // offset shadow — and ink is #0a0a0a. On a near-black card that is
+          // the border, the shadow *and* (before --x-button) the fill all
+          // invisible at once, which is the whole reason "Pay ..." looked like
+          // floating text rather than a button. On dark ground the edge
+          // becomes a light hairline and the hard shadow is dropped, since an
+          // offset black square against black draws nothing.
+          "--x-edge": dark ? "rgba(255,255,255,0.22)" : "#0a0a0a",
           "--x-line": dark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.10)",
           "--x-muted": dark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)",
           "--x-faint": dark ? "rgba(255,255,255,0.28)" : "rgba(0,0,0,0.28)",
@@ -168,8 +192,8 @@ export default function ProfileExtras({
             {/* Sized and weighted like the link buttons above it. As a pale
                 hairline panel it read as a disabled block rather than the
                 tappable thing it is. */}
-            <summary style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
-              className="flex cursor-pointer list-none items-center gap-3 rounded-2xl border-2 border-ink [background:var(--x-panel)] px-4 py-3 [&::-webkit-details-marker]:hidden group-open:rounded-b-none">
+            <summary style={stamp}
+              className="flex cursor-pointer list-none items-center gap-3 rounded-2xl border-2 [border-color:var(--x-edge)] [background:var(--x-button)] px-4 py-3 [&::-webkit-details-marker]:hidden group-open:rounded-b-none">
               <span
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-ink"
                 style={{ background: accent, color: readableOn(accent) }}
@@ -191,8 +215,11 @@ export default function ProfileExtras({
               <ChevronDown className="h-4 w-4 shrink-0 [color:var(--x-muted)] transition-transform group-open:rotate-180" />
             </summary>
 
-            <div style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
-              className="space-y-2.5 rounded-b-2xl border-2 border-t-0 border-ink [background:var(--x-panel)] px-4 pb-4 pt-4">
+            {/* Same fill as the summary above: the drawer is the lower half of
+                the same object, and a solid button opening onto a washed-out
+                panel reads as broken. */}
+            <div style={stamp}
+              className="space-y-2.5 rounded-b-2xl border-2 border-t-0 [border-color:var(--x-edge)] [background:var(--x-button)] px-4 pb-4 pt-4">
               {methods.map((m, i) => (
                 <PaymentRow key={i} method={m} accent={accent} />
               ))}
@@ -209,8 +236,8 @@ export default function ProfileExtras({
 
         <SaveContact
           card={card}
-          style={{ boxShadow: "4px 4px 0 0 #0a0a0a" }}
-          className="flex h-[68px] items-center justify-center gap-2 rounded-2xl border-2 border-ink [background:var(--x-panel)] text-[15px] font-black"
+          style={stamp}
+          className="flex h-[68px] items-center justify-center gap-2 rounded-2xl border-2 [border-color:var(--x-edge)] [background:var(--x-button)] text-[15px] font-black"
         >
           <Download className="h-4 w-4" />
           Save to contacts
@@ -220,6 +247,19 @@ export default function ProfileExtras({
   );
 }
 
+
+/** Mix a colour toward white by `amount`, staying opaque. */
+function lift(hex: string, amount: number): string {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return hex;
+  const channel = (i: number) => {
+    const v = parseInt(h.slice(i, i + 2), 16);
+    return Math.round(v + (255 - v) * amount)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${channel(0)}${channel(2)}${channel(4)}`;
+}
 
 /** Duplicated rather than imported: this file is a client component and the
  *  helper in lib/card pulls in server-only neighbours. */

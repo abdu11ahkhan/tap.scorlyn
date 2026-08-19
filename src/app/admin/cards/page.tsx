@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ExternalLink, Pencil, Printer, Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { CARD_TEMPLATES } from "@/lib/card";
 import ActionButton from "../ActionButton";
 import ProofLink from "../orders/[id]/ProofLink";
 import ConfirmByName from "../ConfirmByName";
 import { deleteCard, setCardApproval, assignMissingFinishes } from "../actions";
-import { CARD_TEMPLATES } from "@/lib/card";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +70,7 @@ export default async function AdminCards({
   const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
+  /** Friendly name for the Template column — the stored value is the id. */
   const templateName = (id: string) =>
     CARD_TEMPLATES.find((t) => t.id === id)?.name ?? id;
 
@@ -184,6 +185,13 @@ export default async function AdminCards({
                         </p>
                       </div>
                     </div>
+                  </td>
+                  {/* The Template column had a heading and no cell, so every
+                      row below it sat one column to the left of the header it
+                      was being read under — NFC card under "Template",
+                      Approval under "NFC card", and so on across the table. */}
+                  <td data-label="Template" className="text-sm font-bold lowercase">
+                    {templateName(card.template)}
                   </td>
                   <td data-label="NFC card" className="text-sm font-bold lowercase">
                     {/* Always a link. It used to appear only once a finish was

@@ -34,7 +34,10 @@ const QUALITY = { avatar: 0.92, cover: 0.86, gallery: 0.86 };
 
 export type ImageKind = keyof typeof MAX_EDGE;
 
-async function downscale(file: File, kind: ImageKind): Promise<Blob> {
+/** Exported for the card-scan flow (src/app/templates/scan/page.tsx), which
+ *  resizes a photographed card before running OCR on it — same reasoning as
+ *  every other picked photo, no reason for a second implementation. */
+export async function downscale(file: File, kind: ImageKind): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
   const limit = MAX_EDGE[kind];
   const scale = Math.min(1, limit / Math.max(bitmap.width, bitmap.height));
@@ -86,7 +89,7 @@ async function downscale(file: File, kind: ImageKind): Promise<Blob> {
   return blob;
 }
 
-function toDataUrl(blob: Blob): Promise<string> {
+export function toDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));

@@ -494,6 +494,31 @@ export type TemplateCategory = (typeof TEMPLATE_CATEGORIES)[number]["id"];
  * `preview` is the accent the gallery demos each template with — picked per
  * template so the grid reads as distinct looks rather than one in N colours,
  * and chosen to stay legible on that template's background.
+ *
+ * These were re-derived after measuring what the gallery tiles actually render
+ * as, rather than what the hex list says. The old set had 21 of 36 templates
+ * sharing an exact hex with another (#7C3AED was doing duty for three), ten
+ * crowded into the 5-45 degree warm band, and nothing at all between 80 and
+ * 144 or between 270 and 334. It read as four colours, not thirty-six.
+ *
+ * The current set: every template a distinct accent, hues spread so the widest
+ * gap on the wheel is 20 degrees, and neighbours in the gallery grid always
+ * far apart in hue. Three rules shape the rest, each of which the contact
+ * sheet caught by eye before it was understood:
+ *
+ *   - Lightness follows the template's own background — deep on paper, light
+ *     and vivid on the dark ones — and is searched per hue rather than fixed,
+ *     because sRGB holds very different amounts of chroma at different hues.
+ *     A fixed lightness gave washed-out pastel violets and muddy olive yellows
+ *     at the same time.
+ *   - Hues from 85 to 140 are reserved for templates that render dark. Yellow
+ *     and yellow-green cannot be both dark enough to read on white and clean;
+ *     they go olive. Rust and amber below 85 are fine on paper, which is why
+ *     the warm-paper templates still live there.
+ *   - Five accents are held fixed because the colour is the template: sticker's
+ *     acid (the product's own brand colour), neon's pink glow, glass's cyan
+ *     frost, mono's terminal green, and contactsheet's darkroom grey — the one
+ *     deliberately desaturated accent, which any even spread turns pink.
  */
 export const CARD_TEMPLATES = [
   {
@@ -502,7 +527,7 @@ export const CARD_TEMPLATES = [
     blurb: "Centred, airy, thin type. The safe default.",
     category: 'profile',
     vibe: "clean",
-    preview: "#7C3AED",
+    preview: "#EB2974",
   },
   {
     id: "bold",
@@ -510,7 +535,7 @@ export const CARD_TEMPLATES = [
     blurb: "Oversized display name, left aligned, filled buttons.",
     category: 'profile',
     vibe: "loud",
-    preview: "#FF3D9A",
+    preview: "#0B23EE",
   },
   {
     id: "split",
@@ -518,7 +543,7 @@ export const CARD_TEMPLATES = [
     blurb: "Accent panel up top, content below.",
     category: 'profile',
     vibe: "classic",
-    preview: "#0F766E",
+    preview: "#249971",
   },
   {
     id: "glass",
@@ -550,7 +575,7 @@ export const CARD_TEMPLATES = [
     blurb: "Full-bleed gradient that never sits still.",
     category: 'profile',
     vibe: "dark",
-    preview: "#A855F7",
+    preview: "#85E937",
   },
   {
     id: "editorial",
@@ -558,7 +583,7 @@ export const CARD_TEMPLATES = [
     blurb: "Serif, warm paper, magazine spread.",
     category: 'profile',
     vibe: "clean",
-    preview: "#B45309",
+    preview: "#C56C21",
   },
   {
     id: "neon",
@@ -574,7 +599,7 @@ export const CARD_TEMPLATES = [
     blurb: "Scrapbook energy. Tilted, taped, handmade.",
     category: 'profile',
     vibe: "loud",
-    preview: "#F59E0B",
+    preview: "#B6711F",
   },
 
   // ---- Landing ----
@@ -584,7 +609,7 @@ export const CARD_TEMPLATES = [
     blurb: "One promise, one button. Built to convert.",
     category: 'landing',
     vibe: "loud",
-    preview: "#CCFF00",
+    preview: "#EBC835",
   },
   {
     id: "waitlist",
@@ -592,7 +617,7 @@ export const CARD_TEMPLATES = [
     blurb: "Coming soon, with a sign-up front and centre.",
     category: 'landing',
     vibe: "dark",
-    preview: "#8B5CF6",
+    preview: "#ABDC35",
   },
 
   {
@@ -601,7 +626,7 @@ export const CARD_TEMPLATES = [
     blurb: "Full-bleed photo, huge type over it. Event energy.",
     category: 'landing',
     vibe: "loud",
-    preview: "#F43F5E",
+    preview: "#F9C134",
   },
   {
     id: "app",
@@ -609,7 +634,7 @@ export const CARD_TEMPLATES = [
     blurb: "Product shot, feature list, download button.",
     category: 'landing',
     vibe: "clean",
-    preview: "#2563EB",
+    preview: "#7F27F0",
   },
 
   // ---- Portfolio ----
@@ -619,7 +644,7 @@ export const CARD_TEMPLATES = [
     blurb: "Work first. A tight gallery of everything you've shipped.",
     category: 'portfolio',
     vibe: "clean",
-    preview: "#0EA5E9",
+    preview: "#249595",
   },
   {
     id: "showcase",
@@ -627,7 +652,7 @@ export const CARD_TEMPLATES = [
     blurb: "Big imagery, captions, gallery energy.",
     category: 'portfolio',
     vibe: "dark",
-    preview: "#F43F5E",
+    preview: "#C5D334",
   },
 
   {
@@ -636,7 +661,7 @@ export const CARD_TEMPLATES = [
     blurb: "Edge-to-edge photos, one after another.",
     category: 'portfolio',
     vibe: "dark",
-    preview: "#EAB308",
+    preview: "#D8CC34",
   },
 
   // ---- Sectioned ----
@@ -646,7 +671,7 @@ export const CARD_TEMPLATES = [
     blurb: "Hero, about, links, contact — with jump nav.",
     category: 'sectioned',
     vibe: "classic",
-    preview: "#059669",
+    preview: "#CF2ADB",
   },
   {
     id: "agency",
@@ -654,7 +679,7 @@ export const CARD_TEMPLATES = [
     blurb: "Cover photo, services, work, contact. A small site.",
     category: 'sectioned',
     vibe: "dark",
-    preview: "#F97316",
+    preview: "#32C2F0",
   },
 
   // ---- Form ----
@@ -664,7 +689,7 @@ export const CARD_TEMPLATES = [
     blurb: "A real contact form, above everything else.",
     category: 'form',
     vibe: "clean",
-    preview: "#7C3AED",
+    preview: "#E62A8D",
   },
   {
     id: "booking",
@@ -672,7 +697,7 @@ export const CARD_TEMPLATES = [
     blurb: "Pick a slot, leave details. For appointments.",
     category: 'form',
     vibe: "classic",
-    preview: "#0D9488",
+    preview: "#2085F3",
   },
   // Icon-only. Labels are what make a link list long, and face to face nobody
   // reads them — the glyph is recognised faster than the word.
@@ -682,7 +707,7 @@ export const CARD_TEMPLATES = [
     blurb: "Icon-only links under your photo. No labels at all.",
     category: 'profile',
     vibe: "icons",
-    preview: "#22D3EE",
+    preview: "#F62E38",
   },
   {
     id: "tiles",
@@ -690,7 +715,7 @@ export const CARD_TEMPLATES = [
     blurb: "Icon-only links as a grid of big square tiles.",
     category: 'profile',
     vibe: "icons",
-    preview: "#F59E0B",
+    preview: "#269E5F",
   },
   {
     id: "dock",
@@ -698,7 +723,7 @@ export const CARD_TEMPLATES = [
     blurb: "Full-bleed photo, icon links docked where your thumb is.",
     category: 'profile',
     vibe: "icons",
-    preview: "#EC4899",
+    preview: "#7E6DF4",
   },
   {
     id: "masonry",
@@ -706,7 +731,7 @@ export const CARD_TEMPLATES = [
     blurb: "Staggered columns. Images keep their own shape.",
     category: 'portfolio',
     vibe: "papers",
-    preview: "#0EA5E9",
+    preview: "#C22BF5",
   },
   {
     id: "filmstrip",
@@ -714,7 +739,7 @@ export const CARD_TEMPLATES = [
     blurb: "Swipe sideways, one piece at a time.",
     category: 'portfolio',
     vibe: "cinematic",
-    preview: "#E11D48",
+    preview: "#3BD9F9",
   },
   {
     id: "lookbook",
@@ -722,7 +747,7 @@ export const CARD_TEMPLATES = [
     blurb: "Full-bleed. The work fills the screen.",
     category: 'portfolio',
     vibe: "editorial",
-    preview: "#A16207",
+    preview: "#F52CB5",
   },
   {
     id: "contactsheet",
@@ -738,7 +763,7 @@ export const CARD_TEMPLATES = [
     blurb: "Numbered steps with captions that explain.",
     category: 'portfolio',
     vibe: "considered",
-    preview: "#1D4ED8",
+    preview: "#228DD6",
   },
   {
     id: "mosaic",
@@ -746,7 +771,7 @@ export const CARD_TEMPLATES = [
     blurb: "Mixed tile sizes so the grid has rhythm.",
     category: 'portfolio',
     vibe: "dark",
-    preview: "#7C3AED",
+    preview: "#F32D5B",
   },
   {
     id: "frames",
@@ -754,7 +779,7 @@ export const CARD_TEMPLATES = [
     blurb: "Prints laid on a table, slightly tilted.",
     category: 'portfolio',
     vibe: "warm",
-    preview: "#B45309",
+    preview: "#D25F20",
   },
   {
     id: "menu",
@@ -762,7 +787,7 @@ export const CARD_TEMPLATES = [
     blurb: "A price list with dotted leaders.",
     category: 'landing',
     vibe: "classic",
-    preview: "#166534",
+    preview: "#4328F2",
   },
   {
     id: "launch",
@@ -770,7 +795,7 @@ export const CARD_TEMPLATES = [
     blurb: "One headline, one enormous button.",
     category: 'landing',
     vibe: "loud",
-    preview: "#DC2626",
+    preview: "#3CE5C2",
   },
   {
     id: "studio",
@@ -778,7 +803,7 @@ export const CARD_TEMPLATES = [
     blurb: "Jump links, work, contact. A small site.",
     category: 'sectioned',
     vibe: "clean",
-    preview: "#0F766E",
+    preview: "#9F27F3",
   },
   {
     id: "journal",
@@ -786,7 +811,7 @@ export const CARD_TEMPLATES = [
     blurb: "Serif and long-form, like a column.",
     category: 'sectioned',
     vibe: "literary",
-    preview: "#7C2D12",
+    preview: "#E44920",
   },
   {
     id: "quote",
@@ -794,7 +819,7 @@ export const CARD_TEMPLATES = [
     blurb: "Tells them exactly what to send you.",
     category: 'form',
     vibe: "practical",
-    preview: "#0D9488",
+    preview: "#24939E",
   },
 ] as const;
 

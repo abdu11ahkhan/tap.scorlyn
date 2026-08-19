@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Flag, Loader2, StickyNote, Eye } from "lucide-react";
+import { Flag, Loader2, StickyNote, Eye } from "lucide-react";
 import { setOrderStatus, setOrderFlag, setOrderNote, getProofUrl } from "../actions";
 import { STATUS_LABELS, statusTone } from "@/app/dashboard/orders/status";
 
@@ -41,7 +41,8 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
 
   const toggle = (id: string) => {
     const next = new Set(selected);
-    next.has(id) ? next.delete(id) : next.add(id);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
     setSelected(next);
   };
 

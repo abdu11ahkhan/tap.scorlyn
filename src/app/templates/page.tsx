@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Eye, Sparkles, User } from "lucide-react";
+import { ArrowRight, Camera, Eye, Sparkles, User } from "lucide-react";
 import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import { DEMO_PERSONAS } from "@/app/preview/card/[template]/demo-data";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
 import TemplateThumb from "./TemplateThumb";
+import { SRC_H, SRC_W } from "./thumb-geometry";
 import { thumbTop } from "./thumb-frames";
 
 export const dynamic = "force-dynamic";
@@ -23,8 +24,10 @@ export const metadata: Metadata = {
 // Visible frame height as a fraction of width. These pages are taller than one
 // screen, so the preview always crops; this is where it crops.
 /** Tile shape, matched to the 390x624 the thumbnail renders so it fills edge
- *  to edge with content and no dead space below it. */
-const THUMB_ASPECT = 624 / 390;
+ *  to edge with content and no dead space below it. Taken from the thumbnail's
+ *  own constants rather than restated: written out by hand here, the two could
+ *  drift apart and the tiles would letterbox or crop without anything failing. */
+const THUMB_ASPECT = SRC_H / SRC_W;
 
 /** Three 320px cards plus their gaps — the widest the grid ever needs to be. */
 const COLUMN_W = 1060;
@@ -106,6 +109,18 @@ export default async function PublicTemplatesPage() {
             Start from the kind of page you need — a tap card, a landing page, a
             portfolio, a form. Editing is free; you only need an account to publish.
           </p>
+
+          {/* Most people who want a digital card already have a physical
+              one with the details laid out on it — reading it beats
+              retyping it. */}
+          <Link
+            href="/templates/scan"
+            className="card-rise mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-acid/40 bg-acid/10 px-4 text-sm font-black lowercase text-acid transition-colors hover:border-acid hover:bg-acid/20"
+            style={{ ["--d" as string]: "100ms" }}
+          >
+            <Camera className="h-4 w-4" />
+            got a business card already? scan it instead
+          </Link>
 
           {/* Sector jump links. Plain anchors — a server page shouldn't ship
               client-side filtering for a list this size. */}

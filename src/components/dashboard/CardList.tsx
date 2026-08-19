@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Clock, Loader2, Lock, Plus } from "lucide-react";
+import { Camera, Clock, Loader2, Lock, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export type CardSummary = {
@@ -74,20 +74,31 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
         <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">
           your cards
         </h2>
-        <button
-          type="button"
-          onClick={createCard}
-          disabled={creating}
-          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid disabled:opacity-60"
-        >
-          {creating ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Plus className="h-4 w-4" />
-          )}
-          new card
-          <span className="font-bold text-white/40">Rs.500</span>
-        </button>
+        <div className="flex flex-wrap gap-2">
+          {/* Reads a physical card straight into a new one — faster than
+              retyping it, and lands in the same editor either way. */}
+          <Link
+            href="/templates/scan"
+            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+          >
+            <Camera className="h-4 w-4" />
+            scan a card
+          </Link>
+          <button
+            type="button"
+            onClick={createCard}
+            disabled={creating}
+            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid disabled:opacity-60"
+          >
+            {creating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
+            new card
+            <span className="font-bold text-white/40">Rs.500</span>
+          </button>
+        </div>
       </div>
 
       {error && (

@@ -144,7 +144,7 @@ export default function AccountMenu() {
               role="menuitem"
             >
               <IdCard className="h-4 w-4" />
-              My card
+              My portfolio
             </Link>
             <Link
               href="/dashboard/settings"

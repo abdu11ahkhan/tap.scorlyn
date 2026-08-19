@@ -80,6 +80,14 @@ export const TEMPLATE_TONE: Record<string, string> = {
   mosaic: "#0F0F12",
   neon: "#000000",
   orbit: "#0B0B0F",
+  // Both bg-ink (#0a0a0a) at the root -- the only two templates using the
+  // literal ink class rather than a bespoke near-black. Missing here for a
+  // while: the fallback of "#ffffff" put a white ProfileExtras section
+  // directly under a black card, and offered the *light* surface-colour
+  // presets in the editor for a template whose text is hardcoded
+  // white-on-dark.
+  pitch: "#0A0A0A",
+  poster: "#0A0A0A",
   quote: "#F7F8F8",
   reel: "#0B0B0B",
   reply: "#F7F7FB",

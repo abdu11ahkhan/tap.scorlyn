@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Check, Copy, Download } from "lucide-react";
+import { useClientValue } from "@/lib/use-client-value";
 
 /**
  * Downloadable QR for the public card.
@@ -16,11 +17,10 @@ const EXPORT_SIZE = 1024;
 
 export default function QrPanel({ username }: { username: string }) {
   const holder = useRef<HTMLDivElement>(null);
-  const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  useEffect(() => setOrigin(window.location.origin), []);
+  const origin = useClientValue(() => window.location.origin, "");
 
   const url = origin ? `${origin}/u/${username}` : "";
 

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import AreaSwitch from "@/components/layout/AreaSwitch";
 import {
+  Camera,
   CreditCard,
   FileText,
   HelpCircle,
@@ -85,6 +86,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/content", label: "Content", icon: FileText },
     { href: "/admin/email", label: "Email", icon: Mail },
     { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
+    { href: "/admin/scan-test", label: "Scan test", icon: Camera },
     { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];

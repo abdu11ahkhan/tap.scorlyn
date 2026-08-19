@@ -33,6 +33,8 @@ const DARK_TEMPLATES = new Set([
   "mosaic",
   "neon",
   "orbit",
+  "pitch",
+  "poster",
   "reel",
   "showcase",
   "waitlist",

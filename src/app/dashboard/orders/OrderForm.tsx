@@ -77,12 +77,10 @@ function checkPhone(raw: string): { digits: string; error: string | null } {
 
 export default function OrderForm({
   plans,
-  defaults,
   hasCard,
   card,
 }: {
   plans: Plan[];
-  defaults: { fullName: string; phone: string };
   /** Whether this account has a card page yet. A printed card is a link to
    *  one, so without it there is nothing to program the chip with. */
   hasCard: boolean;

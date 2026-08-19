@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 import PaymentMethods, { type ShopPayment } from "./PaymentMethods";
 
 export const dynamic = "force-dynamic";
@@ -7,12 +8,16 @@ export const dynamic = "force-dynamic";
 export default async function AdminBilling() {
   const supabase = await createClient();
 
-  const [{ data: methods }, { data: orders }] = await Promise.all([
+  // A bare .select() truncates silently past Postgrest's 1000-row cap, which
+  // is exactly wrong for a number that is supposed to be everything ever
+  // taken — see fetchAll for the full story (the orders page hit the same
+  // thing).
+  const [{ data: methods }, rows] = await Promise.all([
     supabase.from("shop_payment_methods").select("*").order("sort_order"),
-    supabase.from("orders").select("amount_pkr, status"),
+    fetchAll<{ amount_pkr: number; status: string }>((from, to) =>
+      supabase.from("orders").select("amount_pkr, status").range(from, to)
+    ),
   ]);
-
-  const rows = orders ?? [];
   const settled = ["paid", "printing", "shipped", "delivered"];
   const taken = rows.filter((o) => settled.includes(o.status)).reduce((s, o) => s + o.amount_pkr, 0);
   const awaiting = rows.filter((o) => o.status === "pending").reduce((s, o) => s + o.amount_pkr, 0);

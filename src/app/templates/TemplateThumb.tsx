@@ -1,25 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-/** The viewport the preview renders at. A real phone width, so templates lay
- *  out the way they actually would rather than for a 150px column. */
-const SRC_W = 390;
-/**
- * How much of the card the thumbnail shows, starting from that template's own
- * content (see thumb-frames.ts).
- *
- * Measured: from the name down, a typical card runs about 550-600px before it
- * runs out of buttons. 1014 was tried and is far too tall once the frame
- * starts at the name rather than at zero — it left half a tile of blank page
- * under every card. This is the content, and little else.
- *
- * Kept at exactly SRC_W x tile aspect so the frame fills without letterboxing.
- */
-const SRC_H = 624;
-/** The height every preview is rendered at, and the height the offsets in
- *  thumb-frames.ts were measured against. The two must match. */
-const RENDER_H = 4800;
+import { RENDER_H, SRC_W } from "./thumb-geometry";
 
 /**
  * A template preview that fits whatever column it lands in.

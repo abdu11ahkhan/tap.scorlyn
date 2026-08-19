@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { renderCardTemplate } from "@/components/card-templates";
+import { renderCardTemplate, extrasTone } from "@/components/card-templates";
+import ProfileExtras from "@/components/nfc/ProfileExtras";
 import { resolveButtons, TEMPLATE_IDS, type CardProfile } from "@/lib/card";
 import { DEMO_PERSONAS, FALLBACK_PERSONA } from "./demo-data";
 import PreviewChrome from "./PreviewChrome";
@@ -143,7 +144,13 @@ export default async function CardTemplatePreview({
 
   // raw=1 is what the chrome's iframe (and the gallery thumbnails) load: just
   // the card, no toolbar, no nesting.
-  if (raw === "1") return rendered;
+  if (raw === "1")
+    return (
+      <>
+        <div className="card-has-extras">{rendered}</div>
+        <ProfileExtras card={card} tone={extrasTone(card)} />
+      </>
+    );
 
   const query = new URLSearchParams({ accent: safeAccent, font: safeFont, raw: "1" });
 

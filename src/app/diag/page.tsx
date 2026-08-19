@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useClientValue } from "@/lib/use-client-value";
 
 /**
  * A deliberately primitive diagnostics page.
@@ -10,10 +11,51 @@ import { useEffect, useState } from "react";
  * where the rest of the site does not. Its whole job is to be screenshotable
  * from the phone that is failing and report what actually happened there.
  */
+/**
+ * Nothing here changes after load, so it is collected once and cached.
+ *
+ * The cache is not an optimisation — useSyncExternalStore compares snapshots by
+ * identity, and handing it a freshly built object every time would read as the
+ * value changing on every render, forever.
+ */
+let cachedInfo: Record<string, string> | null = null;
+
+/** Rendered on the server and during hydration, where none of this exists. */
+const NO_INFO: Record<string, string> = {};
+
+function collectInfo(): Record<string, string> {
+  if (cachedInfo) return cachedInfo;
+
+  const supports = (prop: string, value: string) => {
+    try {
+      return CSS.supports(prop, value) ? "yes" : "NO";
+    } catch {
+      return "threw";
+    }
+  };
+
+  cachedInfo = {
+    "user agent": navigator.userAgent,
+    "screen": `${window.innerWidth}x${window.innerHeight} @${window.devicePixelRatio}x`,
+    "@property": typeof CSS !== "undefined" && "registerProperty" in CSS ? "yes" : "NO",
+    "color-mix()": supports("color", "color-mix(in srgb, red, blue)"),
+    "lab()": supports("color", "lab(50% 0 0)"),
+    "oklch()": supports("color", "oklch(50% 0 0)"),
+    "backdrop-filter": supports("backdrop-filter", "blur(4px)"),
+    "individual rotate": supports("rotate", "3deg"),
+    "reduced motion": window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "ON" : "off",
+    "cookies enabled": String(navigator.cookieEnabled),
+    "react mounted": "yes",
+  };
+  return cachedInfo;
+}
+
 export default function Diagnostics() {
   const [errors, setErrors] = useState<string[]>([]);
-  const [info, setInfo] = useState<Record<string, string>>({});
+  const info = useClientValue(collectInfo, NO_INFO);
 
+  // Only the listeners remain: subscribing to errors is a real subscription,
+  // unlike reading capabilities that were already true before this mounted.
   useEffect(() => {
     const onError = (e: ErrorEvent) =>
       setErrors((prev) => [...prev, `${e.message} @ ${e.filename?.split("/").pop()}:${e.lineno}`]);
@@ -22,28 +64,6 @@ export default function Diagnostics() {
 
     window.addEventListener("error", onError);
     window.addEventListener("unhandledrejection", onReject);
-
-    const supports = (prop: string, value: string) => {
-      try {
-        return CSS.supports(prop, value) ? "yes" : "NO";
-      } catch {
-        return "threw";
-      }
-    };
-
-    setInfo({
-      "user agent": navigator.userAgent,
-      "screen": `${window.innerWidth}x${window.innerHeight} @${window.devicePixelRatio}x`,
-      "@property": typeof CSS !== "undefined" && "registerProperty" in CSS ? "yes" : "NO",
-      "color-mix()": supports("color", "color-mix(in srgb, red, blue)"),
-      "lab()": supports("color", "lab(50% 0 0)"),
-      "oklch()": supports("color", "oklch(50% 0 0)"),
-      "backdrop-filter": supports("backdrop-filter", "blur(4px)"),
-      "individual rotate": supports("rotate", "3deg"),
-      "reduced motion": window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "ON" : "off",
-      "cookies enabled": String(navigator.cookieEnabled),
-      "react mounted": "yes",
-    });
 
     return () => {
       window.removeEventListener("error", onError);

@@ -60,6 +60,16 @@ export default function PublicCardEditor({
   const isKnownTemplate = TEMPLATE_IDS.includes(template as (typeof TEMPLATE_IDS)[number]);
 
   // Pick up any work from a previous visit, but honour the template just picked.
+  //
+  // This one really does belong in an effect, unlike the other mount-time
+  // reads in this codebase, which moved to useClientValue. Those produce a
+  // value to display; this seeds four *editable* fields. Seeding them from a
+  // lazy useState initialiser would run during render, where the server has no
+  // localStorage — so the server would send an empty editor and the client's
+  // first render would disagree with it. Filling them in after mount is what
+  // keeps hydration honest, and `ready` stops the persist effect below from
+  // writing the empty defaults back over the saved draft in the meantime.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const draft = loadDraft();
     if (draft) {
@@ -69,8 +79,11 @@ export default function PublicCardEditor({
       setExtras({ ...EMPTY_EXTRAS, ...(draft.extras ?? {}) });
     }
     setReady(true);
+    // Deliberately mount-only: this restores a draft once. Re-running it when
+    // the template changes would throw away whatever has been typed since.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Persist as they type so nothing is lost on the trip through login.
   useEffect(() => {

@@ -37,13 +37,19 @@ export default function ConfirmByName({
   const [pending, startTransition] = useTransition();
   const input = useRef<HTMLInputElement>(null);
 
+  // Focusing is a real side effect on the DOM, so it belongs here. Clearing
+  // the field is not — it is something that happens *because* you closed the
+  // dialog, and doing it in an effect meant every close ran a second render
+  // just to undo state the closing handler already knew about.
   useEffect(() => {
     if (open) input.current?.focus();
-    else {
-      setTyped("");
-      setError(null);
-    }
   }, [open]);
+
+  const close = () => {
+    setOpen(false);
+    setTyped("");
+    setError(null);
+  };
 
   // Case and surrounding space are noise; the point is that you read the name.
   const matches = typed.trim().toLowerCase() === expected.trim().toLowerCase();
@@ -67,7 +73,7 @@ export default function ConfirmByName({
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center"
           onClick={(e) => {
-            if (e.target === e.currentTarget && !pending) setOpen(false);
+            if (e.target === e.currentTarget && !pending) close();
           }}
         >
           <div className="app-panel w-full max-w-md p-5">
@@ -87,7 +93,7 @@ export default function ConfirmByName({
 
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() => close()}
                 disabled={pending}
                 aria-label="Cancel"
                 className="shrink-0 p-1 text-white/35 transition-colors hover:text-white"
@@ -106,7 +112,7 @@ export default function ConfirmByName({
                 value={typed}
                 onChange={(e) => setTyped(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Escape" && !pending) setOpen(false);
+                  if (e.key === "Escape" && !pending) close();
                 }}
                 autoComplete="off"
                 spellCheck={false}
@@ -121,7 +127,7 @@ export default function ConfirmByName({
             <div className="mt-5 flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={() => close()}
                 disabled={pending}
                 className="app-btn app-btn-ghost"
               >
@@ -135,7 +141,7 @@ export default function ConfirmByName({
                   startTransition(async () => {
                     const result = await action();
                     if (!result.ok) setError(result.error ?? "Something went wrong.");
-                    else setOpen(false);
+                    else close();
                   });
                 }}
                 className="app-btn app-btn-primary disabled:opacity-40"
