@@ -92,9 +92,9 @@ export default function GlassCard({
           {card.company && <p className="card-company mt-1 text-[13px] text-slate-400">{card.company}</p>}
 
           {card.location && (
-            <p className="card-location mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-500">
-              <MapPin className="h-3.5 w-3.5" />
-              {card.location}
+            <p className="mt-3 flex items-start justify-center gap-1.5 text-[11px] text-slate-500">
+              <MapPin className="mt-px h-3.5 w-3.5 shrink-0" />
+              <span className="card-location text-left">{card.location}</span>
             </p>
           )}
 

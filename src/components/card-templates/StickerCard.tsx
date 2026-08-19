@@ -72,9 +72,9 @@ export default function StickerCard({
                 <span className="card-company rounded-full border-2 border-ink bg-white px-3 py-1 text-[11px] font-black text-ink">{card.company}</span>
               )}
               {card.location && (
-                <span className="card-location flex items-center gap-1 rounded-full border-2 border-ink bg-white px-3 py-1 text-[11px] font-black text-ink">
-                  <MapPin className="h-3 w-3" />
-                  {card.location}
+                <span className="flex items-start gap-1 rounded-2xl border-2 border-ink bg-white px-3 py-1.5 text-[11px] font-black text-ink">
+                  <MapPin className="mt-px h-3 w-3 shrink-0" />
+                  <span className="card-location">{card.location}</span>
                 </span>
               )}
             </div>

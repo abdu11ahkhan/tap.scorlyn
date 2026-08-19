@@ -886,14 +886,15 @@ textarea.app-input {
    on one line instead. */
 .card-template .card-name:not(:has(svg)),
 .card-template .card-headline:not(:has(svg)),
-.card-template .card-bio:not(:has(svg)) {
+.card-template .card-bio:not(:has(svg)),
+.card-template .card-location:not(:has(svg)) {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .card-template .card-company,
-.card-template .card-location,
+.card-template .card-location:has(svg),
 .card-template .card-name:has(svg),
 .card-template .card-headline:has(svg),
 .card-template .card-bio:has(svg) {
@@ -902,8 +903,13 @@ textarea.app-input {
   text-overflow: ellipsis;
 }
 
+/* Three, not two — a name is the one field with no fallback if it's cut.
+   "Dr. Ghulam Mahboob" clamped to two lines at a template's fixed avatar
+   width became "Dr. Ghulam…", losing his actual surname. Same reasoning as
+   the headline fix below, but a name has no shorter version to fall back
+   to — it's what it is. */
 .card-template .card-name {
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
 }
 
 /* The bio gets three, not two. It is the one field people write prose into,
@@ -920,9 +926,21 @@ textarea.app-input {
   -webkit-line-clamp: 2;
 }
 
+/* Two, when the icon has been moved outside this element (see the templates
+   that pair MapPin with a `.card-location` text span rather than putting the
+   icon inside it) — a full scanned street address routinely needs a second
+   line, and single-line ellipsis was eating half of it ("...Gulberg II, La").
+   Templates that still keep the icon inside `.card-location` are unaffected —
+   the `:has(svg)` rule above still gives those one line, since combining
+   -webkit-box with that element's own flex layout would stack the icon over
+   the text instead of beside it. */
+.card-template .card-location:not(:has(svg)) {
+  -webkit-line-clamp: 2;
+}
+
 @supports (height: 1lh) {
   .card-template .card-name {
-    min-height: 2lh;
+    min-height: 3lh;
   }
 
   .card-template .card-bio {

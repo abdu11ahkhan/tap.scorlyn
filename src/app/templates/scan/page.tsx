@@ -17,16 +17,9 @@ import { scanCardText, type ScanFields, type ScanLine } from "@/lib/card-ocr";
 import { scanCardWithClaude, cropLogo } from "@/lib/card-scan-ai";
 import { renderCardTemplate } from "@/components/card-templates";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import { EntryListField, EMPTY_ENTRY, type Entry } from "@/components/card-editor/ScanEntryList";
 
 type Stage = "capture" | "scanning" | "review";
-
-/** One phone/email candidate on the review screen: editable, and — when a
- *  card had more than one — individually toggleable, since a business card
- *  printing both a landline and a cell isn't a mistake to resolve, it's a
- *  choice the person scanning should make. */
-type Entry = { label: string; value: string; use: boolean };
-
-const EMPTY_ENTRY: Entry[] = [{ label: "", value: "", use: true }];
 
 /** A field the review screen shows: what OCR guessed, editable, with the
  *  source line kept around so the guess is visible rather than presented as
@@ -62,6 +55,9 @@ export default function ScanCardPage() {
   const [frontDataUrl, setFrontDataUrl] = useState("");
   const [autoLogoUrl, setAutoLogoUrl] = useState("");
   const [useAsLogo, setUseAsLogo] = useState(false);
+  // A real logo file the user picked themselves — always wins over anything
+  // detected from the photo, since it's the one option that's never a guess.
+  const [manualLogoUrl, setManualLogoUrl] = useState("");
 
   const [name, setName] = useState("");
   const [headline, setHeadline] = useState("");
@@ -128,7 +124,8 @@ export default function ScanCardPage() {
         if (claudeFields.logo_box) {
           try {
             setAutoLogoUrl(await cropLogo(frontBlob, claudeFields.logo_box));
-            setUseAsLogo(true);
+            // Not auto-checked — a detection is a suggestion to confirm, not
+            // something to silently put on someone's card.
           } catch {
             // Crop failed (corrupt blob, canvas error) — fall through to the
             // whole-photo fallback below, off by default as usual.
@@ -243,9 +240,9 @@ export default function ScanCardPage() {
       template,
       accent_color: vibe?.accent ?? EMPTY_CARD_FORM.accent_color,
       surface_color: vibe?.surface ?? "",
-      logo_url: useAsLogo ? autoLogoUrl || frontDataUrl : "",
+      logo_url: manualLogoUrl || (useAsLogo ? autoLogoUrl || frontDataUrl : ""),
     }),
-    [name, headline, company, tagline, address, template, vibe, useAsLogo, autoLogoUrl, frontDataUrl]
+    [name, headline, company, tagline, address, template, vibe, manualLogoUrl, useAsLogo, autoLogoUrl, frontDataUrl]
   );
 
   const previewCard = useMemo(
@@ -409,6 +406,40 @@ export default function ScanCardPage() {
                 )
               )}
 
+              <div className="mt-4 flex items-center gap-3 text-xs font-semibold text-white/60">
+                {manualLogoUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={manualLogoUrl}
+                    alt=""
+                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                  />
+                )}
+                <label className="cursor-pointer text-white/40 underline decoration-dotted underline-offset-2 hover:text-white/60">
+                  {manualLogoUrl ? "replace my own logo file" : "or upload your own logo file"}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const blob = await downscale(file, "avatar");
+                      setManualLogoUrl(await toDataUrl(blob));
+                    }}
+                  />
+                </label>
+                {manualLogoUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setManualLogoUrl("")}
+                    className="text-white/40 hover:text-white/60"
+                  >
+                    remove
+                  </button>
+                )}
+              </div>
+
               {rawLines.length > 0 && (
                 <details className="mt-4 rounded-xl border-2 border-white/10 bg-white/[0.02] px-4 py-3 text-xs text-white/50">
                   <summary className="cursor-pointer font-black uppercase tracking-widest text-white/40">
@@ -530,59 +561,3 @@ function ReviewField({
   );
 }
 
-/**
- * Real cards often print more than one phone number or email — a landline
- * next to a cell, a personal address next to a shared one. Each candidate we
- * found gets its own row with a checkbox; the person scanning decides which
- * end up on the card rather than the scan silently keeping just one.
- */
-function EntryListField({
-  label,
-  entries,
-  onChange,
-  type = "text",
-}: {
-  label: string;
-  entries: Entry[];
-  onChange: (entries: Entry[]) => void;
-  type?: string;
-}) {
-  const update = (i: number, patch: Partial<Entry>) =>
-    onChange(entries.map((entry, j) => (j === i ? { ...entry, ...patch } : entry)));
-
-  return (
-    <div className="space-y-1.5">
-      <label className="text-xs font-bold uppercase tracking-wide text-white/50">{label}</label>
-      <div className="space-y-2">
-        {entries.map((entry, i) => (
-          <div key={i} className="flex items-center gap-2">
-            {entries.length > 1 && (
-              <input
-                type="checkbox"
-                checked={entry.use}
-                onChange={(e) => update(i, { use: e.target.checked })}
-                className="h-4 w-4 shrink-0 rounded border-2 border-white/30 accent-acid"
-              />
-            )}
-            {entry.label && (
-              <span className="shrink-0 rounded-full border border-white/15 px-2 py-1 text-[10px] font-black uppercase tracking-wide text-white/40">
-                {entry.label}
-              </span>
-            )}
-            <input
-              type={type}
-              value={entry.value}
-              onChange={(e) => update(i, { value: e.target.value })}
-              className="h-11 flex-1 rounded-xl border-2 border-white/15 bg-white/[0.03] px-3.5 text-sm font-semibold text-white outline-none focus:border-acid"
-            />
-          </div>
-        ))}
-      </div>
-      {entries.length > 1 && (
-        <p className="text-[11px] font-semibold text-white/35">
-          Found {entries.length} — pick which ones to put on the card.
-        </p>
-      )}
-    </div>
-  );
-}

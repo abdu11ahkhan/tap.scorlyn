@@ -85,11 +85,11 @@ export default function MinimalCard({
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] text-neutral-400"
+            className="card-rise mt-3 flex items-start gap-1.5 text-[11px] text-neutral-400"
             style={{ ["--d" as string]: "220ms" }}
           >
-            <MapPin className="h-3.5 w-3.5" />
-            {card.location}
+            <MapPin className="mt-px h-3.5 w-3.5 shrink-0" />
+            <span className="card-location text-left">{card.location}</span>
           </p>
         )}
 

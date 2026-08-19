@@ -35,6 +35,7 @@ import { scanCardText, type ScanFields, type ScanLine } from "@/lib/card-ocr";
 import { scanCardWithClaude, cropLogo, type ClaudeScanFields } from "@/lib/card-scan-ai";
 import { renderCardTemplate } from "@/components/card-templates";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import { EntryListField, EMPTY_ENTRY, type Entry } from "@/components/card-editor/ScanEntryList";
 import { createCustomer } from "../actions";
 
 function normalizeWebsite(raw: string): string {
@@ -70,6 +71,11 @@ export default function AdminScanTest() {
   const [claudeFields, setClaudeFields] = useState<ClaudeScanFields | null>(null);
   const [claudeMs, setClaudeMs] = useState<number | null>(null);
   const [claudeLogoUrl, setClaudeLogoUrl] = useState("");
+  // Off by default — a detected logo is a suggestion, not something to put
+  // on the card without confirming it first. manualLogoUrl (a file the
+  // admin picks themselves) always wins over the detected one.
+  const [useLogo, setUseLogo] = useState(false);
+  const [manualLogoUrl, setManualLogoUrl] = useState("");
   const [tesseractMs, setTesseractMs] = useState<number | null>(null);
 
   const [name, setName] = useState("");
@@ -77,8 +83,8 @@ export default function AdminScanTest() {
   const [company, setCompany] = useState("");
   const [tagline, setTagline] = useState("");
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
+  const [phones, setPhones] = useState<Entry[]>(EMPTY_ENTRY);
+  const [emails, setEmails] = useState<Entry[]>(EMPTY_ENTRY);
   const [website, setWebsite] = useState("");
 
   // "Open in editor" hands off an anonymous draft — good for previewing.
@@ -118,6 +124,8 @@ export default function AdminScanTest() {
     setClaudeFields(null);
     setClaudeMs(null);
     setClaudeLogoUrl("");
+    setUseLogo(false);
+    setManualLogoUrl("");
     setTesseractMs(null);
     const started = performance.now();
 
@@ -170,8 +178,16 @@ export default function AdminScanTest() {
         setCompany(claude.company);
         setTagline(claude.tagline);
         setAddress(claude.address);
-        setPhone(claude.phones[0]?.value ?? "");
-        setEmail(claude.emails[0]?.value ?? "");
+        setPhones(
+          claude.phones.length
+            ? claude.phones.map((p) => ({ label: p.label, value: p.value, use: true }))
+            : EMPTY_ENTRY
+        );
+        setEmails(
+          claude.emails.length
+            ? claude.emails.map((e) => ({ label: e.label, value: e.value, use: true }))
+            : EMPTY_ENTRY
+        );
         setWebsite(claude.website);
       } else {
         setTagline("");
@@ -179,8 +195,10 @@ export default function AdminScanTest() {
         setName(extracted.full_name?.text ?? "");
         setHeadline(extracted.headline?.text ?? "");
         setCompany(extracted.company?.text ?? "");
-        setPhone(extracted.phone?.text ?? "");
-        setEmail(extracted.email?.text ?? "");
+        const tessPhone = extracted.phone?.text ?? "";
+        const tessEmail = extracted.email?.text ?? "";
+        setPhones(tessPhone ? [{ label: "", value: tessPhone, use: true }] : EMPTY_ENTRY);
+        setEmails(tessEmail ? [{ label: "", value: tessEmail, use: true }] : EMPTY_ENTRY);
         setWebsite(extracted.website?.text ?? "");
       }
 
@@ -211,11 +229,21 @@ export default function AdminScanTest() {
 
   const buttons: CardButton[] = useMemo(() => {
     const list: CardButton[] = [];
-    if (phone.trim()) list.push({ label: KIND_LABELS.phone, kind: "phone", value: phone.trim() });
-    if (email.trim()) list.push({ label: KIND_LABELS.email, kind: "email", value: email.trim() });
+    const usedPhones = phones.filter((p) => p.use && p.value.trim());
+    usedPhones.forEach((p, i) => {
+      const label = p.label || (usedPhones.length > 1 ? `Phone ${i + 1}` : KIND_LABELS.phone);
+      list.push({ label, kind: "phone", value: p.value.trim() });
+    });
+    const usedEmails = emails.filter((e) => e.use && e.value.trim());
+    usedEmails.forEach((e, i) => {
+      const label = e.label || (usedEmails.length > 1 ? `Email ${i + 1}` : KIND_LABELS.email);
+      list.push({ label, kind: "email", value: e.value.trim() });
+    });
     if (website.trim()) list.push({ label: "Website", kind: "link", value: normalizeWebsite(website) });
     return list;
-  }, [phone, email, website]);
+  }, [phones, emails, website]);
+
+  const logoUrl = manualLogoUrl || (useLogo ? claudeLogoUrl : "");
 
   const form: CardForm = useMemo(
     () => ({
@@ -228,9 +256,9 @@ export default function AdminScanTest() {
       template,
       accent_color: vibe?.accent ?? EMPTY_CARD_FORM.accent_color,
       surface_color: vibe?.surface ?? "",
-      logo_url: claudeLogoUrl,
+      logo_url: logoUrl,
     }),
-    [name, headline, company, tagline, address, template, vibe, claudeLogoUrl]
+    [name, headline, company, tagline, address, template, vibe, logoUrl]
   );
 
   const previewCard = useMemo(() => draftToCardProfile(form, buttons, resolveGallery([])), [form, buttons]);
@@ -256,7 +284,7 @@ export default function AdminScanTest() {
       template,
       accentColor: vibe?.accent,
       surfaceColor: vibe?.surface,
-      logoUrl: claudeLogoUrl || undefined,
+      logoUrl: logoUrl || undefined,
       buttons,
       publish: accountPublish,
     });
@@ -427,10 +455,61 @@ export default function AdminScanTest() {
                 <Field label="company" value={company} onChange={setCompany} />
                 <Field label="tagline" value={tagline} onChange={setTagline} />
                 <Field label="address" value={address} onChange={setAddress} />
-                <Field label="phone" value={phone} onChange={setPhone} />
-                <Field label="email" value={email} onChange={setEmail} />
                 <Field label="website" value={website} onChange={setWebsite} />
               </div>
+              <EntryListField label="phone" entries={phones} onChange={setPhones} type="tel" />
+              <EntryListField label="email" entries={emails} onChange={setEmails} type="email" />
+
+              {claudeLogoUrl ? (
+                <label className="flex items-center gap-3 text-xs font-semibold text-white/60">
+                  <input
+                    type="checkbox"
+                    checked={useLogo}
+                    onChange={(e) => setUseLogo(e.target.checked)}
+                    disabled={Boolean(manualLogoUrl)}
+                    className="h-4 w-4 rounded border-2 border-white/30 accent-acid disabled:opacity-40"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={claudeLogoUrl}
+                    alt=""
+                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                  />
+                  Use the logo Claude found on the card
+                </label>
+              ) : (
+                <p className="text-xs text-white/35">No logo detected — upload one manually below if the card has one.</p>
+              )}
+              <div className="flex items-center gap-3 text-xs font-semibold text-white/60">
+                {manualLogoUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={manualLogoUrl}
+                    alt=""
+                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                  />
+                )}
+                <label className="cursor-pointer text-white/40 underline decoration-dotted underline-offset-2 hover:text-white/60">
+                  {manualLogoUrl ? "replace logo file" : "or upload a logo file"}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const blob = await downscale(file, "avatar");
+                      setManualLogoUrl(await toDataUrl(blob));
+                    }}
+                  />
+                </label>
+                {manualLogoUrl && (
+                  <button type="button" onClick={() => setManualLogoUrl("")} className="text-white/40 hover:text-white/60">
+                    remove
+                  </button>
+                )}
+              </div>
+
               <button
                 onClick={openInEditor}
                 disabled={!name.trim()}
