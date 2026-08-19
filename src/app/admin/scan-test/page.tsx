@@ -75,8 +75,8 @@ export default function AdminScanTest() {
     const started = performance.now();
 
     try {
-      const frontBlob = await downscale(frontFile, "cover");
-      const backBlob = backFile ? await downscale(backFile, "cover") : null;
+      const frontBlob = await downscale(frontFile, "scan");
+      const backBlob = backFile ? await downscale(backFile, "scan") : null;
 
       const frontBitmap = await createImageBitmap(frontBlob);
       const derivedVibe = extractPalette(frontBitmap);
@@ -327,6 +327,7 @@ function PhotoSlot({
       <input
         type="file"
         accept="image/jpeg,image/png,image/webp"
+        capture="environment"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];

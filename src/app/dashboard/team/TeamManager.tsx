@@ -20,6 +20,8 @@ import { createEmployee, deleteEmployeeCard, setHouseStyle, suspendEmployee } fr
 import { downscale } from "@/components/card-editor/ImagePicker";
 import { extractPalette, suggestTemplate } from "@/lib/card-scan-color";
 import { scanCardText } from "@/lib/card-ocr";
+import { scanCardWithClaude } from "@/lib/card-scan-ai";
+import { toDataUrl } from "@/components/card-editor/ImagePicker";
 
 export type EmployeeCard = {
   id: string;
@@ -77,7 +79,19 @@ export default function TeamManager({
     setScanning(true);
     setError(null);
     try {
-      const blob = await downscale(file, "cover");
+      const blob = await downscale(file, "scan");
+
+      const claudeFields = await scanCardWithClaude([await toDataUrl(blob)]);
+      if (claudeFields) {
+        if (claudeFields.full_name) setFullName(claudeFields.full_name);
+        if (claudeFields.headline) setHeadline(claudeFields.headline);
+        // An employee card only needs one of each — no multi-select UI here,
+        // unlike the individual scan flow. First one found wins.
+        if (claudeFields.phones[0]) setPhone(claudeFields.phones[0].value);
+        if (claudeFields.emails[0]) setEmail(claudeFields.emails[0].value);
+        return;
+      }
+
       const result = await scanCardText([blob]);
       if (result.full_name) setFullName(result.full_name.text);
       if (result.headline) setHeadline(result.headline.text);

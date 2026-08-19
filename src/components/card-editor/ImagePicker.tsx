@@ -27,10 +27,17 @@ import { uploadImage } from "@/lib/upload-image";
 // Avatars are drawn up to ~145px CSS, which is ~435px on a 3x phone — and
 // several templates use the same image as a full-bleed header. 640 was below
 // that on a modern screen, which is what made photos look soft.
-const MAX_EDGE = { avatar: 1024, cover: 2000, gallery: 1600 };
+//
+// "scan" is its own preset, not a reuse of "cover" — the card-scan feature
+// (src/lib/card-ocr.ts) was borrowing "cover" for convenience, but OCR wants
+// something neither photo preset was tuned for: small printed text needs to
+// survive the resize, where a cover photo just needs to look good. Bigger
+// and less compressed than "cover" — this image is never stored, only read
+// once by Tesseract, so the extra bytes cost nothing.
+const MAX_EDGE = { avatar: 1024, cover: 2000, gallery: 1600, scan: 2600 };
 
 /** Higher for the portrait, which is the one people look at closely. */
-const QUALITY = { avatar: 0.92, cover: 0.86, gallery: 0.86 };
+const QUALITY = { avatar: 0.92, cover: 0.86, gallery: 0.86, scan: 0.95 };
 
 export type ImageKind = keyof typeof MAX_EDGE;
 
