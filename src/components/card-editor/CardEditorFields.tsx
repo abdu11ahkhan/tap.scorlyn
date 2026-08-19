@@ -513,123 +513,134 @@ export default function CardEditorFields({
           <p className="text-xs text-sc-text-dimmer mt-1">Shown in this order on your card.</p>
         </div>
 
-        {buttons.map((button, index) => {
-          const KindIcon = iconFor(button.kind);
-          return (
-            <div
-              key={index}
-              draggable
-              onDragStart={() => setDragFrom(index)}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(index);
-              }}
-              onDragLeave={() => setDragOver((v) => (v === index ? null : v))}
-              onDrop={() => drop(index)}
-              onDragEnd={() => {
-                setDragFrom(null);
-                setDragOver(null);
-              }}
-              className={`flex cursor-grab flex-col gap-2 rounded-xl border-2 bg-sc-surface-2 p-3 transition-colors active:cursor-grabbing sm:flex-row min-w-0 ${
-                dragOver === index && dragFrom !== index
-                  ? "border-sc-gold"
-                  : dragFrom === index
-                    ? "border-sc-border opacity-50"
-                    : "border-sc-border-soft"
-              }`}
-            >
-              <div
-                className="flex justify-center text-sc-text-dimmer sm:flex-col"
-                title="Drag to reorder"
-              >
-                <button
-                  type="button"
-                  onClick={() => moveButton(index, -1)}
-                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-sc-surface hover:text-sc-text sm:h-5 sm:w-5"
-                  aria-label="Move up"
-                >
-                  ▲
-                </button>
-                <GripVertical className="w-3.5 h-3.5 my-0.5 hidden sm:block" />
-                <button
-                  type="button"
-                  onClick={() => moveButton(index, 1)}
-                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-sc-surface hover:text-sc-text sm:h-5 sm:w-5"
-                  aria-label="Move down"
-                >
-                  ▼
-                </button>
-              </div>
-
-              {/* Icon preview beside the picker — with 26 kinds, seeing the
-                  mark is faster than reading the name back. */}
-              <div className="flex min-w-0 items-center gap-2">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-sc-border bg-sc-surface-2 text-sc-text-dim">
-                  <KindIcon className="h-4 w-4" />
-                </span>
-
-                <select
-                  value={button.kind}
-                  onChange={(e) => updateButton(index, { kind: e.target.value as ButtonKind })}
-                  className="h-11 flex-1 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-2 text-base font-bold text-sc-text sm:h-10 sm:w-36 sm:flex-none sm:text-sm"
-                >
-                  {BUTTON_KIND_GROUPS.map((group) => (
-                    <optgroup key={group.label} label={group.label}>
-                      {group.kinds.map((k) => (
-                        <option key={k} value={k}>
-                          {KIND_LABELS[k]}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </div>
-
-              <Input
-                value={button.label}
-                onChange={(e) => updateButton(index, { label: e.target.value })}
-                placeholder={KIND_LABELS[button.kind]}
-                className={`${FIELD} sm:max-w-[140px]`}
-              />
-
-              <Input
-                value={button.value}
-                onChange={(e) => updateButtonValue(index, e.target.value)}
-                placeholder={KIND_PLACEHOLDERS[button.kind]}
-                className={`${FIELD} flex-1`}
-              />
-
-              <div className="flex items-center gap-1 self-center">
-                {/* Hide without deleting — keeps the value for later. */}
-                <button
-                  type="button"
-                  onClick={() => updateButton(index, { enabled: button.enabled === false })}
-                  aria-pressed={button.enabled !== false}
-                  title={button.enabled === false ? "Hidden — click to show" : "Visible — click to hide"}
-                  className={`flex h-11 w-11 items-center justify-center rounded-lg transition-colors sm:h-9 sm:w-9 ${
-                    button.enabled === false
-                      ? "text-sc-text-dimmer hover:text-sc-text-dim"
-                      : "text-sc-gold hover:text-sc-text"
+        {/* @container: each row's layout has to respond to the space this
+            column actually has, not the viewport. The desktop editor sits in
+            a two-column grid with a fixed-width preview panel, so at some
+            viewport widths (1024px, notably) this column is narrower than a
+            `sm:` breakpoint assumes — a viewport-relative row-vs-stack switch
+            fired anyway and overlapped every field. Container queries fix
+            that at the source instead of guessing viewport widths. */}
+        <div className="@container">
+          <div className="space-y-3">
+            {buttons.map((button, index) => {
+              const KindIcon = iconFor(button.kind);
+              return (
+                <div
+                  key={index}
+                  draggable
+                  onDragStart={() => setDragFrom(index)}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(index);
+                  }}
+                  onDragLeave={() => setDragOver((v) => (v === index ? null : v))}
+                  onDrop={() => drop(index)}
+                  onDragEnd={() => {
+                    setDragFrom(null);
+                    setDragOver(null);
+                  }}
+                  className={`flex min-w-0 cursor-grab flex-col gap-2 rounded-xl border-2 bg-sc-surface-2 p-3 transition-colors active:cursor-grabbing @min-[420px]:flex-row ${
+                    dragOver === index && dragFrom !== index
+                      ? "border-sc-gold"
+                      : dragFrom === index
+                        ? "border-sc-border opacity-50"
+                        : "border-sc-border-soft"
                   }`}
                 >
-                  {button.enabled === false ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 sm:h-9 sm:w-9"
-                  aria-label="Remove button"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          );
-        })}
+                  <div
+                    className="flex justify-center text-sc-text-dimmer @min-[420px]:flex-col"
+                    title="Drag to reorder"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => moveButton(index, -1)}
+                      className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-sc-surface hover:text-sc-text @min-[420px]:h-5 @min-[420px]:w-5"
+                      aria-label="Move up"
+                    >
+                      ▲
+                    </button>
+                    <GripVertical className="w-3.5 h-3.5 my-0.5 hidden @min-[420px]:block" />
+                    <button
+                      type="button"
+                      onClick={() => moveButton(index, 1)}
+                      className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-sc-surface hover:text-sc-text @min-[420px]:h-5 @min-[420px]:w-5"
+                      aria-label="Move down"
+                    >
+                      ▼
+                    </button>
+                  </div>
+
+                  {/* Icon preview beside the picker — with 26 kinds, seeing the
+                      mark is faster than reading the name back. */}
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-sc-border bg-sc-surface-2 text-sc-text-dim">
+                      <KindIcon className="h-4 w-4" />
+                    </span>
+
+                    <select
+                      value={button.kind}
+                      onChange={(e) => updateButton(index, { kind: e.target.value as ButtonKind })}
+                      className="h-11 flex-1 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-2 text-base font-bold text-sc-text @min-[420px]:h-10 @min-[420px]:w-36 @min-[420px]:flex-none @min-[420px]:text-sm"
+                    >
+                      {BUTTON_KIND_GROUPS.map((group) => (
+                        <optgroup key={group.label} label={group.label}>
+                          {group.kinds.map((k) => (
+                            <option key={k} value={k}>
+                              {KIND_LABELS[k]}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
+
+                  <Input
+                    value={button.label}
+                    onChange={(e) => updateButton(index, { label: e.target.value })}
+                    placeholder={KIND_LABELS[button.kind]}
+                    className={`${FIELD} @min-[420px]:max-w-[140px]`}
+                  />
+
+                  <Input
+                    value={button.value}
+                    onChange={(e) => updateButtonValue(index, e.target.value)}
+                    placeholder={KIND_PLACEHOLDERS[button.kind]}
+                    className={`${FIELD} flex-1`}
+                  />
+
+                  <div className="flex items-center gap-1 self-center">
+                    {/* Hide without deleting — keeps the value for later. */}
+                    <button
+                      type="button"
+                      onClick={() => updateButton(index, { enabled: button.enabled === false })}
+                      aria-pressed={button.enabled !== false}
+                      title={button.enabled === false ? "Hidden — click to show" : "Visible — click to hide"}
+                      className={`flex h-11 w-11 items-center justify-center rounded-lg transition-colors @min-[420px]:h-9 @min-[420px]:w-9 ${
+                        button.enabled === false
+                          ? "text-sc-text-dimmer hover:text-sc-text-dim"
+                          : "text-sc-gold hover:text-sc-text"
+                      }`}
+                    >
+                      {button.enabled === false ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 @min-[420px]:h-9 @min-[420px]:w-9"
+                      aria-label="Remove button"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         <button
           type="button"
