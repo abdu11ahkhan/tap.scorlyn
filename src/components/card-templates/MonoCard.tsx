@@ -1,10 +1,13 @@
-import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
 /**
- * Monospace, everything on a grid, with a live terminal caret. Understated but
- * not inert — rows light up in the accent as you move down them.
+ * Monospace grid, live terminal caret, rows that light up as you move down
+ * them — the identity carries in the layout (the `dl`/`dt`/`dd` key-value
+ * rows, the `$` prompts, the scanline field) as much as in the type, which
+ * is why respecting the owner's own font choice (Phase 5A) doesn't cost it
+ * anything: it still reads as a terminal in Serif.
  */
 export default function MonoCard({
   card,
@@ -13,15 +16,13 @@ export default function MonoCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#22D3EE";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
+  const theme = resolveCardTheme(card, "#0C0C0C");
+  const { accent, accentText: ink } = theme;
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#0C0C0C] text-neutral-200"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Faint scanline field — CRT texture, not a pattern you consciously see. */}
       <div
@@ -60,47 +61,47 @@ export default function MonoCard({
           </div>
 
           <div className="min-w-0">
-            <h1 className="truncate text-[18px] font-bold tracking-tight text-white">
+            <h1 className="truncate text-[18px] font-bold tracking-tight" style={{ color: theme.fg }}>
               {card.full_name}
               <span className="caret-blink ml-1 font-normal" style={{ color: ink }}>
                 _
               </span>
             </h1>
-            <p className="mt-0.5 text-[11px] text-neutral-500">@{card.username}</p>
+            <p className="mt-0.5 text-[11px]" style={{ color: theme.fgMuted }}>@{card.username}</p>
           </div>
         </div>
 
         <dl className="mt-8 space-y-1.5 text-[11px]">
           {card.headline && (
             <div className="card-rise flex gap-3" style={{ ["--d" as string]: "90ms" }}>
-              <dt className="w-20 shrink-0 text-neutral-600">role</dt>
+              <dt className="w-20 shrink-0" style={{ color: theme.fgMuted }}>role</dt>
               <dd style={{ color: ink }}>{card.headline}</dd>
             </div>
           )}
           {card.company && (
             <div className="card-rise flex gap-3" style={{ ["--d" as string]: "130ms" }}>
-              <dt className="w-20 shrink-0 text-neutral-600">org</dt>
-              <dd className="text-neutral-300">{card.company}</dd>
+              <dt className="w-20 shrink-0" style={{ color: theme.fgMuted }}>org</dt>
+              <dd style={{ color: theme.fgDim }}>{card.company}</dd>
             </div>
           )}
           {card.location && (
             <div className="card-location card-rise flex gap-3" style={{ ["--d" as string]: "170ms" }}>
-              <dt className="w-20 shrink-0 text-neutral-600">loc</dt>
-              <dd className="text-neutral-300">{card.location}</dd>
+              <dt className="w-20 shrink-0" style={{ color: theme.fgMuted }}>loc</dt>
+              <dd style={{ color: theme.fgDim }}>{card.location}</dd>
             </div>
           )}
         </dl>
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[13px] leading-relaxed text-neutral-400"
-            style={{ borderColor: `${accent}55`, ["--d" as string]: "210ms" }}
+            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[13px] leading-relaxed"
+            style={{ borderColor: `${accent}55`, color: theme.fgDim, ["--d" as string]: "210ms" }}
           >{card.bio}</p>
         )}
 
         <nav
-          className="card-rise mt-8 divide-y divide-neutral-800 overflow-hidden rounded border border-neutral-800"
-          style={{ ["--d" as string]: "260ms" }}
+          className="card-rise mt-8 divide-y overflow-hidden rounded border"
+          style={{ borderColor: theme.border, ["--d" as string]: "260ms" }}
         >
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
@@ -110,21 +111,27 @@ export default function MonoCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="group relative flex w-full items-center gap-3 bg-neutral-950 px-4 py-3.5 text-[13px] transition-colors hover:bg-neutral-900"
+                className="group relative flex min-h-11 w-full items-center gap-3 px-4 text-[13px] transition-colors hover:[background:var(--row-hover)]"
+                style={{ borderColor: theme.border, ["--row-hover" as string]: `${accent}14` }}
               >
                 {/* Accent bar marks the active row. */}
                 <span
                   className="absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 transition-transform duration-200 group-hover:scale-y-100"
                   style={{ background: accent }}
                 />
-                <Icon className="h-4 w-4 text-neutral-600 transition-colors group-hover:[color:currentColor]" />
-                <span className="flex-1 text-neutral-300 transition-colors group-hover:text-white">
+                {/* A prompt, not a bullet — the command-line treatment the
+                    dl/dt rows above already set up. */}
+                <span className="text-[13px] font-bold" style={{ color: theme.border }}>
+                  &gt;
+                </span>
+                <Icon className="h-4 w-4" style={{ color: theme.fgMuted }} />
+                <span
+                  className="flex-1 transition-colors group-hover:[color:var(--row-fg)]"
+                  style={{ color: theme.fgDim, ["--row-fg" as string]: theme.fg }}
+                >
                   {button.label}
                 </span>
-                <span
-                  className="text-neutral-700 transition-all group-hover:translate-x-1"
-                  style={{ color: undefined }}
-                >
+                <span className="transition-all group-hover:translate-x-1" style={{ color: theme.fgMuted }}>
                   →
                 </span>
               </a>
@@ -134,8 +141,8 @@ export default function MonoCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 inline-block text-[11px] text-neutral-600 transition-colors hover:text-neutral-300"
-          style={{ ["--d" as string]: "320ms" }}
+          className="card-rise mt-6 inline-block text-[11px] transition-colors hover:[color:var(--hover-fg)]"
+          style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fgDim, ["--d" as string]: "320ms" }}
         >
           <span style={{ color: ink }}>$</span> save-contact
         </SaveContact>

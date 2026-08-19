@@ -116,7 +116,7 @@ export default function PosterCard({
                   href={button.href}
                   target={button.external ? "_blank" : undefined}
                   rel={button.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2.5 text-[13px] font-bold backdrop-blur-xl transition-colors hover:bg-white/25"
+                  className="flex min-h-11 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 text-[13px] font-bold backdrop-blur-xl transition-colors hover:bg-white/25"
                 >
                   <Icon className="h-4 w-4" />
                   {button.label}
