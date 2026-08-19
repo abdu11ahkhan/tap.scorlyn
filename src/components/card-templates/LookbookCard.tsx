@@ -1,9 +1,8 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
   roleLine,
-  accentOn,
   fontStack,
-  readableOn,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -24,18 +23,20 @@ export default function LookbookCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#111111";
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own near-black
+  // assumption. On the native surface every value below matches what the
+  // literal #0A0A0A/white pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#0A0A0A");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
   const gallery = resolveGallery(card.gallery);
   const [lead, ...rest] = gallery;
 
   return (
     <div
-      className="min-h-screen bg-[#0A0A0A] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Lead image with the identity over it. Falls back to the avatar so a
           card with no gallery yet still has a cover rather than a gap. */}
@@ -57,7 +58,10 @@ export default function LookbookCard({
 
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
-        <div className="absolute inset-x-0 bottom-0 p-6">
+        {/* This sits on the lead photo's own permanent black scrim, not on
+            the page surface, so it stays literal white regardless of the
+            resolved theme — same as the scrim itself. */}
+        <div className="absolute inset-x-0 bottom-0 p-6 text-white">
           <h1 className="card-name card-rise text-[clamp(2.2rem,10vw,3.4rem)] font-bold leading-[0.95] tracking-tight">{card.full_name}</h1>
           {role && (
             <p
@@ -76,7 +80,7 @@ export default function LookbookCard({
 
       <main className="mx-auto w-full max-w-md px-5 pb-24 pt-8">
         {card.bio && (
-          <p className="card-bio text-[15px] leading-relaxed text-white/60">{card.bio}</p>
+          <p className="card-bio text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
         )}
 
         {rest.length > 0 && (
@@ -88,7 +92,7 @@ export default function LookbookCard({
                   <img src={item.url} alt={item.caption ?? ""} className="w-full" />
                 </div>
                 {item.caption && (
-                  <figcaption className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/35">
+                  <figcaption className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>
                     {item.caption}
                   </figcaption>
                 )}
@@ -104,10 +108,11 @@ export default function LookbookCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between border-b border-white/12 py-3.5 text-[15px] font-semibold transition-colors hover:border-white/50"
+              className="flex items-center justify-between border-b py-3.5 text-[15px] font-semibold transition-colors hover:border-white/50"
+              style={{ borderColor: theme.border }}
             >
               {button.label}
-              <ArrowUpRight className="h-4 w-4 text-white/35" />
+              <ArrowUpRight className="h-4 w-4" style={{ color: theme.fgMuted }} />
             </a>
           ))}
         </nav>
@@ -115,7 +120,7 @@ export default function LookbookCard({
         <SaveContact
           card={card}
           className="mt-8 flex h-12 items-center justify-center rounded-full text-[13px] font-bold"
-          style={{ background: accent, color: readableOn(accent) }}
+          style={{ background: accent, color: onAccent }}
         >
           Save to contacts
         </SaveContact>

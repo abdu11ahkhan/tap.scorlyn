@@ -133,14 +133,9 @@ export function surfaceReadability(
   surface: string,
   family: "dark" | "light"
 ): { ratio: number; ok: boolean } {
-  const hex = surface.trim().replace("#", "");
-  if (hex.length !== 6) return { ratio: 21, ok: true };
-  const channel = (i: number) => {
-    const v = parseInt(hex.slice(i, i + 2), 16) / 255;
-    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
-  };
-  const bg =
-    0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
+  const hex = normalizeHex(surface);
+  if (!hex) return { ratio: 21, ok: true };
+  const bg = relativeLuminance(hex);
   // What the template paints its text with, at the extremes it assumes.
   const fg = family === "dark" ? 1 : 0;
   const [light, dark] = bg > fg ? [bg, fg] : [fg, bg];
@@ -332,25 +327,6 @@ function defaultLabel(kind: ButtonKind): string {
 }
 
 /**
- * Black or white, whichever is legible on `background`.
- *
- * Users pick any accent they like, so templates that print text *on* the accent
- * can't hardcode white — a pale accent like #22D3EE leaves white text unreadable.
- * Uses WCAG relative luminance.
- */
-
-/**
- * The accent, nudged until it is legible as text on a given surface.
- *
- * Templates print the headline and small labels in the user's accent. That
- * works for a mid-tone, and fails at both ends: acid green on a white card, or
- * near-black on a dark one, is text you cannot read. People pick those colours
- * — they are in our own preset list — so the template has to cope rather than
- * assume a sensible choice.
- *
- * Only the lightness moves; the hue is what they chose and is left alone.
- */
-/**
  * The one-line "who you are" under the name: "Architect · Studio Nine".
  *
  * Layouts that only have room for a single line under the name were dropping
@@ -363,21 +339,107 @@ export function roleLine(card: Pick<CardProfile, "headline" | "company">): strin
   return parts.length ? parts.join(" · ") : null;
 }
 
-export function accentOn(accent: string, surface: "light" | "dark"): string {
-  const hex = accent.replace("#", "");
-  const full =
-    hex.length === 3 ? hex.split("").map((c) => c + c).join("") : hex.slice(0, 6);
-  const n = parseInt(full, 16);
-  if (Number.isNaN(n) || full.length !== 6) return accent;
+// ---------------------------------------------------------------------------
+// Colour contrast core.
+//
+// Every contrast decision in the public-card system — which text colour reads
+// on a background, whether an accent needs nudging, whether a chosen surface
+// keeps a template's own text legible — reduces to the same WCAG relative
+// luminance. `normalizeHex` and `relativeLuminance` are that one calculation;
+// everything below composes them rather than re-deriving channel math per
+// function, which is how this used to have three near-identical copies of the
+// same linearisation.
+// ---------------------------------------------------------------------------
 
-  let [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+function normalizeHex(input: string | null | undefined): string | null {
+  const hex = (input ?? "").replace("#", "").trim();
+  const full = hex.length === 3 ? hex.split("").map((c) => c + c).join("") : hex.slice(0, 6);
+  return full.length === 6 && /^[0-9a-fA-F]{6}$/.test(full) ? full : null;
+}
 
-  const channel = (v: number) => {
-    const x = v / 255;
-    return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+function relativeLuminance(hex: string): number {
+  const channel = (start: number) => {
+    const v = parseInt(hex.slice(start, start + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
   };
-  const lum = () => 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
-  const paper = surface === "light" ? 1 : 0.0086; // #ffffff vs #0a0a0a
+  return 0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
+}
+
+/** True past the point where white reads better than black on it — the same
+ *  crossover readableOn() picks a colour at. Named so callers can reason
+ *  about a colour's family ("is this actually dark") rather than repeating
+ *  the luminance check inline. */
+export function isDarkColor(hex: string | null | undefined): boolean {
+  const full = normalizeHex(hex);
+  return full ? relativeLuminance(full) <= 0.179 : false;
+}
+
+/** Linear channel blend toward `to`, `amount` of the way there (0 = `from`,
+ *  1 = `to`). Used to derive secondary/muted/border tones from a resolved
+ *  foreground and surface without hand-picking a second palette per state. */
+export function mixHex(from: string, to: string, amount: number): string {
+  const a = normalizeHex(from);
+  const b = normalizeHex(to);
+  if (!a || !b) return from;
+  const t = Math.max(0, Math.min(1, amount));
+  const channel = (start: number) => {
+    const av = parseInt(a.slice(start, start + 2), 16);
+    const bv = parseInt(b.slice(start, start + 2), 16);
+    return Math.round(av + (bv - av) * t)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${channel(0)}${channel(2)}${channel(4)}`;
+}
+
+/**
+ * Black or white, whichever is legible on `background`.
+ *
+ * Users pick any accent they like, so templates that print text *on* the accent
+ * can't hardcode white — a pale accent like #22D3EE leaves white text unreadable.
+ * Uses WCAG relative luminance.
+ */
+export function readableOn(background: string | null | undefined): string {
+  const full = normalizeHex(background ?? "#111111");
+  if (!full) return "#FFFFFF";
+  // 0.179 is the crossover where white and black contrast equally.
+  return relativeLuminance(full) > 0.179 ? "#0A0A0A" : "#FFFFFF";
+}
+
+/**
+ * The accent, nudged until it is legible as text on a given surface.
+ *
+ * Templates print the headline and small labels in the user's accent. That
+ * works for a mid-tone, and fails at both ends: acid green on a white card, or
+ * near-black on a dark one, is text you cannot read. People pick those colours
+ * — they are in our own preset list — so the template has to cope rather than
+ * assume a sensible choice.
+ *
+ * Only the lightness moves; the hue is what they chose and is left alone.
+ *
+ * `surface` is either the template's own assumed family (`"light"` | `"dark"`,
+ * the original call shape — every existing call site keeps working exactly as
+ * before) or an actual resolved background colour. The fixed-family form
+ * approximates paper as pure white/near-black; passing the real colour instead
+ * is what lets an accent stay legible against a surface the owner actually
+ * chose, not just the template's design-time assumption. See resolveCardTheme.
+ */
+export function accentOn(accent: string, surface: "light" | "dark" | string): string {
+  const full = normalizeHex(accent);
+  if (!full) return accent;
+
+  let [r, g, b] = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16));
+
+  const lum = () => relativeLuminance([r, g, b].map((v) => v.toString(16).padStart(2, "0")).join(""));
+
+  const resolvedSurfaceHex = surface === "light" || surface === "dark" ? null : normalizeHex(surface);
+  const paper =
+    resolvedSurfaceHex !== null
+      ? relativeLuminance(resolvedSurfaceHex)
+      : surface === "light"
+        ? 1
+        : 0.0086; // #ffffff vs #0a0a0a
+  const goingLight = paper > 0.179 ? false : true; // stepping away from a light paper darkens; away from dark lightens
   const contrast = () => {
     const [hi, lo] = [lum(), paper].sort((a, z) => z - a);
     return (hi + 0.05) / (lo + 0.05);
@@ -387,39 +449,80 @@ export function accentOn(accent: string, surface: "light" | "dark"): string {
   // stop at 3 so a mid accent keeps its character instead of being crushed.
   const target = 3;
   for (let i = 0; i < 24 && contrast() < target; i++) {
-    if (surface === "light") {
-      r = Math.round(r * 0.88);
-      g = Math.round(g * 0.88);
-      b = Math.round(b * 0.88);
-    } else {
+    if (goingLight) {
       r = Math.round(r + (255 - r) * 0.14);
       g = Math.round(g + (255 - g) * 0.14);
       b = Math.round(b + (255 - b) * 0.14);
+    } else {
+      r = Math.round(r * 0.88);
+      g = Math.round(g * 0.88);
+      b = Math.round(b * 0.88);
     }
   }
 
   return "#" + [r, g, b].map((v) => Math.max(0, Math.min(255, v)).toString(16).padStart(2, "0")).join("");
 }
 
-export function readableOn(background: string | null | undefined): string {
-  const hex = (background ?? "#111111").replace("#", "");
-  const full =
-    hex.length === 3
-      ? hex.split("").map((c) => c + c).join("")
-      : hex.slice(0, 6);
+/**
+ * What a template is actually rendering against, resolved once and reused for
+ * every text/border/icon decision inside it.
+ *
+ * The bug this exists to close: templates hardcode a text colour for the
+ * family they were designed in (light or dark paper), and `accentOn` was
+ * always asked about that same assumed family — so a custom `surface_color`
+ * from outside that family (reachable through the editor's free colour
+ * picker) could leave heading text, and separately accent-coloured text,
+ * unreadable even though the background itself updates correctly. This
+ * computes the real resolved surface once and derives every text tone from
+ * *its* actual luminance instead of the template's design-time guess.
+ *
+ * Nothing here invents a second colour system: `surface` is the same value
+ * `renderCardTemplate()` already wraps the template in (`card.surface_color`
+ * falling back to the template's native tone), and every derived tone comes
+ * from `readableOn`/`accentOn`/`mixHex` — the existing helpers, just fed the
+ * resolved colour instead of a fixed assumption.
+ */
+export type CardTheme = {
+  /** The background actually behind the template right now. */
+  surface: string;
+  /** Real luminance family of `surface` — not the template's assumed one. */
+  dark: boolean;
+  /** Heading/primary body colour. */
+  fg: string;
+  /** Secondary text — still clearly legible, quieter than fg. */
+  fgDim: string;
+  /** Muted labels/captions — the lightest text still meant to be read. */
+  fgMuted: string;
+  /** Hairline border/divider tone derived from the same foreground. */
+  border: string;
+  /** The owner's chosen accent, unchanged. */
+  accent: string;
+  /** The accent, nudged for legibility as *text* against the resolved surface. */
+  accentText: string;
+  /** Black or white, whichever reads on a solid accent fill (buttons). */
+  onAccent: string;
+};
 
-  if (full.length !== 6 || !/^[0-9a-fA-F]{6}$/.test(full)) return "#FFFFFF";
+export function resolveCardTheme(
+  card: Pick<CardProfile, "surface_color" | "accent_color">,
+  nativeSurface: string
+): CardTheme {
+  const surface = card.surface_color?.trim() || nativeSurface;
+  const dark = isDarkColor(surface);
+  const fg = readableOn(surface);
+  const accent = card.accent_color || "#111111";
 
-  const channel = (start: number) => {
-    const value = parseInt(full.slice(start, start + 2), 16) / 255;
-    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  return {
+    surface,
+    dark,
+    fg,
+    fgDim: mixHex(fg, surface, 0.28),
+    fgMuted: mixHex(fg, surface, 0.52),
+    border: mixHex(fg, surface, 0.84),
+    accent,
+    accentText: accentOn(accent, surface),
+    onAccent: readableOn(accent),
   };
-
-  const luminance =
-    0.2126 * channel(0) + 0.7152 * channel(2) + 0.0722 * channel(4);
-
-  // 0.179 is the crossover where white and black contrast equally.
-  return luminance > 0.179 ? "#0A0A0A" : "#FFFFFF";
 }
 
 /** Drops rows the user hasn't filled in, so templates never map over blanks. */

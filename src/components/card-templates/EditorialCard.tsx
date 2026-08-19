@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { accentOn, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -14,15 +14,17 @@ export default function EditorialCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#B45309";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own warm-paper
+  // assumption. On the native surface every value below matches what the
+  // literal #FAF6EF/#1C1A17 pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#FAF6EF");
+  const { accent, accentText: ink } = theme;
 
   return (
     <div
-      className="min-h-screen bg-[#FAF6EF] text-[#1C1A17]"
-      style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', serif" }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: "ui-serif, Georgia, 'Times New Roman', serif" }}
     >
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">
         <p
@@ -36,7 +38,7 @@ export default function EditorialCard({
         >
           <h1 className="card-name text-[2.6rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
-            <p className="card-headline mt-3 text-[13px] italic tracking-wide text-[#1C1A17]/65">{card.headline}</p>
+            <p className="card-headline mt-3 text-[13px] italic tracking-wide" style={{ color: theme.fgDim }}>{card.headline}</p>
           )}
         </div>
 
@@ -65,8 +67,8 @@ export default function EditorialCard({
 
         {card.bio && (
           <p
-            className="card-rise mt-8 text-center text-[18px] leading-[1.7] text-[#1C1A17]/80"
-            style={{ ["--d" as string]: "190ms" }}
+            className="card-rise mt-8 text-center text-[18px] leading-[1.7]"
+            style={{ color: theme.fgDim, ["--d" as string]: "190ms" }}
           >
             {/* Drop cap — the one flourish this template gets. */}
             <span
@@ -81,8 +83,8 @@ export default function EditorialCard({
 
         {card.location && (
           <p
-            className="card-location card-rise mt-7 flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-[#1C1A17]/45"
-            style={{ ["--d" as string]: "230ms" }}
+            className="card-location card-rise mt-7 flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-[0.2em]"
+            style={{ color: theme.fgMuted, ["--d" as string]: "230ms" }}
           >
             <MapPin className="h-3 w-3" />
             {card.location}
@@ -108,7 +110,7 @@ export default function EditorialCard({
                 <span className="flex-1 text-[15px] tracking-wide transition-transform group-hover:translate-x-1">
                   {button.label}
                 </span>
-                <span className="text-[11px] uppercase tracking-[0.2em] text-[#1C1A17]/35">
+                <span className="text-[11px] uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </a>
@@ -118,8 +120,8 @@ export default function EditorialCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-9 block text-center text-[11px] uppercase tracking-[0.3em] text-[#1C1A17]/45 hover:text-[#1C1A17]"
-          style={{ ["--d" as string]: `${310 + buttons.length * 55}ms` }}
+          className="card-rise mt-9 block text-center text-[11px] uppercase tracking-[0.3em] transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${310 + buttons.length * 55}ms` }}
         >
           Save to contacts
         </SaveContact>

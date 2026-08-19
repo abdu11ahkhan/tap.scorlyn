@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -14,28 +14,25 @@ export default function GlassCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#22D3EE";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  // The root's own bg-[#05070C] is cleared to transparent by the
-  // .card-surface wrapper when a surface colour is chosen, but the cover
-  // photo's dimming scrim sits inside a `fixed` layer of its own and needs
-  // to read the chosen surface itself to match.
-  const tone = card.surface_color?.trim() || "#05070C";
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own dark-glass
+  // assumption. On the native surface every value below matches what the
+  // literal #05070C/white pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#05070C");
+  const { accent, accentText: ink } = theme;
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#05070C] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Optional photo backdrop, heavily dimmed so the frosted panels and
-          white text stay readable over whatever gets uploaded. */}
+          text stay readable over whatever gets uploaded. */}
       {card.cover_url && (
         <div className="pointer-events-none fixed inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={card.cover_url} alt="" className="h-full w-full object-cover" />
-          <div className="absolute inset-0" style={{ backgroundColor: `${tone}CC` }} />
+          <div className="absolute inset-0" style={{ backgroundColor: `${theme.surface}CC` }} />
         </div>
       )}
 
@@ -55,8 +52,8 @@ export default function GlassCard({
 
       <main className="relative mx-auto w-full max-w-sm px-5 pt-20 pb-32">
         <div
-          className="card-rise card-shine relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.05] p-8 text-center shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
-          style={{ ["--d" as string]: "0ms" }}
+          className="card-rise card-shine relative overflow-hidden rounded-3xl bg-white/[0.05] p-8 text-center shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+          style={{ borderWidth: 1, borderStyle: "solid", borderColor: theme.border, ["--d" as string]: "0ms" }}
         >
           <div className="relative mx-auto w-fit">
             <span
@@ -78,7 +75,7 @@ export default function GlassCard({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <span className="text-[24px] font-black text-white/80">
+                <span className="text-[24px] font-black" style={{ color: theme.fg }}>
                   {initialsOf(card.full_name)}
                 </span>
               )}
@@ -94,16 +91,16 @@ export default function GlassCard({
             >{card.headline}</p>
           )}
 
-          {card.company && <p className="card-company mt-1 text-[13px] text-slate-400">{card.company}</p>}
+          {card.company && <p className="card-company mt-1 text-[13px]" style={{ color: theme.fgDim }}>{card.company}</p>}
 
           {card.location && (
-            <p className="mt-3 flex items-start justify-center gap-1.5 text-[11px] text-slate-500">
+            <p className="mt-3 flex items-start justify-center gap-1.5 text-[11px]" style={{ color: theme.fgMuted }}>
               <MapPin className="mt-px h-3.5 w-3.5 shrink-0" />
               <span className="card-location text-left">{card.location}</span>
             </p>
           )}
 
-          {card.bio && <p className="card-bio mt-5 text-[13px] leading-relaxed text-slate-300">{card.bio}</p>}
+          {card.bio && <p className="card-bio mt-5 text-[13px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>}
         </div>
 
         <nav className="mt-4 space-y-2.5">
@@ -115,8 +112,8 @@ export default function GlassCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="card-rise group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-[15px] font-semibold backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.08] active:scale-[0.99]"
-                style={{ ["--d" as string]: `${120 + index * 60}ms` }}
+                className="card-rise group relative flex w-full items-center gap-3 overflow-hidden rounded-2xl bg-white/[0.04] px-5 py-4 text-[15px] font-semibold backdrop-blur-xl transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.08] active:scale-[0.99]"
+                style={{ borderWidth: 1, borderStyle: "solid", borderColor: theme.border, ["--d" as string]: `${120 + index * 60}ms` }}
               >
                 {/* Accent bleeds in from the left edge on hover. */}
                 <span
@@ -128,7 +125,10 @@ export default function GlassCard({
                   style={{ color: ink }}
                 />
                 <span className="relative flex-1">{button.label}</span>
-                <ArrowUpRight className="relative h-4 w-4 text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-white" />
+                <ArrowUpRight
+                  className="relative h-4 w-4 transition-all group-hover:translate-x-0.5 group-hover:[color:var(--fg)]"
+                  style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
+                />
               </a>
             );
           })}
@@ -136,8 +136,8 @@ export default function GlassCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] text-slate-500 transition-colors hover:text-white"
-          style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 block text-center text-[11px] transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts
         </SaveContact>

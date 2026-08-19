@@ -1,9 +1,8 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -22,19 +21,18 @@ export default function AgencyCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#F97316";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  const onAccent = readableOn(accent);
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own near-black
+  // assumption. On the native surface every value below matches what the
+  // literal #0D0D0F/white pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#0D0D0F");
+  const { accent, accentText: ink, onAccent } = theme;
   const gallery = resolveGallery(card.gallery);
   const cover = card.cover_url;
-  // The root's own bg-[#0D0D0F] is already cleared to transparent by the
-  // .card-surface wrapper when a surface colour is chosen (see
-  // components/card-templates/index.tsx) — but the sticky nav, the hero
-  // scrim and the avatar's ring sit *inside* that root, so they keep their
-  // native colour unless they read the chosen surface themselves.
-  const tone = card.surface_color?.trim() || "#0D0D0F";
+  // The sticky nav, hero scrim and avatar ring sit inside the root and need
+  // to read the resolved surface directly rather than the template's own
+  // native tone.
+  const tone = theme.surface;
 
   const sections = [
     { id: "top", label: "home" },
@@ -45,19 +43,20 @@ export default function AgencyCard({
 
   return (
     <div
-      className="min-h-screen scroll-smooth bg-[#0D0D0F] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen scroll-smooth"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <nav
-        className="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl"
-        style={{ backgroundColor: `${tone}E6` }}
+        className="sticky top-0 z-30 border-b backdrop-blur-xl"
+        style={{ backgroundColor: `${tone}E6`, borderColor: theme.border }}
       >
         <div className="flex items-center gap-1 overflow-x-auto px-4 py-3">
           {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-white/45 transition-colors hover:bg-white/10 hover:text-white"
+              className="shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase transition-colors hover:bg-white/10 hover:[color:var(--fg)]"
+              style={{ color: theme.fgDim, ["--fg" as string]: theme.fg }}
             >
               {section.label}
             </a>
@@ -102,7 +101,7 @@ export default function AgencyCard({
           {card.headline && (
             <p className="card-headline mt-2 text-[13px] font-black uppercase tracking-[0.2em]" style={{ color: ink }}>{card.headline}</p>
           )}
-          <div className="card-location mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-white/45">
+          <div className="card-location mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold" style={{ color: theme.fgDim }}>
             {card.company && <span className="card-company">{card.company}</span>}
             {card.location && (
               <span className="flex items-center gap-1">
@@ -112,15 +111,15 @@ export default function AgencyCard({
             )}
           </div>
           {card.bio && (
-            <p className="card-bio mt-5 text-[15px] leading-relaxed text-white/60">{card.bio}</p>
+            <p className="card-bio mt-5 text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
           )}
         </div>
       </section>
 
       {/* Services */}
       {buttons.length > 0 && (
-        <section id="services" className="scroll-mt-14 border-t border-white/10 px-6 py-11">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/35">
+        <section id="services" className="scroll-mt-14 border-t px-6 py-11" style={{ borderColor: theme.border }}>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             services
           </h2>
           <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
@@ -132,7 +131,8 @@ export default function AgencyCard({
                   href={button.href}
                   target={button.external ? "_blank" : undefined}
                   rel={button.external ? "noopener noreferrer" : undefined}
-                  className="group flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.04] px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-white/30"
+                  className="group flex items-center gap-3 rounded-2xl bg-white/[0.04] px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-white/30"
+                  style={{ borderWidth: 1, borderStyle: "solid", borderColor: theme.border }}
                 >
                   <span
                     className="flex h-9 w-9 items-center justify-center rounded-lg"
@@ -141,7 +141,7 @@ export default function AgencyCard({
                     <Icon className="h-4 w-4" />
                   </span>
                   <span className="flex-1 text-[15px] font-bold">{button.label}</span>
-                  <ArrowUpRight className="h-4 w-4 text-white/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
                 </a>
               );
             })}
@@ -151,8 +151,8 @@ export default function AgencyCard({
 
       {/* Work */}
       {gallery.length > 0 && (
-        <section id="work" className="scroll-mt-14 border-t border-white/10 px-6 py-11">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/35">
+        <section id="work" className="scroll-mt-14 border-t px-6 py-11" style={{ borderColor: theme.border }}>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             selected work
           </h2>
           <div className="mt-5 grid grid-cols-2 gap-2.5">
@@ -162,7 +162,8 @@ export default function AgencyCard({
                 href={item.href || undefined}
                 target={item.href ? "_blank" : undefined}
                 rel={item.href ? "noopener noreferrer" : undefined}
-                className="group relative aspect-square overflow-hidden rounded-2xl border border-white/12"
+                className="group relative aspect-square overflow-hidden rounded-2xl"
+                style={{ borderWidth: 1, borderStyle: "solid", borderColor: theme.border }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -171,7 +172,9 @@ export default function AgencyCard({
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 {item.caption && (
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-3 text-[13px] font-black">
+                  // Sits on the thumbnail's own permanent black scrim, not the
+                  // page surface, so it stays literal white regardless of theme.
+                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-3 text-[13px] font-black text-white">
                     {item.caption}
                   </span>
                 )}
@@ -184,9 +187,10 @@ export default function AgencyCard({
       {/* Contact */}
       <section
         id="contact"
-        className="scroll-mt-14 border-t border-white/10 px-6 py-14 text-center"
+        className="scroll-mt-14 border-t px-6 py-14 text-center"
+        style={{ borderColor: theme.border }}
       >
-        <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/35">
+        <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
           work with us
         </h2>
         <p className="mt-4 text-[24px] font-black tracking-tight">Let&apos;s talk.</p>
