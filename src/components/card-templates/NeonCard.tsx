@@ -1,11 +1,16 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
 /**
- * Pure black with glowing outlines — a lit sign at night. Everything is
- * stroke and glow, nothing is filled.
+ * After dark. Left-aligned and asymmetric on purpose — Minimal is the quiet,
+ * centred default, and this exists for the card that wants to look like it
+ * belongs to a different kind of night than a business card does.
+ *
+ * The glow lives in exactly one place, the rule under the name, rather than
+ * smeared across every line of text — a card that glows everywhere reads as
+ * noise, not energy.
  */
 export default function NeonCard({
   card,
@@ -14,40 +19,32 @@ export default function NeonCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#FF3D9A";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  const glow = `0 0 12px ${accent}, 0 0 34px ${accent}66`;
+  const theme = resolveCardTheme(card, "#050505");
+  const { accent, accentText: ink } = theme;
+  const role = roleLine(card);
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-black text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      {/* A single low grid, fading out before halfway up the screen — texture,
+          not a floor. */}
       <div
-        className="float-orb pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[520px] -translate-x-1/2 rounded-full blur-[140px] opacity-30"
-        style={{ background: accent }}
-      />
-      {/* Horizon grid */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 opacity-25"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45vh] opacity-[0.14]"
         style={{
-          backgroundImage: `linear-gradient(${accent}55 1px, transparent 1px), linear-gradient(90deg, ${accent}55 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
+          backgroundImage: `linear-gradient(${accent} 1px, transparent 1px), linear-gradient(90deg, ${accent} 1px, transparent 1px)`,
+          backgroundSize: "38px 38px",
           maskImage: "linear-gradient(to top, black, transparent)",
           WebkitMaskImage: "linear-gradient(to top, black, transparent)",
         }}
       />
 
-      <main className="relative mx-auto w-full max-w-sm px-6 pt-20 pb-28 text-center">
-        <div
-          className="card-rise relative mx-auto w-fit"
-          style={{ ["--d" as string]: "0ms" }}
-        >
+      <main className="relative mx-auto w-full max-w-sm px-6 pt-16 pb-28">
+        <div className="card-rise flex items-start gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div
-            className="card-avatar flex h-36 w-36 items-center justify-center overflow-hidden rounded-full border-2 bg-black"
-            style={{ borderColor: accent, boxShadow: glow }}
+            className="card-avatar flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border"
+            style={{ borderColor: `${accent}88` }}
           >
             {card.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -57,50 +54,65 @@ export default function NeonCard({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="text-[24px] font-bold" style={{ color: ink, textShadow: glow }}>
+              <span className="text-[15px] font-bold" style={{ color: ink }}>
                 {initialsOf(card.full_name)}
               </span>
             )}
           </div>
+
+          <div className="min-w-0 flex-1 pt-1">
+            <span
+              className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.22em]"
+              style={{ color: theme.fgMuted }}
+            >
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: accent, boxShadow: `0 0 8px ${accent}` }}
+              />
+              online now
+            </span>
+          </div>
         </div>
 
         <h1
-          className="card-name card-rise mt-7 text-[36px] font-bold uppercase tracking-[0.02em]"
-          style={{ textShadow: glow, ["--d" as string]: "80ms" }}
+          className="card-name card-rise mt-6 text-[40px] font-black uppercase leading-[0.92] tracking-tight"
+          style={{ ["--d" as string]: "60ms" }}
         >{card.full_name}</h1>
 
-        {card.headline && (
-          <p
-            className="card-headline card-rise mt-3 text-[11px] uppercase tracking-[0.3em]"
-            style={{ color: ink, ["--d" as string]: "140ms" }}
-          >{card.headline}</p>
-        )}
+        {/* The one glowing line. Everything else is flat colour. */}
+        <div
+          className="card-rise mt-3 h-[3px] w-14 rounded-full"
+          style={{ background: accent, boxShadow: `0 0 14px ${accent}`, ["--d" as string]: "100ms" }}
+        />
 
-        {card.company && (
+        {role && (
           <p
-            className="card-company card-rise mt-2 text-[13px] text-white/45"
-            style={{ ["--d" as string]: "180ms" }}
-          >{card.company}</p>
+            className="card-headline card-rise mt-4 text-[14px] font-semibold"
+            style={{ color: ink, ["--d" as string]: "140ms" }}
+          >{role}</p>
         )}
 
         {card.location && (
           <p
-            className="card-rise mt-3 flex items-start justify-center gap-1.5 text-[11px] text-white/35"
-            style={{ ["--d" as string]: "220ms" }}
+            className="card-location card-rise mt-2 flex items-center gap-1.5 text-[11px]"
+            style={{ color: theme.fgMuted, ["--d" as string]: "170ms" }}
           >
-            <MapPin className="mt-px h-3.5 w-3.5 shrink-0" />
-            <span className="card-location text-left">{card.location}</span>
+            <MapPin className="h-3 w-3 shrink-0" />
+            {card.location}
           </p>
         )}
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-[13px] leading-relaxed text-white/60"
-            style={{ ["--d" as string]: "260ms" }}
+            className="card-bio card-rise mt-5 text-[14px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "200ms" }}
           >{card.bio}</p>
         )}
 
-        <nav className="mt-10 space-y-3">
+        {/* Chips wrap rather than stack full-width — a different rhythm to
+            Minimal's list, and the right shape for a shorter, punchier label
+            set (handles, socials, a set time). */}
+        <nav className="mt-8 flex flex-wrap gap-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -109,17 +121,20 @@ export default function NeonCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="card-rise group flex w-full items-center gap-3 rounded-full border-2 bg-black/60 px-5 py-3.5 text-[13px] font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  borderColor: `${accent}66`,
-                  color: ink,
-                  ["--d" as string]: `${300 + index * 60}ms`,
-                  boxShadow: `0 0 0 0 ${accent}`,
-                }}
+                className="card-rise group inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 text-[12px] font-bold uppercase tracking-wide transition-all hover:[border-color:var(--glow)] hover:[box-shadow:0_0_16px_var(--glow-soft)]"
+                style={
+                  {
+                    borderColor: theme.border,
+                    color: theme.fg,
+                    "--glow": accent,
+                    "--glow-soft": `${accent}55`,
+                    ["--d" as string]: `${240 + index * 45}ms`,
+                  } as React.CSSProperties
+                }
               >
-                <Icon className="h-4 w-4" />
-                <span className="flex-1 text-left">{button.label}</span>
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: ink }} />
+                {button.label}
+                <ArrowUpRight className="h-3 w-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
               </a>
             );
           })}
@@ -127,8 +142,8 @@ export default function NeonCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-7 block text-[11px] uppercase tracking-[0.3em] text-white/35 transition-colors hover:text-white"
-          style={{ ["--d" as string]: `${340 + buttons.length * 60}ms` }}
+          className="card-rise mt-7 inline-flex min-h-11 items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors"
+          style={{ color: theme.fgMuted, ["--d" as string]: `${280 + buttons.length * 45}ms` }}
         >
           save to contacts
         </SaveContact>
