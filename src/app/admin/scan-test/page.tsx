@@ -19,12 +19,14 @@
  *   - compare: when Claude gets something wrong, tesseract's raw lines are
  *     right there to check whether the text was even legible at all.
  *
- * No account, draft or publish happens here unless "open in editor" is
+ * No account, draft or publish happens here unless "open in editor" (an
+ * anonymous draft, same as the public flow) or "create their account" (a
+ * real login, made on the spot — see createCustomer in ../actions.ts) is
  * pressed — everything above that is read-only inspection.
  */
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, ExternalLink, Loader2, X } from "lucide-react";
+import { Camera, Check, Copy, ExternalLink, Loader2, UserPlus, X } from "lucide-react";
 import { KIND_LABELS, resolveButtonsForPreview, resolveGallery, type CardButton } from "@/lib/card";
 import { EMPTY_CARD_FORM, draftToCardProfile, saveDraft, type CardForm } from "@/lib/card-draft";
 import { downscale, toDataUrl } from "@/components/card-editor/ImagePicker";
@@ -33,11 +35,22 @@ import { scanCardText, type ScanFields, type ScanLine } from "@/lib/card-ocr";
 import { scanCardWithClaude, cropLogo, type ClaudeScanFields } from "@/lib/card-scan-ai";
 import { renderCardTemplate } from "@/components/card-templates";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import { createCustomer } from "../actions";
 
 function normalizeWebsite(raw: string): string {
   const trimmed = raw.trim();
   if (!trimmed) return "";
   return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+/** A starting suggestion for the account's handle, not a final answer — the
+ *  admin can always edit it before creating the account. */
+function slugify(name: string): string {
+  const base = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return base.slice(0, 30);
 }
 
 export default function AdminScanTest() {
@@ -67,6 +80,23 @@ export default function AdminScanTest() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
+
+  // "Open in editor" hands off an anonymous draft — good for previewing.
+  // This is the other option: build a real, already-confirmed login right
+  // now, for a customer standing in front of the admin, same as
+  // admin/users/new does — just pre-filled from the scan instead of typed.
+  const [accountEmail, setAccountEmail] = useState("");
+  const [accountUsername, setAccountUsername] = useState("");
+  const [accountPassword, setAccountPassword] = useState("");
+  const [accountPublish, setAccountPublish] = useState(false);
+  const [creatingAccount, setCreatingAccount] = useState(false);
+  const [accountError, setAccountError] = useState<string | null>(null);
+  const [createdAccount, setCreatedAccount] = useState<{
+    email: string;
+    password: string;
+    username: string;
+  } | null>(null);
+  const [copiedCreds, setCopiedCreds] = useState(false);
 
   const pickFile = (file: File, side: "front" | "back") => {
     const url = URL.createObjectURL(file);
@@ -161,6 +191,16 @@ export default function AdminScanTest() {
       } else if (!claude) {
         setError("Claude didn't return a result (not configured, or the API call failed) — showing tesseract's read instead.");
       }
+
+      // Fresh scan, fresh account panel — a previous "created" state
+      // shouldn't linger over a different card's data.
+      const scannedName = claude?.full_name || extracted.full_name?.text || "";
+      const scannedEmail = claude?.emails[0]?.value || extracted.email?.text || "";
+      setAccountEmail(scannedEmail);
+      setAccountUsername(slugify(scannedName));
+      setAccountPassword("");
+      setAccountError(null);
+      setCreatedAccount(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something threw during scanning — see console.");
     } finally {
@@ -199,6 +239,33 @@ export default function AdminScanTest() {
   const openInEditor = () => {
     saveDraft({ form, buttons, gallery: [], extras: {} });
     router.push(`/templates/${template}/edit`);
+  };
+
+  const createAccount = async () => {
+    setCreatingAccount(true);
+    setAccountError(null);
+    const r = await createCustomer({
+      email: accountEmail,
+      password: accountPassword || undefined,
+      fullName: name,
+      username: accountUsername,
+      headline,
+      company,
+      location: address,
+      bio: tagline,
+      template,
+      accentColor: vibe?.accent,
+      surfaceColor: vibe?.surface,
+      logoUrl: claudeLogoUrl || undefined,
+      buttons,
+      publish: accountPublish,
+    });
+    setCreatingAccount(false);
+    if (!r.ok) {
+      setAccountError(r.error ?? "Could not create the account.");
+      return;
+    }
+    setCreatedAccount(r.data ?? null);
   };
 
   return (
@@ -372,6 +439,98 @@ export default function AdminScanTest() {
                 <ExternalLink className="h-4 w-4" />
                 open in editor
               </button>
+              <p className="text-xs text-white/35">
+                An anonymous draft — for previewing, or handing to someone who&apos;ll
+                sign up themselves later.
+              </p>
+            </div>
+
+            <div className="app-panel app-panel-pad space-y-3">
+              <p className="text-sm font-black text-white">Create their account</p>
+              <p className="text-xs text-white/35">
+                Makes a real, already-confirmed login right now, pre-filled from the
+                scan — for a customer standing here, same as{" "}
+                <code className="text-acid">admin/users/new</code>.
+              </p>
+
+              {createdAccount ? (
+                <div className="rounded-xl border-2 border-acid/40 bg-acid/10 p-4">
+                  <p className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-acid">
+                    <Check className="h-4 w-4" />
+                    account created
+                  </p>
+                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-lg bg-black/40 p-3 text-[13px] leading-relaxed text-white">
+                    {`Card: https://tap.scorlyn.com/u/${createdAccount.username}
+Login: https://tap.scorlyn.com/login
+Email: ${createdAccount.email}
+Password: ${createdAccount.password}`}
+                  </pre>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const lines = `Card: https://tap.scorlyn.com/u/${createdAccount.username}\nLogin: https://tap.scorlyn.com/login\nEmail: ${createdAccount.email}\nPassword: ${createdAccount.password}`;
+                        try {
+                          await navigator.clipboard.writeText(lines);
+                          setCopiedCreds(true);
+                          window.setTimeout(() => setCopiedCreds(false), 2500);
+                        } catch {
+                          // Clipboard needs a secure context; the text is on screen either way.
+                        }
+                      }}
+                      className="app-btn app-btn-primary"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                      {copiedCreds ? "Copied" : "Copy details"}
+                    </button>
+                    <a
+                      href={`/u/${createdAccount.username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="app-btn app-btn-ghost"
+                    >
+                      Open their card
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Field label="their email (login)" value={accountEmail} onChange={setAccountEmail} />
+                    <Field label="handle — tap.scorlyn.com/u/…" value={accountUsername} onChange={setAccountUsername} />
+                    <Field
+                      label="password (blank = generate)"
+                      value={accountPassword}
+                      onChange={setAccountPassword}
+                    />
+                  </div>
+                  <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/12 p-3.5">
+                    <input
+                      type="checkbox"
+                      checked={accountPublish}
+                      onChange={(e) => setAccountPublish(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-lime-400"
+                    />
+                    <span>
+                      <span className="block text-sm font-semibold text-white">Publish immediately</span>
+                      <span className="mt-0.5 block text-xs text-white/40">
+                        Off by default — theirs to release once they&apos;ve checked it.
+                      </span>
+                    </span>
+                  </label>
+                  {accountError && (
+                    <p className="rounded-xl bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{accountError}</p>
+                  )}
+                  <button
+                    onClick={createAccount}
+                    disabled={!name.trim() || !accountEmail.trim() || !accountUsername.trim() || creatingAccount}
+                    className="app-btn app-btn-primary disabled:opacity-50"
+                  >
+                    {creatingAccount ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                    {creatingAccount ? "creating…" : "create account and card"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
 

@@ -1009,6 +1009,17 @@ export async function createCustomer(input: {
   location?: string;
   template?: string;
   accentColor?: string;
+  surfaceColor?: string;
+  /** A short bio/tagline line — e.g. what a scanned card's slogan becomes. */
+  bio?: string;
+  logoUrl?: string;
+  /**
+   * Full button list, for callers (the scan-test admin page) that already
+   * built one — a scanned card can have several phones/emails, which the
+   * `phone`-only path below can't represent. Takes over from `phone`
+   * entirely when given, so the two never both add a call button.
+   */
+  buttons?: { kind: string; label: string; value: string; enabled?: boolean }[];
   /** Off by default: a card built for someone should be theirs to release. */
   publish?: boolean;
 }): Promise<Result<{ email: string; password: string; username: string }>> {
@@ -1076,12 +1087,17 @@ export async function createCustomer(input: {
       company: input.company?.trim() || null,
       location: input.location?.trim() || null,
       accent_color: input.accentColor || "#111111",
+      surface_color: input.surfaceColor || null,
+      bio: input.bio?.trim() || null,
+      logo_url: input.logoUrl || null,
       template: input.template || "minimal",
       font: "sans",
       published: input.publish === true,
-      buttons: input.phone?.trim()
-        ? [{ kind: "phone", label: "Call", value: input.phone.trim(), enabled: true }]
-        : [],
+      buttons:
+        input.buttons ??
+        (input.phone?.trim()
+          ? [{ kind: "phone", label: "Call", value: input.phone.trim(), enabled: true }]
+          : []),
       phone: input.phone?.trim() || null,
       email,
     });

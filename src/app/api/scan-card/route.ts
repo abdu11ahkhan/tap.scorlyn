@@ -72,16 +72,18 @@ Phone numbers — cards very often print more than one (landline/office, mobile/
 Emails — most cards have one, but list every distinct address found:
 - emails: an array of {"label": "", "value": "the address, with any "Email:"/"E:"-style prefix stripped"} — label only if the card distinguishes multiple (rare).
 
-Colour, judged from the FIRST image only:
+The photo is of a physical card photographed on some surface — a desk, a mousepad, a keyboard, someone's hand — and that surface is often visible around the card's edges, sometimes with its own texture, pattern, brand logo, or text (a mousepad's own logo, wood grain, fabric weave). None of that is part of the card. Before judging colour or logo, locate the card itself: the printed rectangular surface with the person's text on it. Everything below (colour, logo_box) must come from strictly inside that rectangle — never from the surrounding background, no matter how graphic or logo-like the background itself looks.
+
+Colour, judged from the FIRST image only, and only from the card's own printed surface (never the background it's sitting on):
 - accent_color: the card's real brand/ink colour as a hex code — the colour that would make buttons and links, not just any pixel colour.
 - surface_color: the card's background tone as a hex code.
 - accent_color and surface_color must have real contrast against each other (not near-identical) — pick colours that would actually be readable stacked on top of each other.
 - dark: true if the card's overall background reads as dark, false if light.
 - vivid: true if the card's colours are saturated/bold, false if muted/neutral.
 
-Logo, judged from the FIRST image only:
-- logo_box: if the card has a distinct logo mark (a graphic symbol, not just text in a stylised font), the bounding box around ONLY that mark, as fractions of the first image's width/height: {"x":0-1,"y":0-1,"w":0-1,"h":0-1} where x,y is the top-left corner. Keep it tight — just the mark, not surrounding whitespace or nearby text.
-- If there is no distinct logo mark, or you aren't confident, set logo_box to null. Do not guess.`;
+Logo, judged from the FIRST image only, and only from the card's own printed surface:
+- logo_box: if the card ITSELF has a distinct printed logo mark (a graphic symbol, not just text in a stylised font, and not anything belonging to the surface behind the card), the bounding box around ONLY that mark, as fractions of the first image's width/height: {"x":0-1,"y":0-1,"w":0-1,"h":0-1} where x,y is the top-left corner. Keep it tight — just the mark, not surrounding whitespace or nearby text, and never extending past the card's own edge.
+- If there is no distinct logo mark printed on the card, or you aren't confident, or the only graphic mark you can see belongs to the background/surface rather than the card, set logo_box to null. Do not guess, and do not substitute a background element for a missing logo.`;
 
 function parseDataUrl(dataUrl: string): { mediaType: string; data: string } | null {
   const match = /^data:(image\/(?:png|jpeg|jpg|webp));base64,(.+)$/.exec(dataUrl);
