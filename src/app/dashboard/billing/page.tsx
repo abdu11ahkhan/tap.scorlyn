@@ -84,7 +84,7 @@ export default async function BillingPage() {
           <div key={stat.label} className="app-panel app-panel-pad">
             <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
             <p className="app-sub mt-1">{stat.label}</p>
-            <p className="mt-1 text-[12px] text-white/35">{stat.hint}</p>
+            <p className="mt-1 text-[12px] text-sc-text-dimmer">{stat.hint}</p>
           </div>
         ))}
       </div>
@@ -96,7 +96,7 @@ export default async function BillingPage() {
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {plans.map((p) => (
-            <div key={p.id} className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <div key={p.id} className="rounded-xl border border-sc-border-soft bg-sc-surface-2 p-4">
               <p className="text-[15px] font-semibold">{p.name}</p>
               <p className="mt-1 text-xl font-black tracking-tight">
                 {p.price_pkr === 0 ? "Free" : money(p.price_pkr)}
@@ -125,17 +125,17 @@ export default async function BillingPage() {
             download.
           </p>
         ) : (
-          <div className="divide-y divide-white/8">
+          <div className="divide-y divide-sc-border-soft">
             {orders.map((o) => (
               <div key={o.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-3">
-                <span className="font-mono text-[13px] font-black">{o.reference}</span>
+                <span className="font-mono text-[13px] font-black text-sc-text">{o.reference}</span>
 
-                <span className="text-[13px] text-white/55">
+                <span className="text-[13px] text-sc-text-dim">
                   {o.quantity} × {o.plan_id}
                   {o.branding === "unbranded" && " · no branding"}
                 </span>
 
-                <span className="text-[12px] text-white/35">
+                <span className="text-[12px] text-sc-text-dimmer">
                   {new Date(o.created_at).toLocaleDateString("en-GB")}
                 </span>
 
@@ -145,7 +145,7 @@ export default async function BillingPage() {
                   {STATUS_LABELS[o.status] ?? o.status}
                 </span>
 
-                <span className="ml-auto text-[13px] font-black tabular-nums">
+                <span className="ml-auto text-[13px] font-black tabular-nums text-sc-text">
                   {money(o.amount_pkr)}
                 </span>
 

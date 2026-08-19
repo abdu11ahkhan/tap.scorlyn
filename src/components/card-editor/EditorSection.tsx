@@ -28,24 +28,24 @@ export default function EditorSection({
   return (
     <details
       open={defaultOpen}
-      className="group min-w-0 rounded-2xl border-2 border-white/12 bg-white/[0.02] open:bg-white/[0.035]"
+      className="group min-w-0 rounded-2xl border-2 border-sc-border-soft bg-sc-surface open:bg-sc-surface-2"
     >
       <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-black lowercase leading-tight">{title}</p>
-          <p className="mt-0.5 truncate text-xs font-semibold text-white/40">{hint}</p>
+          <p className="text-[15px] font-black lowercase leading-tight text-sc-text">{title}</p>
+          <p className="mt-0.5 truncate text-xs font-semibold text-sc-text-dimmer">{hint}</p>
         </div>
 
         {badge && (
-          <span className="shrink-0 rounded-full border-2 border-white/15 px-2.5 py-0.5 text-[11px] font-black text-white/50">
+          <span className="shrink-0 rounded-full border-2 border-sc-border px-2.5 py-0.5 text-[11px] font-black text-sc-text-dim">
             {badge}
           </span>
         )}
 
-        <ChevronDown className="h-4 w-4 shrink-0 text-white/40 transition-transform group-open:rotate-180" />
+        <ChevronDown className="h-4 w-4 shrink-0 text-sc-text-dimmer transition-transform group-open:rotate-180" />
       </summary>
 
-      <div className="min-w-0 border-t-2 border-white/8 px-4 pb-5 pt-5">{children}</div>
+      <div className="min-w-0 border-t-2 border-sc-border-soft px-4 pb-5 pt-5">{children}</div>
     </details>
   );
 }

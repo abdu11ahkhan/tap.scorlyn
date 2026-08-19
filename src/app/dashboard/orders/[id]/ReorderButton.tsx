@@ -24,12 +24,12 @@ export default function ReorderButton({ orderId }: { orderId: string }) {
             else router.push("/dashboard/orders");
           });
         }}
-        className="sticker sticker-press inline-flex items-center gap-2 rounded-full border-2 border-ink bg-acid px-6 py-3 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
+        className="app-btn app-btn-primary px-6"
       >
         {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Repeat className="h-4 w-4" />}
         order again
       </button>
-      {error && <span className="text-xs font-bold text-hotpink">{error}</span>}
+      {error && <span className="text-xs font-bold text-sc-error">{error}</span>}
     </span>
   );
 }

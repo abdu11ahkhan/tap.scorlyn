@@ -12,8 +12,7 @@ import type { CardProfile } from "@/lib/card";
 
 type Plan = { id: string; name: string; price_pkr: number; blurb: string | null; perks: string[] };
 
-const FIELD =
-  "h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid";
+const FIELD = "app-input";
 
 /**
  * A labelled field.
@@ -38,16 +37,14 @@ function Field({
   return (
     <label className="block min-w-0">
       <span className="mb-1.5 flex items-baseline gap-1.5">
-        <span className="text-sm font-black text-white">{label}</span>
-        {required && <span className="text-sm font-black text-hotpink">*</span>}
+        <span className="text-sm font-black text-sc-text">{label}</span>
+        {required && <span className="text-sm font-black text-sc-error">*</span>}
         {hint && !error && (
-          <span className="text-[11px] font-semibold text-white/35">{hint}</span>
+          <span className="text-[11px] font-semibold text-sc-text-dimmer">{hint}</span>
         )}
       </span>
       {children}
-      {error && (
-        <span className="mt-1.5 block text-[12px] font-bold text-hotpink">{error}</span>
-      )}
+      {error && <span className="app-helper-error mt-1.5 block">{error}</span>}
     </label>
   );
 }
@@ -157,11 +154,11 @@ export default function OrderForm({
       className="space-y-7"
     >
       {plan && plan.price_pkr > 0 && card && (
-        <section className="rounded-2xl border-2 border-white/12 p-5">
-          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+        <section className="app-panel p-5">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
             your printed card
           </p>
-          <p className="mt-1.5 text-sm font-semibold text-white/50">
+          <p className="mt-1.5 text-sm font-semibold text-sc-text-dim">
             This is what we print and post to you. Pick a finish — the chip
             still opens your page either way.
           </p>
@@ -180,20 +177,17 @@ export default function OrderForm({
       )}
 
       {!hasCard && (
-        <div className="flex flex-wrap items-center gap-3 rounded-2xl border-2 border-hotpink/40 bg-hotpink/10 p-5">
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border-2 border-sc-error/40 bg-sc-error/10 p-5">
           <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-black text-white">
+            <p className="text-[15px] font-black text-sc-text">
               Make your card first
             </p>
-            <p className="mt-1 text-sm font-semibold text-white/60">
+            <p className="mt-1 text-sm font-semibold text-sc-text-dim">
               A printed card is a chip holding the link to your page. Until
               there&apos;s a page, there&apos;s nothing to write onto it.
             </p>
           </div>
-          <Link
-            href="/dashboard/card"
-            className="sticker sticker-press shrink-0 rounded-full border-2 border-ink bg-acid px-5 py-3 text-sm font-black uppercase tracking-tight text-ink"
-          >
+          <Link href="/dashboard/card" className="app-btn app-btn-primary shrink-0 px-5">
             build my card
           </Link>
         </div>
@@ -201,7 +195,7 @@ export default function OrderForm({
 
       {/* Plan */}
       <section>
-        <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+        <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
           what you&apos;re ordering
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -213,18 +207,18 @@ export default function OrderForm({
                 type="button"
                 onClick={() => setPlanId(p.id)}
                 disabled={!hasCard && p.price_pkr > 0}
-                className={`rounded-2xl border-2 p-5 text-left transition-all disabled:cursor-not-allowed disabled:opacity-40 ${
+                className={`rounded-2xl border-2 p-5 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                   active
-                    ? "sticker-lg border-ink bg-acid text-ink"
-                    : "border-white/15 bg-white/[0.03] text-white hover:border-white/40"
+                    ? "border-sc-gold bg-sc-gold/10 text-sc-text"
+                    : "border-sc-border bg-sc-surface text-sc-text hover:border-sc-border-soft"
                 }`}
               >
                 <p className="text-lg font-black lowercase">{p.name}</p>
-                <p className="mt-1 text-2xl font-black tracking-tighter">
+                <p className={`mt-1 text-2xl font-black tracking-tighter ${active ? "text-sc-gold" : ""}`}>
                   {p.price_pkr === 0 ? "Free" : `Rs.${p.price_pkr.toLocaleString()}`}
                 </p>
                 {p.blurb && (
-                  <p className={`mt-2 text-xs font-semibold ${active ? "opacity-70" : "text-white/45"}`}>
+                  <p className={`mt-2 text-xs font-semibold ${active ? "text-sc-text-dim" : "text-sc-text-dimmer"}`}>
                     {p.blurb}
                   </p>
                 )}
@@ -236,7 +230,7 @@ export default function OrderForm({
 
       {/* Delivery */}
       <section className="space-y-4">
-        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+        <p className="text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
           where it goes
         </p>
 
@@ -268,9 +262,7 @@ export default function OrderForm({
               autoComplete="tel"
               maxLength={17}
               aria-invalid={phoneTouched && Boolean(phoneError)}
-              className={`${FIELD} ${
-                phoneTouched && phoneError ? "border-hotpink" : ""
-              }`}
+              className={FIELD}
             />
           </Field>
         </div>
@@ -321,20 +313,20 @@ export default function OrderForm({
       </section>
 
       {/* Total */}
-      <div className="sticker-lg flex items-center justify-between rounded-2xl border-2 border-ink bg-white p-6 text-ink">
+      <div className="app-panel flex flex-wrap items-center justify-between gap-4 p-6">
         <div>
-          <p className="text-[11px] font-black uppercase tracking-widest opacity-50">total</p>
-          <p className="text-3xl font-black tracking-tighter">
+          <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">total</p>
+          <p className="text-3xl font-black tracking-tighter text-sc-text">
             {total === 0 ? "Free" : `Rs.${total.toLocaleString()}`}
           </p>
-          <p className="mt-1 text-xs font-bold opacity-50">
+          <p className="mt-1 text-xs font-bold text-sc-text-dimmer">
             {quantity} × {plan?.name}
           </p>
         </div>
         <button
           type="submit"
           disabled={pending || needsCard || Boolean(phoneError)}
-          className="sticker sticker-press flex h-14 items-center gap-2 rounded-full border-2 border-ink bg-acid px-8 font-black uppercase tracking-tight disabled:opacity-60"
+          className="app-btn app-btn-primary h-14 px-8"
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
           place order
@@ -342,12 +334,12 @@ export default function OrderForm({
       </div>
 
       {error && (
-        <p className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
           {error}
         </p>
       )}
 
-      <p className="text-xs font-semibold text-white/35">
+      <p className="text-xs font-semibold text-sc-text-dimmer">
         Nothing is charged here. You&apos;ll get bank details and can upload proof of
         payment on the next screen — we confirm it manually.
       </p>

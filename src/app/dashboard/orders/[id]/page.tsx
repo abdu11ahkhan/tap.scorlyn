@@ -20,7 +20,7 @@ export default async function OrderDetail({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return <p className="font-bold text-white/50">Please log in.</p>;
+  if (!user) return <p className="app-sub font-bold">Please log in.</p>;
 
   // RLS already limits this to the caller's own orders.
   const { data: order } = await supabase
@@ -57,7 +57,7 @@ export default async function OrderDetail({
     <div className="max-w-3xl space-y-8 pb-16">
       <Link
         href="/dashboard/orders"
-        className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black lowercase text-white/60 transition-colors hover:border-acid hover:text-acid"
+        className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2 text-xs font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         orders
@@ -65,16 +65,16 @@ export default async function OrderDetail({
 
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-mono text-3xl font-black tracking-tight text-white">
+          <h1 className="font-mono text-3xl font-black tracking-tight text-sc-text">
             {order.reference}
           </h1>
-          <p className="mt-1 font-medium text-white/50">
+          <p className="mt-1 font-medium text-sc-text-dim">
             {order.quantity} × {order.plan_id} ·{" "}
             {order.amount_pkr === 0 ? "Free" : `Rs.${order.amount_pkr.toLocaleString()}`}
           </p>
         </div>
         <span
-          className={`rounded-full border-2 border-ink px-4 py-1.5 text-xs font-black uppercase tracking-widest ${statusTone(order.status)}`}
+          className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-widest ${statusTone(order.status)}`}
         >
           {STATUS_LABELS[order.status] ?? order.status}
         </span>
@@ -82,7 +82,7 @@ export default async function OrderDetail({
 
       {/* Progress */}
       {!cancelled && (
-        <section className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-6">
+        <section className="app-panel p-6">
           <div className="flex items-start">
             {STATUS_STEPS.map((step, i) => {
               const reached = i <= currentStep;
@@ -92,12 +92,12 @@ export default async function OrderDetail({
                     {/* Connector left */}
                     <span
                       className={`h-1 flex-1 rounded ${
-                        i === 0 ? "opacity-0" : reached ? "bg-acid" : "bg-white/12"
+                        i === 0 ? "opacity-0" : reached ? "bg-sc-gold" : "bg-sc-border"
                       }`}
                     />
                     <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-ink text-[11px] font-black ${
-                        reached ? "bg-acid text-ink" : "bg-white/10 text-white/40"
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-black ${
+                        reached ? "bg-sc-gold text-sc-gold-ink" : "bg-sc-surface-2 text-sc-text-dimmer"
                       }`}
                     >
                       {reached ? <Check className="h-3.5 w-3.5" strokeWidth={3.5} /> : i + 1}
@@ -107,14 +107,14 @@ export default async function OrderDetail({
                         i === STATUS_STEPS.length - 1
                           ? "opacity-0"
                           : i < currentStep
-                            ? "bg-acid"
-                            : "bg-white/12"
+                            ? "bg-sc-gold"
+                            : "bg-sc-border"
                       }`}
                     />
                   </div>
                   <p
                     className={`mt-2 text-[10px] font-black uppercase tracking-wider ${
-                      reached ? "text-white" : "text-white/30"
+                      reached ? "text-sc-text" : "text-sc-text-dimmer"
                     }`}
                   >
                     {step}
@@ -125,9 +125,9 @@ export default async function OrderDetail({
           </div>
 
           {order.estimated_delivery && currentStep < 4 && (
-            <p className="mt-5 text-center text-sm font-bold text-white/45">
+            <p className="mt-5 text-center text-sm font-bold text-sc-text-dim">
               Estimated delivery{" "}
-              <span className="text-acid">
+              <span className="text-sc-gold">
                 {new Date(order.estimated_delivery).toLocaleDateString("en-GB", {
                   weekday: "short",
                   day: "numeric",
@@ -141,16 +141,18 @@ export default async function OrderDetail({
 
       {/* Payment */}
       {order.status === "pending" && order.amount_pkr > 0 && (
-        <section className="sticker-lg rounded-2xl border-2 border-ink bg-acid p-6 text-ink">
-          <p className="text-xl font-black tracking-tight">Send Rs.{order.amount_pkr.toLocaleString()}</p>
-          <p className="mt-1 text-sm font-semibold opacity-70">
+        <section className="rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-6">
+          <p className="text-xl font-black tracking-tight text-sc-text">
+            Send Rs.{order.amount_pkr.toLocaleString()}
+          </p>
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             Transfer the amount, then upload a screenshot. We confirm manually —
             usually within a few hours.
           </p>
           <div className="mt-4 space-y-3">
             {payMethods.length === 0 ? (
-              <div className="rounded-xl border-2 border-ink bg-white p-4 text-sm font-semibold">
-                <p className="text-[11px] font-black uppercase tracking-widest opacity-45">
+              <div className="app-panel app-panel-pad text-sm font-semibold text-sc-text">
+                <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
                   pay to
                 </p>
                 <p className="mt-1">
@@ -160,24 +162,21 @@ export default async function OrderDetail({
               </div>
             ) : (
               payMethods.map((m) => (
-                <div
-                  key={m.id}
-                  className="rounded-xl border-2 border-ink bg-white p-4"
-                >
-                  <p className="text-sm font-black">{m.label}</p>
+                <div key={m.id} className="rounded-xl border-2 border-sc-gold/30 bg-white p-4">
+                  <p className="text-sm font-black text-black">{m.label}</p>
                   <div className="mt-2 space-y-0.5">
                     {m.account_name && (
-                      <CopyRow label="Name" value={m.account_name} accent="#0a0a0a" />
+                      <CopyRow label="Name" value={m.account_name} accent="#d4af37" />
                     )}
                     {m.account_number && (
-                      <CopyRow label="Account" value={m.account_number} accent="#0a0a0a" />
+                      <CopyRow label="Account" value={m.account_number} accent="#d4af37" />
                     )}
-                    {m.iban && <CopyRow label="IBAN" value={m.iban} accent="#0a0a0a" />}
+                    {m.iban && <CopyRow label="IBAN" value={m.iban} accent="#d4af37" />}
                   </div>
                   {m.note && (
-                    <p className="mt-2 text-[11px] font-semibold opacity-50">{m.note}</p>
+                    <p className="mt-2 text-[11px] font-semibold text-black/50">{m.note}</p>
                   )}
-                  <p className="mt-1.5 px-0.5 text-[10px] font-semibold opacity-35">
+                  <p className="mt-1.5 px-0.5 text-[10px] font-semibold text-black/35">
                     Tap any line to copy it.
                   </p>
                 </div>
@@ -185,7 +184,7 @@ export default async function OrderDetail({
             )}
           </div>
           <div className="mt-4">
-            <div className="rounded-xl bg-ink p-4">
+            <div className="rounded-xl bg-sc-surface-2 p-4">
               <ProofUpload
                 orderId={order.id}
                 userId={user.id}
@@ -198,36 +197,36 @@ export default async function OrderDetail({
       )}
 
       {/* Delivery details */}
-      <section className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-6">
-        <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+      <section className="app-panel p-6">
+        <p className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
           <MapPin className="h-3.5 w-3.5" />
           delivering to
         </p>
-        <p className="mt-3 font-black text-white">{order.full_name}</p>
-        <p className="text-sm font-semibold text-white/55">{order.phone}</p>
-        <p className="mt-1 text-sm font-semibold text-white/55">
+        <p className="mt-3 font-black text-sc-text">{order.full_name}</p>
+        <p className="text-sm font-semibold text-sc-text-dim">{order.phone}</p>
+        <p className="mt-1 text-sm font-semibold text-sc-text-dim">
           {order.address}, {order.city}
         </p>
         {order.customer_note && (
-          <p className="mt-3 text-sm font-medium text-white/40">“{order.customer_note}”</p>
+          <p className="mt-3 text-sm font-medium text-sc-text-dimmer">“{order.customer_note}”</p>
         )}
       </section>
 
       {/* Timeline */}
       {events && events.length > 0 && (
-        <section className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-6">
-          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-white/40">
+        <section className="app-panel p-6">
+          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
             history
           </p>
           <ol className="space-y-3">
             {events.map((e, i) => (
               <li key={i} className="flex items-start gap-3">
-                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-acid" />
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-sc-gold" />
                 <div>
-                  <p className="text-sm font-black text-white">
+                  <p className="text-sm font-black text-sc-text">
                     {STATUS_LABELS[e.status] ?? e.status}
                   </p>
-                  <p className="text-xs font-semibold text-white/35">
+                  <p className="text-xs font-semibold text-sc-text-dimmer">
                     {new Date(e.created_at).toLocaleString("en-GB")}
                     {e.note ? ` · ${e.note}` : ""}
                   </p>
@@ -241,7 +240,7 @@ export default async function OrderDetail({
       <div className="flex flex-wrap gap-3">
         <Link
           href={`/dashboard/orders/${order.id}/invoice`}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-6 py-3 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-6 py-3 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
         >
           <FileText className="h-4 w-4" />
           invoice

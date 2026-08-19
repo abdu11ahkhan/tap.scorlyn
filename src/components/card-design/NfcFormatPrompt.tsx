@@ -98,13 +98,13 @@ export default function NfcFormatPrompt({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm sm:items-center sm:p-6">
-      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl border-2 border-ink bg-[#0B0B0B] sm:rounded-3xl">
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 p-5 sm:p-6">
+      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl border-2 border-sc-border bg-sc-bg sm:rounded-3xl">
+        <div className="flex items-start justify-between gap-4 border-b border-sc-border-soft p-5 sm:p-6">
           <div>
-            <h2 className="text-lg font-black tracking-tight text-white sm:text-xl">
+            <h2 className="text-lg font-black tracking-tight text-sc-text sm:text-xl">
               Your card is live. Which NFC card do you want?
             </h2>
-            <p className="mt-1 text-sm font-semibold text-white/45">
+            <p className="mt-1 text-sm font-semibold text-sc-text-dim">
               We save this to your profile so it is ready to print whenever you
               order. You can change it any time.
             </p>
@@ -113,7 +113,7 @@ export default function NfcFormatPrompt({
             type="button"
             onClick={() => onDone(null)}
             aria-label="Decide later"
-            className="shrink-0 rounded-full p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+            className="shrink-0 rounded-full p-2 text-sc-text-dimmer transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
           >
             <X className="h-5 w-5" />
           </button>
@@ -122,33 +122,33 @@ export default function NfcFormatPrompt({
         <div className="flex-1 overflow-y-auto p-5 sm:p-6">
           {/* Own artwork first: someone who already has a design should not
               have to scroll fifteen of ours to find out we accept it. */}
-          <div className="mb-5 rounded-2xl border-2 border-dashed border-white/15 p-4">
+          <div className="mb-5 rounded-2xl border-2 border-dashed border-sc-border p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">
+                <p className="text-sm font-black text-sc-text">
                   Have your own design?
                 </p>
-                <p className="mt-0.5 text-xs font-semibold text-white/45">
+                <p className="mt-0.5 text-xs font-semibold text-sc-text-dim">
                   Send us a print-ready file — PDF, PNG, JPG or SVG, up to
                   20&nbsp;MB. We print that instead.
                 </p>
               </div>
               {ownFile ? (
                 <div className="flex items-center gap-2">
-                  <span className="max-w-[14rem] truncate rounded-full bg-acid/15 px-3 py-1.5 text-xs font-bold text-acid">
+                  <span className="max-w-[14rem] truncate rounded-full bg-sc-gold/15 px-3 py-1.5 text-xs font-bold text-sc-gold">
                     {ownFile.name}
                   </span>
                   <button
                     type="button"
                     onClick={() => setOwnFile(null)}
                     aria-label="Remove file"
-                    className="rounded-full p-2 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+                    className="rounded-full p-2 text-sc-text-dimmer transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               ) : (
-                <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid">
+                <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold">
                   <FileUp className="h-4 w-4" />
                   Upload file
                   <input
@@ -172,7 +172,7 @@ export default function NfcFormatPrompt({
               )}
             </div>
             {ownFile && (
-              <p className="mt-3 text-xs font-semibold text-white/45">
+              <p className="mt-3 text-xs font-semibold text-sc-text-dim">
                 We will print your file. Still pick a finish below — it is what
                 we fall back to if there is a problem with the artwork.
               </p>
@@ -190,8 +190,8 @@ export default function NfcFormatPrompt({
                 aria-pressed={active}
                 className={`group relative rounded-2xl border-2 p-3 text-left transition-colors ${
                   active
-                    ? "border-acid bg-acid/10"
-                    : "border-white/12 hover:border-white/30"
+                    ? "border-sc-gold bg-sc-gold/10"
+                    : "border-sc-border-soft hover:border-sc-border"
                 }`}
               >
                 {/* The real art, not a thumbnail of it: what they pick is
@@ -204,14 +204,14 @@ export default function NfcFormatPrompt({
                 />
                 <div className="mt-2.5 flex items-center justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-black text-white">{f.name}</p>
-                    <p className="truncate text-xs font-semibold text-white/40">
+                    <p className="truncate text-sm font-black text-sc-text">{f.name}</p>
+                    <p className="truncate text-xs font-semibold text-sc-text-dimmer">
                       {f.blurb}
                     </p>
                   </div>
                   {active && (
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-acid">
-                      <Check className="h-4 w-4 text-ink" />
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sc-gold">
+                      <Check className="h-4 w-4 text-sc-gold-ink" />
                     </span>
                   )}
                 </div>
@@ -222,16 +222,16 @@ export default function NfcFormatPrompt({
         </div>
 
         {error && (
-          <p className="px-5 pb-2 text-sm font-bold text-rose-300 sm:px-6">
+          <p className="px-5 pb-2 text-sm font-bold text-sc-error sm:px-6">
             Could not save that: {error}
           </p>
         )}
 
-        <div className="flex items-center justify-between gap-3 border-t border-white/10 p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-3 border-t border-sc-border-soft p-5 sm:p-6">
           <button
             type="button"
             onClick={() => onDone(null)}
-            className="text-sm font-bold text-white/50 transition-colors hover:text-white"
+            className="text-sm font-bold text-sc-text-dim transition-colors hover:text-sc-text"
           >
             Decide later
           </button>
@@ -239,7 +239,7 @@ export default function NfcFormatPrompt({
             type="button"
             onClick={save}
             disabled={saving}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid px-7 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-2 border-sc-gold bg-sc-gold px-7 text-sm font-black uppercase tracking-tight text-sc-gold-ink disabled:opacity-60"
           >
             {saving && <Loader2 className="h-4 w-4 animate-spin" />}
             {uploading ? "Uploading…" : "Save my card design"}

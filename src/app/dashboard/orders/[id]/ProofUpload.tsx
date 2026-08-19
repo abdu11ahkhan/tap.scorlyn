@@ -88,8 +88,8 @@ export default function ProofUpload({
         onClick={() => inputRef.current?.click()}
         className={`flex h-13 w-full items-center justify-center gap-2 rounded-full border-2 py-3.5 text-sm font-black uppercase tracking-tight transition-colors disabled:opacity-60 ${
           done
-            ? "border-ink bg-acid text-ink"
-            : "border-white/25 text-white hover:border-acid hover:text-acid"
+            ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+            : "border-sc-border text-sc-text hover:border-sc-gold hover:text-sc-gold"
         }`}
       >
         {working ? (
@@ -102,8 +102,8 @@ export default function ProofUpload({
         {done ? "proof uploaded — replace" : "upload payment proof"}
       </button>
 
-      {error && <p className="mt-2 text-sm font-bold text-hotpink">{error}</p>}
-      <p className="mt-2 text-xs font-semibold text-white/35">
+      {error && <p className="mt-2 text-sm font-bold text-sc-error">{error}</p>}
+      <p className="mt-2 text-xs font-semibold text-sc-text-dimmer">
         Screenshot or PDF, up to 5MB. Only you and our team can see it.
       </p>
     </div>

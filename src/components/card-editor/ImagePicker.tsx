@@ -141,23 +141,23 @@ export default function ImagePicker({
 
   return (
     <div className="min-w-0 space-y-2">
-      <p className="text-sm font-bold text-white">{label}</p>
+      <p className="text-sm font-bold text-sc-text">{label}</p>
 
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => input.current?.click()}
           disabled={busy}
-          className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-white/20 bg-white/[0.04] transition-colors hover:border-acid disabled:opacity-60"
+          className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-sc-border bg-sc-surface-2 transition-colors hover:border-sc-gold disabled:opacity-60"
           aria-label={value ? `Replace ${label}` : `Choose ${label}`}
         >
           {busy ? (
-            <Loader2 className="h-5 w-5 animate-spin text-white/50" />
+            <Loader2 className="h-5 w-5 animate-spin text-sc-text-dim" />
           ) : value ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={value} alt="" className="h-full w-full object-cover" />
           ) : (
-            <ImagePlus className="h-5 w-5 text-white/40" />
+            <ImagePlus className="h-5 w-5 text-sc-text-dimmer" />
           )}
         </button>
 
@@ -166,23 +166,23 @@ export default function ImagePicker({
             type="button"
             onClick={() => input.current?.click()}
             disabled={busy}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid disabled:opacity-60"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold disabled:opacity-60"
           >
             <ImagePlus className="h-4 w-4" />
             {busy ? "working…" : value ? "change photo" : "choose photo"}
           </button>
 
           {hint && !error && (
-            <p className="mt-1.5 text-xs text-slate-500">{hint}</p>
+            <p className="mt-1.5 text-xs text-sc-text-dimmer">{hint}</p>
           )}
-          {error && <p className="mt-1.5 text-xs font-semibold text-hotpink">{error}</p>}
+          {error && <p className="mt-1.5 text-xs font-semibold text-sc-error">{error}</p>}
         </div>
 
         {value && !busy && (
           <button
             type="button"
             onClick={() => onChange("")}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-red-400"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400"
             aria-label={`Remove ${label}`}
           >
             <Trash2 className="h-4 w-4" />

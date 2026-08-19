@@ -36,7 +36,7 @@ const FONTS = [
 
 /** One field style for the whole editor, matching the site's sticker scheme. */
 const FIELD =
-  "border-2 border-white/15 bg-white/[0.04] font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:ring-0";
+  "border-2 border-sc-border bg-sc-surface-2 font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:ring-0";
 
 /**
  * Every field of a card, shared by the public editor and the dashboard editor
@@ -172,7 +172,7 @@ export default function CardEditorFields({
               type="color"
               value={form.accent_color}
               onChange={(e) => onFormChange({ accent_color: e.target.value })}
-              className="h-10 w-14 cursor-pointer rounded-lg border-2 border-white/15 bg-white/[0.04]"
+              className="h-10 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-sc-surface-2"
             />
             <Input
               value={form.accent_color}
@@ -193,8 +193,8 @@ export default function CardEditorFields({
                 onClick={() => onFormChange({ accent_color: preset.value })}
                 className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
                   form.accent_color.toLowerCase() === preset.value.toLowerCase()
-                    ? "border-acid"
-                    : "border-white/20"
+                    ? "border-sc-gold"
+                    : "border-sc-border"
                 }`}
                 style={{ background: preset.value }}
               />
@@ -208,7 +208,7 @@ export default function CardEditorFields({
             places nobody would think to check. */}
         <div className="space-y-2">
           <Label>Background</Label>
-          <p className="-mt-1 text-xs text-white/40">
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
             {surfaceFamily === "dark"
               ? "This template is a dark one, so these are the shades that keep its text readable."
               : "This template is a light one, so these are the shades that keep its text readable."}
@@ -217,10 +217,10 @@ export default function CardEditorFields({
             <button
               type="button"
               onClick={() => onFormChange({ surface_color: "" })}
-              className={`h-11 rounded-full border-2 px-3 text-[11px] font-black lowercase transition-colors sm:h-7 ${
+              className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3 text-[11px] font-black lowercase transition-colors sm:h-7 ${
                 !form.surface_color
-                  ? "border-acid text-acid"
-                  : "border-white/20 text-white/50 hover:text-white"
+                  ? "border-sc-gold text-sc-gold"
+                  : "border-sc-border text-sc-text-dim hover:text-sc-text"
               }`}
             >
               as designed
@@ -234,8 +234,8 @@ export default function CardEditorFields({
                 onClick={() => onFormChange({ surface_color: preset.value })}
                 className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
                   form.surface_color.toLowerCase() === preset.value.toLowerCase()
-                    ? "border-acid"
-                    : "border-white/20"
+                    ? "border-sc-gold"
+                    : "border-sc-border"
                 }`}
                 style={{ background: preset.value }}
               />
@@ -251,19 +251,19 @@ export default function CardEditorFields({
               aria-label="Pick any background colour"
               value={form.surface_color || (surfaceFamily === "dark" ? "#0A0A0A" : "#FFFFFF")}
               onChange={(e) => onFormChange({ surface_color: e.target.value })}
-              className="h-11 w-14 cursor-pointer rounded-lg border-2 border-white/20 bg-transparent p-1 sm:h-9 sm:w-12"
+              className="h-11 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-transparent p-1 sm:h-9 sm:w-12"
             />
             <input
               value={form.surface_color}
               onChange={(e) => onFormChange({ surface_color: e.target.value })}
               placeholder="any hex, e.g. #123456"
-              className="h-11 w-40 rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 text-sm font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:outline-none sm:h-9"
+              className="h-11 w-40 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:outline-none sm:h-9"
             />
             {form.surface_color && (() => {
               const check = surfaceReadability(form.surface_color, surfaceFamily);
               return (
                 <span
-                  className={`text-xs font-bold ${check.ok ? "text-emerald-300" : "text-amber-300"}`}
+                  className={`text-xs font-bold ${check.ok ? "text-sc-success" : "text-sc-warning"}`}
                 >
                   {check.ok
                     ? `text contrast ${check.ratio}:1 — readable`
@@ -284,8 +284,8 @@ export default function CardEditorFields({
                 onClick={() => onFormChange({ font: font.id })}
                 className={`h-10 flex-1 rounded-lg border-2 text-sm font-black lowercase transition-colors ${
                   form.font === font.id
-                    ? "border-acid bg-acid text-ink"
-                    : "border-white/15 bg-white/[0.04] text-white/60 hover:text-white"
+                    ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+                    : "border-sc-border bg-sc-surface-2 text-sc-text-dim hover:text-sc-text"
                 }`}
               >
                 {font.label}
@@ -372,7 +372,7 @@ export default function CardEditorFields({
             placeholder="Helping families find homes in DHA and Bahria Town since 2018."
             // 16px on mobile: iOS Safari zooms the whole viewport when a
             // focused field is any smaller.
-            className="w-full rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 py-2 text-base font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid sm:text-sm"
+            className="w-full rounded-lg border-2 border-sc-border bg-sc-surface-2 px-3 py-2 text-base font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-gold sm:text-sm"
           />
         </div>
       </section>
@@ -388,7 +388,7 @@ export default function CardEditorFields({
       <section className="space-y-5">
         <div>
           <Label>Photos</Label>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-sc-text-dimmer">
             Pick them from your phone. Templates use what they need — a profile
             photo everywhere, a cover on the ones with a hero, and the gallery
             on portfolio layouts.
@@ -396,16 +396,16 @@ export default function CardEditorFields({
         </div>
 
         {/* QR code */}
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 p-3.5">
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border p-3.5">
           <input
             type="checkbox"
             checked={form.show_qr !== false}
             onChange={(e) => onFormChange({ show_qr: e.target.checked })}
-            className="mt-0.5 h-4 w-4"
+            className="mt-0.5 h-4 w-4 accent-sc-gold"
           />
           <span className="min-w-0">
-            <span className="block text-sm font-semibold text-slate-900">Show QR code</span>
-            <span className="mt-0.5 block text-xs text-slate-500">
+            <span className="block text-sm font-semibold text-sc-text">Show QR code</span>
+            <span className="mt-0.5 block text-xs text-sc-text-dimmer">
               Adds a QR button to your card, so someone can scan it when tapping
               isn&apos;t an option. Opens their contacts too.
             </span>
@@ -439,14 +439,14 @@ export default function CardEditorFields({
         {/* Gallery */}
         <div className="space-y-3">
           <Label>Gallery</Label>
-          <p className="-mt-1 text-xs text-slate-500">
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
             For Grid, Reel and Agency. Ignored by the other templates.
           </p>
 
           {gallery.map((item, index) => (
             <div
               key={index}
-              className="flex min-w-0 flex-col gap-2 rounded-xl border-2 border-white/12 bg-white/[0.03] p-3 sm:flex-row"
+              className="flex min-w-0 flex-col gap-2 rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 p-3 sm:flex-row"
             >
               <div className="min-w-0 flex-1">
                 <ImagePicker
@@ -475,7 +475,7 @@ export default function CardEditorFields({
               <button
                 type="button"
                 onClick={() => onGalleryChange(gallery.filter((_, i) => i !== index))}
-                className="flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
+                className="flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 sm:h-9 sm:w-9"
                 aria-label="Remove photo"
               >
                 <Trash2 className="h-4 w-4" />
@@ -486,7 +486,7 @@ export default function CardEditorFields({
           <button
             type="button"
             onClick={() => onGalleryChange([...gallery, { url: "", caption: "" }])}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
           >
             <Plus className="h-4 w-4" />
             add photo
@@ -510,7 +510,7 @@ export default function CardEditorFields({
 
         <div>
           <Label>Buttons</Label>
-          <p className="text-xs text-white/45 mt-1">Shown in this order on your card.</p>
+          <p className="text-xs text-sc-text-dimmer mt-1">Shown in this order on your card.</p>
         </div>
 
         {buttons.map((button, index) => {
@@ -530,22 +530,22 @@ export default function CardEditorFields({
                 setDragFrom(null);
                 setDragOver(null);
               }}
-              className={`flex cursor-grab flex-col gap-2 rounded-xl border-2 bg-white/[0.03] p-3 transition-colors active:cursor-grabbing sm:flex-row min-w-0 ${
+              className={`flex cursor-grab flex-col gap-2 rounded-xl border-2 bg-sc-surface-2 p-3 transition-colors active:cursor-grabbing sm:flex-row min-w-0 ${
                 dragOver === index && dragFrom !== index
-                  ? "border-acid"
+                  ? "border-sc-gold"
                   : dragFrom === index
-                    ? "border-white/30 opacity-50"
-                    : "border-white/12"
+                    ? "border-sc-border opacity-50"
+                    : "border-sc-border-soft"
               }`}
             >
               <div
-                className="flex justify-center text-white/40 sm:flex-col"
+                className="flex justify-center text-sc-text-dimmer sm:flex-col"
                 title="Drag to reorder"
               >
                 <button
                   type="button"
                   onClick={() => moveButton(index, -1)}
-                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
+                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-sc-surface hover:text-sc-text sm:h-5 sm:w-5"
                   aria-label="Move up"
                 >
                   ▲
@@ -554,7 +554,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => moveButton(index, 1)}
-                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-white/10 hover:text-white sm:h-5 sm:w-5"
+                  className="flex h-11 w-11 items-center justify-center rounded text-xs leading-none transition-colors hover:bg-sc-surface hover:text-sc-text sm:h-5 sm:w-5"
                   aria-label="Move down"
                 >
                   ▼
@@ -564,14 +564,14 @@ export default function CardEditorFields({
               {/* Icon preview beside the picker — with 26 kinds, seeing the
                   mark is faster than reading the name back. */}
               <div className="flex min-w-0 items-center gap-2">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-white/15 bg-white/[0.04] text-white/80">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-sc-border bg-sc-surface-2 text-sc-text-dim">
                   <KindIcon className="h-4 w-4" />
                 </span>
 
                 <select
                   value={button.kind}
                   onChange={(e) => updateButton(index, { kind: e.target.value as ButtonKind })}
-                  className="h-11 flex-1 rounded-lg border-2 border-white/15 bg-ink px-2 text-base font-bold text-white sm:h-10 sm:w-36 sm:flex-none sm:text-sm"
+                  className="h-11 flex-1 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-2 text-base font-bold text-sc-text sm:h-10 sm:w-36 sm:flex-none sm:text-sm"
                 >
                   {BUTTON_KIND_GROUPS.map((group) => (
                     <optgroup key={group.label} label={group.label}>
@@ -608,8 +608,8 @@ export default function CardEditorFields({
                   title={button.enabled === false ? "Hidden — click to show" : "Visible — click to hide"}
                   className={`flex h-11 w-11 items-center justify-center rounded-lg transition-colors sm:h-9 sm:w-9 ${
                     button.enabled === false
-                      ? "text-white/25 hover:text-white/60"
-                      : "text-acid hover:text-white"
+                      ? "text-sc-text-dimmer hover:text-sc-text-dim"
+                      : "text-sc-gold hover:text-sc-text"
                   }`}
                 >
                   {button.enabled === false ? (
@@ -621,7 +621,7 @@ export default function CardEditorFields({
                 <button
                   type="button"
                   onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 sm:h-9 sm:w-9"
                   aria-label="Remove button"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -634,7 +634,7 @@ export default function CardEditorFields({
         <button
           type="button"
           onClick={() => onButtonsChange([...buttons, { label: "", kind: "link", value: "" }])}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
         >
           <Plus className="w-4 h-4" />
           Add button

@@ -67,7 +67,7 @@ export default function QrPanel({ username }: { username: string }) {
 
   return (
     <section className="app-panel app-panel-pad">
-      <h2 className="text-[15px] font-semibold text-white">Your card link</h2>
+      <h2 className="text-[15px] font-semibold text-sc-text">Your card link</h2>
       <p className="app-sub mt-1">Share it anywhere, or print the QR.</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-5">
@@ -78,7 +78,7 @@ export default function QrPanel({ username }: { username: string }) {
         </div>
 
         <div className="min-w-[200px] flex-1">
-          <p className="break-all font-mono text-[13px] text-white/70">{url || "…"}</p>
+          <p className="break-all font-mono text-[13px] text-sc-text-dim">{url || "…"}</p>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <button type="button" onClick={copy} className="app-btn app-btn-ghost">
@@ -92,7 +92,7 @@ export default function QrPanel({ username }: { username: string }) {
           </div>
 
           {failed && (
-            <p className="mt-2 text-[12px] font-semibold text-hotpink">
+            <p className="mt-2 text-[12px] font-semibold text-sc-error">
               Couldn&apos;t save the QR. Long-press the code above and choose
               &ldquo;Save image&rdquo; instead.
             </p>

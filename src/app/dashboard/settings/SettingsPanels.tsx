@@ -36,7 +36,7 @@ function Panel({
 
   return (
     <section className="app-panel app-panel-pad">
-      <h2 className="text-[15px] font-semibold text-white">{title}</h2>
+      <h2 className="text-[15px] font-semibold text-sc-text">{title}</h2>
       {help && <p className="app-sub mt-1">{help}</p>}
 
       <div className="mt-4 space-y-3">{children}</div>
@@ -64,7 +64,7 @@ function Panel({
           ) : null}
           {saved ? "Saved" : saveLabel}
         </button>
-        {error && <span className="text-[13px] font-medium text-hotpink">{error}</span>}
+        {error && <span className="text-[13px] font-medium text-sc-error">{error}</span>}
       </div>
     </section>
   );
@@ -136,14 +136,14 @@ export default function SettingsPanels({
           { label: "WhatsApp updates", value: notifyWa, set: setNotifyWa },
         ].map((t) => (
           <label key={t.label} className="flex cursor-pointer items-center justify-between">
-            <span className="text-[14px] text-white/75">{t.label}</span>
+            <span className="text-[14px] text-sc-text-dim">{t.label}</span>
             <button
               type="button"
               role="switch"
               aria-checked={t.value}
               onClick={() => t.set(!t.value)}
               className={`relative h-6 w-11 rounded-full transition-colors ${
-                t.value ? "bg-acid" : "bg-white/15"
+                t.value ? "bg-sc-gold" : "bg-sc-surface-2"
               }`}
             >
               <span
@@ -166,8 +166,8 @@ export default function SettingsPanels({
       </Panel>
 
       {/* Delete */}
-      <section className="app-panel app-panel-pad border-hotpink/25">
-        <h2 className="text-[15px] font-semibold text-white">Delete account</h2>
+      <section className="app-panel app-panel-pad border-sc-error/25">
+        <h2 className="text-[15px] font-semibold text-sc-text">Delete account</h2>
         <p className="app-sub mt-1">
           Removes your card and orders. Any printed card stops
           working immediately. This cannot be undone.
@@ -212,7 +212,7 @@ function DeleteButton({ enabled, onDone }: { enabled: boolean; onDone: () => voi
         {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
         Delete my account
       </button>
-      {error && <span className="text-[13px] font-medium text-hotpink">{error}</span>}
+      {error && <span className="text-[13px] font-medium text-sc-error">{error}</span>}
     </div>
   );
 }

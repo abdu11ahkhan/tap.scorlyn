@@ -274,7 +274,7 @@ function MyCardEditor() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 className="h-6 w-6 animate-spin text-acid" />
+        <Loader2 className="h-6 w-6 animate-spin text-sc-gold" />
       </div>
     );
   }
@@ -282,10 +282,10 @@ function MyCardEditor() {
   return (
     <div className="grid max-w-6xl gap-10 pb-20 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start">
       <div className="min-w-0">
-      <h1 className="text-4xl font-black tracking-tighter text-white">
-        my <span className="text-acid">card.</span>
+      <h1 className="app-h1 text-4xl">
+        my <span className="text-sc-gold">card.</span>
       </h1>
-      <p className="mt-2 font-medium text-white/50">
+      <p className="app-sub mt-2">
         This is what opens when someone taps your NFC card.
       </p>
 
@@ -293,7 +293,7 @@ function MyCardEditor() {
         <Link
           href={`/u/${form.username}`}
           target="_blank"
-          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-acid px-4 py-2 text-sm font-black text-acid transition-colors hover:bg-acid hover:text-ink"
+          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-sc-gold px-4 py-2 text-sm font-black text-sc-gold transition-colors hover:bg-sc-gold hover:text-sc-gold-ink"
         >
           <ExternalLink className="h-4 w-4" />
           /u/{form.username}
@@ -301,16 +301,16 @@ function MyCardEditor() {
       )}
 
       {draftApplied && (
-        <div className="sticker-lg mt-6 rounded-2xl border-2 border-ink bg-acid p-5 text-ink">
-          <p className="font-black">We picked up where you left off.</p>
-          <p className="mt-1 text-sm font-semibold opacity-70">
+        <div className="mt-6 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
+          <p className="font-black text-sc-text">We picked up where you left off.</p>
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             Choose a username below, then publish to put your card live.
           </p>
         </div>
       )}
 
       {error && (
-        <div className="mt-6 rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <div className="mt-6 rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
           {error}
         </div>
       )}
@@ -356,7 +356,7 @@ function MyCardEditor() {
         <button
           type="submit"
           disabled={saving}
-          className="sticker sticker-press flex h-14 w-full items-center justify-center rounded-full border-2 border-ink bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-60"
+          className="app-btn app-btn-primary h-14 w-full text-base"
         >
           {saving ? (
             <Loader2 className="h-5 w-5 animate-spin" />
@@ -383,40 +383,40 @@ function MyCardEditor() {
         {cardId && form.published !== false && (
           <Link
             href="/dashboard/nfc"
-            className="sticker mt-4 flex items-center gap-3 rounded-2xl border-2 border-ink bg-acid p-4 text-ink"
+            className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-4 transition-colors hover:border-sc-gold"
           >
-            <Nfc className="h-6 w-6 shrink-0" />
+            <Nfc className="h-6 w-6 shrink-0 text-sc-gold" />
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-black uppercase tracking-tight">
+              <span className="block text-sm font-black uppercase tracking-tight text-sc-text">
                 put this on a real card
               </span>
-              <span className="mt-0.5 block text-xs font-bold text-ink/60">
+              <span className="mt-0.5 block text-xs font-bold text-sc-text-dim">
                 Blank from Rs.1,600, your design from Rs.2,200 — see both
               </span>
             </span>
-            <ArrowRight className="h-5 w-5 shrink-0" />
+            <ArrowRight className="h-5 w-5 shrink-0 text-sc-gold" />
           </Link>
         )}
 
         {cardId && !saved && (
-          <p className="mt-3 rounded-xl border-2 border-hotpink/30 bg-hotpink/5 px-4 py-3 text-center text-[13px] font-black uppercase tracking-widest text-hotpink">
+          <p className="mt-3 rounded-xl border-2 border-sc-warning/30 bg-sc-warning/5 px-4 py-3 text-center text-[13px] font-black uppercase tracking-widest text-sc-warning">
             unsaved changes
           </p>
         )}
 
-        <div className="mt-3 rounded-xl border-2 border-white/15 bg-white/[0.04] p-4">
+        <div className="mt-3 app-panel app-panel-pad">
           <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
               checked={form.published !== false}
               onChange={(e) => updateForm({ published: e.target.checked })}
-              className="mt-0.5 h-4 w-4 accent-acid"
+              className="mt-0.5 h-4 w-4 accent-sc-gold"
             />
             <span className="min-w-0">
-              <span className="block text-sm font-black text-white">
+              <span className="block text-sm font-black text-sc-text">
                 {form.published !== false ? "Live" : "Draft"}
               </span>
-              <span className="mt-0.5 block text-xs font-semibold text-white/50">
+              <span className="mt-0.5 block text-xs font-semibold text-sc-text-dim">
                 {form.published !== false
                   ? "Anyone with your link or your card can open it."
                   : "Only you can see it. Your link and NFC card will not open for anyone else until you publish."}
@@ -476,7 +476,7 @@ export default function MyCardPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center py-32">
-          <Loader2 className="h-6 w-6 animate-spin text-acid" />
+          <Loader2 className="h-6 w-6 animate-spin text-sc-gold" />
         </div>
       }
     >

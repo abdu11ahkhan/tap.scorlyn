@@ -13,15 +13,15 @@ export const STATUS_LABELS: Record<string, string> = {
 export function statusTone(status: string): string {
   switch (status) {
     case "delivered":
-      return "bg-acid text-ink";
+      return "bg-sc-success/15 text-sc-success";
     case "shipped":
     case "printing":
-      return "bg-violet-pop text-white";
+      return "bg-sc-warning/15 text-sc-warning";
     case "paid":
-      return "bg-white text-ink";
+      return "bg-sc-gold/15 text-sc-gold";
     case "cancelled":
-      return "bg-hotpink text-white";
+      return "bg-sc-error/15 text-sc-error";
     default:
-      return "bg-white/15 text-white/70";
+      return "bg-sc-surface-2 text-sc-text-dim";
   }
 }

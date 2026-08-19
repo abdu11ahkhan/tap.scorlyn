@@ -117,10 +117,10 @@ export default function EmployeeCardEditor({
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
+          <h1 className="text-2xl font-black tracking-tight text-sc-text">
             Editing @{username}
           </h1>
-          <p className="mt-1 text-sm font-medium text-white/45">
+          <p className="mt-1 text-sm font-medium text-sc-text-dim">
             Changes go straight to their live card.
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function EmployeeCardEditor({
           type="button"
           onClick={save}
           disabled={saving}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid px-7 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
+          className="app-btn app-btn-primary px-7"
         >
           {saving ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -180,7 +180,7 @@ export default function EmployeeCardEditor({
           ) : null}
           {saved ? "saved" : "save changes"}
         </button>
-        <Link href="/dashboard/team" className="text-sm font-bold text-white/50">
+        <Link href="/dashboard/team" className="text-sm font-bold text-sc-text-dim">
           back to team
         </Link>
       </div>

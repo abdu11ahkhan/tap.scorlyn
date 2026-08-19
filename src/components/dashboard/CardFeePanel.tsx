@@ -160,7 +160,7 @@ export default function CardFeePanel({
             return (
               <div
                 key={m.id}
-                className="flex items-center justify-between gap-3 rounded-xl border-2 border-white/12 px-3.5 py-2.5"
+                className="flex items-center justify-between gap-3 rounded-xl border-2 border-sc-border-soft px-3.5 py-2.5"
               >
                 <div className="min-w-0">
                   <p className="text-xs font-black uppercase tracking-tight text-sc-text-dim">

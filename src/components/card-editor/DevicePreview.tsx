@@ -71,7 +71,7 @@ export default function DevicePreview({
     <div>
       {/* Toggle — only worth showing when there's something to toggle to. */}
       {tabs.length > 1 && (
-        <div className="mx-auto mb-4 flex w-fit gap-1 rounded-full border-2 border-white/15 bg-white/[0.04] p-1">
+        <div className="mx-auto mb-4 flex w-fit gap-1 rounded-full border-2 border-sc-border bg-sc-surface-2 p-1">
           {tabs.map(({ key, label, Icon }) => {
             const isActive = key === "card" ? showingCard : !showingCard;
             return (
@@ -81,7 +81,7 @@ export default function DevicePreview({
                 onClick={() => setTab(key)}
                 aria-pressed={isActive}
                 className={`flex min-h-11 items-center gap-2 rounded-full px-4 text-xs font-black lowercase transition-colors ${
-                  isActive ? "bg-acid text-ink" : "text-white/50 hover:text-white"
+                  isActive ? "bg-sc-gold text-sc-gold-ink" : "text-sc-text-dim hover:text-sc-text"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -93,7 +93,7 @@ export default function DevicePreview({
       )}
 
       {showingCard ? (
-        <div className="rounded-3xl border-2 border-white/12 bg-white/[0.03] p-4 sm:p-6">
+        <div className="rounded-3xl border-2 border-sc-border-soft bg-sc-surface-2 p-4 sm:p-6">
           {cardView}
         </div>
       ) : (
@@ -114,7 +114,7 @@ export default function DevicePreview({
               style={{ width: OUTER * fit, height: OUTER_H * fit }}
             >
               <div
-                className="rounded-[2.2rem] border border-white/12 bg-white/[0.04] p-3"
+                className="rounded-[2.2rem] border border-sc-border-soft bg-sc-surface-2 p-3"
                 style={{
                   width: OUTER,
                   transform: `scale(${fit})`,
@@ -133,7 +133,7 @@ export default function DevicePreview({
             </div>
           </div>
 
-          <p className="mt-3 text-center text-[11px] font-black uppercase tracking-widest text-white/35">
+          <p className="mt-3 text-center text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
             live preview · mobile
           </p>
         </>

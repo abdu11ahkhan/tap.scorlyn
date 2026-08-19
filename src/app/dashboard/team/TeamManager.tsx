@@ -162,16 +162,16 @@ export default function TeamManager({
     <div className="space-y-6">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-white">Team</h1>
-          <p className="mt-1 text-sm font-medium text-white/45">
+          <h1 className="text-2xl font-black tracking-tight text-sc-text">Team</h1>
+          <p className="mt-1 text-sm font-medium text-sc-text-dim">
             {companyName || "Your company"}&apos;s cards live at{" "}
-            <span className="font-mono text-white/70">/u/{companySlug}-…</span>
+            <span className="font-mono text-sc-text-dim">/u/{companySlug}-…</span>
           </p>
         </div>
         <button
           type="button"
           onClick={() => setShowAdd((v) => !v)}
-          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold"
         >
           <Plus className="h-4 w-4" />
           add employee
@@ -187,12 +187,12 @@ export default function TeamManager({
       {/* The one moment this password is visible. Closing it does not delete
           the account — only the on-screen copy of the credentials goes away. */}
       {fresh && (
-        <div className="app-panel app-panel-pad border-acid/40">
-          <p className="text-sm font-black text-acid">Account created — copy this now.</p>
-          <p className="mt-1 text-xs font-semibold text-white/50">
+        <div className="app-panel app-panel-pad border-sc-gold/40">
+          <p className="text-sm font-black text-sc-gold">Account created — copy this now.</p>
+          <p className="mt-1 text-xs font-semibold text-sc-text-dim">
             It won&apos;t be shown again. Send it to them directly.
           </p>
-          <div className="mt-3 space-y-2 font-mono text-sm text-white">
+          <div className="mt-3 space-y-2 font-mono text-sm text-sc-text">
             <CredentialLine label="email" value={fresh.email} />
             <CredentialLine label="password" value={fresh.password} />
             <CredentialLine label="card" value={"/u/" + fresh.username} />
@@ -200,7 +200,7 @@ export default function TeamManager({
           <button
             type="button"
             onClick={() => setFresh(null)}
-            className="mt-4 text-xs font-black uppercase tracking-widest text-white/40"
+            className="mt-4 text-xs font-black uppercase tracking-widest text-sc-text-dimmer"
           >
             done
           </button>
@@ -211,7 +211,7 @@ export default function TeamManager({
         <form onSubmit={addEmployee} className="app-panel app-panel-pad space-y-3">
           {/* Type it, or read it off their card — either way lands in the
               same fields below, editable either way. */}
-          <div className="inline-flex rounded-full border-2 border-white/15 bg-white/[0.03] p-1">
+          <div className="inline-flex rounded-full border-2 border-sc-border bg-sc-surface-2 p-1">
             {(
               [
                 { id: "type", label: "type their details", icon: Keyboard },
@@ -224,7 +224,7 @@ export default function TeamManager({
                 onClick={() => setMode(opt.id)}
                 className={
                   "flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black uppercase tracking-tight transition-colors " +
-                  (mode === opt.id ? "bg-acid text-ink" : "text-white/50")
+                  (mode === opt.id ? "bg-sc-gold text-sc-gold-ink" : "text-sc-text-dim")
                 }
               >
                 <opt.icon className="h-3.5 w-3.5" />
@@ -234,7 +234,7 @@ export default function TeamManager({
           </div>
 
           {mode === "scan" && (
-            <label className="flex h-24 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/20 bg-white/[0.02] text-sm font-bold text-white/50 transition-colors hover:border-acid/50">
+            <label className="flex h-24 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-sc-border bg-sc-surface-2 text-sm font-bold text-sc-text-dim transition-colors hover:border-sc-gold/50">
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
@@ -259,7 +259,7 @@ export default function TeamManager({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label htmlFor="emp-name" className="text-xs font-bold uppercase tracking-wide text-white/50">
+              <label htmlFor="emp-name" className="text-xs font-bold uppercase tracking-wide text-sc-text-dim">
                 full name
               </label>
               <input
@@ -272,7 +272,7 @@ export default function TeamManager({
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="emp-email" className="text-xs font-bold uppercase tracking-wide text-white/50">
+              <label htmlFor="emp-email" className="text-xs font-bold uppercase tracking-wide text-sc-text-dim">
                 email
               </label>
               <input
@@ -286,8 +286,8 @@ export default function TeamManager({
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="emp-headline" className="text-xs font-bold uppercase tracking-wide text-white/50">
-                headline / title <span className="normal-case text-white/30">(optional)</span>
+              <label htmlFor="emp-headline" className="text-xs font-bold uppercase tracking-wide text-sc-text-dim">
+                headline / title <span className="normal-case text-sc-text-dimmer">(optional)</span>
               </label>
               <input
                 id="emp-headline"
@@ -298,8 +298,8 @@ export default function TeamManager({
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="emp-phone" className="text-xs font-bold uppercase tracking-wide text-white/50">
-                phone <span className="normal-case text-white/30">(optional)</span>
+              <label htmlFor="emp-phone" className="text-xs font-bold uppercase tracking-wide text-sc-text-dim">
+                phone <span className="normal-case text-sc-text-dimmer">(optional)</span>
               </label>
               <input
                 id="emp-phone"
@@ -311,9 +311,9 @@ export default function TeamManager({
             </div>
           </div>
           {fullName.trim() && (
-            <p className="text-xs font-semibold text-white/40">
+            <p className="text-xs font-semibold text-sc-text-dimmer">
               Card address:{" "}
-              <span className="font-mono text-white/60">
+              <span className="font-mono text-sc-text/60">
                 /u/{companySlug}-{fullName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "…"}
               </span>
             </p>
@@ -337,7 +337,7 @@ export default function TeamManager({
 
       {employees.length === 0 && !showAdd ? (
         <div className="app-panel app-panel-pad text-center">
-          <p className="text-[17px] font-black text-white">Your team is ready to grow.</p>
+          <p className="text-[17px] font-black text-sc-text">Your team is ready to grow.</p>
           <p className="app-sub mx-auto mt-1 max-w-sm">
             Add your first employee to create their digital business card.
           </p>
@@ -348,7 +348,7 @@ export default function TeamManager({
                 setMode("type");
                 setShowAdd(true);
               }}
-              className="inline-flex h-10 items-center gap-2 rounded-full bg-acid px-4 text-xs font-black uppercase tracking-tight text-ink"
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-sc-gold px-4 text-xs font-black uppercase tracking-tight text-sc-gold-ink"
             >
               <Plus className="h-4 w-4" />
               add employee
@@ -359,7 +359,7 @@ export default function TeamManager({
                 setMode("scan");
                 setShowAdd(true);
               }}
-              className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+              className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold"
             >
               <Camera className="h-4 w-4" />
               scan business card
@@ -371,10 +371,10 @@ export default function TeamManager({
           {employees.map((card) => (
             <div key={card.id} className="app-panel flex flex-wrap items-center gap-3 p-4">
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-black text-white">
+                <p className="truncate text-sm font-black text-sc-text">
                   {card.full_name || "Untitled"}
                 </p>
-                <p className="truncate text-xs font-semibold text-white/40">
+                <p className="truncate text-xs font-semibold text-sc-text-dimmer">
                   /u/{card.username}
                   {card.email ? " · " + card.email : ""}
                 </p>
@@ -386,8 +386,8 @@ export default function TeamManager({
                   (card.owner_suspended
                     ? "bg-rose-400/15 text-rose-300"
                     : card.published
-                      ? "bg-acid/15 text-acid"
-                      : "bg-white/10 text-white/50")
+                      ? "bg-sc-gold/15 text-sc-gold"
+                      : "bg-sc-surface-2 text-sc-text-dim")
                 }
               >
                 {card.owner_suspended ? "suspended" : card.published ? "live" : "draft"}
@@ -397,7 +397,7 @@ export default function TeamManager({
                 <Link
                   href={"/dashboard/team/" + card.id + "/edit"}
                   title="Edit card"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
                 >
                   <Pencil className="h-4 w-4" />
                 </Link>
@@ -406,7 +406,7 @@ export default function TeamManager({
                   target="_blank"
                   rel="noopener noreferrer"
                   title="View card"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </a>
@@ -415,7 +415,7 @@ export default function TeamManager({
                   onClick={() => toggleSuspend(card)}
                   disabled={busyId === card.id}
                   title={card.owner_suspended ? "Reactivate" : "Suspend"}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/[0.06] hover:text-white disabled:opacity-50"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text disabled:opacity-50"
                 >
                   {busyId === card.id ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -430,7 +430,7 @@ export default function TeamManager({
                   onClick={() => remove(card)}
                   disabled={busyId === card.id}
                   title="Remove"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-rose-400/10 hover:text-rose-300 disabled:opacity-50"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-rose-400/10 hover:text-rose-300 disabled:opacity-50"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -460,16 +460,16 @@ function CredentialLine({ label, value }: { label: string; value: string }) {
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }}
-      className="flex w-full items-center justify-between gap-3 rounded-lg bg-black/30 px-3 py-2 text-left transition-colors hover:bg-black/45"
+      className="flex w-full items-center justify-between gap-3 rounded-lg bg-sc-surface-2 px-3 py-2 text-left transition-colors hover:bg-sc-surface"
     >
       <span className="truncate">
-        <span className="text-white/40">{label}: </span>
+        <span className="text-sc-text-dimmer">{label}: </span>
         {value}
       </span>
       {copied ? (
-        <Check className="h-3.5 w-3.5 shrink-0 text-acid" />
+        <Check className="h-3.5 w-3.5 shrink-0 text-sc-gold" />
       ) : (
-        <Copy className="h-3.5 w-3.5 shrink-0 text-white/30" />
+        <Copy className="h-3.5 w-3.5 shrink-0 text-sc-text-dimmer" />
       )}
     </button>
   );

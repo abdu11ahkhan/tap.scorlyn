@@ -87,7 +87,7 @@ export default function CardDesigner({
         <button
           type="button"
           onClick={() => setFace((f) => (f === "front" ? "back" : "front"))}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-white/20 px-5 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-sc-border px-5 text-xs font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
         >
           <RotateCw className="h-3.5 w-3.5" />
           {face === "front" ? "see back" : "see front"}
@@ -96,7 +96,7 @@ export default function CardDesigner({
 
       {/* Finishes */}
       <div className="mt-6">
-        <p className="mb-3 text-center text-[11px] font-black uppercase tracking-[0.2em] text-white/35">
+        <p className="mb-3 text-center text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
           card finish
         </p>
         <div className={`flex flex-wrap justify-center gap-2 ${compact ? "" : "px-2"}`}>
@@ -110,8 +110,8 @@ export default function CardDesigner({
                 onClick={() => setFinish(option.id)}
                 className={`min-h-11 rounded-full border-2 px-4 text-xs font-black lowercase transition-colors ${
                   isActive
-                    ? "border-ink bg-acid text-ink"
-                    : "border-white/20 text-white/60 hover:border-white/45 hover:text-white"
+                    ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+                    : "border-sc-border text-sc-text-dim hover:border-sc-border-soft hover:text-sc-text"
                 }`}
               >
                 {option.name}
@@ -119,14 +119,14 @@ export default function CardDesigner({
             );
           })}
         </div>
-        <p className="mt-3 text-center text-xs font-medium text-white/40">
+        <p className="mt-3 text-center text-xs font-medium text-sc-text-dimmer">
           {CARD_FINISHES.find((f) => f.id === finish)?.blurb}
         </p>
       </div>
 
       {/* What's printed */}
-      <div className="mt-7 border-t-2 border-white/10 pt-6">
-        <p className="mb-3 text-center text-[11px] font-black uppercase tracking-[0.2em] text-white/35">
+      <div className="mt-7 border-t-2 border-sc-border-soft pt-6">
+        <p className="mb-3 text-center text-[11px] font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
           show on card
         </p>
         <div className="flex flex-wrap justify-center gap-2">
@@ -140,8 +140,8 @@ export default function CardDesigner({
                 aria-pressed={on}
                 className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 px-4 text-xs font-black lowercase transition-colors ${
                   on
-                    ? "border-acid/70 bg-acid/15 text-acid"
-                    : "border-white/15 text-white/40 hover:border-white/35 hover:text-white/70"
+                    ? "border-sc-gold/70 bg-sc-gold/15 text-sc-gold"
+                    : "border-sc-border text-sc-text-dimmer hover:border-sc-border-soft hover:text-sc-text-dim"
                 }`}
               >
                 <Check
@@ -154,13 +154,13 @@ export default function CardDesigner({
             );
           })}
         </div>
-        <p className="mt-3 text-center text-xs font-medium text-white/35">
+        <p className="mt-3 text-center text-xs font-medium text-sc-text-dimmer">
           Everything stays on your profile — this only changes what gets printed.
         </p>
       </div>
 
       {!compact && (
-        <p className="mt-6 text-center text-[11px] font-semibold leading-relaxed text-white/30">
+        <p className="mt-6 text-center text-[11px] font-semibold leading-relaxed text-sc-text-dimmer">
           Printed at 85.6 × 54 mm — standard card size. The QR is a fallback for
           phones that can&apos;t tap; both point at the same profile.
         </p>

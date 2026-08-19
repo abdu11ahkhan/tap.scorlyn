@@ -130,21 +130,21 @@ export default function UsernameField({
 
   const border =
     state.kind === "taken" || state.kind === "invalid"
-      ? "border-rose-400 focus:border-rose-500"
+      ? "border-sc-error focus:border-sc-error"
       : state.kind === "free"
-        ? "border-emerald-400 focus:border-emerald-500"
+        ? "border-sc-success focus:border-sc-success"
         : "";
 
   if (locked) {
     return (
       <div className="space-y-2">
-        <div className="flex items-center gap-2 rounded-xl border-2 border-white/15 bg-white/[0.04] px-3.5 py-2.5">
-          <Lock className="h-4 w-4 shrink-0 text-white/40" />
-          <span className="min-w-0 flex-1 truncate text-sm font-semibold text-white">
+        <div className="flex items-center gap-2 rounded-xl border-2 border-sc-border bg-sc-surface-2 px-3.5 py-2.5">
+          <Lock className="h-4 w-4 shrink-0 text-sc-text-dimmer" />
+          <span className="min-w-0 flex-1 truncate text-sm font-semibold text-sc-text">
             /u/{handle}
           </span>
         </div>
-        <p className="text-xs text-white/45">
+        <p className="text-xs text-sc-text-dim">
           Your card address is permanent — it is printed on your NFC card and
           saved in the contacts of everyone you have tapped.
         </p>
@@ -169,30 +169,30 @@ export default function UsernameField({
         />
         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
           {state.kind === "checking" && (
-            <Loader2 className="h-4 w-4 animate-spin text-white/40" />
+            <Loader2 className="h-4 w-4 animate-spin text-sc-text-dimmer" />
           )}
-          {state.kind === "free" && <Check className="h-4 w-4 text-emerald-400" />}
+          {state.kind === "free" && <Check className="h-4 w-4 text-sc-success" />}
           {(state.kind === "taken" || state.kind === "invalid") && (
-            <X className="h-4 w-4 text-rose-300" />
+            <X className="h-4 w-4 text-sc-error" />
           )}
         </span>
       </div>
 
       <p id="username-status" className="text-xs">
         {state.kind === "taken" ? (
-          <span className="font-semibold text-rose-300">
+          <span className="font-semibold text-sc-error">
             “{handle}” is already taken.
           </span>
         ) : state.kind === "invalid" ? (
-          <span className="font-semibold text-rose-300">{state.message}</span>
+          <span className="font-semibold text-sc-error">{state.message}</span>
         ) : state.kind === "free" ? (
-          <span className="font-semibold text-emerald-300">
+          <span className="font-semibold text-sc-success">
             {isOwnHandle
               ? `This card already lives at /u/${handle}`
               : `Available. Your card will live at /u/${handle}`}
           </span>
         ) : (
-          <span className="text-white/45">
+          <span className="text-sc-text-dim">
             Your card will live at /u/{handle || "username"}
           </span>
         )}
@@ -200,13 +200,13 @@ export default function UsernameField({
 
       {state.kind === "taken" && shownSuggestions.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs text-white/45">Available:</span>
+          <span className="text-xs text-sc-text-dim">Available:</span>
           {shownSuggestions.map((suggestion) => (
             <button
               key={suggestion}
               type="button"
               onClick={() => onChange(suggestion)}
-              className="rounded-full border border-emerald-400/50 bg-emerald-400/10 px-2.5 py-1 text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-400/20"
+              className="rounded-full border border-sc-success/50 bg-sc-success/10 px-2.5 py-1 text-xs font-semibold text-sc-success transition-colors hover:bg-sc-success/20"
             >
               {suggestion}
             </button>

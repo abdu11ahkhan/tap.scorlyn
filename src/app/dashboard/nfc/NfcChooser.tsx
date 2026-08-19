@@ -37,10 +37,7 @@ export default function NfcChooser({
 
   const money = (n: number) => `Rs.${n.toLocaleString()}`;
 
-  const panel =
-    "flex flex-col rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5 sm:p-6";
-  const cta =
-    "sticker sticker-press mt-5 flex h-13 items-center justify-center gap-2 rounded-full border-2 border-ink text-sm font-black uppercase tracking-tight";
+  const panel = "app-panel flex flex-col p-5 sm:p-6";
 
   return (
     <div className="space-y-6">
@@ -49,23 +46,23 @@ export default function NfcChooser({
         {blank && (
           <section className={panel}>
             <div className="flex items-baseline justify-between gap-3">
-              <h2 className="text-xl font-black text-white">Blank card</h2>
-              <p className="shrink-0 text-xl font-black text-acid">{money(blank.price_pkr)}</p>
+              <h2 className="text-xl font-black text-sc-text">Blank card</h2>
+              <p className="shrink-0 text-xl font-black text-sc-gold">{money(blank.price_pkr)}</p>
             </div>
-            <p className="mt-1.5 text-sm font-semibold text-white/50">
+            <p className="mt-1.5 text-sm font-semibold text-sc-text-dim">
               A completely blank card. Your link lives on the chip inside, so
               a tap opens your page — nothing is printed on either face.
             </p>
 
-            <div className="mt-5 flex justify-center rounded-xl bg-black/30 p-5">
+            <div className="mt-5 flex justify-center rounded-xl bg-sc-surface-2 p-5">
               <BlankCardArt width={300} />
             </div>
 
-            <ul className="mt-5 space-y-2 text-sm font-semibold text-white/60">
+            <ul className="mt-5 space-y-2 text-sm font-semibold text-sc-text-dim">
               {["Tap opens your page", "Nothing printed — blank on both faces", "Posted anywhere in Pakistan"].map(
                 (line) => (
                   <li key={line} className="flex gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-acid" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-sc-gold" />
                     {line}
                   </li>
                 )
@@ -74,7 +71,7 @@ export default function NfcChooser({
 
             <Link
               href={`/dashboard/orders?plan=${blank.id}`}
-              className={`${cta} bg-white text-ink`}
+              className="app-btn app-btn-secondary mt-5"
             >
               order blank
               <ArrowRight className="h-4 w-4" />
@@ -84,17 +81,17 @@ export default function NfcChooser({
 
         {/* ---- custom ---- */}
         {custom && (
-          <section className={`${panel} border-acid/40`}>
+          <section className={`${panel} border-sc-gold/40`}>
             <div className="flex items-baseline justify-between gap-3">
-              <h2 className="text-xl font-black text-white">Your design</h2>
-              <p className="shrink-0 text-xl font-black text-acid">{money(custom.price_pkr)}</p>
+              <h2 className="text-xl font-black text-sc-text">Your design</h2>
+              <p className="shrink-0 text-xl font-black text-sc-gold">{money(custom.price_pkr)}</p>
             </div>
-            <p className="mt-1.5 text-sm font-semibold text-white/50">
+            <p className="mt-1.5 text-sm font-semibold text-sc-text-dim">
               Your name, your details and your colour printed on the card
               itself. Pick a finish and it goes to print exactly like this.
             </p>
 
-            <div className="mt-5 flex justify-center rounded-xl bg-black/30 p-5">
+            <div className="mt-5 flex justify-center rounded-xl bg-sc-surface-2 p-5">
               <NfcCardArt
                 card={card}
                 finish={finish}
@@ -108,7 +105,7 @@ export default function NfcChooser({
             {/* The finish is the whole reason to pay the difference, so it is
                 chosen here rather than hidden behind the order form. */}
             <div className="mt-4">
-              <p className="text-[11px] font-black uppercase tracking-widest text-white/40">
+              <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
                 finish
               </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
@@ -119,8 +116,8 @@ export default function NfcChooser({
                     onClick={() => setFinish(option.id)}
                     className={`rounded-full border-2 px-3 py-1.5 text-xs font-black lowercase transition-colors ${
                       option.id === finish
-                        ? "border-acid bg-acid text-ink"
-                        : "border-white/15 text-white/60 hover:text-white"
+                        ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+                        : "border-sc-border text-sc-text-dim hover:text-sc-text"
                     }`}
                   >
                     {option.name}
@@ -131,7 +128,7 @@ export default function NfcChooser({
 
             <Link
               href={`/dashboard/orders?plan=${custom.id}&finish=${finish}`}
-              className={`${cta} bg-acid text-ink`}
+              className="app-btn app-btn-primary mt-5"
             >
               order this design
               <ArrowRight className="h-4 w-4" />
@@ -140,7 +137,7 @@ export default function NfcChooser({
         )}
       </div>
 
-      <p className="text-center text-sm font-semibold text-white/40">
+      <p className="text-center text-sm font-semibold text-sc-text-dimmer">
         Both open the same page you already made. The card is how you hand it
         over without spelling out a link.
       </p>

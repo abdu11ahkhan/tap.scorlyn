@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import type { PaymentMethod } from "@/lib/card";
 
 const FIELD =
-  "border-2 border-white/15 bg-white/[0.04] font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:ring-0";
+  "border-2 border-sc-border bg-sc-surface-2 font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:ring-0";
 
 const PAYMENT_KINDS: { id: PaymentMethod["kind"]; label: string }[] = [
   { id: "bank", label: "Bank" },
@@ -35,7 +35,7 @@ export default function PaymentFields({
     <section className="space-y-3">
       <div>
         <Label>Payment details</Label>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-sc-text-dimmer">
           For getting paid directly. Off by default.
         </p>
       </div>
@@ -46,8 +46,8 @@ export default function PaymentFields({
         aria-pressed={enabled}
         className={`rounded-full border-2 px-5 py-2.5 text-sm font-black lowercase transition-colors ${
           enabled
-            ? "border-ink bg-acid text-ink"
-            : "border-white/20 text-white/55 hover:text-white"
+            ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+            : "border-sc-border text-sc-text-dim hover:text-sc-text"
         }`}
       >
         show payment details {enabled ? "on" : "off"}
@@ -56,9 +56,9 @@ export default function PaymentFields({
       {enabled && (
         <>
           {/* Worth one clear sentence — this is money, on a public URL. */}
-          <div className="flex items-start gap-3 rounded-2xl border-2 border-hotpink/40 bg-hotpink/10 p-4">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-hotpink" />
-            <p className="text-sm font-semibold leading-relaxed text-white/70">
+          <div className="flex items-start gap-3 rounded-2xl border-2 border-sc-warning/40 bg-sc-warning/10 p-4">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-sc-warning" />
+            <p className="text-sm font-semibold leading-relaxed text-sc-text-dim">
               Your card is a public page — anyone with the link sees these
               details, and anyone can screenshot them. Don&apos;t put anything
               here you wouldn&apos;t print on a poster.
@@ -74,7 +74,7 @@ export default function PaymentFields({
             return (
               <div
                 key={i}
-                className="min-w-0 space-y-2 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-3"
+                className="min-w-0 space-y-2 rounded-2xl border-2 border-sc-border-soft bg-sc-surface-2 p-3"
               >
                 <div className="flex min-w-0 gap-2">
                   <select
@@ -82,7 +82,7 @@ export default function PaymentFields({
                     onChange={(e) =>
                       set({ kind: e.target.value as PaymentMethod["kind"] })
                     }
-                    className="h-11 rounded-lg border-2 border-white/15 bg-ink px-2 text-base font-bold text-white sm:h-10 sm:w-36 sm:text-sm"
+                    className="h-11 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-2 text-base font-bold text-sc-text sm:h-10 sm:w-36 sm:text-sm"
                   >
                     {PAYMENT_KINDS.map((k) => (
                       <option key={k.id} value={k.id}>
@@ -101,7 +101,7 @@ export default function PaymentFields({
                     onClick={() =>
                       onChange({ payment_methods: methods.filter((_, x) => x !== i) })
                     }
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:text-red-400 sm:h-9 sm:w-9"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 sm:h-9 sm:w-9"
                     aria-label="Remove payment method"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -139,7 +139,7 @@ export default function PaymentFields({
                 payment_methods: [...methods, { label: "", kind: "bank" }],
               })
             }
-            className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2.5 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
           >
             <Plus className="h-4 w-4" />
             add payment method
