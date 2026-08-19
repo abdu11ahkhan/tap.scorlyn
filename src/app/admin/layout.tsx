@@ -48,15 +48,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   if (!profile?.is_admin) {
     return (
-      <div className="grain flex min-h-screen flex-col items-center justify-center gap-5 bg-ink px-6 text-center text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-sc-bg px-6 text-center text-sc-text">
         <h1 className="text-4xl font-black tracking-tighter">not your door.</h1>
-        <p className="max-w-sm font-medium text-white/50">
+        <p className="max-w-sm font-medium text-sc-text-dim">
           This area is for ScorlynTap staff. If you think that&apos;s wrong, ask an
-          admin to flip <code className="text-acid">is_admin</code> on your account.
+          admin to flip <code className="text-sc-gold">is_admin</code> on your account.
         </p>
         <Link
           href="/dashboard"
-          className="sticker sticker-press rounded-full border-2 border-ink bg-acid px-7 py-3.5 font-black uppercase tracking-tight text-ink"
+          className="app-btn app-btn-primary rounded-full px-7"
         >
           back to dashboard
         </Link>
@@ -92,16 +92,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   ];
 
   return (
-    <div className="admin-shell grain min-h-screen">
+    <div className="admin-shell min-h-screen">
       {/* Top bar: thin, dark, always there — the way a console anchors itself. */}
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-white/8 bg-ink/90 px-4 backdrop-blur-xl">
-        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-acid">
-          <ShieldCheck className="h-4 w-4 text-ink" />
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-sc-border-soft bg-sc-bg/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-sc-gold">
+          <ShieldCheck className="h-4 w-4 text-sc-gold-ink" />
         </span>
         <p className="text-[14px] font-semibold">ScorlynTap admin</p>
 
         <div className="ml-auto flex items-center gap-3">
-          <p className="hidden text-[13px] text-white/45 sm:block">
+          <p className="hidden text-[13px] text-sc-text-dim sm:block">
             {profile.full_name || user.email}
           </p>
           <AreaSwitch />
@@ -112,7 +112,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Sidebar. Hidden on small screens, where it becomes a scrolling
             strip under the header instead — a 200px rail on a phone leaves
             nothing for the tables it exists to navigate. */}
-        <aside className="hidden w-[220px] shrink-0 border-r border-white/8 bg-white/[0.015] px-3 py-4 lg:block">
+        <aside className="hidden w-[220px] shrink-0 border-r border-sc-border-soft bg-sc-surface px-3 py-4 lg:block">
           <nav className="space-y-0.5">
             {nav.map(({ href, label, icon: Icon, badge }) => (
               <Link
@@ -124,7 +124,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <span className="min-w-0 flex-1 truncate">{label}</span>
                 {Boolean(badge) && (
                   <span
-                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-hotpink px-1 text-[11px] font-black text-white"
+                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sc-error px-1 text-[11px] font-black text-white"
                     title={`${badge} order${badge === 1 ? "" : "s"} you haven't opened`}
                   >
                     {badge}
@@ -137,7 +137,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
         {/* Mobile nav */}
         <div className="min-w-0 flex-1">
-          <div className="flex gap-1 overflow-x-auto border-b border-white/8 px-3 py-2 lg:hidden">
+          <div className="flex gap-1 overflow-x-auto border-b border-sc-border-soft px-3 py-2 lg:hidden">
             {nav.map(({ href, label, badge }) => (
               <Link
                 key={href}
@@ -146,7 +146,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               >
                 {label}
                 {Boolean(badge) && (
-                  <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-hotpink px-1 text-[10px] font-black text-white">
+                  <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-sc-error px-1 text-[10px] font-black text-white">
                     {badge}
                   </span>
                 )}

@@ -73,12 +73,12 @@ export default function HouseStyleSection({
   return (
     <div className="app-panel app-panel-pad space-y-3">
       <div>
-        <p className="text-sm font-black text-white">Company card</p>
-        <p className="mt-1 text-xs font-semibold text-white/50">
+        <p className="text-sm font-black text-sc-text">Company card</p>
+        <p className="mt-1 text-xs font-semibold text-sc-text-dim">
           {houseTemplate ? (
             <>
               New employee cards start as{" "}
-              <span className="font-black text-white/80">{houseTemplate}</span>, coloured from
+              <span className="font-black text-sc-text">{houseTemplate}</span>, coloured from
               your card. Upload a new photo any time to change it — only affects employees
               added afterward.
             </>
@@ -90,22 +90,22 @@ export default function HouseStyleSection({
 
       {houseAccentColor && !preview && (
         <span
-          className="inline-block h-6 w-6 rounded-full border-2 border-white/20"
+          className="inline-block h-6 w-6 rounded-full border-2 border-sc-border"
           style={{ background: houseAccentColor }}
         />
       )}
 
       {preview ? (
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-acid/30 bg-acid/5 p-3">
-          <span className="h-8 w-8 shrink-0 rounded-full border-2 border-white/20" style={{ background: preview.accent }} />
-          <p className="min-w-0 flex-1 text-xs font-semibold text-white/60">
-            Looks like <span className="font-black text-white">{preview.template}</span>
+        <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-sc-gold/30 bg-sc-gold/5 p-3">
+          <span className="h-8 w-8 shrink-0 rounded-full border-2 border-sc-border" style={{ background: preview.accent }} />
+          <p className="min-w-0 flex-1 text-xs font-semibold text-sc-text-dim">
+            Looks like <span className="font-black text-sc-text">{preview.template}</span>
           </p>
           <button
             type="button"
             onClick={confirm}
             disabled={busy}
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-acid px-4 text-xs font-black uppercase tracking-tight text-ink disabled:opacity-60"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-sc-gold px-4 text-xs font-black uppercase tracking-tight text-sc-gold-ink disabled:opacity-60"
           >
             {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
             use this
@@ -113,13 +113,13 @@ export default function HouseStyleSection({
           <button
             type="button"
             onClick={() => setPreview(null)}
-            className="text-xs font-black uppercase tracking-widest text-white/40"
+            className="text-xs font-black uppercase tracking-widest text-sc-text-dimmer"
           >
             cancel
           </button>
         </div>
       ) : (
-        <label className="flex h-12 w-fit cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white/70 transition-colors hover:border-acid hover:text-acid">
+        <label className="flex h-12 w-fit cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold">
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"

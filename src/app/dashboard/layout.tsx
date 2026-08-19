@@ -84,18 +84,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (isEditor) return <>{children}</>;
 
   return (
-    <div className="flex min-h-screen bg-ink font-sans text-white selection:bg-acid selection:text-ink">
+    <div className="flex min-h-screen bg-sc-bg font-sans text-sc-text selection:bg-sc-gold selection:text-sc-gold-ink">
       {/* Sidebar */}
-      <aside className="z-20 hidden w-72 flex-col border-r border-white/8 bg-ink md:flex">
+      <aside className="z-20 hidden w-72 flex-col border-r border-sc-border-soft bg-sc-bg md:flex">
         <div className="flex h-24 items-center px-7">
           <Link href="/" className="group flex items-center gap-2.5">
             <BrandMark size={36} className="transition-transform group-hover:rotate-12" />
-            <span className="text-xl font-black tracking-tighter text-white">ScorlynTap</span>
+            <span className="text-xl font-black tracking-tighter text-sc-text">ScorlynTap</span>
           </Link>
         </div>
 
         <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-3">
-          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/25">
+          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-sc-text-dimmer">
             Menu
           </p>
           {links.map((link) => {
@@ -115,11 +115,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors",
                   isActive
-                    ? "bg-white/[0.07] text-white"
-                    : "text-white/50 hover:bg-white/[0.04] hover:text-white/90"
+                    ? "bg-sc-surface-2 text-sc-text"
+                    : "text-sc-text-dim hover:bg-sc-surface hover:text-sc-text"
                 )}
               >
-                <Icon className={cn("h-[17px] w-[17px]", isActive ? "text-acid" : "")} />
+                <Icon className={cn("h-[17px] w-[17px]", isActive ? "text-sc-gold" : "")} />
                 {link.name}
               </Link>
             );
@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="p-4">
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium text-white/45 transition-colors hover:bg-white/[0.04] hover:text-white/90"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium text-sc-text-dim transition-colors hover:bg-sc-surface hover:text-sc-text"
           >
             <LogOut className="h-[18px] w-[18px]" />
             Log out
@@ -138,16 +138,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Main */}
-      <main className="grain relative flex h-screen flex-1 flex-col overflow-hidden">
-        <div className="float-orb pointer-events-none absolute -left-32 top-0 h-[520px] w-[520px] rounded-full bg-acid/[0.06] blur-[150px]" />
-        <div
-          className="float-orb pointer-events-none absolute -right-32 bottom-0 h-[460px] w-[460px] rounded-full bg-hotpink/[0.05] blur-[150px]"
-          style={{ ["--d" as string]: "4s" }}
-        />
+      <main className="relative flex h-screen flex-1 flex-col overflow-hidden">
 
-        <header className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/8 px-6 pt-[env(safe-area-inset-top)] md:px-10">
+        <header className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-sc-border-soft px-6 pt-[env(safe-area-inset-top)] md:px-10">
           <div className="flex min-w-0 items-center gap-3">
-            <h2 className="truncate text-[13px] font-medium text-white/45">
+            <h2 className="truncate text-[13px] font-medium text-sc-text-dim">
               {links.find((l) => l.href === pathname)?.name ?? "dashboard"}
             </h2>
             {/* Blank until the fetch above lands, same instant as everything
@@ -157,8 +152,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={cn(
                   "hidden shrink-0 items-center rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight sm:inline-flex",
                   account.type === "corporate"
-                    ? "bg-acid/15 text-acid"
-                    : "bg-white/10 text-white/50"
+                    ? "bg-sc-gold/15 text-sc-gold"
+                    : "bg-sc-surface-2 text-sc-text-dim"
                 )}
               >
                 {account.type === "corporate"
@@ -173,7 +168,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Sidebar is hidden on mobile — keep a way out. */}
           <button
             onClick={handleLogout}
-            className="rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black lowercase text-white/60 md:hidden"
+            className="rounded-full border-2 border-sc-border px-4 py-2 text-xs font-black lowercase text-sc-text-dim md:hidden"
           >
             Log out
           </button>
@@ -181,7 +176,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* The sidebar is desktop-only, so mobile gets a scrollable strip
             instead of no navigation at all. */}
-        <nav className="relative z-10 flex shrink-0 gap-2 overflow-x-auto border-b border-white/8 px-6 py-3 md:hidden">
+        <nav className="relative z-10 flex shrink-0 gap-2 overflow-x-auto border-b border-sc-border-soft px-6 py-3 md:hidden">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -191,8 +186,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={cn(
                   "shrink-0 rounded-full border-2 px-4 py-2 text-xs font-black lowercase transition-colors",
                   isActive
-                    ? "border-ink bg-acid text-ink"
-                    : "border-white/15 text-white/60"
+                    ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+                    : "border-sc-border text-sc-text-dim"
                 )}
               >
                 {link.name}

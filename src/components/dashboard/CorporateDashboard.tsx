@@ -54,11 +54,11 @@ export default function CorporateDashboard({
       {/* Company overview */}
       <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-acid/15 text-acid">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sc-gold/15 text-sc-gold">
             <Building2 className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-[17px] font-semibold leading-tight text-white">
+            <p className="text-[17px] font-semibold leading-tight text-sc-text">
               {companyName || "Your company"}
             </p>
             <p className="app-sub mt-0.5">
@@ -72,13 +72,13 @@ export default function CorporateDashboard({
         </div>
         <div className="flex gap-6">
           <div>
-            <p className="text-2xl font-semibold tabular-nums tracking-tight text-white">
+            <p className="text-2xl font-semibold tabular-nums tracking-tight text-sc-text">
               {employees.length}
             </p>
             <p className="app-sub mt-0.5">employees</p>
           </div>
           <div>
-            <p className="text-2xl font-semibold tabular-nums tracking-tight text-white">
+            <p className="text-2xl font-semibold tabular-nums tracking-tight text-sc-text">
               {activeCards}
             </p>
             <p className="app-sub mt-0.5">active cards</p>
@@ -97,12 +97,12 @@ export default function CorporateDashboard({
       {/* Team overview */}
       <div className="space-y-3">
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">
+          <h2 className="text-sm font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
             team
           </h2>
           <Link
             href="/dashboard/team"
-            className="flex min-h-11 items-center text-xs font-black uppercase tracking-tight text-white/50 transition-colors hover:text-acid"
+            className="flex min-h-11 items-center text-xs font-black uppercase tracking-tight text-sc-text-dim transition-colors hover:text-sc-gold"
           >
             manage team →
           </Link>
@@ -110,7 +110,7 @@ export default function CorporateDashboard({
 
         {employees.length === 0 ? (
           <div className="app-panel app-panel-pad text-center">
-            <p className="text-[15px] font-black text-white">Your team is ready to grow.</p>
+            <p className="text-[15px] font-black text-sc-text">Your team is ready to grow.</p>
             <p className="app-sub mx-auto mt-1 max-w-sm">
               Add your first employee to create their digital business card.
             </p>
@@ -128,13 +128,13 @@ export default function CorporateDashboard({
               <Link
                 key={e.id}
                 href={`/dashboard/team/${e.id}/edit`}
-                className="app-panel flex items-center gap-3 p-3.5 transition-colors hover:border-acid/50"
+                className="app-panel flex items-center gap-3 p-3.5 transition-colors hover:border-sc-gold/50"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-white">
+                  <p className="truncate text-sm font-black text-sc-text">
                     {e.full_name || "Untitled"}
                   </p>
-                  <p className="truncate text-xs font-semibold text-white/40">
+                  <p className="truncate text-xs font-semibold text-sc-text-dimmer">
                     {e.headline || `/u/${e.username}`}
                   </p>
                 </div>
@@ -144,8 +144,8 @@ export default function CorporateDashboard({
                     (e.owner_suspended
                       ? "bg-rose-400/15 text-rose-300"
                       : e.published
-                        ? "bg-acid/15 text-acid"
-                        : "bg-white/10 text-white/50")
+                        ? "bg-sc-gold/15 text-sc-gold"
+                        : "bg-sc-surface-2 text-sc-text-dim")
                   }
                 >
                   {e.owner_suspended ? "suspended" : e.published ? "active" : "draft"}
@@ -155,7 +155,7 @@ export default function CorporateDashboard({
             {employees.length > 6 && (
               <Link
                 href="/dashboard/team"
-                className="block text-center text-xs font-black uppercase tracking-widest text-white/40 hover:text-acid"
+                className="block text-center text-xs font-black uppercase tracking-widest text-sc-text-dimmer hover:text-sc-gold"
               >
                 +{employees.length - 6} more
               </Link>
@@ -167,11 +167,11 @@ export default function CorporateDashboard({
       {/* NFC */}
       <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-acid">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold">
             <IdCard className="h-4 w-4" />
           </span>
           <div>
-            <p className="text-sm font-black text-white">{nfcCount} NFC card{nfcCount === 1 ? "" : "s"} linked</p>
+            <p className="text-sm font-black text-sc-text">{nfcCount} NFC card{nfcCount === 1 ? "" : "s"} linked</p>
             <p className="app-sub mt-0.5 text-[13px]">Order physical cards for anyone on the team.</p>
           </div>
         </div>
@@ -196,12 +196,12 @@ function QuickAction({
   return (
     <Link
       href={href}
-      className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+      className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-sc-border-soft p-4 transition-colors hover:border-sc-gold"
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
         <Icon className="h-4 w-4" />
       </span>
-      <span className="text-[13px] font-black leading-tight text-white">{label}</span>
+      <span className="text-[13px] font-black leading-tight text-sc-text">{label}</span>
     </Link>
   );
 }

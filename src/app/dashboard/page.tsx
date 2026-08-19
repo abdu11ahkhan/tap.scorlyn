@@ -210,7 +210,7 @@ export default function DashboardPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 border-acid/40"
+              className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 border-sc-gold/40"
             >
               <div className="min-w-0">
                 <p className="text-sm font-black text-white">
@@ -235,7 +235,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setChoosing(true)}
-                  className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 text-sm font-black uppercase tracking-tight text-ink"
+                  className="app-btn app-btn-primary rounded-full px-5"
                 >
                   <SmartphoneNfc className="h-4 w-4" />
                   Choose design
@@ -320,7 +320,7 @@ export default function DashboardPage() {
               const Icon = s.icon;
               return (
                 <div key={s.label} className="app-panel app-panel-pad">
-                  <Icon className="mb-3 h-4 w-4 text-acid" />
+                  <Icon className="mb-3 h-4 w-4 text-sc-gold" />
                   <p className="text-2xl font-semibold capitalize tabular-nums tracking-tight text-white">
                     {s.value}
                   </p>
@@ -335,7 +335,7 @@ export default function DashboardPage() {
           {latestOrder ? (
             <Link
               href={`/dashboard/orders/${latestOrder.id}`}
-              className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 transition-colors hover:border-acid/50"
+              className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 transition-colors hover:border-sc-gold/50"
             >
               <div className="min-w-0">
                 <p className="text-sm font-black text-white">Your NFC card</p>
@@ -370,9 +370,9 @@ export default function DashboardPage() {
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             <Link
               href="/templates/scan"
-              className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+              className="group flex flex-col gap-3 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
                 <Camera className="h-5 w-5" />
               </span>
               <span>
@@ -384,9 +384,9 @@ export default function DashboardPage() {
             </Link>
             <Link
               href="/templates"
-              className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+              className="group flex flex-col gap-3 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
                 <LayoutTemplate className="h-5 w-5" />
               </span>
               <span>
@@ -398,9 +398,9 @@ export default function DashboardPage() {
             </Link>
             <Link
               href="/templates/minimal/edit"
-              className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+              className="group flex flex-col gap-3 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
                 <Plus className="h-5 w-5" />
               </span>
               <span>
@@ -442,9 +442,9 @@ function QuickAction({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+      className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
         <Icon className="h-4 w-4" />
       </span>
       <span className="text-[13px] font-black leading-tight text-white">{label}</span>

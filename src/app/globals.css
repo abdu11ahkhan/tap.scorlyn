@@ -255,8 +255,17 @@
    ------------------------------------------------------------------ */
 
 .app-panel {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--color-sc-surface);
+  border: 1px solid var(--color-sc-border-soft);
+  border-radius: 14px;
+}
+
+/* One step up — a panel that should read as sitting above the page, not
+   just a quieter block within it (e.g. the credentials reveal, a modal
+   body). Border instead of shadow, per the brief: elevation without haze. */
+.app-panel-elevated {
+  background: var(--color-sc-surface-2);
+  border: 1px solid var(--color-sc-border);
   border-radius: 14px;
 }
 
@@ -270,7 +279,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: var(--color-sc-text);
 }
 
 .app-h2 {
@@ -278,32 +287,36 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.38);
+  color: var(--color-sc-text-dimmer);
 }
 
 .app-sub {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--color-sc-text-dim);
 }
 
-.app-input {
+.app-input,
+select.app-input {
   width: 100%;
-  height: 40px;
+  height: 44px;
   padding: 0 12px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-sc-text);
+  background: var(--color-sc-surface);
+  border: 1px solid var(--color-sc-border);
   border-radius: 9px;
   outline: none;
   transition: border-color 0.15s ease;
 }
 .app-input::placeholder {
-  color: rgba(255, 255, 255, 0.22);
+  color: var(--color-sc-text-dimmer);
 }
 .app-input:focus {
-  border-color: var(--color-acid);
+  border-color: var(--color-sc-gold);
+}
+.app-input[aria-invalid="true"] {
+  border-color: var(--color-sc-error);
 }
 textarea.app-input {
   height: auto;
@@ -311,12 +324,25 @@ textarea.app-input {
   line-height: 1.5;
 }
 
+/* Helper/error text under a field — kept out of placeholder text on
+   purpose (Part 4: don't rely only on placeholders for meaning). */
+.app-helper {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--color-sc-text-dimmer);
+}
+.app-helper-error {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--color-sc-error);
+}
+
 .app-label {
   display: block;
   margin-bottom: 6px;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-sc-text-dim);
 }
 
 .app-btn {
@@ -324,40 +350,70 @@ textarea.app-input {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  height: 38px;
-  padding: 0 16px;
+  height: 44px;
+  padding: 0 18px;
   font-size: 0.8125rem;
   font-weight: 600;
-  border-radius: 9px;
+  border-radius: 10px;
   border: 1px solid transparent;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.05s ease;
   white-space: nowrap;
 }
+.app-btn:active {
+  transform: scale(0.98);
+}
 
+/* PRIMARY — the one action per screen that matters most. */
 .app-btn-primary {
-  background: var(--color-acid);
-  color: var(--color-ink);
+  background: var(--color-sc-gold);
+  color: var(--color-sc-gold-ink);
 }
 .app-btn-primary:hover {
-  background: #b8e600;
+  background: var(--color-sc-gold-hover);
+}
+.app-btn-primary:active {
+  background: var(--color-sc-gold-pressed);
 }
 
+/* SECONDARY — a filled but quiet alternative, one notch below primary. */
+.app-btn-secondary {
+  background: var(--color-sc-surface-2);
+  color: var(--color-sc-text);
+  border-color: var(--color-sc-border);
+}
+.app-btn-secondary:hover {
+  border-color: var(--color-sc-text-dimmer);
+}
+
+/* TERTIARY / GHOST — outlined, for anything that isn't the page's main
+   action but still needs to look like a button. */
 .app-btn-ghost {
-  border-color: rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.75);
+  border-color: var(--color-sc-border);
+  color: var(--color-sc-text-dim);
 }
 .app-btn-ghost:hover {
-  border-color: rgba(255, 255, 255, 0.32);
-  color: #fff;
+  border-color: var(--color-sc-text-dimmer);
+  color: var(--color-sc-text);
+}
+
+/* TEXT — no border, no fill. For the least important action in a group
+   (e.g. "cancel" beside a primary "save"). */
+.app-btn-text {
+  color: var(--color-sc-text-dim);
+  height: auto;
+  padding: 0;
+}
+.app-btn-text:hover {
+  color: var(--color-sc-text);
 }
 
 .app-btn-danger {
-  border-color: rgba(255, 61, 154, 0.4);
-  color: #ff6fb2;
+  border-color: color-mix(in srgb, var(--color-sc-error) 40%, transparent);
+  color: var(--color-sc-error);
 }
 .app-btn-danger:hover {
-  background: rgba(255, 61, 154, 0.12);
-  border-color: #ff3d9a;
+  background: color-mix(in srgb, var(--color-sc-error) 12%, transparent);
+  border-color: var(--color-sc-error);
 }
 
 .app-btn:disabled {
@@ -371,7 +427,7 @@ textarea.app-input {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--color-sc-text-dimmer);
   padding: 12px 16px;
   text-align: left;
 }
@@ -401,7 +457,7 @@ textarea.app-input {
 
   .app-table tr {
     padding: 14px 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--color-sc-border-soft);
   }
 
   .app-table td {
@@ -423,7 +479,7 @@ textarea.app-input {
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--color-sc-text-dimmer);
     text-align: left;
   }
 
@@ -469,6 +525,44 @@ textarea.app-input {
   --color-hotpink: #ff3d9a;
   --color-violet-pop: #8b5cf6;
   --color-ink: #0a0a0a;
+}
+
+/* ------------------------------------------------------------------
+   Scorlyn brand system — Phase 4.
+
+   BRAND colour, for the product's own chrome (dashboard, admin, and this
+   session's editor/public-card work as it lands) — distinct from CARD
+   colour, which stays entirely user-chosen (card.accent_color/surface_color,
+   the 39 template components) and must never be forced toward this palette.
+   Confusing the two was the explicit risk called out for this phase: this
+   file only ever sets how *Scorlyn* looks, never how a customer's card does.
+
+   Charcoal + warm gold over the brief's own #F7F7F5/blue starting point —
+   distinctive rather than another blue SaaS product, and a much shorter
+   distance from the ink/#0a0a0a the rest of the app already runs on, so
+   surfaces this lands on don't whiplash between two unrelated dark bases.
+   Warm (brown-leaning) neutrals throughout, not true greys — a pure grey
+   next to a gold accent reads as an oversight, a warm one reads as chosen.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-sc-bg: #17140f;
+  --color-sc-surface: #211d17;
+  --color-sc-surface-2: #2b251c;
+  --color-sc-border: #3d362a;
+  --color-sc-border-soft: #2a2519;
+
+  --color-sc-text: #f3ede0;
+  --color-sc-text-dim: #b5ab98;
+  --color-sc-text-dimmer: #7d7565;
+
+  --color-sc-gold: #d4af37;
+  --color-sc-gold-hover: #e3c250;
+  --color-sc-gold-pressed: #b8952e;
+  --color-sc-gold-ink: #1a1508; /* text/icon colour sitting ON the gold */
+
+  --color-sc-success: #5a9b6a;
+  --color-sc-warning: #c97a2b;
+  --color-sc-error: #c0433a;
 }
 
 /* Film grain. Pure CSS, no image request.
@@ -614,10 +708,10 @@ textarea.app-input {
    ------------------------------------------------------------------ */
 
 .admin-shell {
-  --a-rail: rgba(255, 255, 255, 0.03);
-  --a-line: rgba(255, 255, 255, 0.09);
-  background: var(--color-ink);
-  color: #fff;
+  --a-rail: var(--color-sc-surface);
+  --a-line: var(--color-sc-border-soft);
+  background: var(--color-sc-bg);
+  color: var(--color-sc-text);
 }
 
 .admin-nav-item {
@@ -628,13 +722,13 @@ textarea.app-input {
   padding: 8px 12px;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-sc-text-dim);
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .admin-nav-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: var(--color-sc-surface-2);
+  color: var(--color-sc-text);
 }
 
 /* Last resort: JavaScript never ran, so nothing may stay hidden waiting for

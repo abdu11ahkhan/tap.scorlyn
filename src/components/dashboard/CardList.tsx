@@ -71,7 +71,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">
+        <h2 className="text-sm font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
           your cards
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -79,7 +79,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
               retyping it, and lands in the same editor either way. */}
           <Link
             href="/templates/scan"
-            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold"
           >
             <Camera className="h-4 w-4" />
             scan a card
@@ -88,7 +88,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
             type="button"
             onClick={createCard}
             disabled={creating}
-            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid disabled:opacity-60"
+            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold disabled:opacity-60"
           >
             {creating ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -96,7 +96,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
               <Plus className="h-4 w-4" />
             )}
             new card
-            <span className="font-bold text-white/40">Rs.500</span>
+            <span className="font-bold text-sc-text-dimmer">Rs.500</span>
           </button>
         </div>
       </div>
@@ -114,20 +114,20 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
           <Link
             key={card.id}
             href={`/dashboard/card?id=${card.id}`}
-            className="app-panel flex items-center gap-4 p-4 transition-colors hover:border-acid/50"
+            className="app-panel flex items-center gap-4 p-4 transition-colors hover:border-sc-gold/50"
           >
             <span
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xs font-black text-white"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xs font-black text-sc-text"
               style={{ background: card.accent_color || "#111111" }}
             >
               {(card.full_name || card.username).slice(0, 2).toUpperCase()}
             </span>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-black text-white">
+              <p className="truncate text-sm font-black text-sc-text">
                 {card.full_name || "Untitled card"}
               </p>
-              <p className="truncate text-xs font-semibold text-white/40">
+              <p className="truncate text-xs font-semibold text-sc-text-dimmer">
                 /u/{card.username} · {card.template}
               </p>
             </div>
@@ -135,10 +135,10 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
             <span
               className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight ${
                 live
-                  ? "bg-acid/15 text-acid"
+                  ? "bg-sc-gold/15 text-sc-gold"
                   : waiting
                     ? "bg-amber-400/15 text-amber-300"
-                    : "bg-white/10 text-white/50"
+                    : "bg-sc-surface-2 text-sc-text-dim"
               }`}
             >
               {live ? (

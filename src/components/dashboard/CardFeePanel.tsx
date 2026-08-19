@@ -121,7 +121,7 @@ export default function CardFeePanel({
           <Clock className="h-4 w-4" />
           We are checking your payment
         </p>
-        <p className="mt-1 text-sm font-semibold text-white/50">
+        <p className="mt-1 text-sm font-semibold text-sc-text-dim">
           Your card stays private until it is approved. You can keep editing it
           in the meantime — nothing you change here is lost.
         </p>
@@ -133,7 +133,7 @@ export default function CardFeePanel({
     return (
       <div className="app-panel app-panel-pad border-rose-400/40">
         <p className="text-sm font-black text-rose-200">This card was not approved</p>
-        <p className="mt-1 text-sm font-semibold text-white/50">
+        <p className="mt-1 text-sm font-semibold text-sc-text-dim">
           {note || "Get in touch and we will sort it out."}
         </p>
       </div>
@@ -144,11 +144,11 @@ export default function CardFeePanel({
 
   return (
     <div className="app-panel app-panel-pad border-amber-400/40">
-      <p className="flex items-center gap-2 text-sm font-black text-white">
+      <p className="flex items-center gap-2 text-sm font-black text-sc-text">
         <Lock className="h-4 w-4 text-amber-300" />
         Rs.{fee ?? 500} to publish this card
       </p>
-      <p className="mt-1 text-sm font-semibold text-white/50">
+      <p className="mt-1 text-sm font-semibold text-sc-text-dim">
         Your first card is free. This is an extra one — build it now, pay when
         you are ready, and it goes live once we have checked the transfer.
       </p>
@@ -163,12 +163,12 @@ export default function CardFeePanel({
                 className="flex items-center justify-between gap-3 rounded-xl border-2 border-white/12 px-3.5 py-2.5"
               >
                 <div className="min-w-0">
-                  <p className="text-xs font-black uppercase tracking-tight text-white/50">
+                  <p className="text-xs font-black uppercase tracking-tight text-sc-text-dim">
                     {m.label}
                   </p>
-                  <p className="truncate text-sm font-bold text-white">{value}</p>
+                  <p className="truncate text-sm font-bold text-sc-text">{value}</p>
                   {m.account_name && (
-                    <p className="truncate text-xs font-semibold text-white/40">
+                    <p className="truncate text-xs font-semibold text-sc-text-dimmer">
                       {m.account_name}
                     </p>
                   )}
@@ -177,11 +177,11 @@ export default function CardFeePanel({
                   <button
                     type="button"
                     onClick={() => copy(value)}
-                    className="shrink-0 rounded-full border-2 border-white/20 p-2 text-white/60 transition-colors hover:border-acid hover:text-acid"
+                    className="shrink-0 rounded-full border-2 border-sc-border p-2 text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
                     aria-label={`Copy ${m.label}`}
                   >
                     {copied === value ? (
-                      <Check className="h-4 w-4 text-acid" />
+                      <Check className="h-4 w-4 text-sc-gold" />
                     ) : (
                       <Copy className="h-4 w-4" />
                     )}
@@ -200,22 +200,22 @@ export default function CardFeePanel({
       )}
 
       <div className="mt-4">
-        <label className="text-xs font-bold text-white/50">
+        <label className="text-xs font-bold text-sc-text-dim">
           Transfer reference or last 4 digits
         </label>
         <input
           value={reference}
           onChange={(e) => setReference(e.target.value)}
           placeholder="e.g. TRX8842991"
-          className="mt-1.5 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:outline-none"
+          className="mt-1.5 w-full rounded-xl border-2 border-sc-border bg-sc-surface px-3.5 py-2.5 text-sm font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:outline-none"
         />
-        <p className="mt-1 text-xs font-semibold text-white/35">
+        <p className="mt-1 text-xs font-semibold text-sc-text-dimmer">
           Helps us find your payment on the statement, so it is approved faster.
         </p>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid">
+        <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold">
           <FileUp className="h-4 w-4" />
           {file ? "change receipt" : "attach receipt"}
           <input
@@ -236,7 +236,7 @@ export default function CardFeePanel({
         </label>
 
         {file && (
-          <span className="max-w-[14rem] truncate text-xs font-bold text-white/60">
+          <span className="max-w-[14rem] truncate text-xs font-bold text-sc-text-dim">
             {file.name}
           </span>
         )}
@@ -245,7 +245,7 @@ export default function CardFeePanel({
           type="button"
           onClick={submit}
           disabled={!file || busy}
-          className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 text-xs font-black uppercase tracking-tight text-ink disabled:opacity-40"
+          className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-sc-gold bg-sc-gold px-5 text-xs font-black uppercase tracking-tight text-sc-gold-ink disabled:opacity-40"
         >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
           I have paid
