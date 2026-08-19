@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { roleLine, accentOn, fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -18,17 +18,18 @@ export default function TilesCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#111111";
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
-  const onAccent = readableOn(accent);
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own light-grey
+  // assumption. On the native surface every value below matches what the
+  // literal #F4F4F2/neutral-900 pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#F4F4F2");
+  const { accent, accentText: ink, onAccent } = theme;
 
   return (
     <div
-      className="relative min-h-screen bg-[#F4F4F2] text-neutral-900"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-sm px-5 pb-28 pt-16">
         <header className="card-rise flex items-center gap-4">
@@ -52,7 +53,7 @@ export default function TilesCard({
               <p className="card-headline truncate text-[13px] font-medium" style={{ color: ink }}>{role}</p>
             )}
             {card.location && (
-              <p className="card-location mt-0.5 flex items-center gap-1 text-[11px] font-medium text-neutral-400">
+              <p className="card-location mt-0.5 flex items-center gap-1 text-[11px] font-medium" style={{ color: theme.fgMuted }}>
                 <MapPin className="h-3 w-3" />
                 {card.location}
               </p>
@@ -62,8 +63,8 @@ export default function TilesCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
-            style={{ ["--d" as string]: "80ms" }}
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "80ms" }}
           >{card.bio}</p>
         )}
 
@@ -78,8 +79,8 @@ export default function TilesCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 title={button.label}
                 aria-label={button.label}
-                className="card-rise flex aspect-square items-center justify-center rounded-2xl border border-neutral-200 bg-white transition-all duration-200 hover:-translate-y-1 hover:border-neutral-900"
-                style={{ ["--d" as string]: `${120 + index * 55}ms` }}
+                className="card-rise flex aspect-square items-center justify-center rounded-2xl border bg-white transition-all duration-200 hover:-translate-y-1 hover:border-neutral-900"
+                style={{ borderColor: theme.border, ["--d" as string]: `${120 + index * 55}ms` }}
               >
                 <Icon className="h-6 w-6" style={{ color: ink }} />
               </a>
@@ -99,7 +100,7 @@ export default function TilesCard({
           Save to contacts
         </SaveContact>
 
-        <p className="mt-6 text-center text-[11px] font-medium uppercase tracking-[0.25em] text-neutral-400">
+        <p className="mt-6 text-center text-[11px] font-medium uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
           @{card.username}
         </p>
       </main>

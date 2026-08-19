@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  accentOn,
   fontStack,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -21,23 +21,21 @@ export default function JournalCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#7C2D12";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
+  const theme = resolveCardTheme(card, "#FDFCF8");
+  const { accentText: ink } = theme;
   const gallery = resolveGallery(card.gallery);
 
   return (
     <div
-      className="min-h-screen bg-[#FDFCF8] text-[#1A1714]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-[34rem] px-6 pb-24 pt-16">
-        <header className="card-rise border-b border-black/10 pb-7">
+        <header className="card-rise border-b pb-7" style={{ borderColor: theme.border }}>
           <p className="card-company text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: ink }}>{card.company || "Notes"}</p>
           <h1 className="card-name mt-3 font-serif text-[2.7rem] font-normal leading-[1.05] tracking-tight">{card.full_name}</h1>
           {card.headline && (
-            <p className="card-location mt-2 font-serif text-[18px] italic text-black/45">
+            <p className="card-location mt-2 font-serif text-[18px] italic" style={{ color: theme.fgMuted }}>
               {card.headline}
               {card.location ? `, ${card.location}` : ""}
             </p>
@@ -46,8 +44,8 @@ export default function JournalCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-7 font-serif text-[18px] leading-[1.7] text-black/80"
-            style={{ ["--d" as string]: "60ms" }}
+            className="card-bio card-rise mt-7 font-serif text-[18px] leading-[1.7]"
+            style={{ color: theme.fgDim, ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
 
@@ -65,7 +63,7 @@ export default function JournalCard({
                   <img src={item.url} alt={item.caption || `${card.full_name}'s work`} className="w-full" />
                 </div>
                 {item.caption && (
-                  <p className="mt-3 font-serif text-[15px] italic leading-relaxed text-black/45">
+                  <p className="mt-3 font-serif text-[15px] italic leading-relaxed" style={{ color: theme.fgMuted }}>
                     {item.caption}
                   </p>
                 )}
@@ -74,8 +72,8 @@ export default function JournalCard({
           </div>
         )}
 
-        <nav className="mt-12 border-t border-black/10 pt-7">
-          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-black/35">
+        <nav className="mt-12 border-t pt-7" style={{ borderColor: theme.border }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: theme.fgMuted }}>
             elsewhere
           </p>
           <div className="mt-4 space-y-1">
@@ -85,8 +83,8 @@ export default function JournalCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="flex items-center justify-between py-2.5 font-serif text-[18px] transition-colors hover:text-black"
-                style={{ color: ink }}
+                className="flex items-center justify-between py-2.5 font-serif text-[18px] transition-colors hover:[color:var(--fg)]"
+                style={{ color: ink, ["--fg" as string]: theme.fg }}
               >
                 {button.label}
                 <ArrowUpRight className="h-4 w-4 opacity-50" />
@@ -97,7 +95,8 @@ export default function JournalCard({
 
         <SaveContact
           card={card}
-          className="mt-8 inline-flex font-serif text-[15px] italic text-black/45 underline underline-offset-4 hover:text-black"
+          className="mt-8 inline-flex font-serif text-[15px] italic underline underline-offset-4 transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
         >
           Save to contacts
         </SaveContact>

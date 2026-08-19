@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { roleLine, accentOn, fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -18,17 +18,14 @@ export default function OrbitCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#111111";
+  const theme = resolveCardTheme(card, "#0B0B0F");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  const onAccent = readableOn(accent);
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#0B0B0F] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <div
         className="float-orb pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full opacity-25 blur-[120px]"
@@ -70,8 +67,8 @@ export default function OrbitCard({
 
         {card.location && (
           <p
-            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] font-medium text-white/35"
-            style={{ ["--d" as string]: "180ms" }}
+            className="card-location card-rise mt-3 flex items-center gap-1.5 text-[11px] font-medium"
+            style={{ color: theme.fgMuted, ["--d" as string]: "180ms" }}
           >
             <MapPin className="h-3 w-3" />
             {card.location}
@@ -80,8 +77,8 @@ export default function OrbitCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 max-w-[19rem] text-[15px] leading-relaxed text-white/60"
-            style={{ ["--d" as string]: "220ms" }}
+            className="card-bio card-rise mt-5 max-w-[19rem] text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "220ms" }}
           >{card.bio}</p>
         )}
 
@@ -98,14 +95,16 @@ export default function OrbitCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 title={button.label}
                 aria-label={button.label}
-                className="card-rise group flex h-14 w-14 items-center justify-center rounded-full border border-white/12 bg-white/[0.05] transition-all duration-200 hover:-translate-y-1"
+                className="card-rise group flex h-14 w-14 items-center justify-center rounded-full border bg-white/[0.05] transition-all duration-200 hover:-translate-y-1"
                 style={{
+                  borderColor: theme.border,
+                  ["--fg" as string]: theme.fg,
                   ["--d" as string]: `${260 + index * 60}ms`,
                 }}
               >
                 <Icon
-                  className="h-5 w-5 text-white/80 transition-colors group-hover:text-white"
-                  style={{ color: undefined }}
+                  className="h-5 w-5 transition-colors group-hover:[color:var(--fg)]"
+                  style={{ color: theme.fgDim }}
                 />
                 <span
                   className="pointer-events-none absolute h-14 w-14 rounded-full opacity-0 transition-opacity group-hover:opacity-100"

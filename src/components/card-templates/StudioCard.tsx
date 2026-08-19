@@ -1,9 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -25,10 +24,12 @@ export default function StudioCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#0F766E";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own paper-white
+  // assumption. On the native surface every value below matches what the
+  // literal white/#111 pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#FFFFFF");
+  const { accent, accentText: ink, onAccent } = theme;
   const gallery = resolveGallery(card.gallery);
 
   const sections = [
@@ -38,12 +39,13 @@ export default function StudioCard({
 
   return (
     <div
-      className="min-h-screen bg-white text-[#111]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <header
         id="top"
-        className="sticky top-0 z-20 border-b border-black/10 bg-white/90 backdrop-blur-md"
+        className="sticky top-0 z-20 border-b backdrop-blur-md"
+        style={{ backgroundColor: `${theme.surface}E6`, borderColor: theme.border }}
       >
         <div className="mx-auto flex w-full max-w-md items-center gap-3 px-5 py-3">
           <div
@@ -60,9 +62,9 @@ export default function StudioCard({
             )}
           </div>
           <span className="card-name min-w-0 flex-1 truncate text-[13px] font-bold">{card.full_name}</span>
-          <nav className="flex gap-3 text-[11px] font-semibold text-black/45">
+          <nav className="flex gap-3 text-[11px] font-semibold" style={{ color: theme.fgDim }}>
             {sections.map((s) => (
-              <a key={s.id} href={`#${s.id}`} className="hover:text-black">
+              <a key={s.id} href={`#${s.id}`} className="hover:[color:var(--fg)]" style={{ ["--fg" as string]: theme.fg }}>
                 {s.label}
               </a>
             ))}
@@ -77,16 +79,16 @@ export default function StudioCard({
             <p className="card-company mt-2 text-[13px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>{card.company}</p>
           )}
           {card.bio && (
-            <p className="card-bio mt-5 text-[15px] leading-relaxed text-neutral-600">{card.bio}</p>
+            <p className="card-bio mt-5 text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
           )}
           {card.location && (
-            <p className="card-location mt-3 text-[13px] font-semibold text-neutral-400">{card.location}</p>
+            <p className="card-location mt-3 text-[13px] font-semibold" style={{ color: theme.fgMuted }}>{card.location}</p>
           )}
         </section>
 
         {gallery.length > 0 && (
           <section id="work" className="scroll-mt-16 pt-14">
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.25em] text-black/35">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               work
             </h2>
             <div className="mt-4 space-y-4">
@@ -99,7 +101,7 @@ export default function StudioCard({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.url} alt={item.caption || `${card.full_name}'s work`} className="w-full" />
                   {item.caption && (
-                    <figcaption className="px-4 py-3 text-[13px] font-semibold text-neutral-600">
+                    <figcaption className="px-4 py-3 text-[13px] font-semibold" style={{ color: theme.fgDim }}>
                       {item.caption}
                     </figcaption>
                   )}
@@ -111,7 +113,7 @@ export default function StudioCard({
 
         {buttons.length > 0 && (
           <section id="contact" className="scroll-mt-16 pt-14">
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.25em] text-black/35">
+            <h2 className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               contact
             </h2>
             <nav className="mt-4 space-y-2.5">
@@ -123,7 +125,8 @@ export default function StudioCard({
                     href={button.href}
                     target={button.external ? "_blank" : undefined}
                     rel={button.external ? "noopener noreferrer" : undefined}
-                    className="flex items-center gap-3 rounded-xl border border-neutral-200 px-4 py-3.5 text-[15px] font-semibold transition-colors hover:border-neutral-900"
+                    className="flex items-center gap-3 rounded-xl border px-4 py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+                    style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
                   >
                     <span
                       className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
@@ -132,7 +135,7 @@ export default function StudioCard({
                       <Icon className="h-4 w-4" />
                     </span>
                     <span className="min-w-0 flex-1">{button.label}</span>
-                    <ArrowUpRight className="h-4 w-4 shrink-0 text-neutral-400" />
+                    <ArrowUpRight className="h-4 w-4 shrink-0" style={{ color: theme.fgMuted }} />
                   </a>
                 );
               })}
@@ -141,7 +144,7 @@ export default function StudioCard({
             <SaveContact
               card={card}
               className="mt-5 flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
-              style={{ background: accent, color: readableOn(accent) }}
+              style={{ background: accent, color: onAccent }}
             >
               Save to contacts
             </SaveContact>

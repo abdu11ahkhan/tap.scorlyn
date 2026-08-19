@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { readableOn, accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -16,10 +16,12 @@ export default function StackCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#059669";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own paper-white
+  // assumption. On the native surface every value below matches what the
+  // literal white/#101010 pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#FFFFFF");
+  const { accent, accentText: ink, onAccent } = theme;
 
   const sections = [
     { id: "top", label: "home" },
@@ -30,17 +32,21 @@ export default function StackCard({
 
   return (
     <div
-      className="min-h-screen scroll-smooth bg-white text-[#101010]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen scroll-smooth"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Jump nav */}
-      <nav className="sticky top-0 z-30 border-b border-black/10 bg-white/90 backdrop-blur-xl">
+      <nav
+        className="sticky top-0 z-30 border-b backdrop-blur-xl"
+        style={{ backgroundColor: `${theme.surface}E6`, borderColor: theme.border }}
+      >
         <div className="mx-auto flex max-w-md items-center gap-1 overflow-x-auto px-4 py-3">
           {sections.map((section) => (
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="card-avatar shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase text-black/45 transition-colors hover:bg-black/5 hover:text-black"
+              className="card-avatar shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase transition-colors hover:bg-black/5 hover:[color:var(--fg)]"
+              style={{ color: theme.fgDim, ["--fg" as string]: theme.fg }}
             >
               {section.label}
             </a>
@@ -80,8 +86,8 @@ export default function StackCard({
           )}
 
           <div
-            className="card-location card-rise mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-semibold text-black/45"
-            style={{ ["--d" as string]: "160ms" }}
+            className="card-location card-rise mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-semibold"
+            style={{ color: theme.fgDim, ["--d" as string]: "160ms" }}
           >
             {card.company && <span className="card-company">{card.company}</span>}
             {card.location && (
@@ -95,18 +101,18 @@ export default function StackCard({
 
         {/* About */}
         {card.bio && (
-          <section id="about" className="scroll-mt-16 border-t border-black/10 py-12">
-            <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
+          <section id="about" className="scroll-mt-16 border-t py-12" style={{ borderColor: theme.border }}>
+            <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               about
             </h2>
-            <p className="card-bio mt-4 text-[18px] leading-[1.7] text-black/80">{card.bio}</p>
+            <p className="card-bio mt-4 text-[18px] leading-[1.7]" style={{ color: theme.fgDim }}>{card.bio}</p>
           </section>
         )}
 
         {/* Links */}
         {buttons.length > 0 && (
-          <section id="links" className="scroll-mt-16 border-t border-black/10 py-12">
-            <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
+          <section id="links" className="scroll-mt-16 border-t py-12" style={{ borderColor: theme.border }}>
+            <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               elsewhere
             </h2>
             <div className="mt-4 space-y-2.5">
@@ -118,11 +124,12 @@ export default function StackCard({
                     href={button.href}
                     target={button.external ? "_blank" : undefined}
                     rel={button.external ? "noopener noreferrer" : undefined}
-                    className="group flex items-center gap-3 rounded-xl border border-black/10 px-4 py-3.5 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)]"
+                    className="group flex items-center gap-3 rounded-xl border px-4 py-3.5 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)]"
+                    style={{ borderColor: theme.border }}
                   >
                     <Icon className="h-[18px] w-[18px]" style={{ color: ink }} />
                     <span className="flex-1">{button.label}</span>
-                    <ArrowUpRight className="h-4 w-4 text-black/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
                   </a>
                 );
               })}
@@ -131,8 +138,8 @@ export default function StackCard({
         )}
 
         {/* Contact */}
-        <section id="contact" className="scroll-mt-16 border-t border-black/10 py-14 text-center">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
+        <section id="contact" className="scroll-mt-16 border-t py-14 text-center" style={{ borderColor: theme.border }}>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             get in touch
           </h2>
           <p className="mt-4 text-[24px] font-black tracking-tight">
@@ -141,7 +148,7 @@ export default function StackCard({
           <SaveContact
             card={card}
             className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-[13px] font-black uppercase tracking-tight"
-            style={{ background: accent, color: readableOn(accent) }}
+            style={{ background: accent, color: onAccent }}
           >
             save to contacts
           </SaveContact>

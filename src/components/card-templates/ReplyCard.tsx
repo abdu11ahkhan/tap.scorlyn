@@ -1,10 +1,9 @@
 import { Send } from "lucide-react";
 import {
   roleLine,
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -25,18 +24,15 @@ export default function ReplyCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#7C3AED";
+  const theme = resolveCardTheme(card, "#F7F7FB");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
-  const onAccent = readableOn(accent);
   const email = card.email?.trim();
 
   return (
     <div
-      className="min-h-screen bg-[#F7F7FB] text-[#111]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <header
@@ -68,18 +64,18 @@ export default function ReplyCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-black/60"
-            style={{ ["--d" as string]: "70ms" }}
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "70ms" }}
           >{card.bio}</p>
         )}
 
         {/* The form is the point of this template. */}
         <section
-          className="card-rise mt-8 rounded-3xl border border-black/10 bg-white p-6 shadow-[0_14px_40px_rgba(0,0,0,0.06)]"
-          style={{ ["--d" as string]: "130ms" }}
+          className="card-rise mt-8 rounded-3xl border bg-white p-6 shadow-[0_14px_40px_rgba(0,0,0,0.06)]"
+          style={{ borderColor: theme.border, ["--d" as string]: "130ms" }}
         >
           <h2 className="text-[18px] font-black tracking-tight">Send a message</h2>
-          <p className="mt-1 text-[13px] font-semibold text-black/45">
+          <p className="mt-1 text-[13px] font-semibold" style={{ color: theme.fgMuted }}>
             {email
               ? "Opens in your mail app — nothing is stored here."
               : "No email set on this card yet."}
@@ -96,7 +92,13 @@ export default function ReplyCard({
               placeholder="Subject"
               aria-label="Subject"
               disabled={!email}
-              className="h-13 w-full rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/25 focus:border-black/40 disabled:opacity-50"
+              className="h-13 w-full rounded-xl border bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:[color:var(--placeholder)] focus:[border-color:var(--border-focus)] disabled:opacity-50"
+              style={{
+                borderColor: theme.border,
+                color: theme.fg,
+                ["--placeholder" as string]: theme.fgMuted,
+                ["--border-focus" as string]: theme.fgDim,
+              }}
             />
             <textarea
               name="body"
@@ -105,7 +107,13 @@ export default function ReplyCard({
               placeholder="What's on your mind?"
               aria-label="Message"
               disabled={!email}
-              className="w-full resize-none rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/25 focus:border-black/40 disabled:opacity-50"
+              className="w-full resize-none rounded-xl border bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:[color:var(--placeholder)] focus:[border-color:var(--border-focus)] disabled:opacity-50"
+              style={{
+                borderColor: theme.border,
+                color: theme.fg,
+                ["--placeholder" as string]: theme.fgMuted,
+                ["--border-focus" as string]: theme.fgDim,
+              }}
             />
             <button
               type="submit"
@@ -132,7 +140,8 @@ export default function ReplyCard({
                   href={button.href}
                   target={button.external ? "_blank" : undefined}
                   rel={button.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center gap-2 rounded-full border border-black/12 bg-white px-4 py-2.5 text-[13px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  className="flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-[13px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  style={{ borderColor: theme.border }}
                 >
                   <Icon className="h-4 w-4" style={{ color: ink }} />
                   {button.label}
@@ -144,8 +153,8 @@ export default function ReplyCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-black/35 hover:text-black"
-          style={{ ["--d" as string]: "250ms" }}
+          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: "250ms" }}
         >
           save to contacts
         </SaveContact>

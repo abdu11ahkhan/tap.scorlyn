@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -16,20 +16,13 @@ export default function ShowcaseCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#F43F5E";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  // The root's own bg-[#0C0A0B] is cleared to transparent by the
-  // .card-surface wrapper when a surface colour is chosen, but the hero's
-  // legibility scrim sits inside the hero section and needs to read the
-  // chosen surface itself.
-  const tone = card.surface_color?.trim() || "#0C0A0B";
+  const theme = resolveCardTheme(card, "#0C0A0B");
+  const { accent, accentText: ink } = theme;
 
   return (
     <div
-      className="min-h-screen bg-[#0C0A0B] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Cover */}
       <section className="relative h-[58vh] min-h-[380px] overflow-hidden">
@@ -57,10 +50,14 @@ export default function ShowcaseCard({
         {/* Legibility scrim under the caption */}
         <div
           className="absolute inset-0"
-          style={{ backgroundImage: `linear-gradient(to top, ${tone} 0%, ${tone}59 55%, transparent 100%)` }}
+          style={{ backgroundImage: `linear-gradient(to top, ${theme.surface} 0%, ${theme.surface}59 55%, transparent 100%)` }}
         />
 
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
+        {/* Fixed white regardless of surface_color: this text sits on a
+            photo/gradient hero with its own scrim, not on the page's plain
+            background, so it needs guaranteed contrast rather than the
+            resolved-surface foreground. */}
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-8 text-white">
           <h1
             className="card-name card-rise text-[2.6rem] font-black leading-[0.9] tracking-tighter"
             style={{ ["--d" as string]: "0ms" }}
@@ -89,8 +86,8 @@ export default function ShowcaseCard({
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-8">
         {card.bio && (
           <p
-            className="card-bio card-rise text-[15px] leading-relaxed text-white/60"
-            style={{ ["--d" as string]: "150ms" }}
+            className="card-bio card-rise text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "150ms" }}
           >{card.bio}</p>
         )}
 
@@ -103,8 +100,14 @@ export default function ShowcaseCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="card-rise group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-white/12 bg-white/[0.04] p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30"
-                style={{ ["--d" as string]: `${190 + index * 60}ms` }}
+                className="card-rise group relative flex items-center gap-4 overflow-hidden rounded-2xl border bg-white/[0.04] p-4 transition-all duration-300 hover:-translate-y-0.5 hover:[border-color:var(--border-hover)]"
+                style={
+                  {
+                    borderColor: theme.border,
+                    ["--border-hover" as string]: theme.fgMuted,
+                    ["--d" as string]: `${190 + index * 60}ms`,
+                  } as React.CSSProperties
+                }
               >
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl"
@@ -116,11 +119,17 @@ export default function ShowcaseCard({
                   <span className="block text-[15px] font-black tracking-tight">
                     {button.label}
                   </span>
-                  <span className="mt-0.5 block text-[11px] font-bold uppercase tracking-widest text-white/35">
+                  <span
+                    className="mt-0.5 block text-[11px] font-bold uppercase tracking-widest"
+                    style={{ color: theme.fgMuted }}
+                  >
                     {String(index + 1).padStart(2, "0")} · view
                   </span>
                 </span>
-                <ArrowUpRight className="h-4 w-4 shrink-0 text-white/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight
+                  className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  style={{ color: theme.fgMuted }}
+                />
               </a>
             );
           })}
@@ -128,8 +137,8 @@ export default function ShowcaseCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-9 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-white/25 hover:text-white"
-          style={{ ["--d" as string]: `${230 + buttons.length * 60}ms` }}
+          className="card-rise mt-9 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--hover-fg)]"
+          style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fg, ["--d" as string]: `${230 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

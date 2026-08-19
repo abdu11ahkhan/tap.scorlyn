@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { accentOn, fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -13,6 +13,12 @@ const TILTS = ["-1.6deg", "1.2deg", "-0.9deg", "1.8deg", "-1.3deg", "0.8deg"];
 /**
  * Scrapbook: polaroid avatar, washi tape, everything slightly crooked.
  * The playful one.
+ *
+ * The polaroid frame and the bio/link cards keep their literal `bg-white`
+ * paper and literal dark ink — that white paper is the fixed prop, not the
+ * page surface, so it stays put regardless of what the owner picks for
+ * `surface_color` (same call StickerCard's white cards make). Only the page
+ * background itself, and text sitting directly on it, are themed below.
  */
 export default function TapeCard({
   card,
@@ -21,15 +27,17 @@ export default function TapeCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#F59E0B";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own warm-paper
+  // assumption. On the native surface every value below matches what the
+  // literal #F4F1EA/#1A1A1A pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#F4F1EA");
+  const { accent, accentText: ink } = theme;
 
   return (
     <div
-      className="min-h-screen bg-[#F4F1EA] text-[#1A1A1A]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Torn-paper texture */}
       <div
@@ -65,7 +73,7 @@ export default function TapeCard({
               </span>
             )}
           </div>
-          <p className="absolute bottom-2.5 left-0 right-0 text-center text-[13px] font-bold italic">
+          <p className="absolute bottom-2.5 left-0 right-0 text-center text-[13px] font-bold italic" style={{ color: "#1A1A1A" }}>
             {card.full_name.split(" ")[0]}
           </p>
         </div>
@@ -82,10 +90,10 @@ export default function TapeCard({
             >{card.headline}</span>
           )}
           {card.company && (
-            <p className="card-company mt-2 text-[13px] text-[#1A1A1A]/55">{card.company}</p>
+            <p className="card-company mt-2 text-[13px]" style={{ color: theme.fgDim }}>{card.company}</p>
           )}
           {card.location && (
-            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] text-[#1A1A1A]/45">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px]" style={{ color: theme.fgMuted }}>
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
@@ -112,6 +120,7 @@ export default function TapeCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 className="card-rise group relative flex w-full items-center gap-3 bg-white px-5 py-4 text-[15px] font-bold shadow-[0_5px_16px_rgba(0,0,0,0.1)] transition-all duration-300 hover:rotate-0 hover:shadow-[0_10px_26px_rgba(0,0,0,0.16)]"
                 style={{
+                  color: "#1A1A1A",
                   rotate: TILTS[index % TILTS.length],
                   ["--d" as string]: `${200 + index * 60}ms`,
                 }}
@@ -123,7 +132,7 @@ export default function TapeCard({
                 />
                 <Icon className="h-[18px] w-[18px]" style={{ color: ink }} />
                 <span className="flex-1 text-left">{button.label}</span>
-                <span className="text-[#1A1A1A]/30 transition-transform group-hover:translate-x-1">
+                <span className="opacity-30 transition-transform group-hover:translate-x-1">
                   →
                 </span>
               </a>
@@ -133,8 +142,8 @@ export default function TapeCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-bold text-[#1A1A1A]/40 hover:text-[#1A1A1A]"
-          style={{ ["--d" as string]: `${240 + buttons.length * 60}ms` }}
+          className="card-rise mt-8 block text-center text-[11px] font-bold hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${240 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

@@ -1,5 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { fontStack, initialsOf, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -14,12 +14,13 @@ export default function AuroraCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
+  const theme = resolveCardTheme(card, "#0B0614");
   const accent = card.accent_color || "#A855F7";
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#0B0614] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Living mesh */}
       <div
@@ -56,19 +57,19 @@ export default function AuroraCard({
           <h1 className="card-name mt-7 text-[36px] font-bold leading-tight tracking-tight drop-shadow-lg">{card.full_name}</h1>
 
           {card.headline && (
-            <p className="card-headline mt-2 text-[15px] font-medium text-white/80">{card.headline}</p>
+            <p className="card-headline mt-2 text-[15px] font-medium" style={{ color: theme.fgDim }}>{card.headline}</p>
           )}
-          {card.company && <p className="card-company mt-0.5 text-[13px] text-white/60">{card.company}</p>}
+          {card.company && <p className="card-company mt-0.5 text-[13px]" style={{ color: theme.fgMuted }}>{card.company}</p>}
 
           {card.location && (
-            <p className="card-location mt-3 flex items-center gap-1.5 text-[11px] text-white/60">
+            <p className="card-location mt-3 flex items-center gap-1.5 text-[11px]" style={{ color: theme.fgMuted }}>
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
           )}
 
           {card.bio && (
-            <p className="card-bio mt-5 text-[13px] leading-relaxed text-white/80">{card.bio}</p>
+            <p className="card-bio mt-5 text-[13px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
           )}
         </div>
 
@@ -94,8 +95,8 @@ export default function AuroraCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] text-white/45 transition-colors hover:text-white"
-          style={{ ["--d" as string]: `${160 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 block text-center text-[11px] transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts
         </SaveContact>

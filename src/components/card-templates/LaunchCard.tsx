@@ -1,8 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import {
-  accentOn,
   fontStack,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -22,16 +21,14 @@ export default function LaunchCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#DC2626";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
+  const theme = resolveCardTheme(card, "#08080A");
+  const { accent, accentText: ink, onAccent } = theme;
   const [primary, ...secondary] = buttons;
 
   return (
     <div
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#08080A] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative flex min-h-screen flex-col justify-center overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <div
         className="float-orb pointer-events-none absolute -top-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full opacity-30 blur-[130px]"
@@ -41,7 +38,8 @@ export default function LaunchCard({
       <main className="relative mx-auto w-full max-w-md px-6 py-20 text-center">
         {card.company && (
           <p
-            className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.3em] text-white/35"
+            className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.3em]"
+            style={{ color: theme.fgMuted }}
           >{card.company}</p>
         )}
 
@@ -59,8 +57,8 @@ export default function LaunchCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mx-auto mt-5 max-w-[22rem] text-[15px] leading-relaxed text-white/60"
-            style={{ ["--d" as string]: "160ms" }}
+            className="card-bio card-rise mx-auto mt-5 max-w-[22rem] text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "160ms" }}
           >{card.bio}</p>
         )}
 
@@ -72,7 +70,7 @@ export default function LaunchCard({
             className="card-rise mt-9 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full text-[18px] font-bold"
             style={{
               background: accent,
-              color: readableOn(accent),
+              color: onAccent,
               ["--d" as string]: "220ms",
             }}
           >
@@ -89,7 +87,8 @@ export default function LaunchCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="text-[13px] font-semibold text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
+                className="text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
+                style={{ color: theme.fgDim, ["--fg" as string]: theme.fg }}
               >
                 {button.label}
               </a>
@@ -99,7 +98,8 @@ export default function LaunchCard({
 
         <SaveContact
           card={card}
-          className="mt-10 inline-flex text-[13px] font-semibold text-white/35 underline-offset-4 hover:text-white hover:underline"
+          className="mt-10 inline-flex text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
         >
           Save to contacts
         </SaveContact>

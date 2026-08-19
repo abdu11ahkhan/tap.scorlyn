@@ -2,8 +2,8 @@ import { ArrowUpRight, MapPin } from "lucide-react";
 import {
   roleLine,
   readableOn,
-  accentOn,
   fontStack,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -25,17 +25,15 @@ export default function FramesCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#B45309";
+  const theme = resolveCardTheme(card, "#EFEAE1");
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   return (
     <div
-      className="min-h-screen bg-[#EFEAE1] text-[#1A1A1A]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
@@ -44,13 +42,13 @@ export default function FramesCard({
             <p className="card-headline mt-1.5 text-[13px] font-semibold uppercase tracking-[0.25em]" style={{ color: ink }}>{role}</p>
           )}
           {card.location && (
-            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-black/35">
+            <p className="card-location mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium" style={{ color: theme.fgMuted }}>
               <MapPin className="h-3 w-3" />
               {card.location}
             </p>
           )}
           {card.bio && (
-            <p className="card-bio mx-auto mt-4 max-w-[20rem] text-[15px] leading-relaxed text-black/60">{card.bio}</p>
+            <p className="card-bio mx-auto mt-4 max-w-[20rem] text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
           )}
         </header>
 
@@ -88,10 +86,11 @@ export default function FramesCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between rounded-full border border-black/15 bg-white/70 px-5 py-3.5 text-[15px] font-semibold transition-colors hover:border-black/50"
+              className="flex items-center justify-between rounded-full border bg-white/70 px-5 py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+              style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
             >
               {button.label}
-              <ArrowUpRight className="h-4 w-4 text-black/35" />
+              <ArrowUpRight className="h-4 w-4" style={{ color: theme.fgMuted }} />
             </a>
           ))}
         </nav>

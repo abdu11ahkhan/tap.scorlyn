@@ -2,7 +2,7 @@ import { ArrowUpRight, MapPin } from "lucide-react";
 import {
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -12,6 +12,14 @@ import SaveContact from "./SaveContact";
 /**
  * Neo-brutalist: 2px black outlines, hard offset shadows, no gradients.
  * The house style, turned into a card.
+ *
+ * The white sticker cards, chips and buttons scattered on the page keep
+ * their literal `bg-white`/`border-ink`/`text-ink` — that's the fixed white
+ * "paper" the brutalist look is built from, not the page surface, so it
+ * stays put regardless of what the owner picks for `surface_color` (the same
+ * call AgencyCard makes for a caption on its own permanent black scrim).
+ * Only the page background itself, and anything sitting directly on it, are
+ * themed below.
  */
 export default function StickerCard({
   card,
@@ -20,13 +28,17 @@ export default function StickerCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#CCFF00";
-  const onAccent = readableOn(accent);
+  // Every text/border tone below is resolved once, against whatever the
+  // owner actually chose as a surface — not this template's own warm-paper
+  // assumption. On the native surface every value below matches what the
+  // literal #FFFDF5/#0a0a0a pair used to produce exactly.
+  const theme = resolveCardTheme(card, "#FFFDF5");
+  const { accent, onAccent } = theme;
 
   return (
     <div
-      className="min-h-screen bg-[#FFFDF5] text-ink"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Dot grid paper */}
       <div
@@ -84,7 +96,7 @@ export default function StickerCard({
         {card.bio && (
           <p
             className="card-bio card-rise sticker mt-4 rounded-2xl border-2 border-ink bg-white p-5 text-[15px] font-semibold leading-relaxed"
-            style={{ ["--d" as string]: "90ms" }}
+            style={{ color: "#0a0a0a", ["--d" as string]: "90ms" }}
           >{card.bio}</p>
         )}
 
@@ -115,8 +127,8 @@ export default function StickerCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] font-black uppercase tracking-widest text-ink/50 hover:text-ink"
-          style={{ ["--d" as string]: `${190 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 block text-center text-[11px] font-black uppercase tracking-widest hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${190 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

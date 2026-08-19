@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { roleLine, accentOn, fontStack, initialsOf, readableOn, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
@@ -17,17 +17,14 @@ export default function DockCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#111111";
+  const theme = resolveCardTheme(card, "#000000");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  const onAccent = readableOn(accent);
 
   return (
     <div
-      className="relative flex min-h-screen flex-col bg-black text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative flex min-h-screen flex-col"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Full-bleed portrait, or the accent if there's no photo yet. */}
       <div className="relative flex-1 overflow-hidden">
@@ -52,7 +49,9 @@ export default function DockCard({
         {/* Reading gradient — text over a photo is unreadable without one. */}
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
+        {/* Fixed white regardless of surface_color: this sits over the photo
+            (or its gradient fallback), not the page's plain background. */}
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-8 text-white">
           <h1 className="card-name card-rise text-[36px] font-bold leading-tight tracking-tight">{card.full_name}</h1>
           {role && (
             <p
@@ -80,7 +79,10 @@ export default function DockCard({
 
       {/* The dock. Scrolls sideways rather than wrapping, so it stays one row
           however many links there are. */}
-      <div className="shrink-0 border-t border-white/10 bg-black/80 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur-xl">
+      <div
+        className="shrink-0 border-t px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 backdrop-blur-xl"
+        style={{ borderColor: theme.border, backgroundColor: `${theme.surface}CC` }}
+      >
         <div className="flex items-center gap-3">
           <nav className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto pb-1">
           {buttons.map((button, index) => {
@@ -93,10 +95,10 @@ export default function DockCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 title={button.label}
                 aria-label={button.label}
-                className="card-rise flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] transition-transform duration-200 active:scale-95"
-                style={{ ["--d" as string]: `${200 + index * 55}ms` }}
+                className="card-rise flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border transition-transform duration-200 active:scale-95"
+                style={{ borderColor: theme.border, ["--d" as string]: `${200 + index * 55}ms` }}
               >
-                <Icon className="h-5 w-5 text-white/80" />
+                <Icon className="h-5 w-5" style={{ color: theme.fgDim }} />
               </a>
             );
           })}

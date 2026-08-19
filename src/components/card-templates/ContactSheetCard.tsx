@@ -3,6 +3,7 @@ import {
   readableOn,
   fontStack,
   initialsOf,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -22,26 +23,27 @@ export default function ContactSheetCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
+  const theme = resolveCardTheme(card, "#F2F1EC");
   const accent = card.accent_color || "#111111";
   const gallery = resolveGallery(card.gallery);
 
   return (
     <div
-      className="min-h-screen bg-[#F2F1EC] text-[#111]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-5 pb-24 pt-12">
-        <header className="card-rise border-b-2 border-[#111] pb-4">
+        <header className="card-rise border-b-2 pb-4" style={{ borderColor: theme.fg }}>
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
               <h1 className="card-name text-[24px] font-bold uppercase tracking-tight">{card.full_name}</h1>
               {card.headline && (
-                <p className="card-headline mt-0.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-black/45">{card.headline}</p>
+                <p className="card-headline mt-0.5 text-[11px] font-semibold uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>{card.headline}</p>
               )}
             </div>
             <div
-              className="card-avatar flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-[#111]"
-              style={{ background: `${accent}1F` }}
+              className="card-avatar flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-sm border"
+              style={{ background: `${accent}1F`, borderColor: theme.fg }}
             >
               {card.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -52,7 +54,7 @@ export default function ContactSheetCard({
             </div>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-semibold uppercase tracking-widest text-black/35">
+          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-semibold uppercase tracking-widest" style={{ color: theme.fgMuted }}>
             {card.company && <span className="card-company">{card.company}</span>}
             {card.location && <span className="card-location">{card.location}</span>}
             {gallery.length > 0 && <span>{gallery.length} frames</span>}
@@ -61,8 +63,8 @@ export default function ContactSheetCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 text-[13px] leading-relaxed text-black/60"
-            style={{ ["--d" as string]: "60ms" }}
+            className="card-bio card-rise mt-5 text-[13px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
 
@@ -74,7 +76,7 @@ export default function ContactSheetCard({
                 className="card-rise"
                 style={{ ["--d" as string]: `${100 + index * 35}ms` }}
               >
-                <div className="overflow-hidden border border-[#111] bg-white">
+                <div className="overflow-hidden border bg-white" style={{ borderColor: theme.fg }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.url}
@@ -82,7 +84,7 @@ export default function ContactSheetCard({
                     className="aspect-square w-full object-cover"
                   />
                 </div>
-                <figcaption className="mt-1 truncate text-[11px] font-bold uppercase tracking-widest text-black/35">
+                <figcaption className="mt-1 truncate text-[11px] font-bold uppercase tracking-widest" style={{ color: theme.fgMuted }}>
                   {String(index + 1).padStart(2, "0")}
                   {item.caption ? ` ${item.caption}` : ""}
                 </figcaption>
@@ -98,7 +100,8 @@ export default function ContactSheetCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between border-b border-black/15 py-3 text-[13px] font-bold uppercase tracking-wide transition-colors hover:border-[#111]"
+              className="flex items-center justify-between border-b py-3 text-[13px] font-bold uppercase tracking-wide transition-colors hover:[border-color:var(--fg)]"
+              style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
             >
               {button.label}
               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -108,8 +111,8 @@ export default function ContactSheetCard({
 
         <SaveContact
           card={card}
-          className="mt-7 flex h-12 items-center justify-center border-2 border-[#111] text-[13px] font-bold uppercase tracking-widest"
-          style={{ background: accent, color: readableOn(accent) }}
+          className="mt-7 flex h-12 items-center justify-center border-2 text-[13px] font-bold uppercase tracking-widest"
+          style={{ background: accent, color: readableOn(accent), borderColor: theme.fg }}
         >
           Save to contacts
         </SaveContact>

@@ -3,6 +3,7 @@ import {
   fontStack,
   initialsOf,
   readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -20,14 +21,15 @@ export default function BoldCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
+  const theme = resolveCardTheme(card, "#FAFAF8");
   const accent = card.accent_color || "#111111";
   // Buttons are filled with the accent, so the label colour has to follow it.
   const onAccent = readableOn(accent);
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-neutral-950"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Big soft colour field behind the type. */}
       <div
@@ -60,7 +62,7 @@ export default function BoldCard({
             )}
           </div>
           {card.location && (
-            <p className="card-location flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+            <p className="card-location flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest" style={{ color: theme.fgMuted }}>
               <MapPin className="h-3.5 w-3.5" />
               {card.location}
             </p>
@@ -84,15 +86,15 @@ export default function BoldCard({
 
         {card.company && (
           <p
-            className="card-company card-rise mt-1 text-[13px] font-semibold text-neutral-500"
-            style={{ ["--d" as string]: "200ms" }}
+            className="card-company card-rise mt-1 text-[13px] font-semibold"
+            style={{ color: theme.fgMuted, ["--d" as string]: "200ms" }}
           >{card.company}</p>
         )}
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-neutral-600"
-            style={{ ["--d" as string]: "240ms" }}
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "240ms" }}
           >{card.bio}</p>
         )}
 
@@ -122,8 +124,8 @@ export default function BoldCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 inline-block text-[11px] font-bold uppercase tracking-widest text-neutral-400 transition-colors hover:text-neutral-900"
-          style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 inline-block text-[11px] font-bold uppercase tracking-widest transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts
         </SaveContact>

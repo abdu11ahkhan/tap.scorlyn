@@ -1,9 +1,8 @@
 import { ArrowRight, Check } from "lucide-react";
 import {
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -23,18 +22,15 @@ export default function PitchCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#CCFF00";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  const onAccent = readableOn(accent);
+  const theme = resolveCardTheme(card, "#0A0A0A");
+  const { accent, accentText: ink, onAccent } = theme;
 
   const [primary, ...rest] = buttons;
 
   return (
     <div
-      className="min-h-screen bg-ink text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-16 pt-20 text-center">
@@ -58,8 +54,8 @@ export default function PitchCard({
 
           {card.bio && (
             <p
-              className="card-bio card-rise mt-5 text-[15px] font-medium leading-relaxed text-white/60"
-              style={{ ["--d" as string]: "130ms" }}
+              className="card-bio card-rise mt-5 text-[15px] font-medium leading-relaxed"
+              style={{ color: theme.fgDim, ["--d" as string]: "130ms" }}
             >{card.bio}</p>
           )}
 
@@ -90,7 +86,8 @@ export default function PitchCard({
               <img
                 src={card.avatar_url}
                 alt={card.full_name}
-                className="card-avatar h-16 w-16 rounded-full border-2 border-white/20 object-cover"
+                className="card-avatar h-16 w-16 rounded-full border-2 object-cover"
+                style={{ borderColor: theme.border }}
               />
             ) : (
               <span
@@ -103,7 +100,7 @@ export default function PitchCard({
             <span className="text-left">
               <span className="card-name block text-[13px] font-black leading-tight">{card.full_name}</span>
               {card.location && (
-                <span className="card-location block text-[11px] font-semibold text-white/35">{card.location}</span>
+                <span className="card-location block text-[11px] font-semibold" style={{ color: theme.fgMuted }}>{card.location}</span>
               )}
             </span>
           </div>
@@ -111,18 +108,22 @@ export default function PitchCard({
       </section>
 
       {/* Proof strip — three numbers give the page a spine. */}
-      <section className="border-y-2 border-white/10 px-6 py-7">
-        <div className="mx-auto grid max-w-sm grid-cols-3 divide-x divide-white/10 text-center">
+      <section className="border-y-2 px-6 py-7" style={{ borderColor: theme.border }}>
+        <div className="mx-auto grid max-w-sm grid-cols-3 text-center">
           {[
             { value: `${buttons.length}`, label: "ways to reach me" },
             { value: "1", label: "tap to open" },
             { value: "0", label: "apps needed" },
-          ].map((stat) => (
-            <div key={stat.label} className="px-2">
+          ].map((stat, i) => (
+            <div
+              key={stat.label}
+              className="px-2"
+              style={i > 0 ? { borderLeft: `1px solid ${theme.border}` } : undefined}
+            >
               <p className="text-[30px] font-black tracking-tighter" style={{ color: ink }}>
                 {stat.value}
               </p>
-              <p className="mt-1 text-[11px] font-black uppercase leading-tight tracking-widest text-white/35">
+              <p className="mt-1 text-[11px] font-black uppercase leading-tight tracking-widest" style={{ color: theme.fgMuted }}>
                 {stat.label}
               </p>
             </div>
@@ -133,7 +134,7 @@ export default function PitchCard({
       {/* Supporting links, read as proof points */}
       {rest.length > 0 && (
         <section className="px-6 py-12">
-          <p className="mx-auto mb-4 max-w-sm text-[11px] font-black uppercase tracking-[0.25em] text-white/25">
+          <p className="mx-auto mb-4 max-w-sm text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             also here
           </p>
           <div className="mx-auto max-w-sm space-y-3">
@@ -145,8 +146,12 @@ export default function PitchCard({
                   href={button.href}
                   target={button.external ? "_blank" : undefined}
                   rel={button.external ? "noopener noreferrer" : undefined}
-                  className="card-rise group flex items-center gap-3 rounded-2xl border-2 border-white/12 bg-white/[0.03] px-5 py-4 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:border-white/30"
-                  style={{ ["--d" as string]: `${index * 60}ms` }}
+                  className="card-rise group flex items-center gap-3 rounded-2xl border-2 bg-white/[0.03] px-5 py-4 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:[border-color:var(--border-hover)]"
+                  style={{
+                    borderColor: theme.border,
+                    ["--border-hover" as string]: theme.fgMuted,
+                    ["--d" as string]: `${index * 60}ms`,
+                  }}
                 >
                   <span
                     className="flex h-8 w-8 items-center justify-center rounded-lg"
@@ -166,7 +171,8 @@ export default function PitchCard({
       <footer className="px-6 pb-20 pt-4 text-center">
         <SaveContact
           card={card}
-          className="text-[11px] font-black uppercase tracking-widest text-white/25 hover:text-white"
+          className="text-[11px] font-black uppercase tracking-widest transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
         >
           save to contacts
         </SaveContact>

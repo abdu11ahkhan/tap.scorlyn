@@ -1,10 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 import {
   roleLine,
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -25,17 +24,15 @@ export default function MosaicCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#7C3AED";
+  const theme = resolveCardTheme(card, "#0F0F12");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
   const gallery = resolveGallery(card.gallery);
 
   return (
     <div
-      className="min-h-screen bg-[#0F0F12] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-4 pb-24 pt-12">
         <header className="card-rise flex items-center gap-3.5 px-1">
@@ -55,15 +52,15 @@ export default function MosaicCard({
           <div className="min-w-0">
             <h1 className="card-name truncate text-[18px] font-bold tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="card-headline truncate text-[13px] font-semibold text-white/45">{role}</p>
+              <p className="card-headline truncate text-[13px] font-semibold" style={{ color: theme.fgMuted }}>{role}</p>
             )}
           </div>
         </header>
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-5 px-1 text-[15px] leading-relaxed text-white/60"
-            style={{ ["--d" as string]: "60ms" }}
+            className="card-bio card-rise mt-5 px-1 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "60ms" }}
           >{card.bio}</p>
         )}
 
@@ -86,7 +83,7 @@ export default function MosaicCard({
                     className={`w-full object-cover ${wide ? "aspect-[2/1]" : "aspect-square"}`}
                   />
                   {item.caption && (
-                    <figcaption className="px-3 py-2 text-[11px] font-semibold text-white/35">
+                    <figcaption className="px-3 py-2 text-[11px] font-semibold" style={{ color: theme.fgMuted }}>
                       {item.caption}
                     </figcaption>
                   )}
@@ -103,11 +100,11 @@ export default function MosaicCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="card-rise flex items-center justify-between gap-2 rounded-xl border border-white/12 px-3.5 py-3 text-[13px] font-semibold transition-colors hover:border-white/40"
-              style={{ ["--d" as string]: `${220 + index * 45}ms` }}
+              className="card-rise flex items-center justify-between gap-2 rounded-xl border px-3.5 py-3 text-[13px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+              style={{ borderColor: theme.border, ["--fg" as string]: theme.fgDim, ["--d" as string]: `${220 + index * 45}ms` }}
             >
               <span className="truncate">{button.label}</span>
-              <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-white/35" />
+              <ArrowUpRight className="h-3.5 w-3.5 shrink-0" style={{ color: theme.fgMuted }} />
             </a>
           ))}
         </nav>
@@ -115,7 +112,7 @@ export default function MosaicCard({
         <SaveContact
           card={card}
           className="mt-5 flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
-          style={{ background: accent, color: readableOn(accent) }}
+          style={{ background: accent, color: onAccent }}
         >
           Save to contacts
         </SaveContact>

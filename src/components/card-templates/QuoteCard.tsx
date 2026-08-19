@@ -2,7 +2,7 @@ import { MessageSquare } from "lucide-react";
 import {
   roleLine,
   fontStack,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -23,7 +23,8 @@ export default function QuoteCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#0D9488";
+  const theme = resolveCardTheme(card, "#F7F8F8");
+  const { accent, onAccent } = theme;
   const role = roleLine(card);
 
   const asks = [
@@ -35,13 +36,13 @@ export default function QuoteCard({
 
   return (
     <div
-      className="min-h-screen bg-[#F7F8F8] text-[#101413]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <span
           className="card-rise inline-flex h-12 w-12 items-center justify-center rounded-2xl"
-          style={{ background: accent, color: readableOn(accent) }}
+          style={{ background: accent, color: onAccent }}
         >
           <MessageSquare className="h-5 w-5" />
         </span>
@@ -51,18 +52,18 @@ export default function QuoteCard({
         </h1>
 
         {role && (
-          <p className="card-location card-rise mt-2 text-[15px] font-semibold text-black/45">
+          <p className="card-location card-rise mt-2 text-[15px] font-semibold" style={{ color: theme.fgDim }}>
             {role}
             {card.location ? ` · ${card.location}` : ""}
           </p>
         )}
 
         {card.bio && (
-          <p className="card-bio card-rise mt-5 text-[15px] leading-relaxed text-black/60">{card.bio}</p>
+          <p className="card-bio card-rise mt-5 text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
         )}
 
-        <section className="card-rise mt-8 rounded-2xl border border-black/10 bg-white p-5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-black/35">
+        <section className="card-rise mt-8 rounded-2xl border bg-white p-5" style={{ borderColor: theme.border }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             include in your message
           </p>
           <ul className="mt-3 space-y-2.5">
@@ -89,12 +90,12 @@ export default function QuoteCard({
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
                 className={`card-rise flex h-14 items-center gap-3 rounded-xl px-4 text-[15px] font-bold ${
-                  lead ? "" : "border border-black/12 bg-white"
+                  lead ? "" : "border bg-white"
                 }`}
                 style={
                   lead
-                    ? { background: accent, color: readableOn(accent), ["--d" as string]: `${index * 60}ms` }
-                    : { ["--d" as string]: `${index * 60}ms` }
+                    ? { background: accent, color: onAccent, ["--d" as string]: `${index * 60}ms` }
+                    : { borderColor: theme.border, ["--d" as string]: `${index * 60}ms` }
                 }
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -106,7 +107,8 @@ export default function QuoteCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-xl border border-black/12 bg-white text-[13px] font-bold"
+          className="mt-6 flex h-12 items-center justify-center rounded-xl border bg-white text-[13px] font-bold"
+          style={{ borderColor: theme.border }}
         >
           Save to contacts
         </SaveContact>

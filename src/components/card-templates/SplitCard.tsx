@@ -1,9 +1,8 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -21,19 +20,17 @@ export default function SplitCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#111111";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
-  // The identity panel is filled with the accent, so its text has to adapt.
-  const onAccent = readableOn(accent);
+  const theme = resolveCardTheme(card, "#ffffff");
+  const { accent, accentText: ink, onAccent } = theme;
 
   return (
     <div
-      className="min-h-screen bg-white text-neutral-900 md:flex"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen md:flex"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
-      {/* Identity panel */}
+      {/* Identity panel — filled solid with the accent, so everything inside
+          it reads against the ACCENT, not the page surface. That's why this
+          block keeps using onAccent throughout rather than theme.fg. */}
       <aside
         className="gradient-pan relative overflow-hidden px-6 pt-16 pb-12 md:flex md:min-h-screen md:w-[42%] md:flex-col md:justify-center md:px-12"
         style={{
@@ -105,12 +102,13 @@ export default function SplitCard({
         )}
       </aside>
 
-      {/* Actions panel */}
+      {/* Actions panel — on the page surface, so everything here routes
+          through the resolved theme instead. */}
       <main className="px-6 py-12 md:flex md:max-w-lg md:flex-1 md:flex-col md:justify-center md:px-12">
         {card.bio && (
           <p
-            className="card-bio card-rise mb-8 text-[15px] leading-relaxed text-neutral-600"
-            style={{ ["--d" as string]: "260ms" }}
+            className="card-bio card-rise mb-8 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "260ms" }}
           >{card.bio}</p>
         )}
 
@@ -123,9 +121,10 @@ export default function SplitCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="card-rise group relative flex w-full items-center gap-3 overflow-hidden rounded-lg border-2 border-neutral-100 px-5 py-4 text-[15px] font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
+                className="card-rise group relative flex w-full items-center gap-3 overflow-hidden rounded-lg border-2 px-5 py-4 text-[15px] font-semibold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
                 style={{
                   color: ink,
+                  borderColor: theme.border,
                   ["--d" as string]: `${300 + index * 60}ms`,
                 }}
               >
@@ -135,7 +134,7 @@ export default function SplitCard({
                   style={{ background: `${accent}12` }}
                 />
                 <Icon className="relative h-[18px] w-[18px]" />
-                <span className="relative flex-1 text-neutral-900">{button.label}</span>
+                <span className="relative flex-1" style={{ color: theme.fg }}>{button.label}</span>
                 <ArrowUpRight className="relative h-4 w-4 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-70" />
               </a>
             );
@@ -144,8 +143,8 @@ export default function SplitCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 text-[11px] font-semibold tracking-wide text-neutral-400 transition-colors hover:text-neutral-900"
-          style={{ ["--d" as string]: `${320 + buttons.length * 60}ms` }}
+          className="card-rise mt-8 text-[11px] font-semibold tracking-wide transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts
         </SaveContact>

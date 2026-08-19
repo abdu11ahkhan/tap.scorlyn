@@ -1,9 +1,9 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
   roleLine,
-  accentOn,
   fontStack,
   initialsOf,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -24,23 +24,21 @@ export default function GridCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#0EA5E9";
+  const theme = resolveCardTheme(card, "#FBFBFA");
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
   const gallery = resolveGallery(card.gallery);
 
   return (
     <div
-      className="min-h-screen bg-[#FBFBFA] text-[#111]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-6 pt-14 pb-24">
         {/* Compact identity bar — the work is the point, not the face. */}
         <header
-          className="card-rise flex items-center gap-3.5 border-b border-black/10 pb-6"
-          style={{ ["--d" as string]: "0ms" }}
+          className="card-rise flex items-center gap-3.5 border-b pb-6"
+          style={{ borderColor: theme.border, ["--d" as string]: "0ms" }}
         >
           <div
             className="card-avatar flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full"
@@ -66,7 +64,7 @@ export default function GridCard({
           </div>
 
           {card.location && (
-            <span className="card-location hidden items-center gap-1 text-[11px] font-bold text-black/35 sm:flex">
+            <span className="card-location hidden items-center gap-1 text-[11px] font-bold sm:flex" style={{ color: theme.fgMuted }}>
               <MapPin className="h-3 w-3" />
               {card.location}
             </span>
@@ -75,14 +73,14 @@ export default function GridCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 text-[15px] leading-relaxed text-black/60"
-            style={{ ["--d" as string]: "80ms" }}
+            className="card-bio card-rise mt-6 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "80ms" }}
           >{card.bio}</p>
         )}
 
         <p
-          className="card-rise mt-9 text-[11px] font-black uppercase tracking-[0.25em] text-black/35"
-          style={{ ["--d" as string]: "120ms" }}
+          className="card-rise mt-9 text-[11px] font-black uppercase tracking-[0.25em]"
+          style={{ color: theme.fgMuted, ["--d" as string]: "120ms" }}
         >
           selected work
         </p>
@@ -96,10 +94,10 @@ export default function GridCard({
                 href={item.href || undefined}
                 target={item.href ? "_blank" : undefined}
                 rel={item.href ? "noopener noreferrer" : undefined}
-                className={`card-rise group relative overflow-hidden rounded-2xl border border-black/10 ${
+                className={`card-rise group relative overflow-hidden rounded-2xl border ${
                   index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"
                 }`}
-                style={{ ["--d" as string]: `${150 + index * 55}ms` }}
+                style={{ borderColor: theme.border, ["--d" as string]: `${150 + index * 55}ms` }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -131,10 +129,10 @@ export default function GridCard({
                 // Without real imagery these tiles are icon + label, so tall
                 // boxes just read as empty. The lead keeps its full-width span
                 // for hierarchy instead of extra height.
-                className={`card-rise group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-black/10 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(0,0,0,0.1)] ${
+                className={`card-rise group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(0,0,0,0.1)] ${
                   isLead ? "col-span-2 h-28" : "h-28"
                 }`}
-                style={{ ["--d" as string]: `${160 + index * 60}ms` }}
+                style={{ borderColor: theme.border, ["--d" as string]: `${160 + index * 60}ms` }}
               >
                 {/* Tint wash that deepens on hover */}
                 <span
@@ -151,7 +149,7 @@ export default function GridCard({
                   <span className="text-[15px] font-black leading-tight tracking-tight">
                     {button.label}
                   </span>
-                  <ArrowUpRight className="h-4 w-4 shrink-0 text-black/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
                 </span>
               </a>
             );
@@ -160,8 +158,8 @@ export default function GridCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-black/35 hover:text-black"
-          style={{ ["--d" as string]: `${200 + buttons.length * 60}ms` }}
+          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--fg)]"
+          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${200 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

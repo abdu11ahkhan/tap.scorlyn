@@ -1,8 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  accentOn,
   fontStack,
   readableOn,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -23,16 +23,14 @@ export default function CaseCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#1D4ED8";
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "light");
+  const theme = resolveCardTheme(card, "#ffffff");
+  const { accent, accentText: ink } = theme;
   const gallery = resolveGallery(card.gallery);
 
   return (
     <div
-      className="min-h-screen bg-white text-[#111]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <p
@@ -47,8 +45,8 @@ export default function CaseCard({
 
         {card.headline && (
           <p
-            className="card-location card-rise mt-2 text-[15px] font-semibold text-neutral-500"
-            style={{ ["--d" as string]: "110ms" }}
+            className="card-location card-rise mt-2 text-[15px] font-semibold"
+            style={{ color: theme.fgDim, ["--d" as string]: "110ms" }}
           >
             {card.headline}
             {card.location ? ` · ${card.location}` : ""}
@@ -57,8 +55,8 @@ export default function CaseCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[15px] leading-relaxed text-neutral-700"
-            style={{ borderColor: accent, ["--d" as string]: "160ms" }}
+            className="card-bio card-rise mt-6 border-l-2 pl-4 text-[15px] leading-relaxed"
+            style={{ borderColor: accent, color: theme.fgDim, ["--d" as string]: "160ms" }}
           >{card.bio}</p>
         )}
 
@@ -86,7 +84,7 @@ export default function CaseCard({
                 </div>
 
                 {item.caption && (
-                  <p className="mt-3 text-[13px] leading-relaxed text-neutral-600">
+                  <p className="mt-3 text-[13px] leading-relaxed" style={{ color: theme.fgDim }}>
                     {item.caption}
                   </p>
                 )}
@@ -102,10 +100,11 @@ export default function CaseCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between rounded-lg border border-neutral-200 px-4 py-3.5 text-[15px] font-semibold transition-colors hover:border-neutral-900"
+              className="flex items-center justify-between rounded-lg border px-4 py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+              style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
             >
               {button.label}
-              <ArrowUpRight className="h-4 w-4 text-neutral-400" />
+              <ArrowUpRight className="h-4 w-4" style={{ color: theme.fgMuted }} />
             </a>
           ))}
         </nav>

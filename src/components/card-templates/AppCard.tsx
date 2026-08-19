@@ -1,10 +1,9 @@
 import { ArrowRight, Check, Star } from "lucide-react";
 import {
   roleLine,
-  accentOn,
   fontStack,
   initialsOf,
-  readableOn,
+  resolveCardTheme,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
@@ -22,19 +21,16 @@ export default function AppCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#2563EB";
+  const theme = resolveCardTheme(card, "#F6F7FB");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
-  const onAccent = readableOn(accent);
   const [primary, ...rest] = buttons;
   const shot = card.cover_url;
 
   return (
     <div
-      className="min-h-screen bg-[#F6F7FB] text-[#0F172A]"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         {/* App header row */}
@@ -54,7 +50,7 @@ export default function AppCard({
           <div className="min-w-0 flex-1">
             <h1 className="card-name truncate text-[18px] font-black tracking-tight">{card.full_name}</h1>
             {role && (
-              <p className="card-headline truncate text-[13px] font-semibold text-black/45">{role}</p>
+              <p className="card-headline truncate text-[13px] font-semibold" style={{ color: theme.fgDim }}>{role}</p>
             )}
             <div className="mt-1 flex items-center gap-1">
               {[0, 1, 2, 3, 4].map((i) => (
@@ -64,7 +60,7 @@ export default function AppCard({
                   style={{ color: ink, fill: i < 4 ? accent : "transparent" }}
                 />
               ))}
-              <span className="ml-1 text-[11px] font-bold text-black/35">4.8</span>
+              <span className="ml-1 text-[11px] font-bold" style={{ color: theme.fgMuted }}>4.8</span>
             </div>
           </div>
         </header>
@@ -104,14 +100,14 @@ export default function AppCard({
 
         {card.bio && (
           <p
-            className="card-bio card-rise mt-7 text-[15px] leading-relaxed text-black/60"
-            style={{ ["--d" as string]: "190ms" }}
+            className="card-bio card-rise mt-7 text-[15px] leading-relaxed"
+            style={{ color: theme.fgDim, ["--d" as string]: "190ms" }}
           >{card.bio}</p>
         )}
 
         {rest.length > 0 && (
           <section className="mt-8">
-            <h2 className="text-[11px] font-black uppercase tracking-[0.25em] text-black/35">
+            <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               what you get
             </h2>
             <ul className="mt-4 space-y-2.5">
@@ -123,7 +119,7 @@ export default function AppCard({
                       href={button.href}
                       target={button.external ? "_blank" : undefined}
                       rel={button.external ? "noopener noreferrer" : undefined}
-                      className="card-rise flex items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3.5 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-md"
+                      className="card-rise flex items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3.5 text-[15px] font-bold text-[#0F172A] transition-all hover:-translate-y-0.5 hover:shadow-md"
                       style={{ ["--d" as string]: `${230 + index * 55}ms` }}
                     >
                       <span
@@ -144,8 +140,8 @@ export default function AppCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] text-black/35 hover:text-black"
-          style={{ ["--d" as string]: "420ms" }}
+          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--hover-fg)]"
+          style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fg, ["--d" as string]: "420ms" }}
         >
           save to contacts
         </SaveContact>

@@ -1,10 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
 import {
   roleLine,
-  readableOn,
-  accentOn,
   fontStack,
   initialsOf,
+  resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
@@ -26,21 +25,22 @@ export default function ReelCard({
   card: CardProfile;
   buttons: ResolvedButton[];
 }) {
-  const accent = card.accent_color || "#EAB308";
+  const theme = resolveCardTheme(card, "#0B0B0B");
+  const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
-  // Accent used as *text*: a pale accent on a light card, or a dark one
-  // on a dark card, is unreadable. Only the lightness moves.
-  const ink = accentOn(accent, "dark");
   const gallery = resolveGallery(card.gallery);
   const slots = gallery.length > 0 ? gallery : [null, null, null];
 
   return (
     <div
-      className="min-h-screen bg-[#0B0B0B] text-white"
-      style={{ fontFamily: fontStack(card.font) }}
+      className="min-h-screen"
+      style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Sticky identity strip so the name stays with you down the reel */}
-      <header className="sticky top-0 z-20 flex items-center gap-3 border-b border-white/10 bg-[#0B0B0B]/85 px-5 py-3 backdrop-blur-xl">
+      <header
+        className="sticky top-0 z-20 flex items-center gap-3 border-b px-5 py-3 backdrop-blur-xl"
+        style={{ borderColor: theme.border, backgroundColor: `${theme.surface}D9` }}
+      >
         <div
           className="card-avatar flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full"
           style={{ background: `${accent}33`, color: ink }}
@@ -55,20 +55,20 @@ export default function ReelCard({
         <div className="min-w-0 flex-1">
           <p className="card-name truncate text-[13px] font-black tracking-tight">{card.full_name}</p>
           {role && (
-            <p className="card-headline truncate text-[11px] font-semibold text-white/45">{role}</p>
+            <p className="card-headline truncate text-[11px] font-semibold" style={{ color: theme.fgMuted }}>{role}</p>
           )}
         </div>
         <SaveContact
           card={card}
           className="flex min-h-11 shrink-0 items-center justify-center rounded-full px-3.5 text-[11px] font-black uppercase tracking-widest"
-          style={{ background: accent, color: readableOn(accent) }}
+          style={{ background: accent, color: onAccent }}
         >
           save
         </SaveContact>
       </header>
 
       {card.bio && (
-        <p className="card-bio px-5 py-6 text-[15px] leading-relaxed text-white/60">{card.bio}</p>
+        <p className="card-bio px-5 py-6 text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
       )}
 
       {/* The reel */}
@@ -96,12 +96,14 @@ export default function ReelCard({
                 </div>
               )}
 
+              {/* Fixed dark scrim: photos vary, so caption text always needs
+                  the same guaranteed contrast regardless of the page theme. */}
               <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/60">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 {item?.caption && (
-                  <p className="mt-0.5 text-[15px] font-black tracking-tight">
+                  <p className="mt-0.5 text-[15px] font-black tracking-tight text-white">
                     {item.caption}
                   </p>
                 )}
@@ -137,11 +139,12 @@ export default function ReelCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="group flex items-center gap-3 rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3.5 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:border-white/30"
+              className="group flex items-center gap-3 rounded-xl border bg-white/[0.04] px-4 py-3.5 text-[15px] font-bold transition-all hover:-translate-y-0.5 hover:[border-color:var(--border-hover)]"
+              style={{ borderColor: theme.border, ["--border-hover" as string]: theme.fgMuted }}
             >
               <Icon className="h-[18px] w-[18px]" style={{ color: ink }} />
               <span className="flex-1">{button.label}</span>
-              <ArrowUpRight className="h-4 w-4 text-white/25 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
             </a>
           );
         })}
