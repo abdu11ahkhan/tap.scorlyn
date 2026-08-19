@@ -5,8 +5,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   BarChart3,
+  Camera,
   ExternalLink,
   IdCard,
+  LayoutTemplate,
   Plus,
   SmartphoneNfc,
 } from "lucide-react";
@@ -214,18 +216,55 @@ export default function DashboardPage() {
         </>
       ) : (
         <div className="app-panel app-panel-pad">
-          <p className="text-[17px] font-semibold text-white">No card yet.</p>
+          <p className="text-[17px] font-semibold text-white">Let&apos;s create your card.</p>
           <p className="app-sub mt-1 max-w-md">
-            Pick a template, fill in your details, and publish. You can change the
-            design any time without reprinting anything.
+            Three ways in — all of them land in the same editor, and you can
+            change anything afterward.
           </p>
-          <Link
-            href="/templates"
-            className="app-btn app-btn-primary mt-5"
-          >
-            <Plus className="h-4 w-4" />
-            Build my card
-          </Link>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <Link
+              href="/templates/scan"
+              className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+                <Camera className="h-5 w-5" />
+              </span>
+              <span>
+                <span className="block text-sm font-black text-white">Scan a business card</span>
+                <span className="app-sub mt-0.5 block text-[13px]">
+                  We read the details, colours and logo off a photo.
+                </span>
+              </span>
+            </Link>
+            <Link
+              href="/templates"
+              className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+                <LayoutTemplate className="h-5 w-5" />
+              </span>
+              <span>
+                <span className="block text-sm font-black text-white">Choose a template</span>
+                <span className="app-sub mt-0.5 block text-[13px]">
+                  Browse all 39 designs and pick one to start from.
+                </span>
+              </span>
+            </Link>
+            <Link
+              href="/templates/minimal/edit"
+              className="group flex flex-col gap-3 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+            >
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+                <Plus className="h-5 w-5" />
+              </span>
+              <span>
+                <span className="block text-sm font-black text-white">Start from scratch</span>
+                <span className="app-sub mt-0.5 block text-[13px]">
+                  A blank card, ready to fill in yourself.
+                </span>
+              </span>
+            </Link>
+          </div>
         </div>
       )}
       {choosing && card && (

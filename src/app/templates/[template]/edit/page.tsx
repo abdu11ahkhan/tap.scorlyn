@@ -105,7 +105,15 @@ export default function PublicCardEditor({
 
   /**
    * Publishing is the only gated step. The draft is already in localStorage, so
-   * we just send them to log in and the dashboard editor picks it up after.
+   * we just send them to sign up (or log in) and the dashboard editor picks
+   * it up after.
+   *
+   * /signup, not /login: whoever built a card anonymously and is publishing
+   * for the first time almost never has an account yet — sending them to a
+   * "welcome back" sign-in screen made account creation (and the individual/
+   * corporate question on it) something they had to notice a small link for,
+   * rather than the thing actually in front of them. /signup itself links to
+   * /login for the minority who do have one.
    */
   const handlePublish = async () => {
     setPublishing(true);
@@ -117,7 +125,7 @@ export default function PublicCardEditor({
     } = await supabase.auth.getUser();
 
     const target = "/dashboard/card?from=draft";
-    router.push(user ? target : `/login?next=${encodeURIComponent(target)}`);
+    router.push(user ? target : `/signup?next=${encodeURIComponent(target)}`);
   };
 
   if (!isKnownTemplate) {
