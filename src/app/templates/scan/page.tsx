@@ -260,7 +260,7 @@ export default function ScanCardPage() {
     <div className="grain relative min-h-screen bg-ink text-white">
       <div className="float-orb pointer-events-none absolute -left-40 top-40 h-[460px] w-[460px] rounded-full bg-violet-pop/15 blur-[140px]" />
 
-      <header className="sticky top-0 z-30 border-b-2 border-white/10 bg-ink/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b-2 border-white/10 bg-ink/85 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-4xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/templates"
@@ -324,7 +324,7 @@ export default function ScanCardPage() {
 
             <Link
               href="/templates"
-              className="mt-4 block text-center text-[13px] font-black uppercase tracking-widest text-white/40"
+              className="mt-4 flex min-h-11 items-center justify-center text-center text-[13px] font-black uppercase tracking-widest text-white/40"
             >
               or start blank instead
             </Link>

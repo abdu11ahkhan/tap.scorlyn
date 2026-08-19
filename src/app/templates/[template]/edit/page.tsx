@@ -153,7 +153,7 @@ export default function PublicCardEditor({
       <div className="float-orb pointer-events-none absolute -left-40 top-40 h-[460px] w-[460px] rounded-full bg-violet-pop/15 blur-[140px]" />
 
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b-2 border-white/10 bg-ink/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b-2 border-white/10 bg-ink/85 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/templates"

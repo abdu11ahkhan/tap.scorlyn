@@ -145,7 +145,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           style={{ ["--d" as string]: "4s" }}
         />
 
-        <header className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/8 px-6 md:px-10">
+        <header className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-white/8 px-6 pt-[env(safe-area-inset-top)] md:px-10">
           <div className="flex min-w-0 items-center gap-3">
             <h2 className="truncate text-[13px] font-medium text-white/45">
               {links.find((l) => l.href === pathname)?.name ?? "dashboard"}

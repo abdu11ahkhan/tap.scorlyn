@@ -17,6 +17,12 @@ export const viewport: Viewport = {
   // Pinch-zoom stays available: capping it is an accessibility failure, and
   // nothing here needs it disabled.
   maximumScale: 5,
+  // manifest.ts declares display: "standalone" — installed as a home-screen
+  // app on iOS, content can render straight under the notch/Dynamic Island
+  // unless the page opts into drawing under it and insets itself. "cover"
+  // is what makes env(safe-area-inset-*) report real values at all; without
+  // it every safe-area-inset-* below silently reads 0.
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {

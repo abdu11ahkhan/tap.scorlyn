@@ -102,7 +102,7 @@ export default function CorporateDashboard({
           </h2>
           <Link
             href="/dashboard/team"
-            className="text-xs font-black uppercase tracking-tight text-white/50 transition-colors hover:text-acid"
+            className="flex min-h-11 items-center text-xs font-black uppercase tracking-tight text-white/50 transition-colors hover:text-acid"
           >
             manage team →
           </Link>

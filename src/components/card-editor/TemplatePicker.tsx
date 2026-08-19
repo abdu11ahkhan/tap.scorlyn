@@ -69,6 +69,10 @@ export default function TemplatePicker({
 
       {open && (
         <div className="mt-3 space-y-5 rounded-2xl border-2 border-white/12 bg-white/[0.02] p-4">
+          <p className="text-xs font-semibold text-white/40">
+            Only the look changes — your name, links, photos and everything
+            else stay exactly as they are.
+          </p>
           {TEMPLATE_CATEGORIES.map((category) => {
             const inCategory = CARD_TEMPLATES.filter((t) => t.category === category.id);
             if (inCategory.length === 0) return null;

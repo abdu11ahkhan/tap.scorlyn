@@ -146,7 +146,7 @@ function CompanySetupForm() {
         style={{ ["--d" as string]: "3s" }}
       />
 
-      <div className="absolute left-6 top-6 flex items-center">
+      <div className="absolute left-6 top-[max(1.5rem,env(safe-area-inset-top))] flex items-center">
         <BrandLockup width={170} />
       </div>
 
@@ -188,7 +188,7 @@ function CompanySetupForm() {
             <button
               type="button"
               onClick={() => setStep("first-employee")}
-              className="mt-5 flex w-full items-center justify-center gap-2 text-sm font-black uppercase tracking-widest text-ink/40"
+              className="mt-5 flex min-h-11 w-full items-center justify-center gap-2 text-sm font-black uppercase tracking-widest text-ink/40"
             >
               <SkipForward className="h-4 w-4" />
               skip for now
@@ -300,7 +300,7 @@ function CompanySetupForm() {
                 router.push(next);
                 router.refresh();
               }}
-              className="mt-4 flex w-full items-center justify-center gap-2 text-sm font-black uppercase tracking-widest text-ink/40"
+              className="mt-4 flex min-h-11 w-full items-center justify-center gap-2 text-sm font-black uppercase tracking-widest text-ink/40"
             >
               <SkipForward className="h-4 w-4" />
               I&apos;ll do this later

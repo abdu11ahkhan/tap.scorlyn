@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { needsCompanySetup } from "@/lib/org";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import BrandLockup from "@/components/layout/BrandLockup";
@@ -54,15 +55,44 @@ function LoginForm() {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else {
-      router.push(next);
-      router.refresh();
+      return;
     }
+
+    // A returning-user sign-in is also the FIRST successful sign-in for
+    // anyone who created an account, saw "check your email", and — instead
+    // of clicking the link (the only path that used to check this) — just
+    // logged straight in once it went through. Found by actually clicking
+    // through the corporate signup flow rather than assuming /auth/confirm
+    // and /auth/callback were the only ways in: they weren't the only ways
+    // in, and a corporate owner could reach an empty dashboard having never
+    // seen the account-type or company-setup steps at all.
+    const userId = data.user?.id;
+    if (userId) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("account_type, account_type_confirmed, house_template")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (profile && !profile.account_type_confirmed) {
+        router.push(`/onboarding/account-type?next=${encodeURIComponent(next)}`);
+        router.refresh();
+        return;
+      }
+      if (profile && needsCompanySetup(profile)) {
+        router.push(`/onboarding/company-setup?next=${encodeURIComponent(next)}`);
+        router.refresh();
+        return;
+      }
+    }
+
+    router.push(next);
+    router.refresh();
   };
 
   return (
