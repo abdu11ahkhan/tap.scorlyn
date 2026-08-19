@@ -83,7 +83,7 @@ export default function MasonryCard({
                 style={{ ["--d" as string]: `${120 + index * 50}ms` }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.url} alt={item.caption ?? ""} className="w-full" />
+                <img src={item.url} alt={item.caption || `${card.full_name}'s work`} className="w-full" />
                 {item.caption && (
                   <figcaption className="px-2.5 py-2 text-[11px] font-semibold text-neutral-500">
                     {item.caption}

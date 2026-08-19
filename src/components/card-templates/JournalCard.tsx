@@ -62,7 +62,7 @@ export default function JournalCard({
               >
                 <div className="overflow-hidden rounded-sm bg-black/5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.url} alt={item.caption ?? ""} className="w-full" />
+                  <img src={item.url} alt={item.caption || `${card.full_name}'s work`} className="w-full" />
                 </div>
                 {item.caption && (
                   <p className="mt-3 font-serif text-[15px] italic leading-relaxed text-black/45">

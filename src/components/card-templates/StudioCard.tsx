@@ -8,6 +8,7 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
+import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
 /**
@@ -96,7 +97,7 @@ export default function StudioCard({
                   style={{ ["--d" as string]: `${index * 60}ms` }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.url} alt={item.caption ?? ""} className="w-full" />
+                  <img src={item.url} alt={item.caption || `${card.full_name}'s work`} className="w-full" />
                   {item.caption && (
                     <figcaption className="px-4 py-3 text-[13px] font-semibold text-neutral-600">
                       {item.caption}
@@ -114,18 +115,27 @@ export default function StudioCard({
               contact
             </h2>
             <nav className="mt-4 space-y-2.5">
-              {buttons.map((button, index) => (
-                <a
-                  key={`${button.kind}-${index}`}
-                  href={button.href}
-                  target={button.external ? "_blank" : undefined}
-                  rel={button.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center justify-between rounded-xl border border-neutral-200 px-4 py-3.5 text-[15px] font-semibold transition-colors hover:border-neutral-900"
-                >
-                  {button.label}
-                  <ArrowUpRight className="h-4 w-4 text-neutral-400" />
-                </a>
-              ))}
+              {buttons.map((button, index) => {
+                const Icon = iconFor(button.kind);
+                return (
+                  <a
+                    key={`${button.kind}-${index}`}
+                    href={button.href}
+                    target={button.external ? "_blank" : undefined}
+                    rel={button.external ? "noopener noreferrer" : undefined}
+                    className="flex items-center gap-3 rounded-xl border border-neutral-200 px-4 py-3.5 text-[15px] font-semibold transition-colors hover:border-neutral-900"
+                  >
+                    <span
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                      style={{ background: `${accent}1A`, color: ink }}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <span className="min-w-0 flex-1">{button.label}</span>
+                    <ArrowUpRight className="h-4 w-4 shrink-0 text-neutral-400" />
+                  </a>
+                );
+              })}
             </nav>
 
             <SaveContact

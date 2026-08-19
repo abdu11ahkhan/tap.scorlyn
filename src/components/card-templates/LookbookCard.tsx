@@ -44,7 +44,11 @@ export default function LookbookCard({
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={lead?.url ?? card.avatar_url ?? ""}
-            alt=""
+            // The lead slot is content, not decoration — it's either the first
+            // gallery photo or the person's own portrait, and it's the first
+            // thing on the card. Use its caption when there is one, otherwise
+            // a plain, true description rather than an empty alt.
+            alt={lead?.url ? lead.caption ?? `Work by ${card.full_name}` : card.full_name}
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (

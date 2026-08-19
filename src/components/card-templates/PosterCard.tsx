@@ -25,6 +25,10 @@ export default function PosterCard({
   const onAccent = readableOn(accent);
   const [primary, ...rest] = buttons;
   const cover = card.cover_url || card.avatar_url;
+  // The root's own bg-ink is cleared to transparent by the .card-surface
+  // wrapper when a surface colour is chosen, but the photo scrim sits inside
+  // a `fixed` layer of its own and needs to read the chosen surface itself.
+  const tone = card.surface_color?.trim() || "#0A0A0A";
 
   return (
     <div
@@ -45,12 +49,15 @@ export default function PosterCard({
           />
         )}
         {/* Scrim: any uploaded photo has to sit under white type. */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/30" />
+        <div
+          className="absolute inset-0"
+          style={{ backgroundImage: `linear-gradient(to top, ${tone} 0%, ${tone}B3 55%, ${tone}4D 100%)` }}
+        />
       </div>
 
       <main className="relative flex min-h-screen w-full max-w-md flex-col justify-end px-6 pb-16 pt-24 mx-auto">
         <span
-          className="card-company card-rise w-fit rounded-full border-2 border-ink px-4 py-1.5 text-[11px] font-black uppercase tracking-widest"
+          className="card-company card-rise inline-block w-fit max-w-full truncate rounded-full border-2 border-ink px-4 py-1.5 text-[11px] font-black uppercase tracking-widest"
           style={{ background: accent, color: onAccent, ["--d" as string]: "0ms" }}
         >{card.company || "featured"}</span>
 

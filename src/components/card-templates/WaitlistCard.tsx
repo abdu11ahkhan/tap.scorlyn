@@ -89,7 +89,7 @@ export default function WaitlistCard({
               target={fallback.external ? "_blank" : undefined}
               rel={fallback.external ? "noopener noreferrer" : undefined}
               className="card-rise mt-9 inline-flex h-14 items-center justify-center gap-2 rounded-full px-8 text-[15px] font-black uppercase tracking-tight"
-              style={{ background: accent, ["--d" as string]: "190ms" }}
+              style={{ background: accent, color: readableOn(accent), ["--d" as string]: "190ms" }}
             >
               {fallback.label}
               <ArrowRight className="h-4 w-4" />

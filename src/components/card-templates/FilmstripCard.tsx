@@ -82,7 +82,7 @@ export default function FilmstripCard({
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={item.url}
-                      alt={item.caption ?? ""}
+                      alt={item.caption || `${card.full_name}'s work`}
                       className="aspect-[4/5] w-full object-cover"
                     />
                   </div>

@@ -60,7 +60,7 @@ export default function ReelCard({
         </div>
         <SaveContact
           card={card}
-          className="shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-widest"
+          className="flex min-h-11 shrink-0 items-center justify-center rounded-full px-3.5 text-[11px] font-black uppercase tracking-widest"
           style={{ background: accent, color: readableOn(accent) }}
         >
           save
@@ -80,7 +80,7 @@ export default function ReelCard({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={item.url}
-                  alt={item.caption ?? ""}
+                  alt={item.caption || `${card.full_name}'s work`}
                   className="h-[300px] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               ) : (

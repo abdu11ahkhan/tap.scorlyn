@@ -104,7 +104,7 @@ export default function GridCard({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.url}
-                  alt={item.caption ?? ""}
+                  alt={item.caption || `${card.full_name}'s work`}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 {item.caption && (

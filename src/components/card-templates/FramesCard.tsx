@@ -69,7 +69,7 @@ export default function FramesCard({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.url}
-                    alt={item.caption ?? ""}
+                    alt={item.caption || `${card.full_name}'s work`}
                     className="aspect-square w-full object-cover"
                   />
                 </div>

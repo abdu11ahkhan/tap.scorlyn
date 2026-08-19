@@ -29,6 +29,12 @@ export default function AgencyCard({
   const onAccent = readableOn(accent);
   const gallery = resolveGallery(card.gallery);
   const cover = card.cover_url;
+  // The root's own bg-[#0D0D0F] is already cleared to transparent by the
+  // .card-surface wrapper when a surface colour is chosen (see
+  // components/card-templates/index.tsx) — but the sticky nav, the hero
+  // scrim and the avatar's ring sit *inside* that root, so they keep their
+  // native colour unless they read the chosen surface themselves.
+  const tone = card.surface_color?.trim() || "#0D0D0F";
 
   const sections = [
     { id: "top", label: "home" },
@@ -42,7 +48,10 @@ export default function AgencyCard({
       className="min-h-screen scroll-smooth bg-[#0D0D0F] text-white"
       style={{ fontFamily: fontStack(card.font) }}
     >
-      <nav className="sticky top-0 z-30 border-b border-white/10 bg-[#0D0D0F]/90 backdrop-blur-xl">
+      <nav
+        className="sticky top-0 z-30 border-b border-white/10 backdrop-blur-xl"
+        style={{ backgroundColor: `${tone}E6` }}
+      >
         <div className="flex items-center gap-1 overflow-x-auto px-4 py-3">
           {sections.map((section) => (
             <a
@@ -70,13 +79,16 @@ export default function AgencyCard({
               }}
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0F] via-[#0D0D0F]/50 to-transparent" />
+          <div
+            className="absolute inset-0"
+            style={{ backgroundImage: `linear-gradient(to top, ${tone} 0%, ${tone}80 55%, transparent 100%)` }}
+          />
         </div>
 
         <div className="relative -mt-14 px-6 pb-10">
           <div
-            className="card-avatar flex h-32 w-32 items-center justify-center overflow-hidden rounded-2xl border-4 border-[#0D0D0F]"
-            style={{ background: accent, color: onAccent }}
+            className="card-avatar flex h-32 w-32 items-center justify-center overflow-hidden rounded-2xl border-4"
+            style={{ background: accent, color: onAccent, borderColor: tone }}
           >
             {card.avatar_url ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -155,7 +167,7 @@ export default function AgencyCard({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={item.url}
-                  alt={item.caption ?? ""}
+                  alt={item.caption || `${card.full_name}'s work`}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 {item.caption && (

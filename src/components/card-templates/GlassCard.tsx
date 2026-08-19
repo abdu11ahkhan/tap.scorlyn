@@ -18,6 +18,11 @@ export default function GlassCard({
   // Accent used as *text*: a pale accent on a light card, or a dark one
   // on a dark card, is unreadable. Only the lightness moves.
   const ink = accentOn(accent, "dark");
+  // The root's own bg-[#05070C] is cleared to transparent by the
+  // .card-surface wrapper when a surface colour is chosen, but the cover
+  // photo's dimming scrim sits inside a `fixed` layer of its own and needs
+  // to read the chosen surface itself to match.
+  const tone = card.surface_color?.trim() || "#05070C";
 
   return (
     <div
@@ -30,7 +35,7 @@ export default function GlassCard({
         <div className="pointer-events-none fixed inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={card.cover_url} alt="" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-[#05070C]/80" />
+          <div className="absolute inset-0" style={{ backgroundColor: `${tone}CC` }} />
         </div>
       )}
 

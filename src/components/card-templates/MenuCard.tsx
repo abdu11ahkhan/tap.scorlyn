@@ -75,11 +75,19 @@ export default function MenuCard({
                   className="card-rise flex items-baseline gap-3"
                   style={{ ["--d" as string]: `${100 + index * 55}ms` }}
                 >
-                  <span className="text-[15px] font-semibold">{item.name || "—"}</span>
+                  {/* min-w-0: without it a flex item won't shrink past its
+                      own content width, so a long name pushed the leader to
+                      its floor and squeezed the price into wrapping. Letting
+                      the name wrap first is what a real printed menu does —
+                      the price never moves. */}
+                  <span className="min-w-0 text-[15px] font-semibold">{item.name || "—"}</span>
                   {/* Dotted leader, the way a printed menu does it. */}
                   <span className="min-w-4 flex-1 translate-y-[-3px] border-b border-dotted border-black/25" />
                   {item.price && (
-                    <span className="text-[15px] font-bold tabular-nums" style={{ color: ink }}>
+                    <span
+                      className="shrink-0 whitespace-nowrap text-[15px] font-bold tabular-nums"
+                      style={{ color: ink }}
+                    >
                       {item.price}
                     </span>
                   )}

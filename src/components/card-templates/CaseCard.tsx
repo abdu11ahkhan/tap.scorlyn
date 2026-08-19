@@ -82,7 +82,7 @@ export default function CaseCard({
 
                 <div className="mt-3 overflow-hidden rounded-lg bg-neutral-100">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.url} alt={item.caption ?? ""} className="w-full" />
+                  <img src={item.url} alt={item.caption || `${card.full_name}'s work`} className="w-full" />
                 </div>
 
                 {item.caption && (

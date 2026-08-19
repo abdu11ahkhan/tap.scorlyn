@@ -105,7 +105,7 @@ export default function BookingCard({
                 // Tailwind can't see a runtime colour, so it comes via CSS vars.
                 <label
                   key={slot}
-                  className="cursor-pointer rounded-xl border border-black/12 bg-[#FAFCFC] py-2.5 text-center text-[13px] font-bold transition-colors has-[:checked]:border-transparent has-[:checked]:bg-[var(--slot)] has-[:checked]:text-[var(--slot-fg)]"
+                  className="flex min-h-11 cursor-pointer items-center justify-center rounded-xl border border-black/12 bg-[#FAFCFC] text-center text-[13px] font-bold transition-colors has-[:checked]:border-transparent has-[:checked]:bg-[var(--slot)] has-[:checked]:text-[var(--slot-fg)]"
                   style={
                     {
                       ["--slot"]: accent,

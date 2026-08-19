@@ -21,7 +21,7 @@ export default function MonoCard({
   return (
     <div
       className="relative min-h-screen overflow-hidden bg-[#0C0C0C] text-neutral-200"
-      style={{ fontFamily: fontStack("mono") }}
+      style={{ fontFamily: fontStack(card.font) }}
     >
       {/* Faint scanline field — CRT texture, not a pattern you consciously see. */}
       <div

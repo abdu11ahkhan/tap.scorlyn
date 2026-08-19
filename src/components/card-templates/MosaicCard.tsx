@@ -82,7 +82,7 @@ export default function MosaicCard({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={item.url}
-                    alt={item.caption ?? ""}
+                    alt={item.caption || `${card.full_name}'s work`}
                     className={`w-full object-cover ${wide ? "aspect-[2/1]" : "aspect-square"}`}
                   />
                   {item.caption && (

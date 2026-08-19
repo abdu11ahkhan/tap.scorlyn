@@ -20,6 +20,11 @@ export default function ShowcaseCard({
   // Accent used as *text*: a pale accent on a light card, or a dark one
   // on a dark card, is unreadable. Only the lightness moves.
   const ink = accentOn(accent, "dark");
+  // The root's own bg-[#0C0A0B] is cleared to transparent by the
+  // .card-surface wrapper when a surface colour is chosen, but the hero's
+  // legibility scrim sits inside the hero section and needs to read the
+  // chosen surface itself.
+  const tone = card.surface_color?.trim() || "#0C0A0B";
 
   return (
     <div
@@ -50,7 +55,10 @@ export default function ShowcaseCard({
         )}
 
         {/* Legibility scrim under the caption */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0C0A0B] via-[#0C0A0B]/35 to-transparent" />
+        <div
+          className="absolute inset-0"
+          style={{ backgroundImage: `linear-gradient(to top, ${tone} 0%, ${tone}59 55%, transparent 100%)` }}
+        />
 
         <div className="absolute inset-x-0 bottom-0 px-6 pb-8">
           <h1
