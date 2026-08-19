@@ -82,8 +82,9 @@ Colour, judged from the FIRST image only, and only from the card's own printed s
 - vivid: true if the card's colours are saturated/bold, false if muted/neutral.
 
 Logo, judged from the FIRST image only, and only from the card's own printed surface:
-- logo_box: if the card ITSELF has a distinct printed logo mark (a graphic symbol, not just text in a stylised font, and not anything belonging to the surface behind the card), the bounding box around ONLY that mark, as fractions of the first image's width/height: {"x":0-1,"y":0-1,"w":0-1,"h":0-1} where x,y is the top-left corner. Keep it tight — just the mark, not surrounding whitespace or nearby text, and never extending past the card's own edge.
-- If there is no distinct logo mark printed on the card, or you aren't confident, or the only graphic mark you can see belongs to the background/surface rather than the card, set logo_box to null. Do not guess, and do not substitute a background element for a missing logo.`;
+- logo_box: the bounding box around the business's actual logo — usually a symbol/icon plus its company-name wordmark printed right next to or under it as one visual unit (e.g. a mountain icon next to "AYAN ESTATE & BUILDERS", a swirl next to "PKF"). Include the WHOLE lockup, icon and wordmark together, not just the bare icon shape — that's what someone means by "their logo". If the card only has a stylised company-name wordmark with no separate icon at all, that wordmark alone is the logo_box. Never include the person's own name, job title, or any body/contact text — only the business's brand mark.
+- {"x":0-1,"y":0-1,"w":0-1,"h":0-1} as fractions of the first image's width/height, x,y the top-left corner. Snug around the whole lockup — not so tight it clips part of the icon or wordmark, not so loose it drifts into unrelated whitespace or other text, and never extending past the card's own edge.
+- If there is no distinct logo printed on the card, or you aren't confident, or the only graphic mark you can see belongs to the background/surface rather than the card, set logo_box to null. Do not guess, and do not substitute a background element for a missing logo.`;
 
 function parseDataUrl(dataUrl: string): { mediaType: string; data: string } | null {
   const match = /^data:(image\/(?:png|jpeg|jpg|webp));base64,(.+)$/.exec(dataUrl);
