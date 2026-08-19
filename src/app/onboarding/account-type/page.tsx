@@ -15,6 +15,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { needsCompanySetup } from "@/lib/org";
 import BrandLockup from "@/components/layout/BrandLockup";
 import AccountTypePicker, { type AccountTypeValue } from "@/components/auth/AccountTypePicker";
 
@@ -50,12 +51,12 @@ function AccountTypeForm() {
       }
       const { data: profile } = await supabase
         .from("profiles")
-        .select("account_type_confirmed")
+        .select("account_type, account_type_confirmed, house_template")
         .eq("id", user.id)
         .maybeSingle();
       if (cancelled) return;
       if (profile?.account_type_confirmed) {
-        router.replace(next);
+        router.replace(profile && needsCompanySetup(profile) ? `/onboarding/company-setup?next=${encodeURIComponent(next)}` : next);
         return;
       }
       setChecking(false);
@@ -100,7 +101,11 @@ function AccountTypeForm() {
       return;
     }
 
-    router.push(next);
+    if (account.accountType === "corporate") {
+      router.push(`/onboarding/company-setup?next=${encodeURIComponent(next)}`);
+    } else {
+      router.push(next);
+    }
     router.refresh();
   };
 

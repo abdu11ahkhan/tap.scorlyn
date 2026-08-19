@@ -16,12 +16,11 @@ import {
   UserCheck,
   Trash2,
 } from "lucide-react";
-import { createEmployee, deleteEmployeeCard, setHouseStyle, suspendEmployee } from "./actions";
-import { downscale } from "@/components/card-editor/ImagePicker";
-import { extractPalette, suggestTemplate } from "@/lib/card-scan-color";
+import { createEmployee, deleteEmployeeCard, suspendEmployee } from "./actions";
+import { downscale, toDataUrl } from "@/components/card-editor/ImagePicker";
 import { scanCardText } from "@/lib/card-ocr";
 import { scanCardWithClaude } from "@/lib/card-scan-ai";
-import { toDataUrl } from "@/components/card-editor/ImagePicker";
+import HouseStyleSection from "@/components/dashboard/HouseStyleSection";
 
 export type EmployeeCard = {
   id: string;
@@ -336,11 +335,38 @@ export default function TeamManager({
         </p>
       )}
 
-      {employees.length === 0 ? (
-        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
-          No employees yet — add the first one above.
-        </p>
-      ) : (
+      {employees.length === 0 && !showAdd ? (
+        <div className="app-panel app-panel-pad text-center">
+          <p className="text-[17px] font-black text-white">Your team is ready to grow.</p>
+          <p className="app-sub mx-auto mt-1 max-w-sm">
+            Add your first employee to create their digital business card.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("type");
+                setShowAdd(true);
+              }}
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-acid px-4 text-xs font-black uppercase tracking-tight text-ink"
+            >
+              <Plus className="h-4 w-4" />
+              add employee
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("scan");
+                setShowAdd(true);
+              }}
+              className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+            >
+              <Camera className="h-4 w-4" />
+              scan business card
+            </button>
+          </div>
+        </div>
+      ) : employees.length > 0 ? (
         <div className="space-y-2.5">
           {employees.map((card) => (
             <div key={card.id} className="app-panel flex flex-wrap items-center gap-3 p-4">
@@ -412,7 +438,7 @@ export default function TeamManager({
             </div>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -423,121 +449,6 @@ export default function TeamManager({
  * src/lib/card-ocr.ts / card-scan-color.ts): only the photo's colours and
  * mood matter for this, not its text.
  */
-function HouseStyleSection({
-  houseTemplate,
-  houseAccentColor,
-  onError,
-}: {
-  houseTemplate: string | null;
-  houseAccentColor: string | null;
-  onError: (message: string | null) => void;
-}) {
-  const router = useRouter();
-  const [busy, setBusy] = useState(false);
-  const [preview, setPreview] = useState<{ template: string; accent: string; surface: string } | null>(
-    null
-  );
-
-  const pick = async (file: File) => {
-    setBusy(true);
-    onError(null);
-    try {
-      const blob = await downscale(file, "cover");
-      const bitmap = await createImageBitmap(blob);
-      const vibe = extractPalette(bitmap);
-      bitmap.close?.();
-      setPreview({ template: suggestTemplate(vibe), accent: vibe.accent, surface: vibe.surface });
-    } catch {
-      onError("Couldn't read that photo — try a clearer, better-lit shot of the card.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const confirm = async () => {
-    if (!preview) return;
-    setBusy(true);
-    const r = await setHouseStyle({
-      template: preview.template,
-      accentColor: preview.accent,
-      surfaceColor: preview.surface,
-    });
-    setBusy(false);
-    if (!r.ok) {
-      onError(r.error ?? "That didn't save.");
-      return;
-    }
-    setPreview(null);
-    router.refresh();
-  };
-
-  return (
-    <div className="app-panel app-panel-pad space-y-3">
-      <div>
-        <p className="text-sm font-black text-white">Company card</p>
-        <p className="mt-1 text-xs font-semibold text-white/50">
-          {houseTemplate ? (
-            <>
-              New employee cards start as{" "}
-              <span className="font-black text-white/80">{houseTemplate}</span>, coloured from
-              your card. Upload a new photo any time to change it — only affects employees
-              added afterward.
-            </>
-          ) : (
-            "Photograph your company's card once to set the default look every new employee card starts from."
-          )}
-        </p>
-      </div>
-
-      {houseAccentColor && !preview && (
-        <span
-          className="inline-block h-6 w-6 rounded-full border-2 border-white/20"
-          style={{ background: houseAccentColor }}
-        />
-      )}
-
-      {preview ? (
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border-2 border-acid/30 bg-acid/5 p-3">
-          <span className="h-8 w-8 shrink-0 rounded-full border-2 border-white/20" style={{ background: preview.accent }} />
-          <p className="min-w-0 flex-1 text-xs font-semibold text-white/60">
-            Looks like <span className="font-black text-white">{preview.template}</span>
-          </p>
-          <button
-            type="button"
-            onClick={confirm}
-            disabled={busy}
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-acid px-4 text-xs font-black uppercase tracking-tight text-ink disabled:opacity-60"
-          >
-            {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
-            use this
-          </button>
-          <button
-            type="button"
-            onClick={() => setPreview(null)}
-            className="text-xs font-black uppercase tracking-widest text-white/40"
-          >
-            cancel
-          </button>
-        </div>
-      ) : (
-        <label className="flex h-12 w-fit cursor-pointer items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white/70 transition-colors hover:border-acid hover:text-acid">
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            capture="environment"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) pick(file);
-            }}
-          />
-          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
-          {houseTemplate ? "change the look" : "photograph company card"}
-        </label>
-      )}
-    </div>
-  );
-}
 
 function CredentialLine({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false);

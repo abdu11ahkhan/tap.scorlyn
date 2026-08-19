@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { needsCompanySetup } from "@/lib/org";
 
 /**
  * Where each kind of email link lands once the token checks out.
@@ -53,5 +54,37 @@ export async function GET(request: NextRequest) {
     redirect("/login?error=link-expired");
   }
 
-  redirect(safeNext(searchParams.get("next"), type));
+  const next = safeNext(searchParams.get("next"), type);
+
+  // A corporate signup confirmed by email link (Confirm Email is ON) has
+  // account_type set by the /signup form already, but never got the
+  // house-style/first-employee step /signup's own two direct-session paths
+  // already redirect to — this is the third way in. The DB check is
+  // deliberately outside any try/catch: redirect() throws by design to halt
+  // rendering, and a catch here would silently swallow that throw and fall
+  // through to the wrong landing.
+  if (type === "signup" && (await shouldSetUpCompany(supabase))) {
+    redirect(`/onboarding/company-setup?next=${encodeURIComponent(next)}`);
+  }
+
+  redirect(next);
+}
+
+async function shouldSetUpCompany(supabase: Awaited<ReturnType<typeof createClient>>): Promise<boolean> {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("account_type, house_template")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    return profile ? needsCompanySetup(profile) : false;
+  } catch {
+    return false;
+  }
 }

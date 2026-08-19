@@ -9,7 +9,9 @@ import {
   ExternalLink,
   IdCard,
   LayoutTemplate,
+  Pencil,
   Plus,
+  Share2,
   SmartphoneNfc,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -17,7 +19,12 @@ import { readStorage, writeStorage } from "@/lib/safe-storage";
 import { useClientValue } from "@/lib/use-client-value";
 import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
 import CardList, { type CardSummary } from "@/components/dashboard/CardList";
+import CorporateDashboard, { type EmployeeSummary } from "@/components/dashboard/CorporateDashboard";
+import { STATUS_LABELS, statusTone } from "@/app/dashboard/orders/status";
 import type { CardProfile } from "@/lib/card";
+
+type Account = { type: "individual" | "corporate"; companyName: string | null; companySlug: string | null };
+type LatestOrder = { id: string; reference: string; status: string };
 
 /** Dismissal of the "choose your printed card" banner. */
 const NFC_BANNER_KEY = "scorlyntap_nfc_banner_dismissed";
@@ -38,6 +45,9 @@ export default function DashboardPage() {
   const [taps, setTaps] = useState(0);
   const [nfcCount, setNfcCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [account, setAccount] = useState<Account | null>(null);
+  const [employees, setEmployees] = useState<EmployeeSummary[]>([]);
+  const [latestOrder, setLatestOrder] = useState<LatestOrder | null>(null);
   /** Open when they act on the banner, not on arrival — nobody wants a modal
    *  thrown at them for something they did not ask for. */
   const [choosing, setChoosing] = useState(false);
@@ -50,6 +60,28 @@ export default function DashboardPage() {
   const stored = useClientValue(() => readStorage("local", NFC_BANNER_KEY) === "1", true);
   const [dismissedNow, setDismissedNow] = useState(false);
   const dismissed = stored || dismissedNow;
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const shareCard = async (username: string) => {
+    const url = `${window.location.origin}/u/${username}`;
+    // Native share sheet where it exists (mobile, mostly) — a link copied to
+    // the clipboard with no feedback is what "sharing" used to mean here.
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "My digital card", url });
+        return;
+      } catch {
+        // Cancelled or unsupported mid-call — fall through to copy.
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Clipboard needs a secure context; nothing useful to do beyond this.
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -65,8 +97,18 @@ export default function DashboardPage() {
 
       setName(user.user_metadata?.full_name?.split(" ")[0] || user.email?.split("@")[0] || "there");
 
-      // RLS scopes all three to this user.
-      const [{ data: cards }, { count: tapCount }, { count: cardCount }] = await Promise.all([
+      // RLS scopes every one of these to this user. Employees and the
+      // company's own row on card_profiles/orders simply come back empty for
+      // an individual account — cheaper than a second round-trip gated on
+      // knowing account_type first.
+      const [
+        { data: cards },
+        { count: tapCount },
+        { count: cardCount },
+        { data: profile },
+        { data: employeeRows },
+        { data: orderRows },
+      ] = await Promise.all([
         supabase
           .from("card_profiles")
           .select("*")
@@ -77,12 +119,38 @@ export default function DashboardPage() {
           .from("nfc_cards")
           .select("id", { count: "exact", head: true })
           .eq("user_id", user.id),
+        supabase
+          .from("profiles")
+          .select("account_type, company_name, company_slug")
+          .eq("id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("card_profiles")
+          .select("id, username, full_name, headline, published, owner_suspended")
+          .eq("org_owner_id", user.id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("orders")
+          .select("id, reference, status")
+          .order("created_at", { ascending: false })
+          .limit(1),
       ]);
 
       setCard(cards?.[0] ?? null);
       setCards((cards ?? []) as CardSummary[]);
       setTaps(tapCount ?? 0);
       setNfcCount(cardCount ?? 0);
+      setAccount(
+        profile
+          ? {
+              type: profile.account_type === "corporate" ? "corporate" : "individual",
+              companyName: profile.company_name,
+              companySlug: profile.company_slug,
+            }
+          : null
+      );
+      setEmployees((employeeRows ?? []) as EmployeeSummary[]);
+      setLatestOrder((orderRows?.[0] as LatestOrder | undefined) ?? null);
       setLoading(false);
     };
 
@@ -99,6 +167,29 @@ export default function DashboardPage() {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="max-w-4xl space-y-5 pb-16">
+        <div className="app-panel h-28 animate-pulse" />
+      </div>
+    );
+  }
+
+  // A genuinely different dashboard, not the individual one with a Team
+  // button added — CorporateDashboard.tsx has its own header, so this
+  // returns instead of falling into the individual JSX below.
+  if (account?.type === "corporate") {
+    return (
+      <CorporateDashboard
+        name={name}
+        companyName={account.companyName}
+        companySlug={account.companySlug}
+        employees={employees}
+        nfcCount={nfcCount}
+      />
+    );
+  }
+
   return (
     <div className="max-w-4xl space-y-5 pb-16">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
@@ -110,9 +201,7 @@ export default function DashboardPage() {
         </p>
       </motion.div>
 
-      {loading ? (
-        <div className="app-panel h-28 animate-pulse" />
-      ) : card ? (
+      {card ? (
         <>
           {/* Everyone who published before the design question existed never
               got asked, so there is nothing on their profile to print. This
@@ -189,6 +278,14 @@ export default function DashboardPage() {
                 <ExternalLink className="h-4 w-4" />
                 /u/{card.username}
               </Link>
+              <button
+                type="button"
+                onClick={() => shareCard(card.username)}
+                className="app-btn app-btn-ghost"
+              >
+                <Share2 className="h-4 w-4" />
+                {shareCopied ? "Copied!" : "Share"}
+              </button>
               <Link
                 href="/dashboard/card"
                 className="app-btn app-btn-primary"
@@ -197,6 +294,25 @@ export default function DashboardPage() {
               </Link>
             </div>
           </div>
+          )}
+
+          {/* Quick actions — the things an owner comes back to do again and
+              again, not buried in the sidebar. */}
+          {cards.length <= 1 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <QuickAction href="/dashboard/card" icon={Pencil} label="Edit card" />
+              <QuickAction
+                href="#"
+                icon={Share2}
+                label={shareCopied ? "Copied!" : "Share card"}
+                onClick={(e) => {
+                  e.preventDefault();
+                  shareCard(card.username);
+                }}
+              />
+              <QuickAction href="/templates/scan" icon={Camera} label="Scan a card" />
+              <QuickAction href="/dashboard/nfc" icon={SmartphoneNfc} label="Get NFC card" />
+            </div>
           )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -213,6 +329,36 @@ export default function DashboardPage() {
               );
             })}
           </div>
+
+          {/* Real order status when there is one to show — never a fake
+              timeline for an order that doesn't exist. */}
+          {latestOrder ? (
+            <Link
+              href={`/dashboard/orders/${latestOrder.id}`}
+              className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 transition-colors hover:border-acid/50"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-black text-white">Your NFC card</p>
+                <p className="app-sub mt-0.5">Order #{latestOrder.reference}</p>
+              </div>
+              <span
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight ${statusTone(latestOrder.status)}`}
+              >
+                {STATUS_LABELS[latestOrder.status] ?? latestOrder.status}
+              </span>
+            </Link>
+          ) : (
+            <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-black text-white">Get your physical NFC card</p>
+                <p className="app-sub mt-0.5">Turn your digital card into a tap-to-share card.</p>
+              </div>
+              <Link href="/dashboard/nfc" className="app-btn app-btn-primary shrink-0">
+                <SmartphoneNfc className="h-4 w-4" />
+                Get NFC card
+              </Link>
+            </div>
+          )}
         </>
       ) : (
         <div className="app-panel app-panel-pad">
@@ -278,5 +424,30 @@ export default function DashboardPage() {
         />
       )}
     </div>
+  );
+}
+
+function QuickAction({
+  href,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  href: string;
+  icon: typeof SmartphoneNfc;
+  label: string;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-white/10 p-4 transition-colors hover:border-acid"
+    >
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/[0.06] text-acid transition-colors group-hover:bg-acid group-hover:text-ink">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="text-[13px] font-black leading-tight text-white">{label}</span>
+    </Link>
   );
 }

@@ -112,7 +112,7 @@ function SignupForm() {
     }
 
     if (data.session) await attributeSignup(data.session.user.id);
-    router.push(next);
+    router.push(accountType === "corporate" ? `/onboarding/company-setup?next=${encodeURIComponent(next)}` : next);
     router.refresh();
   };
 
@@ -152,7 +152,7 @@ function SignupForm() {
     if (authData.session) {
       // Instantly logged in (Confirm Email is OFF in Supabase)
       await attributeSignup(authData.session.user.id);
-      router.push(next);
+      router.push(accountType === "corporate" ? `/onboarding/company-setup?next=${encodeURIComponent(next)}` : next);
       router.refresh();
     } else if (authData.user) {
       // Supabase returns a user with empty identities if the email already

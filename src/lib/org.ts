@@ -53,6 +53,21 @@ const USERNAME_MAX = 30;
  * per attempt so a growing "-2", "-3", ... suffix never pushes the whole
  * thing back over the limit.
  */
+/**
+ * Whether a corporate account still needs the /onboarding/company-setup
+ * detour (house style, optional first employee) before it should ever land
+ * on the dashboard. Deliberately reuses house_template rather than a new
+ * "onboarding complete" flag — the owner having set a look for the company
+ * already IS the signal that they've been through this, and it's the same
+ * field src/app/dashboard/team/actions.ts already reads/writes.
+ */
+export function needsCompanySetup(profile: {
+  account_type: string | null;
+  house_template: string | null;
+}): boolean {
+  return profile.account_type === "corporate" && !profile.house_template;
+}
+
 export function employeeUsername(
   companySlug: string,
   employeeName: string,

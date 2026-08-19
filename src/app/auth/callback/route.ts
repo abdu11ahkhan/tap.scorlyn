@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { mailerConfigured, sendWelcome } from "@/lib/email";
+import { needsCompanySetup } from "@/lib/org";
 
 /**
  * Only ever redirect somewhere inside this site. `next` survives the whole
@@ -54,6 +55,13 @@ export async function GET(request: NextRequest) {
     redirect(`/onboarding/account-type?next=${encodeURIComponent(next)}`);
   }
 
+  // Chained after the account-type check, not instead of it: a Google
+  // corporate account only knows it's corporate once the step above (or the
+  // one before it) has run, so this has to come second.
+  if (await needsCompanySetupCheck(supabase)) {
+    redirect(`/onboarding/company-setup?next=${encodeURIComponent(next)}`);
+  }
+
   redirect(next);
 }
 
@@ -73,6 +81,25 @@ async function needsAccountType(supabase: Awaited<ReturnType<typeof createClient
     return profile ? !profile.account_type_confirmed : false;
   } catch {
     // Never block a sign-in over this check failing.
+    return false;
+  }
+}
+
+async function needsCompanySetupCheck(supabase: Awaited<ReturnType<typeof createClient>>): Promise<boolean> {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return false;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("account_type, house_template")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    return profile ? needsCompanySetup(profile) : false;
+  } catch {
     return false;
   }
 }
