@@ -79,14 +79,14 @@ export default function FramesCard({
           </div>
         )}
 
-        <nav className="mt-10 space-y-2.5">
+        <nav className="mt-10 space-y-0.5">
           {buttons.map((button, index) => (
             <a
               key={`${button.kind}-${index}`}
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between rounded-full border bg-white/70 px-5 py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+              className="flex items-center justify-between border-b py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
               style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
             >
               {button.label}

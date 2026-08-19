@@ -8,6 +8,7 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
+import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
 /**
@@ -93,20 +94,24 @@ export default function MosaicCard({
           </div>
         )}
 
-        <nav className="mt-8 grid grid-cols-2 gap-2">
-          {buttons.map((button, index) => (
-            <a
-              key={`${button.kind}-${index}`}
-              href={button.href}
-              target={button.external ? "_blank" : undefined}
-              rel={button.external ? "noopener noreferrer" : undefined}
-              className="card-rise flex items-center justify-between gap-2 rounded-xl border px-3.5 py-3 text-[13px] font-semibold transition-colors hover:[border-color:var(--fg)]"
-              style={{ borderColor: theme.border, ["--fg" as string]: theme.fgDim, ["--d" as string]: `${220 + index * 45}ms` }}
-            >
-              <span className="truncate">{button.label}</span>
-              <ArrowUpRight className="h-3.5 w-3.5 shrink-0" style={{ color: theme.fgMuted }} />
-            </a>
-          ))}
+        <nav className="mt-8 space-y-0.5 px-1">
+          {buttons.map((button, index) => {
+            const Icon = iconFor(button.kind);
+            return (
+              <a
+                key={`${button.kind}-${index}`}
+                href={button.href}
+                target={button.external ? "_blank" : undefined}
+                rel={button.external ? "noopener noreferrer" : undefined}
+                className="card-rise group flex items-center gap-3 border-b py-3 text-[14px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+                style={{ borderColor: theme.border, ["--fg" as string]: theme.fgDim, ["--d" as string]: `${220 + index * 45}ms` }}
+              >
+                <Icon className="h-4 w-4 shrink-0" style={{ color: ink }} />
+                <span className="min-w-0 flex-1 truncate">{button.label}</span>
+                <ArrowUpRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
+              </a>
+            );
+          })}
         </nav>
 
         <SaveContact

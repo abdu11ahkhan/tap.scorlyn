@@ -33,7 +33,7 @@ export default function ContactSheetCard({
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-5 pb-24 pt-12">
-        <header className="card-rise border-b-2 pb-4" style={{ borderColor: theme.fg }}>
+        <header className="card-rise border-b pb-4" style={{ borderColor: theme.fg }}>
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
               <h1 className="card-name text-[24px] font-bold uppercase tracking-tight">{card.full_name}</h1>
@@ -111,7 +111,7 @@ export default function ContactSheetCard({
 
         <SaveContact
           card={card}
-          className="mt-7 flex h-12 items-center justify-center border-2 text-[13px] font-bold uppercase tracking-widest"
+          className="mt-7 flex h-12 items-center justify-center border text-[13px] font-bold uppercase tracking-widest"
           style={{ background: accent, color: readableOn(accent), borderColor: theme.fg }}
         >
           Save to contacts
