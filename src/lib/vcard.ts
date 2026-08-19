@@ -87,7 +87,16 @@ export function buildVCard(card: VCardSource, origin: string): string {
   if (card.company) lines.push(`ORG:${escapeVCard(card.company)}`);
   if (card.headline) lines.push(`TITLE:${escapeVCard(card.headline)}`);
   if (card.phone) lines.push(`TEL;TYPE=CELL:${escapeVCard(card.phone)}`);
-  if (whatsapp) lines.push(`TEL;TYPE=WhatsApp:+${whatsapp}`);
+  // TYPE must be one of the RFC 2426 tokens (CELL, WORK, HOME, VOICE, FAX...) —
+  // a custom "WhatsApp" token is outside the spec, and several OEM contacts
+  // apps (MIUI, EMUI/HarmonyOS, ColorOS/FuntouchOS in particular) reject the
+  // whole vCard rather than skip the one unrecognised line. A standard TYPE
+  // plus an item-group X-ABLabel gets the same "WhatsApp" label everywhere
+  // that supports labels, without risking the entire import on stricter ones.
+  if (whatsapp) {
+    lines.push(`item0.TEL;TYPE=CELL,VOICE:+${whatsapp}`);
+    lines.push(`item0.X-ABLabel:WhatsApp`);
+  }
   if (card.email) lines.push(`EMAIL;TYPE=INTERNET:${escapeVCard(card.email)}`);
   if (card.location) lines.push(`ADR;TYPE=WORK:;;${escapeVCard(card.location)};;;;`);
   if (card.bio) lines.push(`NOTE:${escapeVCard(card.bio)}`);
