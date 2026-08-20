@@ -54,7 +54,9 @@ export async function changeUsername(next: string): Promise<Result> {
       .eq("id", card.id);
 
     if (error) {
-      throw new Error(error.code === "23505" ? "That handle is taken." : error.message);
+      if (error.code === "23505") throw new Error("That handle is taken.");
+      console.error("changeUsername update failed:", error);
+      throw new Error("Couldn't change the handle — please try again.");
     }
 
     revalidatePath("/dashboard/settings");

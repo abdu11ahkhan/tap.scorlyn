@@ -118,7 +118,14 @@ export async function placeOrder(input: {
       .select("id, reference")
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      // Every expected failure above already throws its own clear message;
+      // reaching here means something the customer can't act on (a raw
+      // constraint/connection error), so they get a generic one instead of
+      // Postgres's own wording, with the real error still logged for us.
+      console.error("placeOrder insert failed:", error);
+      throw new Error("Couldn't place the order — please try again.");
+    }
 
     revalidatePath("/dashboard/orders");
     return { ok: true, data };
@@ -177,7 +184,10 @@ export async function attachPaymentProof(orderId: string, path: string): Promise
       .eq("user_id", user.id)
       .select("id");
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("attachPaymentProof update failed:", error);
+      throw new Error("Couldn't attach the proof — please try again.");
+    }
     if (!data || data.length === 0) throw new Error("Order not found, or no longer pending.");
 
     revalidatePath(`/dashboard/orders/${orderId}`);
