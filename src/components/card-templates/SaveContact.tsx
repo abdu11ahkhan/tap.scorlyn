@@ -1,6 +1,7 @@
 "use client";
 
 import { buildVCard, vcardFilename, type VCardSource } from "@/lib/vcard";
+import { trackCardEvent } from "@/lib/track-event";
 
 /**
  * "Save to contacts", for every template.
@@ -35,6 +36,10 @@ export default function SaveContact({
   const download = (event: React.MouseEvent<HTMLAnchorElement>) => {
     // Let modified clicks behave like a normal link.
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+
+    // Every real save attempt counts, on the published route or not — this
+    // never blocks the click either way.
+    trackCardEvent(card.username, "contact_save");
 
     // A real card is served by the API route, and letting the navigation
     // happen is what gets the contact into the phone rather than into Files.

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Share2, X } from "lucide-react";
+import { trackCardEvent } from "@/lib/track-event";
 
 /**
  * Share control on a public card.
@@ -15,10 +16,13 @@ export default function ShareButton({
   url,
   name,
   accent,
+  username,
 }: {
   url: string;
   name: string;
   accent: string;
+  /** For the share event — optional so this still renders anywhere it's used without a published card behind it. */
+  username?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -29,9 +33,11 @@ export default function ShareButton({
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({ title: name, url });
+        if (username) trackCardEvent(username, "share");
         return;
       } catch {
-        // Cancelled, or blocked — fall through to the manual panel.
+        // Cancelled, or blocked — fall through to the manual panel. Not
+        // counted as a share: a cancelled share sheet isn't a completed one.
       }
     }
     setOpen((v) => !v);
@@ -41,6 +47,7 @@ export default function ShareButton({
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      if (username) trackCardEvent(username, "share");
       setTimeout(() => setCopied(false), 1800);
     } catch {
       setCopied(false);
@@ -88,6 +95,7 @@ export default function ShareButton({
               href={`https://wa.me/?text=${encodeURIComponent(message)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => username && trackCardEvent(username, "share")}
               className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-black text-white"
               style={{ background: accent }}
             >

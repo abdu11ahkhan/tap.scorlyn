@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { resolveButtons, type CardProfile } from "@/lib/card";
 import { renderCardTemplate } from "@/components/card-templates";
 import TapTracker from "@/components/nfc/TapTracker";
+import OutboundClickTracker from "@/components/nfc/OutboundClickTracker";
 import ReferralBanner from "@/components/nfc/ReferralBanner";
 import ProfileExtras, { hasProfileExtras } from "@/components/nfc/ProfileExtras";
 import { extrasTone } from "@/components/card-templates";
@@ -52,18 +53,21 @@ export default async function CardProfilePage({
   searchParams,
 }: {
   params: Promise<{ username: string }>;
-  searchParams: Promise<{ src?: string }>;
+  searchParams: Promise<{ src?: string; nfc?: string }>;
 }) {
   const { username } = await params;
-  const { src } = await searchParams;
+  const { src, nfc } = await searchParams;
 
   const card = await getCard(username);
   if (!card) return notFound();
 
   // `src=nfc` is appended by the NFC redirect handler, so a physical tap is
-  // distinguishable from someone who was sent the link.
+  // distinguishable from someone who was sent the link. `nfc` carries the
+  // same public code printed on the tag — /api/tap resolves and validates it
+  // server-side before ever attributing an event to a specific physical card.
   const source: "nfc" | "qr" | "link" =
     src === "nfc" ? "nfc" : src === "qr" ? "qr" : "link";
+  const nfcCode = source === "nfc" && nfc ? nfc : null;
 
   const buttons = resolveButtons(card.buttons);
 
@@ -87,12 +91,14 @@ export default async function CardProfilePage({
 
   return (
     <>
-      <TapTracker username={card.username} source={source} />
+      <TapTracker username={card.username} source={source} nfcCode={nfcCode} />
+      <OutboundClickTracker username={card.username} nfcCode={nfcCode} />
 
       <ShareButton
         url={shareUrl}
         name={card.full_name}
         accent={card.accent_color || "#111111"}
+        username={card.username}
       />
 
       {/* Every template is min-h-screen, which reserves a full viewport below

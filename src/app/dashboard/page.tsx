@@ -114,7 +114,10 @@ export default function DashboardPage() {
           .select("*")
           .eq("user_id", user.id)
           .order("created_at", { ascending: true }),
-        supabase.from("card_taps").select("id", { count: "exact", head: true }),
+        // event_type filter keeps this a page-view count now that card_taps
+        // also records clicks/saves/shares/QR opens (Phase 7) — without it
+        // this would silently start counting every interaction, not visits.
+        supabase.from("card_taps").select("id", { count: "exact", head: true }).eq("event_type", "view"),
         supabase
           .from("nfc_cards")
           .select("id", { count: "exact", head: true })

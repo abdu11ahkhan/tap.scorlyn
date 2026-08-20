@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { QrCode, X, UserPlus, Download } from "lucide-react";
 import { buildVCard, vcardFilename, type VCardSource } from "@/lib/vcard";
+import { trackCardEvent } from "@/lib/track-event";
 
 /**
  * A QR code for the card, plus saving the contact — for every template.
@@ -66,6 +67,7 @@ export default function CardQr({
     window.setTimeout(() => setSaved(false), 2500);
 
     const username = (card as { username?: string }).username;
+    if (username) trackCardEvent(username, "contact_save");
     // Same test the template button uses: only the public card route is
     // backed by /api/vcard, which can see published rows only.
     const published =
@@ -112,6 +114,8 @@ export default function CardQr({
         onClick={() => {
           if (!url) setResolved(window.location.href.split("?")[0]);
           setOpen(true);
+          const username = (card as { username?: string }).username;
+          if (username) trackCardEvent(username, "qr_open");
         }}
         aria-label="Show QR code"
         // Bottom-centre: the share control sits top-right and the logo

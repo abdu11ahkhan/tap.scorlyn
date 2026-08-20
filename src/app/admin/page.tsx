@@ -37,7 +37,9 @@ export default async function AdminOverview() {
     supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("card_profiles").select("id", { count: "exact", head: true }),
     supabase.from("nfc_cards").select("id", { count: "exact", head: true }),
-    supabase.from("card_taps").select("created_at, source").limit(5000),
+    // event_type filter keeps this a page-view breakdown now that card_taps
+    // also records clicks/saves/shares/QR opens (Phase 7).
+    supabase.from("card_taps").select("created_at, source").eq("event_type", "view").limit(5000),
     supabase
       .from("referral_events")
       .select("id", { count: "exact", head: true })
