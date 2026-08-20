@@ -86,7 +86,7 @@ export default function BookingCard({
           </div>
           <p className="mt-1 text-[13px] font-semibold text-black/45">
             {email
-              ? "Sends a request by email — you'll get a confirmation back."
+              ? "Sends a request by email — they'll confirm the time with you directly."
               : "No email set on this card yet."}
           </p>
 
@@ -127,8 +127,8 @@ export default function BookingCard({
 
             <input
               name="cc"
-              placeholder="Your email"
-              aria-label="Your email"
+              placeholder="Your email (optional)"
+              aria-label="Your email (optional)"
               disabled={!email}
               className="mt-4 h-13 w-full rounded-xl border border-black/12 bg-[#FAFCFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:text-black/25 focus:border-black/40 disabled:opacity-50"
             />
@@ -170,7 +170,7 @@ export default function BookingCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--hover-fg)]"
+          className="card-rise mt-8 flex min-h-11 items-center justify-center text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--hover-fg)]"
           style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fg, ["--d" as string]: "250ms" }}
         >
           save to contacts

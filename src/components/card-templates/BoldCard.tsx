@@ -31,16 +31,6 @@ export default function BoldCard({
       className="relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
-      {/* Big soft colour field behind the type. */}
-      <div
-        className="float-orb pointer-events-none absolute -right-24 -top-24 h-[380px] w-[380px] rounded-full blur-[100px] opacity-25"
-        style={{ background: accent }}
-      />
-      <div
-        className="float-orb pointer-events-none absolute -left-32 top-1/2 h-[300px] w-[300px] rounded-full blur-[110px] opacity-[0.18]"
-        style={{ background: accent, ["--d" as string]: "4s" }}
-      />
-
       <main className="relative mx-auto w-full max-w-md px-6 pt-20 pb-32">
         <div className="card-rise flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div

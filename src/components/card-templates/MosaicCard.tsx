@@ -103,7 +103,7 @@ export default function MosaicCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="card-rise group flex items-center gap-3 border-b py-3 text-[14px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+                className="card-rise group flex min-h-11 items-center gap-3 border-b py-3 text-[14px] font-semibold transition-colors hover:[border-color:var(--fg)]"
                 style={{ borderColor: theme.border, ["--fg" as string]: theme.fgDim, ["--d" as string]: `${220 + index * 45}ms` }}
               >
                 <Icon className="h-4 w-4 shrink-0" style={{ color: ink }} />

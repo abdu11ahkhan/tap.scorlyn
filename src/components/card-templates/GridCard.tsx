@@ -115,46 +115,30 @@ export default function GridCard({
           </div>
         )}
 
-        {/* The gallery. First tile spans both columns so the grid has a lead. */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <nav className="mt-6 space-y-0.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
-            const isLead = index === 0;
             return (
               <a
                 key={`${button.href}-${index}`}
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                // Without real imagery these tiles are icon + label, so tall
-                // boxes just read as empty. The lead keeps its full-width span
-                // for hierarchy instead of extra height.
-                className={`card-rise group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(0,0,0,0.1)] ${
-                  isLead ? "col-span-2 h-28" : "h-28"
-                }`}
-                style={{ borderColor: theme.border, ["--d" as string]: `${160 + index * 60}ms` }}
+                className="card-rise group flex min-h-11 items-center gap-3 border-b py-3 text-[15px] font-black tracking-tight transition-colors hover:[border-color:var(--fg)]"
+                style={{ borderColor: theme.border, ["--fg" as string]: theme.fg, ["--d" as string]: `${160 + index * 60}ms` }}
               >
-                {/* Tint wash that deepens on hover */}
                 <span
-                  className="pointer-events-none absolute inset-0 opacity-[0.07] transition-opacity duration-300 group-hover:opacity-20"
-                  style={{ background: accent }}
-                />
-                <span
-                  className="relative flex h-9 w-9 items-center justify-center rounded-xl"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
                   style={{ background: `${accent}26`, color: ink }}
                 >
                   <Icon className="h-4 w-4" />
                 </span>
-                <span className="relative flex items-end justify-between gap-2">
-                  <span className="text-[15px] font-black leading-tight tracking-tight">
-                    {button.label}
-                  </span>
-                  <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
-                </span>
+                <span className="min-w-0 flex-1 truncate">{button.label}</span>
+                <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: theme.fgMuted }} />
               </a>
             );
           })}
-        </div>
+        </nav>
 
         <SaveContact
           card={card}

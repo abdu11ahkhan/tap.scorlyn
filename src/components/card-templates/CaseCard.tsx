@@ -93,14 +93,14 @@ export default function CaseCard({
           </div>
         )}
 
-        <nav className="mt-12 space-y-2.5">
+        <nav className="mt-12 space-y-0.5">
           {buttons.map((button, index) => (
             <a
               key={`${button.kind}-${index}`}
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between rounded-lg border px-4 py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
+              className="flex min-h-11 items-center justify-between border-b py-3.5 text-[15px] font-semibold transition-colors hover:[border-color:var(--fg)]"
               style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
             >
               {button.label}

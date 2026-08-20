@@ -100,7 +100,7 @@ export default function ContactSheetCard({
               href={button.href}
               target={button.external ? "_blank" : undefined}
               rel={button.external ? "noopener noreferrer" : undefined}
-              className="flex items-center justify-between border-b py-3 text-[13px] font-bold uppercase tracking-wide transition-colors hover:[border-color:var(--fg)]"
+              className="flex min-h-11 items-center justify-between border-b py-3 text-[13px] font-bold uppercase tracking-wide transition-colors hover:[border-color:var(--fg)]"
               style={{ borderColor: theme.border, ["--fg" as string]: theme.fg }}
             >
               {button.label}

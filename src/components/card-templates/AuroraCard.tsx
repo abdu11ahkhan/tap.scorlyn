@@ -95,7 +95,7 @@ export default function AuroraCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] transition-colors hover:[color:var(--fg)]"
+          className="card-rise mt-6 flex min-h-11 items-center justify-center text-center text-[11px] transition-colors hover:[color:var(--fg)]"
           style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts

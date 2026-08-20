@@ -32,11 +32,6 @@ export default function MonoCard({
             "repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px)",
         }}
       />
-      <div
-        className="float-orb pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full blur-[110px] opacity-20"
-        style={{ background: accent }}
-      />
-
       <main className="relative mx-auto w-full max-w-md px-6 pt-20 pb-32">
         <div className="card-rise flex items-start gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div

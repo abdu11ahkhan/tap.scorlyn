@@ -45,7 +45,7 @@ export default function StackCard({
             <a
               key={section.id}
               href={`#${section.id}`}
-              className="card-avatar shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-black lowercase transition-colors hover:bg-black/5 hover:[color:var(--fg)]"
+              className="flex min-h-11 shrink-0 items-center rounded-full px-3.5 text-[13px] font-black lowercase transition-colors hover:bg-black/5 hover:[color:var(--fg)]"
               style={{ color: theme.fgDim, ["--fg" as string]: theme.fg }}
             >
               {section.label}

@@ -87,7 +87,7 @@ export default function LaunchCard({
                 href={button.href}
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
-                className="text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
+                className="flex min-h-11 items-center text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
                 style={{ color: theme.fgDim, ["--fg" as string]: theme.fg }}
               >
                 {button.label}
@@ -98,7 +98,7 @@ export default function LaunchCard({
 
         <SaveContact
           card={card}
-          className="mt-10 inline-flex text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
+          className="mt-10 flex min-h-11 items-center text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
           style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
         >
           Save to contacts

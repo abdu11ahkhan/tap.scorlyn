@@ -104,7 +104,7 @@ export default function SplitCard({
 
       {/* Actions panel — on the page surface, so everything here routes
           through the resolved theme instead. */}
-      <main className="px-6 py-12 md:flex md:max-w-lg md:flex-1 md:flex-col md:justify-center md:px-12">
+      <main className="mx-auto w-full max-w-sm px-6 py-12 md:mx-0 md:flex md:w-auto md:max-w-lg md:flex-1 md:flex-col md:justify-center md:px-12">
         {card.bio && (
           <p
             className="card-bio card-rise mb-8 text-[15px] leading-relaxed"

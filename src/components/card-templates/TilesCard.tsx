@@ -71,6 +71,7 @@ export default function TilesCard({
         <nav className="mt-8 grid grid-cols-3 gap-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
+            const primary = index === 0;
             return (
               <a
                 key={`${button.kind}-${index}`}
@@ -79,10 +80,16 @@ export default function TilesCard({
                 rel={button.external ? "noopener noreferrer" : undefined}
                 title={button.label}
                 aria-label={button.label}
-                className="card-rise flex aspect-square items-center justify-center rounded-2xl border bg-white transition-all duration-200 hover:-translate-y-1 hover:border-neutral-900"
-                style={{ borderColor: theme.border, ["--d" as string]: `${120 + index * 55}ms` }}
+                className={`card-rise flex aspect-square items-center justify-center rounded-2xl transition-all duration-200 hover:-translate-y-1 ${
+                  primary ? "" : "border bg-white hover:border-neutral-900"
+                }`}
+                style={
+                  primary
+                    ? { background: accent, ["--d" as string]: `${120 + index * 55}ms` }
+                    : { borderColor: theme.border, ["--d" as string]: `${120 + index * 55}ms` }
+                }
               >
-                <Icon className="h-6 w-6" style={{ color: ink }} />
+                <Icon className="h-6 w-6" style={{ color: primary ? onAccent : ink }} />
               </a>
             );
           })}

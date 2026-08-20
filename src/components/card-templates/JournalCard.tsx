@@ -95,7 +95,7 @@ export default function JournalCard({
 
         <SaveContact
           card={card}
-          className="mt-8 inline-flex font-serif text-[15px] italic underline underline-offset-4 transition-colors hover:[color:var(--fg)]"
+          className="-mx-2 mt-8 inline-flex min-h-11 items-center px-2 font-serif text-[15px] italic underline underline-offset-4 transition-colors hover:[color:var(--fg)]"
           style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
         >
           Save to contacts

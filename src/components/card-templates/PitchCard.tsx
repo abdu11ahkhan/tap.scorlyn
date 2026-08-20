@@ -171,7 +171,7 @@ export default function PitchCard({
       <footer className="px-6 pb-20 pt-4 text-center">
         <SaveContact
           card={card}
-          className="text-[11px] font-black uppercase tracking-widest transition-colors hover:[color:var(--fg)]"
+          className="flex min-h-11 items-center justify-center text-[11px] font-black uppercase tracking-widest transition-colors hover:[color:var(--fg)]"
           style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
         >
           save to contacts

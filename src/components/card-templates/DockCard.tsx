@@ -84,7 +84,8 @@ export default function DockCard({
         style={{ borderColor: theme.border, backgroundColor: `${theme.surface}CC` }}
       >
         <div className="flex items-center gap-3">
-          <nav className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto pb-1">
+          <div className="relative min-w-0 flex-1">
+          <nav className="flex items-center gap-3 overflow-x-auto pb-1">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -104,6 +105,13 @@ export default function DockCard({
           })}
 
           </nav>
+          {/* Hints that more icons sit off the right edge — the scroller has
+              no other affordance to signal that. */}
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 w-8"
+            style={{ backgroundImage: `linear-gradient(to right, transparent, ${theme.surface})` }}
+          />
+          </div>
 
           {/* Outside the scroller. Inside it, the primary action slid off the
               right edge as soon as there were more than four links. */}
