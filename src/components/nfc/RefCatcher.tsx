@@ -18,9 +18,10 @@ function Catcher() {
   useEffect(() => {
     const ref = searchParams.get(REF_PARAM);
     if (!ref) return;
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
     document.cookie = `${REF_COOKIE}=${encodeURIComponent(
       ref
-    )}; path=/; max-age=${REF_COOKIE_MAX_AGE}; SameSite=Lax`;
+    )}; path=/; max-age=${REF_COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
   }, [searchParams]);
 
   return null;

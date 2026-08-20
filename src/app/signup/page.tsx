@@ -46,7 +46,8 @@ function SignupForm() {
   useEffect(() => {
     const ref = searchParams.get(REF_PARAM);
     if (ref) {
-      document.cookie = `${REF_COOKIE}=${encodeURIComponent(ref)}; path=/; max-age=${REF_COOKIE_MAX_AGE}; SameSite=Lax`;
+      const secure = window.location.protocol === "https:" ? "; Secure" : "";
+      document.cookie = `${REF_COOKIE}=${encodeURIComponent(ref)}; path=/; max-age=${REF_COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
     }
   }, [searchParams]);
 

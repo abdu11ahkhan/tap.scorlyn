@@ -19,6 +19,34 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Applied everywhere. Deliberately not a full Content-Security-
+        // Policy — this app embeds YouTube/Vimeo/TikTok iframes
+        // (ProfileExtras), uses Google OAuth, and talks to Supabase, and
+        // getting a CSP's allowlist wrong silently breaks one of those
+        // rather than failing loudly. These four are safe regardless of
+        // any third-party asset this app ever adds:
+        source: "/:path*",
+        headers: [
+          // Stops a browser from guessing a response's type and executing
+          // it as something else (e.g. treating an uploaded image as HTML).
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Same-origin framing only (the editor's own live preview, the
+          // template gallery's thumbnails, and the admin card preview all
+          // frame same-origin pages already and are unaffected) — blocks
+          // a third-party site from framing a public card for clickjacking.
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // Full URL to same-origin destinations, origin-only cross-origin
+          // — enough for the app's own analytics `referrer` column to stay
+          // useful without leaking a visitor's full path to outbound links.
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // Nothing in this app calls camera/microphone/geolocation APIs
+          // (the card scanner uses a plain file input, not getUserMedia) —
+          // disabling them closes off a class of attack against embedded
+          // third-party content this app doesn't otherwise use itself.
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+      {
         // Icons and social images: stable, and re-fetching them on every load
         // is pure waste on a phone connection.
         source: "/:file(icon.png|apple-icon.png|opengraph-image.png|favicon.ico)",
