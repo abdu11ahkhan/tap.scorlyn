@@ -103,19 +103,19 @@ export function Hero({
               href="/templates"
               className="sticker-lg sticker-press group inline-flex h-16 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid px-10 text-lg font-black uppercase tracking-tight text-ink"
             >
-              start building
+              create your card
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
 
-            {/* Was a second link to /templates — identical destination to
-                the primary button above it, diluting the CTA without
-                offering a real second path. Pricing is real, on this same
-                page, and was otherwise only reachable from the navbar. */}
+            {/* Points at the new step-by-step demonstration section — a
+                stronger second path than the pricing anchor this used to
+                point to, now that the page actually has something to show
+                rather than only tell. */}
             <Link
-              href="#pricing"
+              href="#how-it-works"
               className="inline-flex h-16 items-center justify-center rounded-full border-2 border-white/25 px-8 text-lg font-bold text-white transition-colors hover:border-white hover:bg-white/5"
             >
-              see pricing
+              see how it works
             </Link>
           </motion.div>
 

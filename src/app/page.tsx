@@ -3,7 +3,10 @@ import {  } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
+import { HowItWorks } from "@/components/sections/HowItWorks";
 import { Features } from "@/components/sections/Features";
+import { TemplateShowcase } from "@/components/sections/TemplateShowcase";
+import { AudienceSplit } from "@/components/sections/AudienceSplit";
 import { Pricing } from "@/components/sections/Pricing";
 import { Contact } from "@/components/sections/Contact";
 import BrandMark from "@/components/layout/BrandMark";
@@ -26,8 +29,11 @@ export default async function Home() {
       <Hero title={content?.hero_title} subtitle={content?.hero_subtitle} />
 
       <Marquee className="bg-acid text-ink" />
+      <HowItWorks />
       <Features />
       <Marquee reverse className="bg-hotpink text-white" />
+      <TemplateShowcase />
+      <AudienceSplit />
       <Pricing note={content?.pricing_note} />
       <Contact
         whatsapp={content?.support_whatsapp}

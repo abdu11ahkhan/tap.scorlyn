@@ -25,9 +25,33 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tap.scorlyn.com";
+
 export const metadata: Metadata = {
-  title: "ScorlynTap - Professional Portfolio Builder",
-  description: "Create your digital business card in minutes, connect with NFC, and share it anywhere.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "ScorlynTap — Digital Business Card & NFC Contact Sharing",
+    template: "%s — ScorlynTap",
+  },
+  description:
+    "Build a digital business card in minutes, share it by link, QR, or a physical NFC card, and see who's connecting with you. No app needed.",
+  openGraph: {
+    title: "ScorlynTap — Digital Business Card & NFC Contact Sharing",
+    description:
+      "Build a digital business card in minutes, share it by link, QR, or a physical NFC card, and see who's connecting with you.",
+    url: SITE_URL,
+    siteName: "ScorlynTap",
+    images: [`${SITE_URL}/opengraph-image.png`],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ScorlynTap — Digital Business Card & NFC Contact Sharing",
+    description:
+      "Build a digital business card in minutes, share it by link, QR, or a physical NFC card.",
+    images: [`${SITE_URL}/opengraph-image.png`],
+  },
 };
 
 export default function RootLayout({
