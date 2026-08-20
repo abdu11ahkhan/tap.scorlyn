@@ -32,7 +32,7 @@ export default function PosterCard({
 
   return (
     <div
-      className="relative min-h-screen bg-ink text-white"
+      className="grain relative min-h-screen bg-ink text-white overflow-hidden"
       style={{ fontFamily: fontStack(card.font) }}
     >
       {/* Photo */}

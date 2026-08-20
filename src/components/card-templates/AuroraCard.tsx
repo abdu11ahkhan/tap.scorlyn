@@ -19,7 +19,7 @@ export default function AuroraCard({
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Living mesh */}

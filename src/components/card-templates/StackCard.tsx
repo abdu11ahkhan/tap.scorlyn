@@ -32,7 +32,7 @@ export default function StackCard({
 
   return (
     <div
-      className="min-h-screen scroll-smooth"
+      className="grain relative min-h-screen scroll-smooth overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Jump nav */}

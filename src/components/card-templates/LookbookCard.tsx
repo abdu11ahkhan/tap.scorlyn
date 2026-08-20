@@ -41,7 +41,7 @@ export default function LookbookCard({
 
   return (
     <div
-      className="min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Lead image with the identity over it. Falls back to the avatar so a

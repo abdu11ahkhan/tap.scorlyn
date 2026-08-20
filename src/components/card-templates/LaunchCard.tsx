@@ -27,7 +27,7 @@ export default function LaunchCard({
 
   return (
     <div
-      className="relative flex min-h-screen flex-col justify-center overflow-hidden"
+      className="grain relative flex min-h-screen flex-col justify-center overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <div

@@ -28,7 +28,7 @@ export default function TilesCard({
 
   return (
     <div
-      className="relative min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-sm px-5 pb-28 pt-16">

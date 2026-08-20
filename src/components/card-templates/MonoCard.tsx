@@ -21,7 +21,7 @@ export default function MonoCard({
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Faint scanline field — CRT texture, not a pattern you consciously see. */}

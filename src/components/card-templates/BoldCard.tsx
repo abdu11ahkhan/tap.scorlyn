@@ -28,7 +28,7 @@ export default function BoldCard({
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="relative mx-auto w-full max-w-md px-6 pt-20 pb-32">

@@ -25,7 +25,7 @@ export default function NeonCard({
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* A single low grid, fading out before halfway up the screen — texture,

@@ -32,7 +32,7 @@ export default function MosaicCard({
 
   return (
     <div
-      className="min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       <main className="mx-auto w-full max-w-md px-4 pb-24 pt-12">

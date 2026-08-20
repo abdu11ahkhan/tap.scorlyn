@@ -33,7 +33,7 @@ export default function ReelCard({
 
   return (
     <div
-      className="min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Sticky identity strip so the name stays with you down the reel */}

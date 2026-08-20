@@ -34,7 +34,7 @@ export default function BookingCard({
 
   return (
     <div
-      className="min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {card.cover_url && (

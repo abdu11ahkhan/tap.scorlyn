@@ -25,7 +25,7 @@ export default function GlassCard({
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Optional photo backdrop, heavily dimmed so the frosted panels and

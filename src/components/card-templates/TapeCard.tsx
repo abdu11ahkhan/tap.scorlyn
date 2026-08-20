@@ -36,7 +36,7 @@ export default function TapeCard({
 
   return (
     <div
-      className="min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Torn-paper texture */}

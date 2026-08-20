@@ -23,7 +23,7 @@ export default function DockCard({
 
   return (
     <div
-      className="relative flex min-h-screen flex-col"
+      className="grain relative flex min-h-screen flex-col overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Full-bleed portrait, or the accent if there's no photo yet. */}

@@ -23,7 +23,7 @@ export default function EditorialCard({
 
   return (
     <div
-      className="min-h-screen"
+      className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: "ui-serif, Georgia, 'Times New Roman', serif" }}
     >
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">

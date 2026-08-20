@@ -25,7 +25,7 @@ export default function SplitCard({
 
   return (
     <div
-      className="min-h-screen md:flex"
+      className="grain relative min-h-screen md:flex overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
       {/* Identity panel — filled solid with the accent, so everything inside
