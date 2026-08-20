@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Star } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import {
   roleLine,
   fontStack,
@@ -52,16 +52,9 @@ export default function AppCard({
             {role && (
               <p className="card-headline truncate text-[13px] font-semibold" style={{ color: theme.fgDim }}>{role}</p>
             )}
-            <div className="mt-1 flex items-center gap-1">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <Star
-                  key={i}
-                  className="h-3 w-3"
-                  style={{ color: ink, fill: i < 4 ? accent : "transparent" }}
-                />
-              ))}
-              <span className="ml-1 text-[11px] font-bold" style={{ color: theme.fgMuted }}>4.8</span>
-            </div>
+            {card.company && (
+              <p className="mt-1 truncate text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: ink }}>{card.company}</p>
+            )}
           </div>
         </header>
 

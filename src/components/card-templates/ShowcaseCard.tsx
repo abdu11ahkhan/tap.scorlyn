@@ -8,6 +8,14 @@ import SaveContact from "./SaveContact";
  *
  * A full-bleed cover built from the avatar, then each link as a wide captioned
  * plate. For photographers and anyone whose work is visual.
+ *
+ * Deliberately has no gallery grid below the cover — it's one statement photo
+ * (cover_url, or the avatar) plus fast link access, not a sequence of work.
+ * That's the split from LookbookCard: Lookbook's hero is the first gallery
+ * photo and the page continues into the rest of the set; this one's hero is
+ * the person's own cover/portrait and the page moves straight to links. Two
+ * different jobs — "here's me, here's how to reach me" vs. "here's the work,
+ * one piece at a time" — that happen to share a hero markup shape.
  */
 export default function ShowcaseCard({
   card,

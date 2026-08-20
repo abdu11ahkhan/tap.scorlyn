@@ -69,13 +69,17 @@ export default function ReplyCard({
           >{card.bio}</p>
         )}
 
-        {/* The form is the point of this template. */}
+        {/* The form is the point of this template. Deliberately fixed dark
+            text throughout: this card is hardcoded white regardless of the
+            owner's surface_color, so it can't read theme.fg for its ink —
+            on a dark-themed card that would resolve to a light color and go
+            invisible against this white background. */}
         <section
-          className="card-rise mt-8 rounded-3xl border bg-white p-6 shadow-[0_14px_40px_rgba(0,0,0,0.06)]"
+          className="card-rise mt-8 rounded-3xl border bg-white p-6 text-[#12141A] shadow-[0_14px_40px_rgba(0,0,0,0.06)]"
           style={{ borderColor: theme.border, ["--d" as string]: "130ms" }}
         >
           <h2 className="text-[18px] font-black tracking-tight">Send a message</h2>
-          <p className="mt-1 text-[13px] font-semibold" style={{ color: theme.fgMuted }}>
+          <p className="mt-1 text-[13px] font-semibold text-black/45">
             {email
               ? "Opens in your mail app — nothing is stored here."
               : "No email set on this card yet."}
@@ -92,13 +96,7 @@ export default function ReplyCard({
               placeholder="Subject"
               aria-label="Subject"
               disabled={!email}
-              className="h-13 w-full rounded-xl border bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:[color:var(--placeholder)] focus:[border-color:var(--border-focus)] disabled:opacity-50"
-              style={{
-                borderColor: theme.border,
-                color: theme.fg,
-                ["--placeholder" as string]: theme.fgMuted,
-                ["--border-focus" as string]: theme.fgDim,
-              }}
+              className="h-13 w-full rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold text-[#12141A] outline-none placeholder:text-black/30 focus:border-black/40 disabled:opacity-50"
             />
             <textarea
               name="body"
@@ -107,13 +105,7 @@ export default function ReplyCard({
               placeholder="What's on your mind?"
               aria-label="Message"
               disabled={!email}
-              className="w-full resize-none rounded-xl border bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold outline-none placeholder:[color:var(--placeholder)] focus:[border-color:var(--border-focus)] disabled:opacity-50"
-              style={{
-                borderColor: theme.border,
-                color: theme.fg,
-                ["--placeholder" as string]: theme.fgMuted,
-                ["--border-focus" as string]: theme.fgDim,
-              }}
+              className="w-full resize-none rounded-xl border border-black/12 bg-[#FAFAFC] px-4 py-3.5 text-[15px] font-semibold text-[#12141A] outline-none placeholder:text-black/30 focus:border-black/40 disabled:opacity-50"
             />
             <button
               type="submit"
@@ -140,7 +132,7 @@ export default function ReplyCard({
                   href={button.href}
                   target={button.external ? "_blank" : undefined}
                   rel={button.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-[13px] font-bold transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  className="flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-[13px] font-bold text-[#12141A] transition-all hover:-translate-y-0.5 hover:shadow-md"
                   style={{ borderColor: theme.border }}
                 >
                   <Icon className="h-4 w-4" style={{ color: ink }} />
@@ -153,7 +145,7 @@ export default function ReplyCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--fg)]"
+          className="card-rise mt-8 flex min-h-11 items-center justify-center text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--fg)]"
           style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: "250ms" }}
         >
           save to contacts

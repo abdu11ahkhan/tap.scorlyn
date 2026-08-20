@@ -15,6 +15,12 @@ import SaveContact from "./SaveContact";
  * No margins and no grid. For work that is meant to be looked at rather than
  * scanned: photography, interiors, food. The name sits over the first image,
  * so the work is the first thing on screen rather than a header.
+ *
+ * The hero is the first gallery photo, not the avatar — the page is meant to
+ * continue straight into the rest of the set below it. That's the split from
+ * ShowcaseCard: this one is a sequential gallery essay; Showcase has no
+ * gallery at all, just one cover/portrait plus a fast link list. Same hero
+ * markup shape, different job.
  */
 export default function LookbookCard({
   card,

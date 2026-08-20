@@ -62,8 +62,12 @@ export default function QuoteCard({
           <p className="card-bio card-rise mt-5 text-[15px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>
         )}
 
-        <section className="card-rise mt-8 rounded-2xl border bg-white p-5" style={{ borderColor: theme.border }}>
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
+        {/* Deliberately fixed dark text: this card is hardcoded white
+            regardless of the owner's surface_color, so it can't read
+            theme.fg/fgMuted — on a dark-themed card those would resolve to a
+            light color and go invisible against this white background. */}
+        <section className="card-rise mt-8 rounded-2xl border bg-white p-5 text-[#12141A]" style={{ borderColor: theme.border }}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-black/45">
             include in your message
           </p>
           <ul className="mt-3 space-y-2.5">
@@ -90,7 +94,7 @@ export default function QuoteCard({
                 target={button.external ? "_blank" : undefined}
                 rel={button.external ? "noopener noreferrer" : undefined}
                 className={`card-rise flex h-14 items-center gap-3 rounded-xl px-4 text-[15px] font-bold ${
-                  lead ? "" : "border bg-white"
+                  lead ? "" : "border bg-white text-[#12141A]"
                 }`}
                 style={
                   lead
@@ -107,7 +111,7 @@ export default function QuoteCard({
 
         <SaveContact
           card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-xl border bg-white text-[13px] font-bold"
+          className="mt-6 flex h-12 items-center justify-center rounded-xl border bg-white text-[13px] font-bold text-[#12141A]"
           style={{ borderColor: theme.border }}
         >
           Save to contacts

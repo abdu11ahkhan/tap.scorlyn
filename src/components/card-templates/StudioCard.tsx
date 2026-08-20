@@ -62,9 +62,14 @@ export default function StudioCard({
             )}
           </div>
           <span className="card-name min-w-0 flex-1 truncate text-[13px] font-bold">{card.full_name}</span>
-          <nav className="flex gap-3 text-[11px] font-semibold" style={{ color: theme.fgDim }}>
+          <nav className="flex gap-1 text-[11px] font-semibold" style={{ color: theme.fgDim }}>
             {sections.map((s) => (
-              <a key={s.id} href={`#${s.id}`} className="hover:[color:var(--fg)]" style={{ ["--fg" as string]: theme.fg }}>
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="flex min-h-11 items-center px-2 hover:[color:var(--fg)]"
+                style={{ ["--fg" as string]: theme.fg }}
+              >
                 {s.label}
               </a>
             ))}

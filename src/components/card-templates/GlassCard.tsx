@@ -1,11 +1,12 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
+import { fontStack, initialsOf, mixHex, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
 /**
- * Dark, frosted, lit by drifting accent orbs. Matches the marketing site's
- * look, so a card feels continuous with the brand.
+ * Dark, frosted, lit by drifting orbs — all derived from the owner's own
+ * accent color, never a fixed hue of ours, so the ambient glow still reads
+ * as their brand rather than a fixed platform color.
  */
 export default function GlassCard({
   card,
@@ -20,6 +21,7 @@ export default function GlassCard({
   // literal #05070C/white pair used to produce exactly.
   const theme = resolveCardTheme(card, "#05070C");
   const { accent, accentText: ink } = theme;
+  const orbTint = mixHex(accent, "#ffffff", 0.35);
 
   return (
     <div
@@ -47,7 +49,7 @@ export default function GlassCard({
       />
       <div
         className="float-orb pointer-events-none absolute top-1/3 -right-24 h-[280px] w-[280px] rounded-full blur-[120px] opacity-[0.16]"
-        style={{ background: "#818CF8", ["--d" as string]: "6s" }}
+        style={{ background: orbTint, ["--d" as string]: "6s" }}
       />
 
       <main className="relative mx-auto w-full max-w-sm px-5 pt-20 pb-32">
