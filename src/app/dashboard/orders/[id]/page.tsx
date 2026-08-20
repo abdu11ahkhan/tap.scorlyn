@@ -211,12 +211,12 @@ export default async function OrderDetail({
                   <p className="text-sm font-black text-black">{m.label}</p>
                   <div className="mt-2 space-y-0.5">
                     {m.account_name && (
-                      <CopyRow label="Name" value={m.account_name} accent="#e3bd90" />
+                      <CopyRow label="Name" value={m.account_name} accent="#f58800" />
                     )}
                     {m.account_number && (
-                      <CopyRow label="Account" value={m.account_number} accent="#e3bd90" />
+                      <CopyRow label="Account" value={m.account_number} accent="#f58800" />
                     )}
-                    {m.iban && <CopyRow label="IBAN" value={m.iban} accent="#e3bd90" />}
+                    {m.iban && <CopyRow label="IBAN" value={m.iban} accent="#f58800" />}
                   </div>
                   {m.note && (
                     <p className="mt-2 text-[11px] font-semibold text-black/50">{m.note}</p>

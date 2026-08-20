@@ -48,7 +48,7 @@ export default function TrendChart({ series }: { series: AnalyticsSummary["daily
                 />
                 {day.interactions > 0 && (
                   <div
-                    className="w-full rounded-t-sm bg-sc-text-dimmer/70 transition-colors group-hover:bg-sc-text-dim"
+                    className="w-full rounded-t-sm bg-sc-teal/70 transition-colors group-hover:bg-sc-teal"
                     style={{ height: `${interactionsPct}%` }}
                     title={`${day.date} — ${day.interactions} interaction${day.interactions === 1 ? "" : "s"}`}
                   />
@@ -73,7 +73,7 @@ export default function TrendChart({ series }: { series: AnalyticsSummary["daily
           <span className="h-2 w-2 rounded-sm bg-sc-gold" /> Views
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-sm bg-sc-text-dimmer/70" /> Other interactions
+          <span className="h-2 w-2 rounded-sm bg-sc-teal/70" /> Other interactions
         </span>
       </div>
     </div>
