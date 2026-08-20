@@ -117,11 +117,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors",
                   isActive
-                    ? "bg-sc-surface-2 text-sc-text"
+                    ? "bg-sc-cta/15 text-sc-text"
                     : "text-sc-text-dim hover:bg-sc-surface hover:text-sc-text"
                 )}
               >
-                <Icon className={cn("h-[17px] w-[17px]", isActive ? "text-sc-gold" : "")} />
+                {/* Olive as bare foreground text/icon color on this dark
+                    surface measures 2.7:1 — below even the lenient 3:1 bar
+                    for graphical objects. It needs to be a fill (the row's
+                    tinted background above), with light text/icon on top,
+                    same as everywhere else Olive is used. */}
+                <Icon className={cn("h-[17px] w-[17px]", isActive ? "text-sc-text" : "")} />
                 {link.name}
               </Link>
             );
@@ -188,7 +193,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={cn(
                   "shrink-0 rounded-full border-2 px-4 py-2 text-xs font-black lowercase transition-colors",
                   isActive
-                    ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+                    ? "border-sc-cta bg-sc-cta text-sc-cta-ink"
                     : "border-sc-border text-sc-text-dim"
                 )}
               >
