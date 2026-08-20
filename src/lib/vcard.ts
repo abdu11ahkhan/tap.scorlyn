@@ -72,7 +72,7 @@ const SOCIAL_TYPES: Partial<Record<CardButton["kind"], string>> = {
  * is a published row, an unsaved draft in the editor, or a demo persona on a
  * template preview — the three places the button appears.
  */
-export function buildVCard(card: VCardSource, origin: string): string {
+export function buildVCard(card: VCardSource, origin: string, visitorNote?: string | null): string {
   const [firstName, ...rest] = (card.full_name || "").split(" ");
   const lastName = rest.join(" ");
   const whatsapp = normalizeWhatsapp(card.whatsapp ?? null);
@@ -99,7 +99,13 @@ export function buildVCard(card: VCardSource, origin: string): string {
   }
   if (card.email) lines.push(`EMAIL;TYPE=INTERNET:${escapeVCard(card.email)}`);
   if (card.location) lines.push(`ADR;TYPE=WORK:;;${escapeVCard(card.location)};;;;`);
-  if (card.bio) lines.push(`NOTE:${escapeVCard(card.bio)}`);
+
+  // vCard only has one NOTE field, and the owner's own bio already uses it —
+  // a visitor's own reminder (where they met, what to follow up on) is
+  // appended underneath rather than replacing it, so neither is lost.
+  const trimmedNote = visitorNote?.trim().slice(0, 300) || "";
+  const noteParts = [card.bio?.trim(), trimmedNote ? `Note: ${trimmedNote}` : ""].filter(Boolean);
+  if (noteParts.length > 0) lines.push(`NOTE:${escapeVCard(noteParts.join("\n\n"))}`);
   // Only a fetchable URL. The placeholder avatars are inline `data:` SVGs, and
   // a 1.5KB data URI in PHOTO is rejected by most contact importers.
   if (card.avatar_url && /^https?:\/\//i.test(card.avatar_url)) {

@@ -30,8 +30,13 @@ export async function GET(
   }
 
   const origin = new URL(request.url).origin;
+  // Optional, visitor-supplied — a private reminder for whoever is saving
+  // this contact ("met at the conference"), never something the card owner
+  // set. Capped in buildVCard itself; nothing here needs validating beyond
+  // "is it a string" since it only ever becomes free text inside NOTE.
+  const note = new URL(request.url).searchParams.get("note");
 
-  return new NextResponse(buildVCard(card, origin), {
+  return new NextResponse(buildVCard(card, origin, note), {
     headers: {
       "Content-Type": "text/vcard; charset=utf-8",
       "Content-Disposition": `inline; filename="${vcardFilename(card)}"`,

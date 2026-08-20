@@ -6,6 +6,7 @@ import { renderCardTemplate } from "@/components/card-templates";
 import TapTracker from "@/components/nfc/TapTracker";
 import OutboundClickTracker from "@/components/nfc/OutboundClickTracker";
 import ReferralBanner from "@/components/nfc/ReferralBanner";
+import ReferenceNote from "@/components/nfc/ReferenceNote";
 import ProfileExtras, { hasProfileExtras } from "@/components/nfc/ProfileExtras";
 import { extrasTone } from "@/components/card-templates";
 import ShareButton from "@/components/nfc/ShareButton";
@@ -126,6 +127,8 @@ export default async function CardProfilePage({
       </div>
 
       <ProfileExtras card={card} tone={extrasTone(card)} />
+
+      <ReferenceNote username={card.username} />
 
       <ReferralBanner
         refCode={card.referral_code}

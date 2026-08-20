@@ -41,13 +41,34 @@ export default function SaveContact({
     // never blocks the click either way.
     trackCardEvent(card.username, "contact_save");
 
+    // The visitor's own note (ReferenceNote, rendered once at the bottom of
+    // the page, independent of wherever this template puts its own "save"
+    // button) — read at click time since the two are separate client
+    // component instances with no shared React tree to pass state through.
+    let note = "";
+    try {
+      note = sessionStorage.getItem(`scorlyntap_ref_note:${card.username}`) ?? "";
+    } catch {
+      // Private-browsing / storage-disabled — save still works, just without a note.
+    }
+
     // A real card is served by the API route, and letting the navigation
     // happen is what gets the contact into the phone rather than into Files.
-    if (window.location.pathname.startsWith("/u/")) return;
+    // Still needs to happen through here rather than the plain href, though,
+    // so the note above can ride along — a plain click-through would only
+    // ever hit the no-note URL.
+    if (window.location.pathname.startsWith("/u/")) {
+      event.preventDefault();
+      const target = note.trim()
+        ? `/api/vcard/${card.username}?note=${encodeURIComponent(note.trim())}`
+        : `/api/vcard/${card.username}`;
+      window.location.href = target;
+      return;
+    }
 
     event.preventDefault();
 
-    const blob = new Blob([buildVCard(card, window.location.origin)], {
+    const blob = new Blob([buildVCard(card, window.location.origin, note)], {
       type: "text/vcard;charset=utf-8",
     });
     const url = URL.createObjectURL(blob);
