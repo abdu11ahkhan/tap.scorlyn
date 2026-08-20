@@ -1,0 +1,30 @@
+-- =====================================================================
+-- P0 fix, found while browser-testing Phase 12: an anonymous (no-session)
+-- request to /u/[username] or /api/tap was returning "not found" / "card
+-- not found" for a real, published card — confirmed live against
+-- production via a genuinely cookie-less request.
+--
+-- Root cause: 049_reconcile_function_grants.sql revoked anon's EXECUTE on
+-- is_admin(), reasoning it was an unintended default-ACL leftover with "no
+-- exploitable" effect. That reasoning covered is_admin() being CALLED
+-- directly — it missed that is_admin() is also used as the USING clause of
+-- "Admins can view all card profiles." on card_profiles (and the
+-- equivalent admin policies on nfc_cards/orders/card_taps/order_events).
+-- Postgres RLS evaluates every applicable policy's USING clause during
+-- planning, even ones that don't end up matching, to combine them with OR
+-- — so a role that cannot even CALL a function referenced in any policy on
+-- a table gets a hard "permission denied for function is_admin" on the
+-- whole query, not a silent skip of that one policy. That masked the
+-- separate, legitimately-anon-accessible "Anyone can view a published card
+-- profile" policy on the exact same table, breaking every anonymous read
+-- of card_profiles — the core "someone taps your card / opens your public
+-- link with no account" path — since 049 was applied.
+--
+-- is_admin() is safe for anon to call: SECURITY DEFINER, SELECT ... WHERE
+-- p.id = auth.uid() ... COALESCE(..., false) — auth.uid() is NULL for an
+-- anonymous request, so it deterministically returns false. Granting
+-- EXECUTE does not let anon learn anything or gain any access; it only
+-- lets the RLS planner finish evaluating the OTHER policies on the table.
+-- =====================================================================
+
+GRANT EXECUTE ON FUNCTION public.is_admin() TO anon;
