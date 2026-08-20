@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Loader2 } from "lucide-react";
 import {
@@ -8,7 +8,11 @@ import {
   changePassword,
   deleteAccount,
   saveNotifications,
+  switchToCorporate,
+  switchToIndividual,
 } from "./actions";
+import { COMPANY_SLUG_MAX, COMPANY_SLUG_PATTERN, slugify } from "@/lib/org";
+import { createClient } from "@/lib/supabase/client";
 
 type Result = { ok: boolean; error?: string };
 
@@ -73,9 +77,15 @@ function Panel({
 export default function SettingsPanels({
   email,
   notify,
+  accountType,
+  companyName,
+  employeeCount,
 }: {
   email: string;
   notify: { email: boolean; whatsapp: boolean; number: string };
+  accountType: "individual" | "corporate";
+  companyName: string | null;
+  employeeCount: number;
 }) {
   const router = useRouter();
 
@@ -165,6 +175,13 @@ export default function SettingsPanels({
         )}
       </Panel>
 
+      {/* Account type */}
+      <AccountTypeSection
+        accountType={accountType}
+        companyName={companyName}
+        employeeCount={employeeCount}
+      />
+
       {/* Delete */}
       <section className="app-panel app-panel-pad border-sc-error/25">
         <h2 className="text-[15px] font-semibold text-sc-text">Delete account</h2>
@@ -186,6 +203,189 @@ export default function SettingsPanels({
         />
       </section>
     </div>
+  );
+}
+
+/**
+ * Individual ↔ corporate, in one place — the two directions need genuinely
+ * different UI (corporate needs a company name typed in; downgrading needs
+ * nothing but a confirmation, or a hard block if a team still exists), so
+ * this isn't built on the generic Panel above.
+ */
+function AccountTypeSection({
+  accountType,
+  companyName,
+  employeeCount,
+}: {
+  accountType: "individual" | "corporate";
+  companyName: string | null;
+  employeeCount: number;
+}) {
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  if (accountType === "individual") {
+    // Full reload, not router.refresh(): DashboardLayout's sidebar (Team
+    // link, account badge) reads account_type from its own client-side
+    // effect that only runs on mount, so a soft refresh leaves it stale.
+    return <SwitchToCorporateForm onDone={() => window.location.reload()} />;
+  }
+
+  return (
+    <section className="app-panel app-panel-pad">
+      <h2 className="text-[15px] font-semibold text-sc-text">Account type</h2>
+      <p className="app-sub mt-1">
+        Corporate account{companyName ? ` — ${companyName}` : ""}.
+      </p>
+
+      {employeeCount > 0 ? (
+        <p className="mt-4 text-[13px] font-medium text-sc-text-dim">
+          You have {employeeCount} employee card{employeeCount === 1 ? "" : "s"}. Remove
+          everyone from your team (Team page) before switching to an individual account.
+        </p>
+      ) : (
+        <div className="mt-4 flex items-center gap-3">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => {
+              if (
+                !window.confirm(
+                  "Switch to an individual account? Team management stays off until you switch back."
+                )
+              )
+                return;
+              setError(null);
+              startTransition(async () => {
+                const r = await switchToIndividual();
+                if (!r.ok) setError(r.error ?? "Could not switch.");
+                else window.location.reload();
+              });
+            }}
+            className="app-btn app-btn-secondary"
+          >
+            {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            Switch to individual account
+          </button>
+          {error && <span className="text-[13px] font-medium text-sc-error">{error}</span>}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function SwitchToCorporateForm({ onDone }: { onDone: () => void }) {
+  const [open, setOpen] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [checkedStatus, setCheckedStatus] = useState<"idle" | "checking" | "free" | "taken">("idle");
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+  const supabase = createClient();
+
+  const slug = slugify(companyName, COMPANY_SLUG_MAX);
+
+  // Same split as AccountTypePicker/UsernameField: the idle/invalid cases
+  // are derivable straight from props/state during render, so only the
+  // genuinely async "is it actually available" check goes through an
+  // effect (and only that branch ever calls setState from inside one).
+  const staticStatus: "idle" | "invalid" | null =
+    !open || !companyName.trim()
+      ? "idle"
+      : !COMPANY_SLUG_PATTERN.test(slug)
+        ? "invalid"
+        : null;
+
+  const status = staticStatus ?? checkedStatus;
+
+  useEffect(() => {
+    if (staticStatus !== null) return;
+
+    let cancelled = false;
+    const mark = setTimeout(() => setCheckedStatus("checking"), 0);
+    const timer = setTimeout(async () => {
+      const { data, error: checkError } = await supabase.rpc("company_slug_available", {
+        candidate: slug,
+      });
+      if (cancelled) return;
+      setCheckedStatus(checkError ? "idle" : data ? "free" : "taken");
+    }, 450);
+    return () => {
+      cancelled = true;
+      clearTimeout(mark);
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [staticStatus, slug]);
+
+  return (
+    <section className="app-panel app-panel-pad">
+      <h2 className="text-[15px] font-semibold text-sc-text">Account type</h2>
+      <p className="app-sub mt-1">Individual account.</p>
+
+      {!open ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="app-btn app-btn-secondary mt-4"
+        >
+          Switch to a corporate account
+        </button>
+      ) : (
+        <div className="mt-4 space-y-3">
+          <div className="space-y-1.5">
+            <label htmlFor="switch-company-name" className="text-xs font-bold uppercase tracking-wide text-sc-text-dim">
+              Company name
+            </label>
+            <input
+              id="switch-company-name"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="Acme Studio"
+              className="app-input max-w-sm"
+            />
+            {slug && (
+              <p className="text-xs text-sc-text-dimmer">
+                Employees will get cards like{" "}
+                <span className="font-mono text-sc-text-dim">/u/{slug}-jane</span>
+                {status === "taken" && <span className="text-sc-error"> — that name is taken</span>}
+                {status === "invalid" && <span className="text-sc-error"> — try adding a word or two</span>}
+              </p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              disabled={pending || status !== "free"}
+              onClick={() => {
+                setError(null);
+                startTransition(async () => {
+                  const r = await switchToCorporate(companyName);
+                  if (!r.ok) setError(r.error ?? "Could not switch.");
+                  else onDone();
+                });
+              }}
+              className="app-btn app-btn-primary disabled:opacity-60"
+            >
+              {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+              Switch to corporate
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setCompanyName("");
+                setError(null);
+              }}
+              className="text-[13px] font-bold text-sc-text-dimmer hover:text-sc-text-dim"
+            >
+              Cancel
+            </button>
+            {error && <span className="text-[13px] font-medium text-sc-error">{error}</span>}
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { USERNAME_PATTERN } from "@/lib/card-draft";
+import { COMPANY_SLUG_MAX, COMPANY_SLUG_PATTERN, slugify } from "@/lib/org";
 
 type Result = { ok: boolean; error?: string };
 
@@ -132,6 +133,94 @@ export async function deleteAccount(): Promise<Result> {
     const { error } = await supabase.rpc("delete_own_account");
     if (error) throw new Error(error.message);
     await supabase.auth.signOut();
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Individual → corporate.
+ *
+ * /onboarding/company-setup (reached from signup) turns out NOT to be
+ * reusable here: it only collects house_template/first-employee, on the
+ * assumption company_name/company_slug were already set during signup by
+ * AccountTypePicker. A settings-triggered conversion never goes through
+ * that picker, so this collects the same company name → slug pair itself
+ * — company_slug is required by every corporate feature (assertCorporateOwner
+ * in src/app/dashboard/team/actions.ts refuses to proceed without it), so
+ * flipping account_type without it would leave the account stuck corporate
+ * but unable to actually do anything corporate.
+ */
+export async function switchToCorporate(companyName: string): Promise<Result> {
+  try {
+    const { supabase, user } = await requireUser();
+
+    const name = companyName.trim();
+    if (!name) throw new Error("Enter your company name.");
+
+    const slug = slugify(name, COMPANY_SLUG_MAX);
+    if (!COMPANY_SLUG_PATTERN.test(slug)) {
+      throw new Error("That name doesn't produce a usable address — try adding a word or two.");
+    }
+
+    const { data: available, error: slugCheckError } = await supabase.rpc(
+      "company_slug_available",
+      { candidate: slug }
+    );
+    if (slugCheckError) throw new Error(slugCheckError.message);
+    if (!available) throw new Error(`"${slug}" is already taken by another company.`);
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ account_type: "corporate", company_name: name, company_slug: slug })
+      .eq("id", user.id);
+    if (error) throw new Error(error.message);
+
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard", "layout");
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Corporate → individual. Blocked while any employee cards still exist —
+ * every corporate-only action (team management, employee NFC ordering) is
+ * gated on account_type === "corporate" (assertCorporateOwner in
+ * src/app/dashboard/team/actions.ts), so downgrading with a live roster
+ * would leave employees whose cards nobody could manage or remove anymore,
+ * the same "remove admin access first" shape as deleteAccount in
+ * src/app/admin/actions.ts refusing to delete the last admin.
+ *
+ * company_name/company_slug/house_* are deliberately left in place rather
+ * than cleared — harmless once account_type flips (nothing reads them for
+ * an individual account), and switching back later restores the same
+ * company identity instead of starting over.
+ */
+export async function switchToIndividual(): Promise<Result> {
+  try {
+    const { supabase, user } = await requireUser();
+
+    const { count } = await supabase
+      .from("card_profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("org_owner_id", user.id);
+
+    if (count && count > 0) {
+      throw new Error(
+        `You still have ${count} employee card${count === 1 ? "" : "s"}. Remove them from your team before switching to an individual account.`
+      );
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ account_type: "individual" })
+      .eq("id", user.id);
+    if (error) throw new Error(error.message);
+    revalidatePath("/dashboard/settings");
+    revalidatePath("/dashboard", "layout");
     return { ok: true };
   } catch (e) {
     return fail(e);
