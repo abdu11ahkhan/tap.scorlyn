@@ -10,6 +10,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — a title card, then one frame at a time.
  *
@@ -37,6 +38,7 @@ export default function FilmstripCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md pb-24">
       {/* Title card — its own full-height beat before the sequence, the way
           a film opens on a name before the first cut. */}

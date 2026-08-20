@@ -3,6 +3,7 @@ import { fontStack, initialsOf, mixHex, resolveCardTheme, type CardProfile, type
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Dark, frosted, lit by drifting orbs — all derived from the owner's own
  * accent color, never a fixed hue of ours, so the ambient glow still reads
@@ -28,6 +29,7 @@ export default function GlassCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Optional photo backdrop, heavily dimmed so the frosted panels and
           text stay readable over whatever gets uploaded. */}
       {card.cover_url && (

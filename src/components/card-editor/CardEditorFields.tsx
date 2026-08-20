@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import {
   ACCENT_PRESETS,
   SURFACE_PRESETS,
+  BACKGROUND_EFFECTS,
   surfaceReadability,
   BUTTON_KIND_GROUPS,
   KIND_LABELS,
@@ -271,6 +272,33 @@ export default function CardEditorFields({
                 </span>
               );
             })()}
+          </div>
+        </div>
+
+        {/* Optional, built from the accent colour above rather than a fixed
+            hue — off by default so every template still opens on its own
+            designed look, but there for anyone who wants their card to
+            feel a little less flat. */}
+        <div className="space-y-2 sm:col-span-2">
+          <Label>Background effect</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            An optional touch of motion or texture, in your own accent colour.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {BACKGROUND_EFFECTS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => onFormChange({ background_effect: opt.id })}
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                  (form.background_effect || "none") === opt.id
+                    ? "border-sc-gold text-sc-gold"
+                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
         </div>
 

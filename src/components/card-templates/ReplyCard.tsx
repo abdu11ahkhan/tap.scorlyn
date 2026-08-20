@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * FORM — built to get a reply.
  *
@@ -34,6 +35,7 @@ export default function ReplyCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <header
           className="card-rise flex items-center gap-4"

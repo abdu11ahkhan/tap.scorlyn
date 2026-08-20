@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * SECTIONED — a small studio site on one page.
  *
@@ -42,6 +43,7 @@ export default function StudioCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <header
         id="top"
         className="sticky top-0 z-20 border-b backdrop-blur-md"

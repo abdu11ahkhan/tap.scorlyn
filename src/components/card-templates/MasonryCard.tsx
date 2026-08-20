@@ -10,6 +10,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — the work leads, the person follows.
  *
@@ -37,6 +38,7 @@ export default function MasonryCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-lg pb-24 pt-10">
         {/* Masthead — a line, not a hero. The gallery is what this card is
             for; the identity strip only has to say who it belongs to. */}

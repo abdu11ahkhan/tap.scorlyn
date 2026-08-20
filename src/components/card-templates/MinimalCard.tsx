@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * The quiet default. A restrained business card, not a landing page —
  * centred, on paper, with one precise touch of the owner's colour rather
@@ -27,6 +28,7 @@ export default function MinimalCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto flex w-full max-w-sm flex-col items-center px-6 pt-20 pb-28 text-center">
         <div
           className="card-avatar card-rise flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border"

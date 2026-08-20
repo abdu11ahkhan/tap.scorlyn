@@ -3,6 +3,7 @@ import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, ty
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Icon-only: the links are a row of round buttons under the name.
  *
@@ -27,6 +28,7 @@ export default function OrbitCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <div
         className="float-orb pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full opacity-25 blur-[120px]"
         style={{ background: accent }}

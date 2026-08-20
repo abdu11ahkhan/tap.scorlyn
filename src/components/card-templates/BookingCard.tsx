@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /** Indicative slots. Real availability needs a calendar integration. */
 const SLOTS = ["09:00", "11:30", "14:00", "16:30"];
 
@@ -37,6 +38,7 @@ export default function BookingCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {card.cover_url && (
         <div className="relative h-40">
           {/* eslint-disable-next-line @next/next/no-img-element */}

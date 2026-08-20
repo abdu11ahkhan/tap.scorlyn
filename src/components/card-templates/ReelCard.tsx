@@ -11,6 +11,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — edge-to-edge photos, one after another.
  *
@@ -36,6 +37,7 @@ export default function ReelCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Sticky identity strip so the name stays with you down the reel */}
       <header
         className="sticky top-0 z-20 flex items-center gap-3 border-b px-5 py-3 backdrop-blur-xl"

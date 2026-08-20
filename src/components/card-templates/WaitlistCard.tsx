@@ -2,6 +2,7 @@ import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
 import { fontStack, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * LANDING — "coming soon", with a sign-up as the only real action.
  *
@@ -25,6 +26,7 @@ export default function WaitlistCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <div
         className="gradient-pan pointer-events-none absolute inset-0 opacity-60"
         style={{

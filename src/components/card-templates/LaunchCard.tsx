@@ -7,6 +7,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * LANDING — one thing, one button.
  *
@@ -30,6 +31,7 @@ export default function LaunchCard({
       className="grain relative flex min-h-screen flex-col justify-center overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <div
         className="float-orb pointer-events-none absolute -top-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full opacity-30 blur-[130px]"
         style={{ background: accent }}

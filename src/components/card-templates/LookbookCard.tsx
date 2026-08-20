@@ -9,6 +9,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — full-bleed, one piece per screen.
  *
@@ -44,6 +45,7 @@ export default function LookbookCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Lead image with the identity over it. Falls back to the avatar so a
           card with no gallery yet still has a cover rather than a gap. */}
       <header className="relative h-[70vh] min-h-[420px] w-full overflow-hidden">

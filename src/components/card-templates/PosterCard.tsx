@@ -8,6 +8,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * LANDING — the cover photo is the whole design.
  *
@@ -35,6 +36,8 @@ export default function PosterCard({
       className="grain relative min-h-screen bg-ink text-white overflow-hidden"
       style={{ fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
+
       {/* Photo */}
       <div className="fixed inset-0">
         {cover ? (

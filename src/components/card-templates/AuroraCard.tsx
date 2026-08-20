@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Full-bleed gradient that slowly pans, with frosted glass on top. The accent
  * seeds the whole mesh rather than being a single highlight.
@@ -22,6 +23,7 @@ export default function AuroraCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Living mesh */}
       <div
         className="gradient-pan pointer-events-none absolute inset-0 opacity-80"

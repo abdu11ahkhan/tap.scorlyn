@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * SECTIONED — cover photo, services, work, contact. The closest thing here to
  * a small company site, all on one page with jump nav.
@@ -46,6 +47,7 @@ export default function AgencyCard({
       className="grain relative min-h-screen scroll-smooth overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <nav
         className="sticky top-0 z-30 border-b backdrop-blur-xl"
         style={{ backgroundColor: `${tone}E6`, borderColor: theme.border }}

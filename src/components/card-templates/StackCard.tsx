@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * SECTIONED — a whole small site on one page.
  *
@@ -35,6 +36,7 @@ export default function StackCard({
       className="grain relative min-h-screen scroll-smooth overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Jump nav */}
       <nav
         className="sticky top-0 z-30 border-b backdrop-blur-xl"

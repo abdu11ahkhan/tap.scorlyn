@@ -9,6 +9,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — one project, told properly.
  *
@@ -32,6 +33,7 @@ export default function CaseCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <p
           className="card-company card-rise text-[11px] font-bold uppercase tracking-[0.3em]"

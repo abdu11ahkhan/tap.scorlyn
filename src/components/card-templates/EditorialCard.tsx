@@ -3,6 +3,7 @@ import { initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } f
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Magazine spread: warm paper, serif, rules and small caps. Ignores the font
  * setting on purpose — the serif *is* the template.
@@ -26,6 +27,7 @@ export default function EditorialCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: "ui-serif, Georgia, 'Times New Roman', serif" }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">
         <p
           className="card-company card-rise text-center text-[11px] uppercase tracking-[0.3em]"

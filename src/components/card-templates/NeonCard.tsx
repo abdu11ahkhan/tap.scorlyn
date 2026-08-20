@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * After dark. Left-aligned and asymmetric on purpose — Minimal is the quiet,
  * centred default, and this exists for the card that wants to look like it
@@ -28,6 +29,7 @@ export default function NeonCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* A single low grid, fading out before halfway up the screen — texture,
           not a floor. */}
       <div

@@ -10,6 +10,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — prints laid on a table.
  *
@@ -35,6 +36,7 @@ export default function FramesCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
           <h1 className="card-name text-[30px] font-bold tracking-tight">{card.full_name}</h1>

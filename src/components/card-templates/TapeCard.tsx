@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Alternating tilts so the stack looks hand-placed rather than laid out.
  * Kept under ~2° — steeper angles make neighbouring strips overlap, and the
@@ -39,6 +40,7 @@ export default function TapeCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Torn-paper texture */}
       <div
         className="pointer-events-none fixed inset-0 opacity-[0.5]"

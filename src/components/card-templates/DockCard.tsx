@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Icon-only, held in a dock pinned to the bottom of the screen.
  *
@@ -26,6 +27,7 @@ export default function DockCard({
       className="grain relative flex min-h-screen flex-col overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Full-bleed portrait, or the accent if there's no photo yet. */}
       <div className="relative flex-1 overflow-hidden">
         {card.avatar_url ? (

@@ -8,6 +8,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * SECTIONED — long-form, like a column.
  *
@@ -30,6 +31,7 @@ export default function JournalCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={theme.accent} />
       <main className="mx-auto w-full max-w-[34rem] px-6 pb-24 pt-16">
         <header className="card-rise border-b pb-7" style={{ borderColor: theme.border }}>
           <p className="card-company text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: ink }}>{card.company || "Notes"}</p>

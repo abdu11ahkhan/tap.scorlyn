@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Oversized display name, hard left alignment, gradient-filled buttons that
  * catch a shine on touch. The name is the design; the colour does the rest.
@@ -31,6 +32,7 @@ export default function BoldCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="relative mx-auto w-full max-w-md px-6 pt-20 pb-32">
         <div className="card-rise flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>
           <div

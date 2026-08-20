@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — big imagery energy.
  *
@@ -32,6 +33,7 @@ export default function ShowcaseCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Cover */}
       <section className="relative h-[58vh] min-h-[380px] overflow-hidden">
         {/* Prefer a dedicated cover; fall back to the avatar. */}

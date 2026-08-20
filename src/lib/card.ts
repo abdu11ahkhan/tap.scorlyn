@@ -112,6 +112,16 @@ export const ACCENT_PRESETS = [
   { name: "Clay", value: "#B45309" },
 ] as const;
 
+/** Optional background effects a customer can layer on top of their own
+ *  accent colour — see src/components/card-templates/BackgroundEffect.tsx
+ *  for how each one actually renders. */
+export const BACKGROUND_EFFECTS = [
+  { id: "none", label: "none" },
+  { id: "glow", label: "glow" },
+  { id: "grid", label: "grid" },
+  { id: "gradient", label: "gradient" },
+] as const;
+
 /**
  * Backgrounds a card can sit on, grouped by lightness.
  *
@@ -208,6 +218,10 @@ export type CardProfile = {
   show_qr: boolean;
   /** Background chosen by the owner. Null keeps the template as designed. */
   surface_color: string | null;
+  /** Optional effect layered on top of the background, in the owner's own
+   *  accent colour. Null/'none' keeps the flat (grain-only) look every
+   *  template already has. */
+  background_effect: "none" | "glow" | "grid" | "gradient" | null;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];

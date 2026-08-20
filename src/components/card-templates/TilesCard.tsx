@@ -3,6 +3,7 @@ import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, ty
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Icon-only, as a grid of square tiles.
  *
@@ -31,6 +32,7 @@ export default function TilesCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-sm px-5 pb-28 pt-16">
         <header className="card-rise flex items-center gap-4">
           <div

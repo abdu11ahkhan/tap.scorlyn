@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * FORM — asking for a quote.
  *
@@ -39,6 +40,7 @@ export default function QuoteCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <span
           className="card-rise inline-flex h-12 w-12 items-center justify-center rounded-2xl"

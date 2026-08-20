@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * LANDING — app-store shaped. Icon, rating, screenshot, feature list, download.
  * The cover image is used as the product shot.
@@ -32,6 +33,7 @@ export default function AppCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         {/* App header row */}
         <header className="card-rise flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>

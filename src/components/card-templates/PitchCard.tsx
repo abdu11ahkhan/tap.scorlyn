@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * LANDING — one promise, one button.
  *
@@ -32,6 +33,7 @@ export default function PitchCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pb-16 pt-20 text-center">
         {/* Kept low: a bright accent at 30% over ink washes the whole hero

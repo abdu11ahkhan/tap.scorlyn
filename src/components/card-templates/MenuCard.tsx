@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * LANDING — a price list.
  *
@@ -47,6 +48,7 @@ export default function MenuCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
           <h1 className="card-name text-[2.6rem] font-bold leading-none tracking-tight">{card.full_name}</h1>

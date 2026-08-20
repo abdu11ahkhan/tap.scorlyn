@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Neo-brutalist: 2px black outlines, hard offset shadows, no gradients.
  * The house style, turned into a card.
@@ -40,6 +41,7 @@ export default function StickerCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Dot grid paper */}
       <div
         className="pointer-events-none fixed inset-0 opacity-[0.12]"

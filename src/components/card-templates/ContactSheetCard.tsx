@@ -10,6 +10,7 @@ import {
 } from "@/lib/card";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * PORTFOLIO — a photographer's contact sheet.
  *
@@ -32,6 +33,7 @@ export default function ContactSheetCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-5 pb-24 pt-12">
         <header className="card-rise border-b pb-4" style={{ borderColor: theme.fg }}>
           <div className="flex items-end justify-between gap-4">

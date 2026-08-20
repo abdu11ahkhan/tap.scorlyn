@@ -2,6 +2,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * Monospace grid, live terminal caret, rows that light up as you move down
  * them — the identity carries in the layout (the `dl`/`dt`/`dd` key-value
@@ -24,6 +25,7 @@ export default function MonoCard({
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Faint scanline field — CRT texture, not a pattern you consciously see. */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.05]"

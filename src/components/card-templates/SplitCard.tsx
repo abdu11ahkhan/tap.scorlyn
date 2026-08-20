@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 import SaveContact from "./SaveContact";
 
+import BackgroundEffect from "./BackgroundEffect";
 /**
  * A living gradient panel carries the identity; a clean panel carries the
  * actions. On desktop the two sit side by side; on a phone they stack.
@@ -28,6 +29,7 @@ export default function SplitCard({
       className="grain relative min-h-screen md:flex overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
     >
+      <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Identity panel — filled solid with the accent, so everything inside
           it reads against the ACCENT, not the page surface. That's why this
           block keeps using onAccent throughout rather than theme.fg. */}
