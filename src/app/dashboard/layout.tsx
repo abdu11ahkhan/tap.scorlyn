@@ -12,6 +12,7 @@ import {
   Package,
   Nfc,
   Users,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -20,6 +21,7 @@ import AreaSwitch from "@/components/layout/AreaSwitch";
 
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "My portfolio", href: "/dashboard/card", icon: IdCard },
   { name: "Get a card", href: "/dashboard/nfc", icon: Nfc },
   { name: "Orders", href: "/dashboard/orders", icon: Package },
