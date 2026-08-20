@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { clientIp, visitorHash } from "@/lib/referral";
+import { mailerConfigured, sendFirstTap } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +80,19 @@ export async function POST(request: NextRequest) {
 
     const userAgent = request.headers.get("user-agent") ?? "";
 
+    // Checked before the insert below creates one: this is the only way to
+    // know "was that the first tap this card ever recorded" after the row
+    // exists — derived from the same card_taps.nfc_card_id attribution
+    // Phase 7/11 already rely on, not a new signal.
+    let isFirstTap = false;
+    if (nfcCardId) {
+      const { count } = await supabase
+        .from("card_taps")
+        .select("id", { count: "exact", head: true })
+        .eq("nfc_card_id", nfcCardId);
+      isFirstTap = (count ?? 0) === 0;
+    }
+
     const { error } = await supabase.from("card_taps").insert({
       card_profile_id: profile.id,
       nfc_card_id: nfcCardId,
@@ -93,9 +108,50 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Deliberately after the insert succeeds, and deliberately swallowed on
+    // failure inside notifyFirstTap — a mail failure must never make the tap
+    // itself look like it didn't happen, and this anonymous request has no
+    // session, so reading the card owner's email needs the service role, the
+    // same as any other system-triggered (not customer-triggered) cross-user
+    // read in this codebase.
+    if (isFirstTap) {
+      await notifyFirstTap(profile.id);
+    }
+
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+async function notifyFirstTap(cardProfileId: string) {
+  try {
+    if (!mailerConfigured()) return;
+
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceKey) return;
+
+    const admin = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey, {
+      auth: { persistSession: false },
+    });
+
+    const { data: card } = await admin
+      .from("card_profiles")
+      .select("user_id, full_name")
+      .eq("id", cardProfileId)
+      .maybeSingle();
+    if (!card?.user_id) return;
+
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", card.user_id)
+      .maybeSingle();
+    if (!profile?.email) return;
+
+    await sendFirstTap({ to: profile.email, name: card.full_name || profile.full_name });
+  } catch {
+    // Deliberately swallowed — see the call site above.
   }
 }

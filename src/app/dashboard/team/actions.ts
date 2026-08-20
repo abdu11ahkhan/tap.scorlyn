@@ -254,6 +254,119 @@ export async function suspendEmployee(cardId: string, suspended: boolean): Promi
   }
 }
 
+/** Same "Working days only" logic as src/app/orders/actions.ts — duplicated
+ *  rather than imported, since that module's placeOrder always orders for
+ *  the *caller's own* card_profiles row and can't be reused for an
+ *  owner ordering against an employee's card without changing what every
+ *  other caller of it means. */
+function estimateDelivery(workingDays: number): string {
+  const d = new Date();
+  let added = 0;
+  while (added < workingDays) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0) added++;
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Places a physical-card order on behalf of one employee.
+ *
+ * The gap this closes: every existing "get an NFC card" path (individual
+ * dashboard, corporate dashboard, the team roster's own "No NFC order" link)
+ * pointed at the same /dashboard/nfc → /dashboard/orders flow, which always
+ * orders for the *signed-in account's own* card_profiles row — a corporate
+ * owner had no way to place an order tied to an employee's card at all.
+ *
+ * The order belongs to the employee (orders.user_id = the employee's own
+ * user id, matching how assignNfcCard already sets nfc_cards.user_id to the
+ * card's owner, not the assigner) — so the employee's own dashboard and
+ * order-detail page show it immediately through the existing "Customers see
+ * their own orders" policy, no new RLS needed there. The owner sees it
+ * through the corporate-owner orders policy already added in
+ * supabase/migrations/051_corporate_orders_nfc_visibility.sql. Writing it
+ * needs the service role because RLS's INSERT policy on orders requires
+ * auth.uid() = user_id, and the owner's session is not the employee's.
+ */
+export async function placeEmployeeOrder(input: {
+  cardId: string;
+  planId: string;
+  quantity: number;
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  note?: string;
+  finish?: string;
+}): Promise<Result<{ id: string; reference: string }>> {
+  try {
+    const { user } = await assertCorporateOwner();
+    const admin = serviceClient();
+    const card = await ownedEmployeeCard(admin, input.cardId, user.id);
+
+    const quantity = Math.min(Math.max(1, Math.floor(input.quantity) || 1), 50);
+
+    let phone = input.phone.replace(/\D/g, "");
+    if (phone.startsWith("0092")) phone = phone.slice(4);
+    if (phone.startsWith("92")) phone = "0" + phone.slice(2);
+    if (!/^03\d{9}$/.test(phone)) {
+      throw new Error("That mobile number doesn't look right — 11 digits starting 03.");
+    }
+
+    for (const [label, v] of [
+      ["name", input.fullName],
+      ["address", input.address],
+      ["city", input.city],
+    ] as const) {
+      if (!v?.trim()) throw new Error(`Please fill in the ${label}.`);
+    }
+
+    const { data: plan } = await admin
+      .from("plans")
+      .select("id, price_pkr, enabled")
+      .eq("id", input.planId)
+      .maybeSingle();
+    if (!plan?.enabled) throw new Error("That plan isn't available.");
+
+    const { data, error } = await admin
+      .from("orders")
+      .insert({
+        user_id: card.user_id,
+        card_profile_id: card.id,
+        plan_id: plan.id,
+        quantity,
+        amount_pkr: plan.price_pkr * quantity,
+        full_name: input.fullName.trim(),
+        phone,
+        address: input.address.trim(),
+        city: input.city.trim(),
+        customer_note: input.note?.trim() || null,
+        card_design:
+          plan.price_pkr > 0
+            ? {
+                finish: input.finish ?? "minimal",
+                fields: null,
+                accent: null,
+                captured_at: new Date().toISOString(),
+              }
+            : null,
+        estimated_delivery: estimateDelivery(plan.price_pkr === 0 ? 1 : 5),
+      })
+      .select("id, reference")
+      .single();
+
+    if (error) {
+      console.error("placeEmployeeOrder insert failed:", error);
+      throw new Error("Couldn't place the order — please try again.");
+    }
+
+    revalidatePath("/dashboard/team");
+    return { ok: true, data };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 export async function deleteEmployeeCard(cardId: string): Promise<Result> {
   try {
     const { user, supabase } = await assertCorporateOwner();

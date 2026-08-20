@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { suggestedFinish } from "@/lib/nfc-finish";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import { mailerConfigured, sendReceipt } from "@/lib/email";
+import { mailerConfigured, sendReceipt, sendShipped, sendDelivered } from "@/lib/email";
 import { USERNAME_PATTERN } from "@/lib/card-draft";
 
 /**
@@ -293,6 +293,16 @@ export async function setOrderStatus(
     if (status === "paid" && moved?.length) {
       await Promise.all(moved.map((o) => sendOrderReceipt(supabase, o.id)));
     }
+    // Shipped and delivered had no customer-facing signal at all before this
+    // — a customer's only way to learn either had happened was to open the
+    // dashboard themselves. Same "only the rows that actually moved" guard,
+    // same fire-and-forget posture as the paid receipt above.
+    if (status === "shipped" && moved?.length) {
+      await Promise.all(moved.map((o) => sendOrderStatusEmail(supabase, o.id, "shipped")));
+    }
+    if (status === "delivered" && moved?.length) {
+      await Promise.all(moved.map((o) => sendOrderStatusEmail(supabase, o.id, "delivered")));
+    }
 
     revalidatePath("/admin/orders");
     return { ok: true };
@@ -343,6 +353,44 @@ async function sendOrderReceipt(
     });
   } catch {
     // Deliberately swallowed — see above.
+  }
+}
+
+/** Same shape as sendOrderReceipt, for the two other status changes a
+ *  customer actually needs to hear about. Deliberately not extended to
+ *  'printing' or 'cancelled' — printing is a waiting state with nothing new
+ *  to act on, and a cancellation warrants a human message, not a template. */
+async function sendOrderStatusEmail(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  orderId: string,
+  status: "shipped" | "delivered"
+) {
+  try {
+    if (!mailerConfigured()) return;
+
+    const { data: order } = await supabase
+      .from("orders")
+      .select("id, reference, full_name, user_id")
+      .eq("id", orderId)
+      .maybeSingle();
+    if (!order?.user_id) return;
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", order.user_id)
+      .maybeSingle();
+    if (!profile?.email) return;
+
+    const send = status === "shipped" ? sendShipped : sendDelivered;
+    await send({
+      to: profile.email,
+      name: order.full_name || profile.full_name,
+      reference: order.reference,
+      orderId: order.id,
+    });
+  } catch {
+    // Deliberately swallowed — see sendOrderReceipt above.
   }
 }
 

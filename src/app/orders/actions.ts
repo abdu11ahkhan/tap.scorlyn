@@ -144,12 +144,17 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
     // supplied orderId and another customer's delivery details.
     const { data: old } = await supabase
       .from("orders")
-      .select("plan_id, quantity, full_name, phone, address, city")
+      .select("plan_id, quantity, full_name, phone, address, city, card_design")
       .eq("id", orderId)
       .eq("user_id", user.id)
       .maybeSingle();
 
     if (!old) throw new Error("Order not found.");
+
+    // Carry the approved print design forward — a reorder is "the same
+    // card again," and starting the finish/fields/accent picker over from
+    // scratch would silently discard a choice the customer already made.
+    const design = old.card_design as { finish?: string; fields?: Record<string, boolean> | null; accent?: string | null } | null;
 
     const result = await placeOrder({
       planId: old.plan_id as string,
@@ -159,6 +164,9 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
       address: old.address,
       city: old.city,
       note: "Repeat order",
+      finish: design?.finish,
+      fields: design?.fields,
+      accent: design?.accent,
     });
 
     return result.ok && result.data

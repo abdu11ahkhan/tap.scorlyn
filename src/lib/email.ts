@@ -229,3 +229,91 @@ ${SITE_URL}/dashboard/orders/${opts.orderId}`;
 
   tx.close();
 }
+
+/** Sent once, the moment an order moves to 'shipped' — the only other order
+ *  status besides 'paid' that had no customer-facing signal at all. */
+export async function sendShipped(opts: {
+  to: string;
+  name?: string | null;
+  reference: string;
+  orderId: string;
+}): Promise<void> {
+  const tx = transport();
+  const first = (opts.name ?? "").trim().split(/\s+/)[0];
+
+  const body = `${first ? `Hi ${first},` : "Hi,"}
+
+Your ScorlynTap card is on its way.
+
+Order: ${opts.reference}
+
+Track it here:
+${SITE_URL}/dashboard/orders/${opts.orderId}`;
+
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: opts.to,
+    subject: `On its way — order ${opts.reference}`,
+    text: `${body}\n\n--\nScorlynTap — NFC digital business cards\ntap.scorlyn.com`,
+    html: renderCampaign(body, `${SITE_URL}/dashboard/orders/${opts.orderId}`),
+  });
+
+  tx.close();
+}
+
+/** Sent once, the moment a physical card's first ever NFC tap is recorded —
+ *  the one moment in the whole physical-card journey nobody would otherwise
+ *  hear about at all, since resolving the tag is a silent redirect. */
+export async function sendFirstTap(opts: { to: string; name?: string | null }): Promise<void> {
+  const tx = transport();
+  const first = (opts.name ?? "").trim().split(/\s+/)[0];
+
+  const body = `${first ? `Hi ${first},` : "Hi,"}
+
+Your physical card just received its first tap — it's live and working.
+
+${SITE_URL}/dashboard`;
+
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: opts.to,
+    subject: "Your card is active",
+    text: `${body}\n\n--\nScorlynTap — NFC digital business cards\ntap.scorlyn.com`,
+    html: renderCampaign(body, `${SITE_URL}/dashboard`),
+  });
+
+  tx.close();
+}
+
+/** Sent once, the moment an order moves to 'delivered' — points straight at
+ *  linking the physical card next, since that's the one step left that
+ *  isn't automatic. */
+export async function sendDelivered(opts: {
+  to: string;
+  name?: string | null;
+  reference: string;
+  orderId: string;
+}): Promise<void> {
+  const tx = transport();
+  const first = (opts.name ?? "").trim().split(/\s+/)[0];
+
+  const body = `${first ? `Hi ${first},` : "Hi,"}
+
+Your ScorlynTap card has been delivered.
+
+Order: ${opts.reference}
+
+We'll link it to your digital card shortly, and you'll be able to tap it
+once that's done. Check the status here:
+${SITE_URL}/dashboard/orders/${opts.orderId}`;
+
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to: opts.to,
+    subject: `Delivered — order ${opts.reference}`,
+    text: `${body}\n\n--\nScorlynTap — NFC digital business cards\ntap.scorlyn.com`,
+    html: renderCampaign(body, `${SITE_URL}/dashboard/orders/${opts.orderId}`),
+  });
+
+  tx.close();
+}

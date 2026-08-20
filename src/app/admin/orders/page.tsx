@@ -12,10 +12,33 @@ const PAGE_SIZE = 50;
 export default async function AdminOrders({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string; plan?: string; flagged?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; plan?: string; flagged?: string; unassigned?: string }>;
 }) {
-  const { q, status, plan, flagged } = await searchParams;
+  const { q, status, plan, flagged, unassigned } = await searchParams;
   const supabase = await createClient();
+
+  // Delivered orders whose card_profile_id has no matching nfc_cards row —
+  // the exact gap Phase 11 made visible to the customer ("Delivered — we're
+  // linking it to your digital card") but that, until now, had no operator
+  // surface at all: nothing here ever pointed an admin back at it.
+  const { data: deliveredRows } = await supabase
+    .from("orders")
+    .select("id, card_profile_id")
+    .eq("status", "delivered")
+    .not("card_profile_id", "is", null);
+  const deliveredProfileIds = [...new Set((deliveredRows ?? []).map((o) => o.card_profile_id as string))];
+
+  let assignedProfileIds = new Set<string>();
+  if (deliveredProfileIds.length > 0) {
+    const { data: nfcRows } = await supabase
+      .from("nfc_cards")
+      .select("card_profile_id")
+      .in("card_profile_id", deliveredProfileIds);
+    assignedProfileIds = new Set((nfcRows ?? []).map((r) => r.card_profile_id as string));
+  }
+  const unassignedOrderIds = (deliveredRows ?? [])
+    .filter((o) => o.card_profile_id && !assignedProfileIds.has(o.card_profile_id))
+    .map((o) => o.id);
 
   let query = supabase
     .from("orders")
@@ -26,6 +49,7 @@ export default async function AdminOrders({
   if (status) query = query.eq("status", status);
   if (plan) query = query.eq("plan_id", plan);
   if (flagged === "1") query = query.eq("flagged", true);
+  if (unassigned === "1") query = query.in("id", unassignedOrderIds.length > 0 ? unassignedOrderIds : ["00000000-0000-0000-0000-000000000000"]);
   if (q?.trim()) {
     const term = `%${q.trim()}%`;
     query = query.or(
@@ -83,6 +107,12 @@ export default async function AdminOrders({
     { label: "revenue all time", value: `Rs.${revenueAll.toLocaleString()}` },
     { label: "awaiting payment", value: `${pending.length}`, hint: `Rs.${pendingTotal.toLocaleString()}` },
     { label: "orders", value: `${all.length}`, hint: Object.entries(byPlan).map(([k, v]) => `${k} ${v}`).join(" · ") },
+    {
+      label: "delivered, unassigned",
+      value: `${unassignedOrderIds.length}`,
+      hint: unassignedOrderIds.length > 0 ? "needs an NFC card linked" : undefined,
+      warn: unassignedOrderIds.length > 0,
+    },
   ];
 
   const csvHref = `/admin/orders/export${q || status || plan ? `?${new URLSearchParams({ ...(q ? { q } : {}), ...(status ? { status } : {}), ...(plan ? { plan } : {}) })}` : ""}`;
@@ -106,15 +136,38 @@ export default async function AdminOrders({
       </div>
 
       {/* Money */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="app-panel app-panel-pad">
-            <p className="text-2xl font-semibold tabular-nums tracking-tight">{s.value}</p>
-            <p className="app-sub mt-1">{s.label}</p>
-            {s.hint && <p className="mt-1 text-[12px] text-white/35">{s.hint}</p>}
-          </div>
-        ))}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        {stats.map((s) =>
+          s.label === "delivered, unassigned" && s.warn ? (
+            <Link
+              key={s.label}
+              href="/admin/orders?unassigned=1"
+              className="app-panel app-panel-pad border-amber-400/40 transition-colors hover:border-amber-400"
+            >
+              <p className="text-2xl font-semibold tabular-nums tracking-tight text-amber-300">{s.value}</p>
+              <p className="app-sub mt-1">{s.label}</p>
+              {s.hint && <p className="mt-1 text-[12px] text-amber-300/70">{s.hint}</p>}
+            </Link>
+          ) : (
+            <div key={s.label} className="app-panel app-panel-pad">
+              <p className="text-2xl font-semibold tabular-nums tracking-tight">{s.value}</p>
+              <p className="app-sub mt-1">{s.label}</p>
+              {s.hint && <p className="mt-1 text-[12px] text-white/35">{s.hint}</p>}
+            </div>
+          )
+        )}
       </div>
+
+      {unassigned === "1" && (
+        <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-3 border-amber-400/40">
+          <p className="text-[13px] font-medium text-amber-300">
+            Showing delivered orders with no NFC card linked yet.
+          </p>
+          <Link href="/admin/orders" className="app-btn app-btn-ghost">
+            Clear
+          </Link>
+        </div>
+      )}
 
       <MarkSeen unseen={unseen ?? 0} />
 

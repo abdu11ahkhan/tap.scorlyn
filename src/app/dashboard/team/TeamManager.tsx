@@ -21,6 +21,7 @@ import { downscale, toDataUrl } from "@/components/card-editor/ImagePicker";
 import { scanCardText } from "@/lib/card-ocr";
 import { scanCardWithClaude } from "@/lib/card-scan-ai";
 import HouseStyleSection from "@/components/dashboard/HouseStyleSection";
+import OrderForEmployeeModal from "./OrderForEmployeeModal";
 import { physicalCardShortLabel, type PhysicalCardStatus } from "@/lib/nfc-lifecycle";
 
 export type EmployeeCard = {
@@ -44,6 +45,7 @@ export default function TeamManager({
   houseAccentColor,
   employees,
   physicalByProfile = {},
+  plans = [],
 }: {
   companySlug: string;
   companyName: string;
@@ -52,8 +54,10 @@ export default function TeamManager({
   employees: EmployeeCard[];
   /** Keyed by card_profiles.id — empty for an employee with no physical order. */
   physicalByProfile?: Record<string, PhysicalCardStatus>;
+  plans?: { id: string; price_pkr: number }[];
 }) {
   const router = useRouter();
+  const [orderingFor, setOrderingFor] = useState<EmployeeCard | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [mode, setMode] = useState<"type" | "scan">("type");
   const [fullName, setFullName] = useState("");
@@ -410,13 +414,18 @@ export default function TeamManager({
                   >
                     {physicalCardShortLabel(physical)}
                   </Link>
-                ) : (
-                  <Link
-                    href="/dashboard/nfc"
+                ) : plans.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => setOrderingFor(card)}
                     className="rounded-full border-2 border-dashed border-sc-border px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dimmer transition-colors hover:border-sc-gold hover:text-sc-gold"
                   >
+                    No NFC order — order one
+                  </button>
+                ) : (
+                  <span className="rounded-full border-2 border-dashed border-sc-border px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dimmer">
                     No NFC order
-                  </Link>
+                  </span>
                 )}
               </div>
 
@@ -467,6 +476,15 @@ export default function TeamManager({
           })}
         </div>
       ) : null}
+
+      {orderingFor && (
+        <OrderForEmployeeModal
+          employeeName={orderingFor.full_name || orderingFor.username}
+          cardId={orderingFor.id}
+          plans={plans}
+          onClose={() => setOrderingFor(null)}
+        />
+      )}
     </div>
   );
 }

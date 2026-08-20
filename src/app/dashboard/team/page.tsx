@@ -41,6 +41,15 @@ export default async function TeamPage() {
     .eq("org_owner_id", user.id)
     .order("created_at", { ascending: false });
 
+  // Same two paid tiers /dashboard/nfc offers an individual account — reused
+  // here rather than inventing a corporate-specific price list.
+  const { data: plans } = await supabase
+    .from("plans")
+    .select("id, price_pkr")
+    .in("id", ["printed", "custom"])
+    .eq("enabled", true)
+    .order("price_pkr", { ascending: true });
+
   const cardProfileIds = (employees ?? []).map((e) => e.id);
   let physicalByProfile = new Map<string, PhysicalCardStatus>();
 
@@ -116,6 +125,7 @@ export default async function TeamPage() {
       houseAccentColor={profile.house_accent_color}
       employees={(employees ?? []) as EmployeeCard[]}
       physicalByProfile={Object.fromEntries(physicalByProfile)}
+      plans={plans ?? []}
     />
   );
 }
