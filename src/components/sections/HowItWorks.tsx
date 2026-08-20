@@ -36,7 +36,7 @@ const STEPS = [
     title: "they connect",
     body: "Your page opens instantly. They save your contact, message you, or follow — right there.",
     icon: Share2,
-    color: "bg-cyan-300 text-ink",
+    color: "bg-sand text-ink",
   },
 ];
 

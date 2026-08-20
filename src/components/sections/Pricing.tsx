@@ -121,7 +121,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               <Link
                 href={plan.href}
                 className={`sticker sticker-press flex h-14 items-center justify-center rounded-full border-2 border-ink text-base font-black uppercase tracking-tight ${plan.button}`}
-                style={{ ["--sticker-color" as string]: "#0a0a0a" }}
+                style={{ ["--sticker-color" as string]: "#14100c" }}
               >
                 {plan.cta}
               </Link>

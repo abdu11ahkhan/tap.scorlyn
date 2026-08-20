@@ -76,7 +76,7 @@ export function Hero({
                   <span className="absolute inset-x-[-0.08em] inset-y-[-0.02em] -z-0 -rotate-1 rounded-lg bg-hotpink" />
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-acid via-cyan-300 to-hotpink bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-acid via-sand to-hotpink bg-clip-text text-transparent">
                   yours isn&apos;t.
                 </span>
               </>
@@ -161,7 +161,7 @@ export function Hero({
                     <div
                       key={label}
                       className="sticker rounded-xl border-2 border-ink bg-white px-3 py-2.5 text-xs font-black text-ink"
-                      style={{ ["--sticker-color" as string]: i === 0 ? "#CCFF00" : "#0a0a0a" }}
+                      style={{ ["--sticker-color" as string]: i === 0 ? "#E3BD90" : "#14100C" }}
                     >
                       {label}
                     </div>

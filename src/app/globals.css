@@ -530,53 +530,59 @@ textarea.app-input {
 
 
 /* ------------------------------------------------------------------
-   Landing page kit.
-   Acid palette, chunky stickers, grain — no photography.
+   Landing page kit — re-themed on request from a supplied palette
+   ("Study Hard", @daveyandkrista: #675647 / #E3BD90 / #DFD3B5 / #C0BDBC /
+   #6C6E36 / #3B3B3B). That palette is light/cream-based; adapted here to
+   the site's existing dark-background system rather than flipped to a
+   light theme, per explicit instruction — same roles (bg/surface/accent/
+   text), same token names throughout so no component needed to change,
+   only what these variables resolve to. Chunky stickers + grain stay;
+   only the colours moved.
    ------------------------------------------------------------------ */
 
 @theme {
-  --color-acid: #ccff00;
-  --color-hotpink: #ff3d9a;
-  --color-violet-pop: #8b5cf6;
-  --color-ink: #0a0a0a;
+  --color-acid: #e3bd90; /* was #ccff00 — primary accent, from the palette's tan */
+  --color-hotpink: #6c6e36; /* was #ff3d9a — secondary accent, the palette's olive */
+  --color-violet-pop: #a08a68; /* was #8b5cf6 — third accent, a lifted tone of the palette's brown, kept in-family rather than an unrelated hue */
+  --color-ink: #14100c; /* was #0a0a0a — warm near-black derived from the palette's brown, not a neutral black */
+  --color-sand: #dfd3b5; /* new token — replaces stray Tailwind cyan-300 uses (gradient text, two feature-card fills) that would otherwise clash against this palette; the palette's own cream */
 }
 
 /* ------------------------------------------------------------------
-   Scorlyn brand system — Phase 4.
+   Scorlyn brand system — Phase 4, re-themed alongside the landing kit
+   above using the same source palette, so the dashboard and marketing
+   site now share one family instead of two unrelated dark bases.
 
    BRAND colour, for the product's own chrome (dashboard, admin, and this
    session's editor/public-card work as it lands) — distinct from CARD
    colour, which stays entirely user-chosen (card.accent_color/surface_color,
-   the 39 template components) and must never be forced toward this palette.
+   the 36 template components) and must never be forced toward this palette.
    Confusing the two was the explicit risk called out for this phase: this
    file only ever sets how *Scorlyn* looks, never how a customer's card does.
-
-   Charcoal + warm gold over the brief's own #F7F7F5/blue starting point —
-   distinctive rather than another blue SaaS product, and a much shorter
-   distance from the ink/#0a0a0a the rest of the app already runs on, so
-   surfaces this lands on don't whiplash between two unrelated dark bases.
-   Warm (brown-leaning) neutrals throughout, not true greys — a pure grey
-   next to a gold accent reads as an oversight, a warm one reads as chosen.
    ------------------------------------------------------------------ */
 @theme {
-  --color-sc-bg: #17140f;
-  --color-sc-surface: #211d17;
-  --color-sc-surface-2: #2b251c;
-  --color-sc-border: #3d362a;
-  --color-sc-border-soft: #2a2519;
+  --color-sc-bg: #14100c;
+  --color-sc-surface: #1e1812;
+  --color-sc-surface-2: #282016;
+  --color-sc-border: #3d3226;
+  --color-sc-border-soft: #2a2318;
 
-  --color-sc-text: #f3ede0;
-  --color-sc-text-dim: #b5ab98;
-  --color-sc-text-dimmer: #7d7565;
+  --color-sc-text: #efe6d3;
+  --color-sc-text-dim: #c0bdbc;
+  --color-sc-text-dimmer: #8a8580;
 
-  --color-sc-gold: #d4af37;
-  --color-sc-gold-hover: #e3c250;
-  --color-sc-gold-pressed: #b8952e;
-  --color-sc-gold-ink: #1a1508; /* text/icon colour sitting ON the gold */
+  --color-sc-gold: #e3bd90;
+  --color-sc-gold-hover: #ecd0ac;
+  --color-sc-gold-pressed: #d1a374;
+  --color-sc-gold-ink: #241c12; /* text/icon colour sitting ON the accent */
 
-  --color-sc-success: #5a9b6a;
-  --color-sc-warning: #c97a2b;
-  --color-sc-error: #c0433a;
+  /* Semantic status colours stay recognisable as green/amber/red — the
+     source palette supplied no red, and a status colour that stops
+     reading as "danger" is a usability regression, not a rebrand. Success
+     reuses the palette's own olive, which already reads as green. */
+  --color-sc-success: #6c6e36;
+  --color-sc-warning: #b8863f;
+  --color-sc-error: #b0443a;
 }
 
 /* Film grain. Pure CSS, no image request.

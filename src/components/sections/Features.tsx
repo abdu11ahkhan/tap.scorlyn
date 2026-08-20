@@ -36,7 +36,7 @@ const CARDS = [
     title: "change it anytime",
     body: "New job? New number? Edit once. Every card you've ever handed out updates itself.",
     icon: Zap,
-    className: "sm:col-span-2 bg-cyan-300 text-ink",
+    className: "sm:col-span-2 bg-sand text-ink",
     tilt: "-1deg",
   },
   {
