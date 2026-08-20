@@ -18,10 +18,12 @@ export default function LogoMark({
 }) {
   return (
     <div
-      className="pointer-events-none fixed bottom-4 left-4 z-30 flex h-12 items-center rounded-xl px-2.5 backdrop-blur-sm"
+      className="pointer-events-none fixed left-4 z-30 flex h-12 items-center rounded-xl px-2.5 backdrop-blur-sm"
       // A faint plate, because a logo dropped straight onto a photograph or a
       // busy gallery is unreadable. Alpha keeps it from reading as a button.
-      style={{ background: `${tone}D9` }}
+      // The bottom offset reads the same referral-banner-height CSS var as
+      // CardQr, so this also lifts clear when the full banner is showing.
+      style={{ bottom: "calc(1rem + var(--sc-referral-offset, 0px))", background: `${tone}D9` }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

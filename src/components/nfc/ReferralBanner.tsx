@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, type Transition } from "framer-motion";
 import { readStorage, writeStorage } from "@/lib/safe-storage";
@@ -26,6 +26,15 @@ import { referralOrderUrl, referralTemplateUrl } from "@/lib/referral";
 const DISMISS_KEY = "ScorlynTap_banner_dismissed_at";
 const DISMISS_DAYS = 7;
 const SPRING: Transition = { type: "spring", stiffness: 260, damping: 26 };
+
+/**
+ * Published on <html> so the QR trigger and logo watermark — both fixed to
+ * the bottom of the screen, both mounted by the template renderer with no
+ * knowledge of this banner — can lift clear of it instead of being covered.
+ * A measured height rather than a guessed one, since the banner's content
+ * (and so its height) varies with whether cardPrice is set.
+ */
+const BANNER_OFFSET_VAR = "--sc-referral-offset";
 
 type Stage = "hidden" | "full" | "pill";
 
@@ -60,6 +69,28 @@ export default function ReferralBanner({
 
   /** A recent dismissal means it opens as the pill rather than not at all. */
   const shown: Stage = stage === "hidden" && stillQuiet ? "pill" : stage;
+
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  // Only the full-width "full" stage collides with anything — the pill sits
+  // in the bottom-right corner, clear of the QR trigger and logo watermark.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (shown !== "full") {
+      root.style.setProperty(BANNER_OFFSET_VAR, "0px");
+      return;
+    }
+    const el = bannerRef.current;
+    if (!el) return;
+    const publish = () => root.style.setProperty(BANNER_OFFSET_VAR, `${el.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      root.style.setProperty(BANNER_OFFSET_VAR, "0px");
+    };
+  }, [shown]);
 
   useEffect(() => {
     if (stillQuiet) return;
@@ -102,6 +133,7 @@ export default function ReferralBanner({
       {shown === "full" && (
         <motion.div
           key="full"
+          ref={bannerRef}
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}

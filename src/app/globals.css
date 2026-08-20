@@ -93,6 +93,20 @@
   }
 }
 
+/*
+ * Reserves real document space for the referral banner's full-width bottom
+ * bar, whose height ReferralBanner publishes into --sc-referral-offset. The
+ * banner is position:fixed, so without this its ~100-150px covers whatever
+ * a visitor has scrolled to the bottom of — on a public card that's almost
+ * always the last link or Save-to-contacts, i.e. the platform's own banner
+ * blocking the card's own primary action. 0px everywhere the banner never
+ * mounts (dashboard, admin, editor), so this is a no-op outside /u/*.
+ */
+body {
+  padding-bottom: var(--sc-referral-offset, 0px);
+  transition: padding-bottom 0.2s ease;
+}
+
 .glass {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);

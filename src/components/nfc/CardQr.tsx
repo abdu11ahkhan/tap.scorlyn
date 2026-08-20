@@ -116,9 +116,13 @@ export default function CardQr({
         aria-label="Show QR code"
         // Bottom-centre: the share control sits top-right and the logo
         // watermark bottom-left, so this is the one place left that a thumb
-        // reaches without covering anything.
-        className="fixed bottom-4 left-1/2 z-30 flex h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-[13px] font-bold shadow-lg backdrop-blur-md transition-transform active:scale-95"
+        // reaches without covering anything — except the referral banner,
+        // which also docks to the bottom and is taller. The bottom offset
+        // reads a CSS var ReferralBanner publishes with its measured height,
+        // so this lifts clear of it instead of being covered.
+        className="fixed left-1/2 z-30 flex h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-[13px] font-bold shadow-lg backdrop-blur-md transition-transform active:scale-95"
         style={{
+          bottom: "calc(1rem + var(--sc-referral-offset, 0px))",
           background: dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.075)",
           color: dark ? "#fff" : "#111",
           border: `1px solid ${dark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.12)"}`,

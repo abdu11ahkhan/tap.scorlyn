@@ -185,9 +185,13 @@ export default function AgencyCard({
       )}
 
       {/* Contact */}
+      {/* Extra bottom padding, not the family's usual py-14: this is the last
+          thing on the page, and the platform's QR trigger is permanently
+          fixed to the bottom of the viewport — anything shorter left "save
+          to contacts" partially behind it once scrolled all the way down. */}
       <section
         id="contact"
-        className="scroll-mt-14 border-t px-6 py-14 text-center"
+        className="scroll-mt-14 border-t px-6 pt-14 pb-28 text-center"
         style={{ borderColor: theme.border }}
       >
         <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
