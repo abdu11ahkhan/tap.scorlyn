@@ -426,8 +426,15 @@ function MyCardEditor() {
             setSaved(false);
           }}
           showUsername
-          // Locked once saved: the handle is the card's printed address.
-          lockUsername={Boolean(cardId)}
+          // Locked once saved — except for a card the "new card" quick-add
+          // button just created, which starts with an auto-generated
+          // "new-card-xxxxxx" placeholder nobody actually chose. Matches
+          // the same carve-out in the lock_username() DB trigger
+          // (056_allow_first_username_after_quick_create.sql) — the UI and
+          // the trigger need to agree on this, or unlocking the field here
+          // alone would just mean the save fails with the trigger's error
+          // instead.
+          lockUsername={Boolean(cardId) && !/^new-card-[a-z0-9]{1,8}$/.test(form.username)}
         />
 
         <button
