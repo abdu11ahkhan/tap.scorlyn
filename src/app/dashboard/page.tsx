@@ -22,10 +22,17 @@ import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
 import CardList, { type CardSummary } from "@/components/dashboard/CardList";
 import CorporateDashboard, { type EmployeeSummary } from "@/components/dashboard/CorporateDashboard";
 import { STATUS_LABELS, statusTone } from "@/app/dashboard/orders/status";
+import { buildPhysicalCardStatus, physicalCardShortLabel, type NfcAssignment } from "@/lib/nfc-lifecycle";
 import type { CardProfile } from "@/lib/card";
 
 type Account = { type: "individual" | "corporate"; companyName: string | null; companySlug: string | null };
-type LatestOrder = { id: string; reference: string; status: string };
+type LatestOrder = {
+  id: string;
+  reference: string;
+  status: string;
+  amount_pkr: number;
+  card_profile_id: string | null;
+};
 
 /** Dismissal of the "choose your printed card" banner. */
 const NFC_BANNER_KEY = "scorlyntap_nfc_banner_dismissed";
@@ -50,6 +57,7 @@ export default function DashboardPage() {
   const [account, setAccount] = useState<Account | null>(null);
   const [employees, setEmployees] = useState<EmployeeSummary[]>([]);
   const [latestOrder, setLatestOrder] = useState<LatestOrder | null>(null);
+  const [nfcAssignments, setNfcAssignments] = useState<NfcAssignment[]>([]);
   /** Open when they act on the banner, not on arrival — nobody wants a modal
    *  thrown at them for something they did not ask for. */
   const [choosing, setChoosing] = useState(false);
@@ -140,10 +148,43 @@ export default function DashboardPage() {
           .order("created_at", { ascending: false }),
         supabase
           .from("orders")
-          .select("id, reference, status")
+          .select("id, reference, status, amount_pkr, card_profile_id")
           .order("created_at", { ascending: false })
           .limit(1),
       ]);
+
+      const latest = (orderRows?.[0] as LatestOrder | undefined) ?? null;
+
+      // Same correlation the order-detail page uses: nfc_cards has no FK to
+      // orders, only the card_profile_id both tables happen to share.
+      let assignments: NfcAssignment[] = [];
+      if (latest && latest.amount_pkr > 0 && latest.card_profile_id) {
+        const { data: nfcRows } = await supabase
+          .from("nfc_cards")
+          .select("id")
+          .eq("card_profile_id", latest.card_profile_id);
+
+        if (nfcRows && nfcRows.length > 0) {
+          const ids = nfcRows.map((r) => r.id);
+          const { data: tapRows } = await supabase
+            .from("card_taps")
+            .select("nfc_card_id, created_at")
+            .in("nfc_card_id", ids)
+            .order("created_at", { ascending: true });
+
+          const firstTap = new Map<string, string>();
+          for (const t of tapRows ?? []) {
+            if (t.nfc_card_id && !firstTap.has(t.nfc_card_id)) {
+              firstTap.set(t.nfc_card_id, t.created_at);
+            }
+          }
+          assignments = nfcRows.map((r) => ({
+            nfcCardId: r.id,
+            firstTapAt: firstTap.get(r.id) ?? null,
+          }));
+        }
+      }
+      setNfcAssignments(assignments);
 
       setCard(cards?.[0] ?? null);
       setCards((cards ?? []) as CardSummary[]);
@@ -159,12 +200,21 @@ export default function DashboardPage() {
           : null
       );
       setEmployees((employeeRows ?? []) as EmployeeSummary[]);
-      setLatestOrder((orderRows?.[0] as LatestOrder | undefined) ?? null);
+      setLatestOrder(latest);
       setLoading(false);
     };
 
     load();
   }, [router]);
+
+  const isPhysicalOrder = !!latestOrder && latestOrder.amount_pkr > 0 && !!latestOrder.card_profile_id;
+  const physicalStatus =
+    latestOrder && isPhysicalOrder
+      ? buildPhysicalCardStatus({
+          order: { id: latestOrder.id, reference: latestOrder.reference, status: latestOrder.status },
+          assignments: nfcAssignments,
+        })
+      : null;
 
   const stats = [
     { label: "taps", value: taps, icon: SmartphoneNfc },
@@ -340,20 +390,29 @@ export default function DashboardPage() {
           </div>
 
           {/* Real order status when there is one to show — never a fake
-              timeline for an order that doesn't exist. */}
+              timeline for an order that doesn't exist. For a physical order,
+              the label answers "what's happening with my physical card",
+              not just the raw order status — assignment and first-tap are
+              states orders.status alone can't express. */}
           {latestOrder ? (
             <Link
               href={`/dashboard/orders/${latestOrder.id}`}
               className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 transition-colors hover:border-sc-gold/50"
             >
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">Your NFC card</p>
+                <p className="text-sm font-black text-white">Your physical card</p>
                 <p className="app-sub mt-0.5">Order #{latestOrder.reference}</p>
               </div>
               <span
-                className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight ${statusTone(latestOrder.status)}`}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight ${
+                  physicalStatus
+                    ? statusTone(physicalStatus.assignments.some((a) => a.firstTapAt) ? "delivered" : latestOrder.status)
+                    : statusTone(latestOrder.status)
+                }`}
               >
-                {STATUS_LABELS[latestOrder.status] ?? latestOrder.status}
+                {physicalStatus
+                  ? physicalCardShortLabel(physicalStatus)
+                  : (STATUS_LABELS[latestOrder.status] ?? latestOrder.status)}
               </span>
             </Link>
           ) : (

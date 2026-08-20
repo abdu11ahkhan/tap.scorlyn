@@ -6,6 +6,8 @@ import { STATUS_LABELS, STATUS_STEPS, statusTone } from "../status";
 import ProofUpload from "./ProofUpload";
 import ReorderButton from "./ReorderButton";
 import CopyRow from "@/components/nfc/CopyRow";
+import PhysicalCardStatus from "@/components/dashboard/PhysicalCardStatus";
+import { buildPhysicalCardStatus, type NfcAssignment } from "@/lib/nfc-lifecycle";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +55,45 @@ export default async function OrderDetail({
   const cancelled = order.status === "cancelled";
   const currentStep = STATUS_STEPS.indexOf(order.status);
 
+  // The physical card's NFC assignment lives on nfc_cards, correlated to this
+  // order only through the card_profile_id both tables happen to share —
+  // there is no direct foreign key between orders and nfc_cards.
+  let assignments: NfcAssignment[] = [];
+  const isPhysical = order.amount_pkr > 0 && !!order.card_profile_id;
+  if (isPhysical) {
+    const { data: nfcRows } = await supabase
+      .from("nfc_cards")
+      .select("id")
+      .eq("card_profile_id", order.card_profile_id);
+
+    if (nfcRows && nfcRows.length > 0) {
+      const ids = nfcRows.map((r) => r.id);
+      const { data: tapRows } = await supabase
+        .from("card_taps")
+        .select("nfc_card_id, created_at")
+        .in("nfc_card_id", ids)
+        .order("created_at", { ascending: true });
+
+      const firstTap = new Map<string, string>();
+      for (const t of tapRows ?? []) {
+        if (t.nfc_card_id && !firstTap.has(t.nfc_card_id)) {
+          firstTap.set(t.nfc_card_id, t.created_at);
+        }
+      }
+      assignments = nfcRows.map((r) => ({
+        nfcCardId: r.id,
+        firstTapAt: firstTap.get(r.id) ?? null,
+      }));
+    }
+  }
+
+  const physicalStatus = isPhysical
+    ? buildPhysicalCardStatus({
+        order: { id: order.id, reference: order.reference, status: order.status },
+        assignments,
+      })
+    : null;
+
   return (
     <div className="max-w-3xl space-y-8 pb-16">
       <Link
@@ -80,8 +121,12 @@ export default async function OrderDetail({
         </span>
       </div>
 
-      {/* Progress */}
-      {!cancelled && (
+      {/* Progress — the unified order + NFC timeline for a physical order,
+          the plain order-only bar for anything without a physical card
+          (a free-plan order has nothing to assign). */}
+      {physicalStatus ? (
+        <PhysicalCardStatus status={physicalStatus} />
+      ) : !cancelled ? (
         <section className="app-panel p-6">
           <div className="flex items-start">
             {STATUS_STEPS.map((step, i) => {
@@ -137,7 +182,7 @@ export default async function OrderDetail({
             </p>
           )}
         </section>
-      )}
+      ) : null}
 
       {/* Payment */}
       {order.status === "pending" && order.amount_pkr > 0 && (
