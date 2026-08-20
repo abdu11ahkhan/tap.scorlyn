@@ -23,7 +23,7 @@ export function Hero({
       {/* Acid colour fields instead of a background photo. */}
       <div className="float-orb pointer-events-none absolute -left-40 -top-32 h-[560px] w-[560px] rounded-full bg-acid/25 blur-[130px]" />
       <div
-        className="float-orb pointer-events-none absolute -right-32 top-20 h-[520px] w-[520px] rounded-full bg-hotpink/25 blur-[130px]"
+        className="float-orb pointer-events-none absolute -right-32 top-20 h-[520px] w-[520px] rounded-full bg-teal/25 blur-[130px]"
         style={{ ["--d" as string]: "3s" }}
       />
       <div
@@ -73,10 +73,14 @@ export function Hero({
                 <span className="relative inline-block">
                   <span className="relative z-10 text-ink">dead</span>
                   {/* Generous inset — a tight box clips the descender on the 'd'. */}
-                  <span className="absolute inset-x-[-0.08em] inset-y-[-0.02em] -z-0 -rotate-1 rounded-lg bg-hotpink" />
+                  <span className="absolute inset-x-[-0.08em] inset-y-[-0.02em] -z-0 -rotate-1 rounded-lg bg-teal" />
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-acid via-sand to-hotpink bg-clip-text text-transparent">
+                {/* to-hotpink (Teal) measures 2.81:1 as text on this dark
+                    background — fails even the large-text 3:1 floor. Ends
+                    on white instead, which passes comfortably and still
+                    reads as a warm-to-bright sheen. */}
+                <span className="bg-gradient-to-r from-acid via-sand to-white bg-clip-text text-transparent">
                   yours isn&apos;t.
                 </span>
               </>
@@ -149,7 +153,7 @@ export function Hero({
 
               {/* A card profile, roughly as it really renders */}
               <div className="flex h-full flex-col items-center bg-gradient-to-b from-acid/25 to-white px-5 pt-12">
-                <div className="h-16 w-16 rounded-full border-4 border-ink bg-hotpink" />
+                <div className="h-16 w-16 rounded-full border-4 border-ink bg-teal" />
                 <p className="mt-3 text-lg font-black tracking-tight text-ink">
                   ayesha s.
                 </p>
@@ -161,7 +165,7 @@ export function Hero({
                     <div
                       key={label}
                       className="sticker rounded-xl border-2 border-ink bg-white px-3 py-2.5 text-xs font-black text-ink"
-                      style={{ ["--sticker-color" as string]: i === 0 ? "#E3BD90" : "#14100C" }}
+                      style={{ ["--sticker-color" as string]: i === 0 ? "#F58800" : "#051821" }}
                     >
                       {label}
                     </div>

@@ -62,7 +62,7 @@ const PLANS = [
 export function Pricing({ note }: { note?: string | null } = {}) {
   return (
     <section id="pricing" className="grain relative overflow-hidden bg-ink py-28">
-      <div className="float-orb pointer-events-none absolute -right-32 top-1/3 h-[460px] w-[460px] rounded-full bg-hotpink/20 blur-[130px]" />
+      <div className="float-orb pointer-events-none absolute -right-32 top-1/3 h-[460px] w-[460px] rounded-full bg-teal/20 blur-[130px]" />
 
       <div className="relative mx-auto max-w-5xl px-6">
         <motion.div
@@ -73,7 +73,11 @@ export function Pricing({ note }: { note?: string | null } = {}) {
           className="mb-16"
         >
           <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-white">
-            cheap. <span className="text-hotpink">obviously.</span>
+            {/* Teal (text-hotpink) measures 2.81:1 as bare text on this dark
+                background — fails WCAG. Golden Yellow (text-sand) passes at
+                10.5:1 and still reads as a second, distinct emphasis colour
+                from Orange (text-acid) used elsewhere. */}
+            cheap. <span className="text-sand">obviously.</span>
           </h2>
           <p className="mt-5 max-w-lg text-lg font-medium text-white/60">
             The card page is free forever. You only pay when you want the
@@ -93,7 +97,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               className={`sticker-lg relative rounded-[2rem] border-2 border-ink p-8 transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${plan.className}`}
             >
               {plan.featured && (
-                <span className="sticker absolute -top-4 right-7 rounded-full border-2 border-ink bg-hotpink px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
+                <span className="sticker absolute -top-4 right-7 rounded-full border-2 border-ink bg-teal px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
                   most popular
                 </span>
               )}
@@ -121,7 +125,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               <Link
                 href={plan.href}
                 className={`sticker sticker-press flex h-14 items-center justify-center rounded-full border-2 border-ink text-base font-black uppercase tracking-tight ${plan.button}`}
-                style={{ ["--sticker-color" as string]: "#14100c" }}
+                style={{ ["--sticker-color" as string]: "#051821" }}
               >
                 {plan.cta}
               </Link>

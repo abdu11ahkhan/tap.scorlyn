@@ -31,7 +31,7 @@ export default async function Home() {
       <Marquee className="bg-acid text-ink" />
       <HowItWorks />
       <Features />
-      <Marquee reverse className="bg-hotpink text-white" />
+      <Marquee reverse className="bg-teal text-white" />
       <TemplateShowcase />
       <AudienceSplit />
       <Pricing note={content?.pricing_note} />

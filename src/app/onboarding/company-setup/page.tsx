@@ -155,7 +155,7 @@ function CompanySetupForm() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="sticker-lg relative z-10 w-full max-w-md rounded-[2rem] border-2 border-ink bg-white p-8"
-        style={{ ["--sticker-color" as string]: "#8B5CF6" }}
+        style={{ ["--sticker-color" as string]: "#F58800" }}
       >
         <p className="text-xs font-black uppercase tracking-widest text-ink/35">
           {step === "house-style" ? "step 1 of 2" : "step 2 of 2"}

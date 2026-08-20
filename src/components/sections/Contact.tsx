@@ -26,7 +26,7 @@ const POINTS = [
     icon: Package,
     title: "volume pricing",
     body: "Ordering ten or more? The rate drops. Tell us the quantity and we'll quote you the same day.",
-    className: "bg-hotpink text-white",
+    className: "bg-teal text-white",
     tilt: "2deg",
   },
   {
@@ -159,7 +159,7 @@ export function Contact({
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${cta} bg-hotpink text-white sm:col-span-2`}
+                className={`${cta} bg-teal text-white sm:col-span-2`}
               >
                 <Package className="h-5 w-5 shrink-0" />
                 get a bulk quote

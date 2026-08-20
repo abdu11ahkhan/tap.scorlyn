@@ -22,7 +22,7 @@ const STEPS = [
     title: "get your nfc card",
     body: "Order the physical card once your page is live. It's paired to your card, ready to print.",
     icon: IdCard,
-    color: "bg-hotpink text-white",
+    color: "bg-teal text-white",
   },
   {
     n: "03",

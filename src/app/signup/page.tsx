@@ -194,7 +194,7 @@ function SignupForm() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="sticker-lg relative z-10 w-full max-w-md rounded-[2rem] border-2 border-ink bg-white p-8"
-        style={{ ["--sticker-color" as string]: "#FF3D9A" }}
+        style={{ ["--sticker-color" as string]: "#F58800" }}
       >
         {isSuccess ? (
           <div className="text-center">

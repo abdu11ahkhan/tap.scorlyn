@@ -38,7 +38,10 @@ export function AudienceSplit() {
           className="mb-14 max-w-2xl"
         >
           <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-white">
-            built for <span className="text-hotpink">one</span>,
+            {/* Teal (text-hotpink) fails contrast as bare text on this dark
+                background (2.81:1); Golden Yellow (text-sand) passes at
+                10.5:1. */}
+            built for <span className="text-sand">one</span>,
             <br />
             or a whole <span className="text-acid">team.</span>
           </h2>
