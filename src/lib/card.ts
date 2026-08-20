@@ -122,6 +122,15 @@ export const BACKGROUND_EFFECTS = [
   { id: "gradient", label: "gradient" },
 ] as const;
 
+/** How the card's own elements animate in on load — see globals.css's
+ *  [data-intro="..."] .card-rise overrides for how each one renders. */
+export const INTRO_STYLES = [
+  { id: "rise", label: "rise" },
+  { id: "dropdown", label: "dropdown" },
+  { id: "bubble", label: "bubble" },
+  { id: "swipe", label: "swipe" },
+] as const;
+
 /**
  * Backgrounds a card can sit on, grouped by lightness.
  *
@@ -222,6 +231,9 @@ export type CardProfile = {
    *  accent colour. Null/'none' keeps the flat (grain-only) look every
    *  template already has. */
   background_effect: "none" | "glow" | "grid" | "gradient" | null;
+  /** Which entrance animation the card's elements use on load. Null/'rise'
+   *  keeps every template's original default. */
+  intro_style: "rise" | "dropdown" | "bubble" | "swipe" | null;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];

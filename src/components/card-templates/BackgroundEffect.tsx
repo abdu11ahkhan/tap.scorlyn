@@ -23,10 +23,17 @@ export default function BackgroundEffect({
 }) {
   if (!effect || effect === "none") return null;
 
+  // z-[1]: some templates render an optional cover photo / scrim as a
+  // later sibling (e.g. GlassCard's `fixed inset-0` backdrop) — without an
+  // explicit z-index those paint over an unstacked absolute sibling, so a
+  // chosen effect could silently disappear the moment someone also picks
+  // a cover photo. The card's real content (avatar/name/buttons) sits in
+  // its own positioned wrapper in every template, which is what actually
+  // keeps it above this regardless of this z-index.
   if (effect === "glow") {
     return (
       <div
-        className="float-orb pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[520px] -translate-x-1/2 rounded-full opacity-25 blur-[110px]"
+        className="float-orb pointer-events-none absolute -top-32 left-1/2 z-[1] h-[420px] w-[520px] -translate-x-1/2 rounded-full opacity-25 blur-[110px]"
         style={{ background: accent }}
         aria-hidden="true"
       />
@@ -36,7 +43,7 @@ export default function BackgroundEffect({
   if (effect === "grid") {
     return (
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45vh] opacity-[0.14]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[45vh] opacity-[0.14]"
         style={{
           backgroundImage: `linear-gradient(${accent} 1px, transparent 1px), linear-gradient(90deg, ${accent} 1px, transparent 1px)`,
           backgroundSize: "34px 34px",
@@ -51,7 +58,7 @@ export default function BackgroundEffect({
   // "gradient"
   return (
     <div
-      className="gradient-pan pointer-events-none absolute inset-0 opacity-40"
+      className="gradient-pan pointer-events-none absolute inset-0 z-[1] opacity-40"
       style={{
         backgroundImage: `radial-gradient(at 20% 20%, ${accent}55 0px, transparent 55%), radial-gradient(at 80% 70%, ${accent}33 0px, transparent 55%)`,
       }}

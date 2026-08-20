@@ -35,6 +35,7 @@ export default function PosterCard({
     <div
       className="grain relative min-h-screen bg-ink text-white overflow-hidden"
       style={{ fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
 

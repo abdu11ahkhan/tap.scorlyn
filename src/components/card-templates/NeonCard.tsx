@@ -28,6 +28,7 @@ export default function NeonCard({
     <div
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* A single low grid, fading out before halfway up the screen — texture,

@@ -30,6 +30,7 @@ export default function LaunchCard({
     <div
       className="grain relative flex min-h-screen flex-col justify-center overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       <div

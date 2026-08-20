@@ -8,6 +8,7 @@ import {
   ACCENT_PRESETS,
   SURFACE_PRESETS,
   BACKGROUND_EFFECTS,
+  INTRO_STYLES,
   surfaceReadability,
   BUTTON_KIND_GROUPS,
   KIND_LABELS,
@@ -292,6 +293,31 @@ export default function CardEditorFields({
                 onClick={() => onFormChange({ background_effect: opt.id })}
                 className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
                   (form.background_effect || "none") === opt.id
+                    ? "border-sc-gold text-sc-gold"
+                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* How your own name/buttons/avatar animate in — same stagger
+            every template already has, just a different shape of motion. */}
+        <div className="space-y-2 sm:col-span-2">
+          <Label>How it opens</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            The animation your name, photo and buttons use when the card loads.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {INTRO_STYLES.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => onFormChange({ intro_style: opt.id })}
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                  (form.intro_style || "rise") === opt.id
                     ? "border-sc-gold text-sc-gold"
                     : "border-sc-border text-sc-text-dim hover:text-sc-text"
                 }`}

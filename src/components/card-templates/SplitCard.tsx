@@ -28,6 +28,7 @@ export default function SplitCard({
     <div
       className="grain relative min-h-screen md:flex overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Identity panel — filled solid with the accent, so everything inside

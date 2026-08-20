@@ -34,6 +34,7 @@ export default function GridCard({
     <div
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-md px-6 pt-14 pb-24">

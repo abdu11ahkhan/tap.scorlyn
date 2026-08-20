@@ -26,6 +26,7 @@ export default function EditorialCard({
     <div
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: "ui-serif, Georgia, 'Times New Roman', serif" }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       <main className="mx-auto w-full max-w-sm px-7 pt-16 pb-28">

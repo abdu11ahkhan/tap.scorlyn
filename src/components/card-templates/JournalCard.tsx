@@ -30,6 +30,7 @@ export default function JournalCard({
     <div
       className="grain relative min-h-screen overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={theme.accent} />
       <main className="mx-auto w-full max-w-[34rem] px-6 pb-24 pt-16">

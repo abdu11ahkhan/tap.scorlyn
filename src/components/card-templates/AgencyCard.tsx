@@ -46,6 +46,7 @@ export default function AgencyCard({
     <div
       className="grain relative min-h-screen scroll-smooth overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       <nav

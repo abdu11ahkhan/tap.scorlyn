@@ -26,6 +26,7 @@ export default function DockCard({
     <div
       className="grain relative flex min-h-screen flex-col overflow-hidden"
       style={{ background: theme.surface, color: theme.fg, fontFamily: fontStack(card.font) }}
+      data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Full-bleed portrait, or the accent if there's no photo yet. */}
