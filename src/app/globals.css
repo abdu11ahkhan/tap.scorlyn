@@ -327,7 +327,7 @@ select.app-input {
   color: var(--color-sc-text-dimmer);
 }
 .app-input:focus {
-  border-color: var(--color-sc-gold);
+  border-color: var(--color-sc-cta);
 }
 .app-input[aria-invalid="true"] {
   border-color: var(--color-sc-error);
@@ -377,16 +377,19 @@ textarea.app-input {
   transform: scale(0.98);
 }
 
-/* PRIMARY — the one action per screen that matters most. */
+/* PRIMARY — the one action per screen that matters most. Olive, not Sand:
+   the brand brief scopes Olive to "CTAs, active states, selected states,
+   important actions" specifically, and this class is the single most
+   concentrated definition of "the CTA" app-wide. */
 .app-btn-primary {
-  background: var(--color-sc-gold);
-  color: var(--color-sc-gold-ink);
+  background: var(--color-sc-cta);
+  color: var(--color-sc-cta-ink);
 }
 .app-btn-primary:hover {
-  background: var(--color-sc-gold-hover);
+  background: var(--color-sc-cta-hover);
 }
 .app-btn-primary:active {
-  background: var(--color-sc-gold-pressed);
+  background: var(--color-sc-cta-pressed);
 }
 
 /* SECONDARY — a filled but quiet alternative, one notch below primary. */
@@ -530,59 +533,130 @@ textarea.app-input {
 
 
 /* ------------------------------------------------------------------
-   Landing page kit — re-themed on request from a supplied palette
-   ("Study Hard", @daveyandkrista: #675647 / #E3BD90 / #DFD3B5 / #C0BDBC /
-   #6C6E36 / #3B3B3B). That palette is light/cream-based; adapted here to
-   the site's existing dark-background system rather than flipped to a
-   light theme, per explicit instruction — same roles (bg/surface/accent/
-   text), same token names throughout so no component needed to change,
-   only what these variables resolve to. Chunky stickers + grain stay;
-   only the colours moved.
+   Tap Scorlyn brand palette v3 — "Orange Drip": Deep Navy #051821 / Dark
+   Teal #1A4645 / Teal #266867 / Orange #F58800 / Golden Yellow #F8BC24.
+   Supersedes the previous ("Study Hard") re-theme before it was ever
+   deployed — audited fresh against the current token structure rather
+   than diffed against the palette it replaces.
+
+   This palette is dark-primary (Navy/Dark Teal are both near-black), which
+   fits the existing architecture far more directly than the previous
+   cream-based request did: the dashboard/admin canvas was already dark for
+   a real reason (243 occurrences of text-white/N, bg-white/N, border-white/N
+   across 33 files are opacity overlays that only render visibly on a dark
+   base — confirmed again this pass), so no light/dark polarity flip was
+   needed anywhere. The one deliberate call: login/signup/onboarding's card
+   surface, previously plain white, stays plain white rather than being
+   forced into one of these five brand colours — none of them is a neutral
+   light surface, and the brief itself says not to force a colour into a
+   role it doesn't fit.
+
+   WCAG 2.1 contrast, computed (relative luminance) before any of this was
+   applied:
+     - White text on Navy: ~18:1.
+     - Golden Yellow text on Navy: 10.5:1 (AAA).
+     - Orange text on Navy: 7.25:1 (AAA).
+     - Teal AS TEXT on Navy: 2.81:1 — fails even the 3:1 non-text floor.
+       Teal is a fill-only colour here (badges/charts/selected-state
+       backgrounds), never bare foreground text — which is exactly the set
+       of roles the brief itself assigns it, so this isn't a compromise.
+     - White text ON an Orange fill: 2.50:1 — fails. Navy text ON Orange:
+       7.25:1 — passes. Orange buttons need dark ink, not light.
+     - White text ON a Golden Yellow fill: 1.72:1 — fails badly. Navy text
+       ON yellow: 10.5:1 — passes. Same rule as Orange.
+     - success/warning/error were NOT mapped onto orange/yellow (explicit
+       instruction) — kept as independently-chosen, recognisable
+       green/amber/red, each checked ≥4.6:1 against Navy.
    ------------------------------------------------------------------ */
 
 @theme {
-  --color-acid: #e3bd90; /* was #ccff00 — primary accent, from the palette's tan */
-  --color-hotpink: #6c6e36; /* was #ff3d9a — secondary accent, the palette's olive */
-  --color-violet-pop: #a08a68; /* was #8b5cf6 — third accent, a lifted tone of the palette's brown, kept in-family rather than an unrelated hue */
-  --color-ink: #14100c; /* was #0a0a0a — warm near-black derived from the palette's brown, not a neutral black */
-  --color-sand: #dfd3b5; /* new token — replaces stray Tailwind cyan-300 uses (gradient text, two feature-card fills) that would otherwise clash against this palette; the palette's own cream */
+  /* Named 1:1 with the brand sheet, for direct traceability. */
+  --color-navy: #051821;
+  --color-dark-teal: #1a4645;
+  --color-teal: #266867;
+  --color-orange: #f58800;
+  --color-golden-yellow: #f8bc24;
 }
 
 /* ------------------------------------------------------------------
-   Scorlyn brand system — Phase 4, re-themed alongside the landing kit
-   above using the same source palette, so the dashboard and marketing
-   site now share one family instead of two unrelated dark bases.
-
-   BRAND colour, for the product's own chrome (dashboard, admin, and this
-   session's editor/public-card work as it lands) — distinct from CARD
-   colour, which stays entirely user-chosen (card.accent_color/surface_color,
-   the 36 template components) and must never be forced toward this palette.
-   Confusing the two was the explicit risk called out for this phase: this
-   file only ever sets how *Scorlyn* looks, never how a customer's card does.
+   Landing page kit.
    ------------------------------------------------------------------ */
 @theme {
-  --color-sc-bg: #14100c;
-  --color-sc-surface: #1e1812;
-  --color-sc-surface-2: #282016;
-  --color-sc-border: #3d3226;
-  --color-sc-border-soft: #2a2318;
+  --color-acid: #f58800; /* Orange — primary accent / CTA */
+  /* NOT Teal. Audit found --color-hotpink's dominant real usage (30+ call
+     sites, mostly in /admin plus signup/scan) is as the shared error/danger
+     TEXT colour — form validation, upload failures, destructive-action
+     buttons — not landing decoration. Teal fails as bare text (2.81:1 on
+     this background); this is the same red used for --color-sc-error,
+     verified at 4.63:1. The landing page's own purely-decorative former
+     uses of hotpink (glow orbs, feature-card fills, badges) were moved to
+     the new --color-teal token instead, so decoration and danger stay
+     visually and semantically separate even though they used to share one
+     variable. */
+  --color-hotpink: #e5484d;
+  --color-violet-pop: #1a4645; /* Dark Teal — a background glow */
+  --color-ink: #051821; /* Deep Navy — page background, and (being very dark) the ink colour sitting ON the light accent buttons below */
+  --color-sand: #f8bc24; /* Golden Yellow — the few spots (gradient stop, feature-card fills) that want a light fill rather than an accent */
+  --color-teal: #266867; /* Teal — decorative accent (glow orbs, feature-card fills, badges): fill-only, never bare text (2.81:1, fails) */
+}
 
-  --color-sc-text: #efe6d3;
-  --color-sc-text-dim: #c0bdbc;
-  --color-sc-text-dimmer: #8a8580;
+/* ------------------------------------------------------------------
+   Scorlyn brand system — Phase 4, re-themed to the Orange Drip palette,
+   so the dashboard and marketing site share one family instead of two.
 
-  --color-sc-gold: #e3bd90;
-  --color-sc-gold-hover: #ecd0ac;
-  --color-sc-gold-pressed: #d1a374;
-  --color-sc-gold-ink: #241c12; /* text/icon colour sitting ON the accent */
+   BRAND colour, for the product's own chrome (dashboard, admin, editor,
+   analytics, orders, NFC pages, corporate dashboard) — distinct from CARD
+   colour, which stays entirely user-chosen (card.accent_color/surface_color,
+   the 36 template components) and must never be forced toward this palette.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-sc-bg: #051821; /* Deep Navy */
+  --color-sc-surface: #0d2b2e; /* between Navy and Dark Teal — the first elevation step */
+  --color-sc-surface-2: #1a4645; /* Dark Teal, exactly as briefed: "secondary surfaces, cards" */
+  --color-sc-border: #2c4a49;
+  --color-sc-border-soft: #123030;
 
-  /* Semantic status colours stay recognisable as green/amber/red — the
-     source palette supplied no red, and a status colour that stops
-     reading as "danger" is a usability regression, not a rebrand. Success
-     reuses the palette's own olive, which already reads as green. */
-  --color-sc-success: #6c6e36;
-  --color-sc-warning: #b8863f;
-  --color-sc-error: #b0443a;
+  --color-sc-text: #edf5f3; /* nearly white, faint cool tint — ~18:1 against sc-bg */
+  --color-sc-text-dim: #9fb8b5; /* muted teal-grey */
+  --color-sc-text-dimmer: #6b7f7d;
+
+  /* Golden Yellow — the general accent (headline emphasis, stat numbers,
+     badges, focus-adjacent highlights): 10.5:1 against sc-bg (AAA). Kept
+     on the existing --color-sc-gold token (152 call sites app-wide) rather
+     than renamed, since its actual usage — decorative/emphasis, not
+     buttons — is exactly this role. */
+  --color-sc-gold: #f8bc24;
+  --color-sc-gold-hover: #fbcb52;
+  --color-sc-gold-pressed: #dba51c;
+  --color-sc-gold-ink: #051821; /* Navy text ON yellow — 10.5:1 (AAA) */
+
+  /* Orange — CTAs and active/selected states only (.app-btn-primary, the
+     three dashboard active-nav spots, the input focus ring): exactly the
+     brief's "primary accent/CTA... active buttons... conversion-focused
+     UI." Navy ink, not white: white-on-orange is 2.5:1 and fails; the
+     button needs dark text sitting on top of it, not light. */
+  --color-sc-cta: #f58800;
+  --color-sc-cta-hover: #ff9d2b;
+  --color-sc-cta-pressed: #d97600;
+  --color-sc-cta-ink: #051821;
+
+  /* Teal — the brief's "interactive/supporting brand colour... selected
+     states, secondary interactive elements, data accents, charts." Used
+     as a fill (chart bars/segments, a selected-but-not-primary badge),
+     never as bare text — Teal-as-text on Navy is 2.81:1 and fails. */
+  --color-sc-teal: #266867;
+
+  /* Semantic status colours were deliberately NOT mapped onto Orange or
+     Golden Yellow (both already mean "CTA" and "highlight" here — reusing
+     either for "error" or "warning" would make a button and a danger
+     state look like the same thing). Each chosen independently and
+     checked against sc-bg: success 5.69:1, warning 6.89:1, error 4.63:1
+     — all pass AA, and the warning tone is deliberately more muted/
+     brownish than Orange so the two don't get confused as the same colour
+     at a glance. */
+  --color-sc-success: #3da35d;
+  --color-sc-warning: #d9902e;
+  --color-sc-error: #e5484d;
 }
 
 /* Film grain. Pure CSS, no image request.
