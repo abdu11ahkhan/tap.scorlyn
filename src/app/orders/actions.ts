@@ -130,12 +130,16 @@ export async function placeOrder(input: {
 /** Repeat an existing order — same plan, same address. */
 export async function reorder(orderId: string): Promise<Result<{ reference: string }>> {
   try {
-    const { supabase } = await requireUser();
+    const { supabase, user } = await requireUser();
 
+    // RLS already scopes this to the caller's own orders — this filter is
+    // defense-in-depth, not the only thing standing between a client-
+    // supplied orderId and another customer's delivery details.
     const { data: old } = await supabase
       .from("orders")
       .select("plan_id, quantity, full_name, phone, address, city")
       .eq("id", orderId)
+      .eq("user_id", user.id)
       .maybeSingle();
 
     if (!old) throw new Error("Order not found.");
@@ -160,16 +164,21 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
 
 export async function attachPaymentProof(orderId: string, path: string): Promise<Result> {
   try {
-    const { supabase } = await requireUser();
+    const { supabase, user } = await requireUser();
 
     // RLS restricts this to the owner's own *pending* orders, so a customer
-    // can't quietly swap the proof after it's been verified.
-    const { error } = await supabase
+    // can't quietly swap the proof after it's been verified — the .eq
+    // below is defense-in-depth on top of that, and lets us tell "blocked"
+    // from "nothing to update" instead of reporting false success either way.
+    const { data, error } = await supabase
       .from("orders")
       .update({ payment_proof_url: path })
-      .eq("id", orderId);
+      .eq("id", orderId)
+      .eq("user_id", user.id)
+      .select("id");
 
     if (error) throw new Error(error.message);
+    if (!data || data.length === 0) throw new Error("Order not found, or no longer pending.");
 
     revalidatePath(`/dashboard/orders/${orderId}`);
     revalidatePath("/dashboard/orders");
