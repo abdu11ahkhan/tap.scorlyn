@@ -21,6 +21,7 @@ import { downscale, toDataUrl } from "@/components/card-editor/ImagePicker";
 import { scanCardText } from "@/lib/card-ocr";
 import { scanCardWithClaude } from "@/lib/card-scan-ai";
 import HouseStyleSection from "@/components/dashboard/HouseStyleSection";
+import { physicalCardShortLabel, type PhysicalCardStatus } from "@/lib/nfc-lifecycle";
 
 export type EmployeeCard = {
   id: string;
@@ -42,12 +43,15 @@ export default function TeamManager({
   houseTemplate,
   houseAccentColor,
   employees,
+  physicalByProfile = {},
 }: {
   companySlug: string;
   companyName: string;
   houseTemplate: string | null;
   houseAccentColor: string | null;
   employees: EmployeeCard[];
+  /** Keyed by card_profiles.id — empty for an employee with no physical order. */
+  physicalByProfile?: Record<string, PhysicalCardStatus>;
 }) {
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
@@ -368,7 +372,9 @@ export default function TeamManager({
         </div>
       ) : employees.length > 0 ? (
         <div className="space-y-2.5">
-          {employees.map((card) => (
+          {employees.map((card) => {
+            const physical = physicalByProfile[card.id];
+            return (
             <div key={card.id} className="app-panel flex flex-wrap items-center gap-3 p-4">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-black text-sc-text">
@@ -380,18 +386,39 @@ export default function TeamManager({
                 </p>
               </div>
 
-              <span
-                className={
-                  "shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight " +
-                  (card.owner_suspended
-                    ? "bg-rose-400/15 text-rose-300"
-                    : card.published
-                      ? "bg-sc-gold/15 text-sc-gold"
-                      : "bg-sc-surface-2 text-sc-text-dim")
-                }
-              >
-                {card.owner_suspended ? "suspended" : card.published ? "live" : "draft"}
-              </span>
+              <div className="flex shrink-0 flex-wrap items-center gap-1.5">
+                <span
+                  className={
+                    "rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight " +
+                    (card.owner_suspended
+                      ? "bg-rose-400/15 text-rose-300"
+                      : card.published
+                        ? "bg-sc-gold/15 text-sc-gold"
+                        : "bg-sc-surface-2 text-sc-text-dim")
+                  }
+                >
+                  {card.owner_suspended ? "suspended" : card.published ? "live" : "draft"}
+                </span>
+
+                {/* Physical card — a separate fact from the digital card
+                    above, never merged into one status. No order at all
+                    reads as a next action, not a state. */}
+                {physical ? (
+                  <Link
+                    href={"/dashboard/orders/" + physical.orderId}
+                    className="rounded-full bg-sc-surface-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dim transition-colors hover:text-sc-gold"
+                  >
+                    {physicalCardShortLabel(physical)}
+                  </Link>
+                ) : (
+                  <Link
+                    href="/dashboard/nfc"
+                    className="rounded-full border-2 border-dashed border-sc-border px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dimmer transition-colors hover:border-sc-gold hover:text-sc-gold"
+                  >
+                    No NFC order
+                  </Link>
+                )}
+              </div>
 
               <div className="flex shrink-0 items-center gap-1.5">
                 <Link
@@ -436,7 +463,8 @@ export default function TeamManager({
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       ) : null}
     </div>
