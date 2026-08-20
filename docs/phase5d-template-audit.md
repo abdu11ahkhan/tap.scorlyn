@@ -96,3 +96,64 @@ text relies on the now-dynamic root color instead of anchoring its own):
 **Tier B (minor polish):** ~17 templates, batched by family — BoldCard/MonoCard orb removal, SplitCard max-width, GridCard/CaseCard nav consistency, ContactSheet/Mosaic nav min-height, TilesCard icon hierarchy, DockCard scroll edge-fade, AgencyCard/StackCard nav-pill padding, JournalCard/AuroraCard SaveContact padding, LaunchCard secondary-link padding, PitchCard stat-strip review, BookingCard optional-field label.
 
 **Tier A:** 14 templates — MinimalCard, NeonCard, EditorialCard, StickerCard, TapeCard, ReelCard, MasonryCard, FilmstripCard, PosterCard, WaitlistCard, MenuCard, OrbitCard, FramesCard — left untouched.
+
+## Part 16 — Final 36-template scorecard
+
+All 6 C-tier items and all 16 flagged B-tier items were fixed (commits `502f9a7`
+and `9d8dec9`). Every row below reflects post-fix state, verified live (75
+checks, 3 breakpoints, long-content stress data, 0 overflow failures) plus
+tsc/eslint/build clean.
+
+| Template | Identity | Mobile | Accessibility | Theme | CTA | Differentiation | Status |
+|---|---|---|---|---|---|---|---|
+| MinimalCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| BoldCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| NeonCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| MonoCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| EditorialCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| GlassCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| SplitCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| StickerCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| TapeCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| GridCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| ShowcaseCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| ReelCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| MasonryCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| FilmstripCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| LookbookCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| ContactSheetCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| CaseCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| MosaicCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| ReplyCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| BookingCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| QuoteCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| PitchCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| AppCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| PosterCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| WaitlistCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| LaunchCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| MenuCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| OrbitCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| TilesCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| DockCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| AgencyCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| StackCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| StudioCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| JournalCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| FramesCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+| AuroraCard | PASS | PASS | PASS | PASS | PASS | PASS | PASS |
+
+## Part 17 — Final quality gate
+
+- [x] All 36 templates audited (4 parallel read-only family audits, synthesized).
+- [x] Every template has a clear, describable purpose (see "Primary use case" / "Differentiation" columns above).
+- [x] No obvious duplicate designs remain — the one real near-duplicate risk (Showcase/Lookbook hero) investigated and documented as an intentional split, not a duplicate.
+- [x] No obvious mobile overflow — 75 live checks across 25 touched templates x 3 breakpoints (360-768px) plus the 21 checks from the prior photography pass, 0 failures.
+- [x] No obvious contrast failures — the 2 known white-card text-inheritance bugs (Reply, Quote) fixed and verified against a `#111111` custom surface.
+- [x] No obvious inaccessible controls — Studio's unpadded header nav and StackCard's `card-avatar`-squashed nav pills (a real rendering bug, not just a11y) both fixed.
+- [x] All major CTA paths clear — TilesCard's icon hierarchy, GlassCard's non-accent orb, AppCard's fabricated rating all addressed.
+- [x] Custom surfaces remain readable — verified live on the highest-risk templates (white-card forms).
+- [x] Native surfaces preserve identity — no native-surface defaults changed.
+- [x] No Scorlyn brand leakage — GlassCard's fixed-indigo orb (the one non-accent-derived color found across all 36) now follows the owner's accent instead.
+- [x] tsc passes, eslint passes, `next build` passes.
+- [x] Live browser verification performed (Puppeteer, throwaway Supabase accounts, real screenshots reviewed).
