@@ -66,6 +66,14 @@ function MyCardEditor() {
   const [draftApplied, setDraftApplied] = useState(false);
   /** Set when a live card still has no printable design chosen. */
   const [askNfcFor, setAskNfcFor] = useState<string | null>(null);
+  /** The one clean "your card is live" moment — replaces an auto-opened tab
+   *  (silently blockable, and easy to miss) with an on-page panel that
+   *  states the fact and offers one clear next action. Holds the pending
+   *  NFC-design ask until this is dismissed, so the two don't compete for
+   *  attention at once. */
+  const [justPublished, setJustPublished] = useState<{ url: string; username: string } | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [pendingNfcAsk, setPendingNfcAsk] = useState<string | null>(null);
   /** Approval state for this card. Extra cards are paid for before going live. */
   const [approval, setApproval] = useState<{
     status: string;
@@ -254,17 +262,26 @@ function MyCardEditor() {
       clearDraft();
       setDraftApplied(false);
 
-      // Show them the thing they just made. Only on the first publish: doing
-      // it on every save would open a tab each time someone edits a line.
+      // Tell them, on the page, that it worked — only on the first publish:
+      // doing it on every save would interrupt someone editing a line.
       if (isFirstPublish) {
-        window.open(`/u/${data.username}`, "_blank", "noopener");
+        setJustPublished({
+          url: `${window.location.origin}/u/${data.username}`,
+          username: data.username,
+        });
       }
 
-      // Ask which physical card they want, once, while the card is live and
-      // they are still looking at it. Asked again on a later save only if it
-      // is still unanswered — never once they have chosen.
+      // Ask which physical card they want, once, while the card is live.
+      // Held back while the "published!" panel is still up so the two don't
+      // both compete for the first thing the customer sees; asked
+      // immediately on a later save (no publish panel in the way), and only
+      // if it's still unanswered — never once they have chosen.
       if (data.published !== false && !data.nfc_finish) {
-        setAskNfcFor(data.id);
+        if (isFirstPublish) {
+          setPendingNfcAsk(data.id);
+        } else {
+          setAskNfcFor(data.id);
+        }
       }
     }
 
@@ -298,6 +315,64 @@ function MyCardEditor() {
           <ExternalLink className="h-4 w-4" />
           /u/{form.username}
         </Link>
+      )}
+
+      {justPublished && (
+        <div className="mt-6 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
+          <p className="font-black text-sc-text">Your card is live.</p>
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
+            Share it now, or tap it any time from your dashboard.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={async () => {
+                if (typeof navigator !== "undefined" && navigator.share) {
+                  try {
+                    await navigator.share({ title: "My digital card", url: justPublished.url });
+                    return;
+                  } catch {
+                    // Cancelled or unsupported — fall through to copy.
+                  }
+                }
+                try {
+                  await navigator.clipboard.writeText(justPublished.url);
+                  setLinkCopied(true);
+                  setTimeout(() => setLinkCopied(false), 1800);
+                } catch {
+                  // Clipboard needs a secure context; nothing useful to do beyond this.
+                }
+              }}
+              className="app-btn app-btn-primary rounded-full px-5"
+            >
+              {linkCopied ? <Check className="h-4 w-4" strokeWidth={3} /> : <ArrowRight className="h-4 w-4" />}
+              {linkCopied ? "Link copied" : "Share your card"}
+            </button>
+            <Link
+              href={`/u/${justPublished.username}`}
+              target="_blank"
+              className="app-btn app-btn-ghost rounded-full"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View it live
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                setJustPublished(null);
+                // Held back until now — see the comment where pendingNfcAsk
+                // is set, in handleSave.
+                if (pendingNfcAsk) {
+                  setAskNfcFor(pendingNfcAsk);
+                  setPendingNfcAsk(null);
+                }
+              }}
+              className="ml-auto text-xs font-bold uppercase tracking-widest text-sc-text-dimmer hover:text-sc-text-dim"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
       )}
 
       {draftApplied && (

@@ -58,6 +58,11 @@ export default function DashboardPage() {
   const [employees, setEmployees] = useState<EmployeeSummary[]>([]);
   const [latestOrder, setLatestOrder] = useState<LatestOrder | null>(null);
   const [nfcAssignments, setNfcAssignments] = useState<NfcAssignment[]>([]);
+  /** Signups/orders referral_events already attributes to this user — the
+   *  referral loop (src/lib/referral.ts, ReferralBanner) has always tracked
+   *  this, it just never showed the referrer anything. */
+  const [referralCount, setReferralCount] = useState(0);
+  const [refLinkCopied, setRefLinkCopied] = useState(false);
   /** Open when they act on the banner, not on arrival — nobody wants a modal
    *  thrown at them for something they did not ask for. */
   const [choosing, setChoosing] = useState(false);
@@ -122,6 +127,7 @@ export default function DashboardPage() {
         { data: profile },
         { data: employeeRows },
         { data: orderRows },
+        { count: referralCountRaw },
       ] = await Promise.all([
         supabase
           .from("card_profiles")
@@ -151,6 +157,15 @@ export default function DashboardPage() {
           .select("id, reference, status, amount_pkr, card_profile_id")
           .order("created_at", { ascending: false })
           .limit(1),
+        // "Referrers can read their own referral events." (auth.uid() =
+        // referrer_user_id) already covers this — no new policy needed.
+        // signup/order are real conversions; banner_view/banner_click are
+        // just impressions, not counted here.
+        supabase
+          .from("referral_events")
+          .select("id", { count: "exact", head: true })
+          .eq("referrer_user_id", user.id)
+          .in("event_type", ["signup", "order"]),
       ]);
 
       const latest = (orderRows?.[0] as LatestOrder | undefined) ?? null;
@@ -201,6 +216,7 @@ export default function DashboardPage() {
       );
       setEmployees((employeeRows ?? []) as EmployeeSummary[]);
       setLatestOrder(latest);
+      setReferralCount(referralCountRaw ?? 0);
       setLoading(false);
     };
 
@@ -389,6 +405,39 @@ export default function DashboardPage() {
             })}
           </div>
 
+          {/* The referral loop (src/lib/referral.ts, ReferralBanner on every
+              public card page) has always tracked this via referral_events —
+              it just never showed the referrer their own link or whether it
+              was working. Real counts only; nothing here is invented. */}
+          {card.username && (
+            <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-black text-white">Your referral link</p>
+                <p className="app-sub mt-0.5 truncate">
+                  {referralCount > 0
+                    ? `${referralCount} signup${referralCount === 1 ? "" : "s"} or order${referralCount === 1 ? "" : "s"} so far`
+                    : "Share it — people who sign up through it count here."}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const url = `${window.location.origin}/u/${card.username}${card.referral_code ? `?ref=${card.referral_code}` : ""}`;
+                  try {
+                    await navigator.clipboard.writeText(url);
+                    setRefLinkCopied(true);
+                    setTimeout(() => setRefLinkCopied(false), 1800);
+                  } catch {
+                    // Clipboard needs a secure context; nothing useful to do beyond this.
+                  }
+                }}
+                className="app-btn app-btn-ghost shrink-0"
+              >
+                {refLinkCopied ? "Copied!" : "Copy link"}
+              </button>
+            </div>
+          )}
+
           {/* Real order status when there is one to show — never a fake
               timeline for an order that doesn't exist. For a physical order,
               the label answers "what's happening with my physical card",
@@ -460,7 +509,7 @@ export default function DashboardPage() {
               <span>
                 <span className="block text-sm font-black text-white">Choose a template</span>
                 <span className="app-sub mt-0.5 block text-[13px]">
-                  Browse all 39 designs and pick one to start from.
+                  Browse all 36 designs and pick one to start from.
                 </span>
               </span>
             </Link>

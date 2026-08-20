@@ -11,6 +11,11 @@ import { extrasTone } from "@/components/card-templates";
 import ShareButton from "@/components/nfc/ShareButton";
 import { headers } from "next/headers";
 
+/** Matches src/lib/email.ts's SITE_URL — kept separate here rather than
+ *  importing from that module, which pulls nodemailer into this page's
+ *  server bundle for no reason. */
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tap.scorlyn.com";
+
 export const dynamic = "force-dynamic";
 
 async function getCard(username: string): Promise<CardProfile | null> {
@@ -36,14 +41,26 @@ export async function generateMetadata({
 
   const title = card.headline ? `${card.full_name} — ${card.headline}` : card.full_name;
   const description = card.bio ?? `Contact ${card.full_name}`;
+  // A card with no photo still deserves a real preview when shared — the
+  // site's own opengraph-image.png (src/app/opengraph-image.png), not a
+  // blank unfurl.
+  const image = card.avatar_url || `${SITE_URL}/opengraph-image.png`;
 
   return {
     title,
     description,
+    alternates: { canonical: `${SITE_URL}/u/${card.username}` },
     openGraph: {
       title,
       description,
-      images: card.avatar_url ? [card.avatar_url] : undefined,
+      url: `${SITE_URL}/u/${card.username}`,
+      images: [image],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
     },
   };
 }

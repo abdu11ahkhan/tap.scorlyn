@@ -107,11 +107,15 @@ export function Hero({
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
 
+            {/* Was a second link to /templates — identical destination to
+                the primary button above it, diluting the CTA without
+                offering a real second path. Pricing is real, on this same
+                page, and was otherwise only reachable from the navbar. */}
             <Link
-              href="/templates"
+              href="#pricing"
               className="inline-flex h-16 items-center justify-center rounded-full border-2 border-white/25 px-8 text-lg font-bold text-white transition-colors hover:border-white hover:bg-white/5"
             >
-              see templates
+              see pricing
             </Link>
           </motion.div>
 
