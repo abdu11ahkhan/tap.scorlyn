@@ -74,6 +74,7 @@ export default async function AnalyticsPage({
         <EmptyState
           title="No card yet"
           body="Create a card to start seeing how people find and use it."
+          action={{ label: "Create a card", href: "/templates" }}
         />
       </div>
     );
@@ -229,7 +230,7 @@ export default async function AnalyticsPage({
           {/* NFC breakdown — only when there's more than one physical card to distinguish */}
           {hasNfc && nfcBreakdown.length > 1 && (
             <div className="space-y-3">
-              <h2 className="app-h2">Physical cards</h2>
+              <h2 className="app-h2">NFC cards</h2>
               <div className="app-panel divide-y divide-sc-border-soft">
                 {nfcBreakdown.map((nc) => (
                   <div key={nc.nfcCardId} className="flex items-center justify-between p-3.5">
@@ -285,7 +286,17 @@ function Stat({
   );
 }
 
-function EmptyState({ title, body }: { title: string; body: string }) {
+function EmptyState({
+  title,
+  body,
+  action,
+}: {
+  title: string;
+  body: string;
+  /** Only the "no card at all" state needs one — "no activity yet" already
+   *  implies the action (share the card you have), so it stays actionless. */
+  action?: { label: string; href: string };
+}) {
   return (
     <div className="app-panel app-panel-pad flex flex-col items-center gap-3 py-12 text-center">
       <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold">
@@ -295,6 +306,11 @@ function EmptyState({ title, body }: { title: string; body: string }) {
         <p className="text-[15px] font-black text-sc-text">{title}</p>
         <p className="app-sub mx-auto mt-1 max-w-sm">{body}</p>
       </div>
+      {action && (
+        <Link href={action.href} className="app-btn app-btn-primary mt-1">
+          {action.label}
+        </Link>
+      )}
     </div>
   );
 }

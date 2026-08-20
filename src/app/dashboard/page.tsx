@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   BarChart3,
@@ -38,6 +39,7 @@ type CardRow = CardProfile & {
 };
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [name, setName] = useState("there");
   const [card, setCard] = useState<CardRow | null>(null);
   /** Every card they own — the dashboard used to assume exactly one. */
@@ -91,7 +93,11 @@ export default function DashboardPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        setLoading(false);
+        // Every sibling dashboard route (analytics, admin) already does
+        // this — this was the one page that instead silently rendered the
+        // empty-account shell for a logged-out visitor, which reads as
+        // "you have no card yet" rather than "you're not signed in."
+        router.replace("/login?next=%2Fdashboard");
         return;
       }
 
@@ -158,7 +164,7 @@ export default function DashboardPage() {
     };
 
     load();
-  }, []);
+  }, [router]);
 
   const stats = [
     { label: "taps", value: taps, icon: SmartphoneNfc },
@@ -353,8 +359,8 @@ export default function DashboardPage() {
           ) : (
             <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">Get your physical NFC card</p>
-                <p className="app-sub mt-0.5">Turn your digital card into a tap-to-share card.</p>
+                <p className="text-sm font-black text-white">Get your NFC card</p>
+                <p className="app-sub mt-0.5">Order the physical card that shares this with one tap.</p>
               </div>
               <Link href="/dashboard/nfc" className="app-btn app-btn-primary shrink-0">
                 <SmartphoneNfc className="h-4 w-4" />
