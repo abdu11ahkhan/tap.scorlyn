@@ -6,7 +6,7 @@ import { Layers, Zap, Smartphone, BarChart3, Palette, Link2 } from "lucide-react
 const CARDS = [
   {
     title: "tap. done.",
-    body: "Hold the card to any phone and your profile opens. No app, no QR code, no awkward 'let me find you on LinkedIn'.",
+    body: "Hold the card to any phone and it opens. No app, no QR code, no awkward 'let me find you on LinkedIn'.",
     icon: Smartphone,
     className: "sm:col-span-2 bg-acid text-ink",
     tilt: "-1.5deg",

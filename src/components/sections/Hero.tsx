@@ -90,7 +90,7 @@ export function Hero({
             className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-white/60"
           >
             {subtitle ||
-              "Tap your card on any phone and your whole profile opens instantly. No app. No QR. Build it in about two minutes."}
+              "Tap your card on any phone and it opens instantly — every link, every way to reach you. No app. No QR. Build it in about two minutes."}
           </motion.p>
 
           <motion.div

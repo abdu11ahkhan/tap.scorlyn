@@ -10,9 +10,24 @@ export default function TrendChart({ series }: { series: AnalyticsSummary["daily
   const peak = Math.max(1, ...series.map((d) => d.views + d.interactions));
   const showEveryNth = series.length > 45 ? 7 : series.length > 20 ? 3 : 1;
 
+  const activeDays = series.filter((d) => d.views + d.interactions > 0);
+
   return (
     <div>
-      <div className="flex h-40 gap-[3px]">
+      {/* The bars below convey their data through height/color/hover-title —
+          none of which reaches a screen reader. This is the same numbers as
+          a real list instead, visually hidden but not decorative-hidden. */}
+      <p className="sr-only">
+        {activeDays.length === 0
+          ? "No activity in this period."
+          : `Daily activity: ${activeDays
+              .map(
+                (d) =>
+                  `${new Date(d.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}, ${d.views} view${d.views === 1 ? "" : "s"}, ${d.interactions} other interaction${d.interactions === 1 ? "" : "s"}`
+              )
+              .join("; ")}.`}
+      </p>
+      <div className="flex h-40 gap-[3px]" aria-hidden="true">
         {series.map((day) => {
           const total = day.views + day.interactions;
           const viewsPct = (day.views / peak) * 100;

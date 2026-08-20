@@ -397,7 +397,7 @@ export default function TeamManager({
                 <Link
                   href={"/dashboard/team/" + card.id + "/edit"}
                   title="Edit card"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
                 >
                   <Pencil className="h-4 w-4" />
                 </Link>
@@ -406,7 +406,7 @@ export default function TeamManager({
                   target="_blank"
                   rel="noopener noreferrer"
                   title="View card"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </a>
@@ -415,7 +415,7 @@ export default function TeamManager({
                   onClick={() => toggleSuspend(card)}
                   disabled={busyId === card.id}
                   title={card.owner_suspended ? "Reactivate" : "Suspend"}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text disabled:opacity-50"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-surface-2 hover:text-sc-text disabled:opacity-50"
                 >
                   {busyId === card.id ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -430,7 +430,7 @@ export default function TeamManager({
                   onClick={() => remove(card)}
                   disabled={busyId === card.id}
                   title="Remove"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-rose-400/10 hover:text-rose-300 disabled:opacity-50"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-rose-400/10 hover:text-rose-300 disabled:opacity-50"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

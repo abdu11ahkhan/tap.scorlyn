@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "ScorlynTap - Professional Portfolio Builder",
-  description: "Create your professional portfolio in minutes, connect with NFC, and share your profile anywhere.",
+  description: "Create your digital business card in minutes, connect with NFC, and share it anywhere.",
 };
 
 export default function RootLayout({

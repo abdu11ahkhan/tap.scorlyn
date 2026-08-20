@@ -128,7 +128,7 @@ function CompanySetupForm() {
   };
 
   const field =
-    "h-13 w-full rounded-xl border-2 border-ink bg-white px-4 py-3 font-semibold text-ink outline-none placeholder:text-ink/30 focus:bg-acid/20";
+    "h-13 w-full rounded-xl border-2 border-ink bg-white px-4 py-3 font-semibold text-ink outline-none placeholder:text-ink/30 focus:border-acid focus:bg-acid/20";
 
   if (step === "loading") {
     return (
@@ -252,6 +252,7 @@ function CompanySetupForm() {
 
             <form onSubmit={addFirstEmployee} className="mt-4 space-y-3">
               <input
+                aria-label="Full name"
                 placeholder="Full name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
@@ -260,6 +261,7 @@ function CompanySetupForm() {
               />
               <input
                 type="email"
+                aria-label="Email (their login)"
                 placeholder="Email (their login)"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -267,12 +269,14 @@ function CompanySetupForm() {
                 className={field}
               />
               <input
+                aria-label="Job title (optional)"
                 placeholder="Job title (optional)"
                 value={headline}
                 onChange={(e) => setHeadline(e.target.value)}
                 className={field}
               />
               <input
+                aria-label="Phone (optional)"
                 placeholder="Phone (optional)"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}

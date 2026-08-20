@@ -110,7 +110,7 @@ function AccountTypeForm() {
   };
 
   const field =
-    "h-13 w-full rounded-xl border-2 border-ink bg-white px-4 py-3 font-semibold text-ink outline-none placeholder:text-ink/30 focus:bg-acid/20";
+    "h-13 w-full rounded-xl border-2 border-ink bg-white px-4 py-3 font-semibold text-ink outline-none placeholder:text-ink/30 focus:border-acid focus:bg-acid/20";
   const label = "text-sm font-black uppercase tracking-wide text-ink";
 
   if (checking) {

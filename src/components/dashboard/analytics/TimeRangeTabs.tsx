@@ -21,6 +21,7 @@ export default function TimeRangeTabs({ active }: { active: TimeRange }) {
         <Link
           key={range}
           href={range === "30d" ? "/dashboard/analytics" : `/dashboard/analytics?range=${range}`}
+          aria-current={active === range ? "true" : undefined}
           className={cn(
             "flex min-h-11 shrink-0 items-center rounded-full border-2 px-4 text-[13px] font-black uppercase tracking-tight transition-colors",
             active === range

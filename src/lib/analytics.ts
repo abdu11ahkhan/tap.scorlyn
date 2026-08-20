@@ -139,7 +139,7 @@ export function summarizeByCard(
 
 export type NfcBreakdownRow = { nfcCardId: string; label: string; activity: number };
 
-/** Ordinal labels ("Physical card 1", "2", ...) by issuance order — never the raw code or internal id. */
+/** Ordinal labels ("NFC card 1", "2", ...) by issuance order — never the raw code or internal id. */
 export function summarizeByNfcCard(
   rows: TapRow[],
   nfcCards: { id: string; created_at: string }[]
@@ -154,7 +154,7 @@ export function summarizeByNfcCard(
   }
   return ordered.map((nc, i) => ({
     nfcCardId: nc.id,
-    label: `Physical card ${i + 1}`,
+    label: `NFC card ${i + 1}`,
     activity: counts.get(nc.id) ?? 0,
   }));
 }
