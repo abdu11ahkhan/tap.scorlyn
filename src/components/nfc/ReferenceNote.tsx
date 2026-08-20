@@ -53,25 +53,33 @@ export default function ReferenceNote({ username }: { username: string }) {
   };
 
   return (
-    <div className="relative z-10 mx-auto mb-28 mt-8 w-full max-w-sm px-6">
-      <div className="sticker rounded-2xl border-2 border-black/10 bg-white p-4 text-black">
-        <label
-          htmlFor="reference-note"
-          className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-black/50"
-        >
-          <MessageSquarePlus className="h-3.5 w-3.5" />
-          note for yourself
-        </label>
-        <p className="mt-1 text-[11px] font-semibold text-black/40">
-          Saved with the contact when you tap &quot;save to contacts&quot; above.
-        </p>
+    <div className="relative z-10 mx-auto mb-28 mt-8 w-full max-w-md px-6">
+      {/* Same card/icon/token language as ReferralBanner just below it —
+          both are Tap Scorlyn's own UI sitting on top of a customer's own
+          template, not part of that template's design, so they read as one
+          family rather than a plain white box dropped onto whatever colours
+          the owner picked. */}
+      <div className="rounded-2xl border-2 border-sc-border bg-sc-surface p-3 shadow-[0_8px_32px_rgba(0,0,0,0.35)]">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sc-gold">
+            <MessageSquarePlus className="h-[18px] w-[18px] text-sc-gold-ink" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[13px] font-black leading-tight text-sc-text">
+              Who is this, to you?
+            </p>
+            <p className="truncate text-[11px] font-semibold leading-tight text-sc-text-dim">
+              Added to their saved name, so you can find them again.
+            </p>
+          </div>
+        </div>
         <input
           id="reference-note"
           value={note}
           onChange={(e) => update(e.target.value)}
-          placeholder="e.g. met at the conference"
+          placeholder="e.g. car shop owner, met at the expo"
           maxLength={300}
-          className="mt-2.5 h-11 w-full rounded-xl border-2 border-black/10 bg-black/[0.03] px-3 text-sm font-semibold text-black outline-none placeholder:text-black/30 focus:border-black/30"
+          className="mt-2.5 h-11 w-full rounded-xl border-2 border-sc-border bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-gold"
         />
       </div>
     </div>

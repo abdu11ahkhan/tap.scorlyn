@@ -76,12 +76,24 @@ export function buildVCard(card: VCardSource, origin: string, visitorNote?: stri
   const [firstName, ...rest] = (card.full_name || "").split(" ");
   const lastName = rest.join(" ");
   const whatsapp = normalizeWhatsapp(card.whatsapp ?? null);
+  const trimmedNote = visitorNote?.trim().slice(0, 300) || "";
+
+  // The whole point of the field: "owns a car shop" needs to be something
+  // that turns up when the phone's own contacts search is used later, and
+  // most contacts apps search (and always display) FN, not NOTE — a tag
+  // buried only in notes is invisible to that search. FN is the formatted
+  // *display* name, distinct from the structured N below (which stays the
+  // person's real name only, so sorting/matching by actual name is
+  // unaffected).
+  const displayName = trimmedNote
+    ? `${card.full_name || ""} (${trimmedNote})`
+    : card.full_name || "";
 
   const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
     `N:${escapeVCard(lastName)};${escapeVCard(firstName ?? "")};;;`,
-    `FN:${escapeVCard(card.full_name || "")}`,
+    `FN:${escapeVCard(displayName)}`,
   ];
 
   if (card.company) lines.push(`ORG:${escapeVCard(card.company)}`);
@@ -100,10 +112,11 @@ export function buildVCard(card: VCardSource, origin: string, visitorNote?: stri
   if (card.email) lines.push(`EMAIL;TYPE=INTERNET:${escapeVCard(card.email)}`);
   if (card.location) lines.push(`ADR;TYPE=WORK:;;${escapeVCard(card.location)};;;;`);
 
-  // vCard only has one NOTE field, and the owner's own bio already uses it —
-  // a visitor's own reminder (where they met, what to follow up on) is
-  // appended underneath rather than replacing it, so neither is lost.
-  const trimmedNote = visitorNote?.trim().slice(0, 300) || "";
+  // Kept in NOTE too, in full, alongside the name tag above — the name
+  // stays short enough to be readable in a contacts list, NOTE is where
+  // the complete text lives if it's longer than a two-word tag. vCard only
+  // has one NOTE field, and the owner's own bio already uses it, so the
+  // visitor's own text is appended underneath rather than replacing it.
   const noteParts = [card.bio?.trim(), trimmedNote ? `Note: ${trimmedNote}` : ""].filter(Boolean);
   if (noteParts.length > 0) lines.push(`NOTE:${escapeVCard(noteParts.join("\n\n"))}`);
   // Only a fetchable URL. The placeholder avatars are inline `data:` SVGs, and
