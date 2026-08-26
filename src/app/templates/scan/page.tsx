@@ -257,19 +257,17 @@ export default function ScanCardPage() {
   };
 
   return (
-    <div className="grain relative min-h-screen bg-ink text-white">
-      <div className="float-orb pointer-events-none absolute -left-40 top-40 h-[460px] w-[460px] rounded-full bg-violet-pop/15 blur-[140px]" />
-
-      <header className="sticky top-0 z-30 border-b-2 border-white/10 bg-ink/85 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+    <div className="relative min-h-screen bg-paper text-ink">
+      <header className="sticky top-0 z-30 border-b border-line bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-4xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/templates"
-            className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+            className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-line px-4 text-sm font-black lowercase text-ink-dim transition-colors hover:border-teal hover:text-teal"
           >
             <ArrowLeft className="h-4 w-4" />
             <span className="hidden sm:inline">templates</span>
           </Link>
-          <p className="text-sm font-black lowercase text-white/70">scan a card</p>
+          <p className="text-sm font-black lowercase text-ink-dim">scan a card</p>
           <span className="w-11 shrink-0" />
         </div>
       </header>
@@ -278,9 +276,9 @@ export default function ScanCardPage() {
         {stage === "capture" && (
           <div className="mx-auto max-w-lg">
             <h1 className="text-3xl font-black tracking-tighter sm:text-4xl">
-              got a card <span className="text-acid">already?</span>
+              got a card <span className="text-teal">already?</span>
             </h1>
-            <p className="mt-3 text-[15px] font-semibold text-white/60">
+            <p className="mt-3 text-[15px] font-semibold text-ink-dim">
               Photograph the front and we&apos;ll read the details, colours, and
               logo straight off it — the back is optional, only useful if it
               has extra details the front doesn&apos;t. Nothing is saved until
@@ -317,14 +315,14 @@ export default function ScanCardPage() {
             <button
               onClick={runScan}
               disabled={!frontFile}
-              className="sticker sticker-press mt-8 flex h-14 w-full items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-40"
+              className="sticker sticker-press mt-8 flex h-14 w-full items-center justify-center gap-2 rounded-full bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-40"
             >
               read this card
             </button>
 
             <Link
               href="/templates"
-              className="mt-4 flex min-h-11 items-center justify-center text-center text-[13px] font-black uppercase tracking-widest text-white/40"
+              className="mt-4 flex min-h-11 items-center justify-center text-center text-[13px] font-black uppercase tracking-widest text-ink-dim"
             >
               or start blank instead
             </Link>
@@ -333,9 +331,9 @@ export default function ScanCardPage() {
 
         {stage === "scanning" && (
           <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-            <Loader2 className="h-8 w-8 animate-spin text-acid" />
-            <p className="text-[15px] font-bold text-white/70">Reading the card…</p>
-            <p className="max-w-xs text-sm text-white/40">
+            <Loader2 className="h-8 w-8 animate-spin text-teal" />
+            <p className="text-[15px] font-bold text-ink-dim">Reading the card…</p>
+            <p className="max-w-xs text-sm text-ink-dim">
               Usually takes a few seconds.
             </p>
           </div>
@@ -347,7 +345,7 @@ export default function ScanCardPage() {
               <h1 className="text-2xl font-black tracking-tighter sm:text-3xl">
                 does this look right?
               </h1>
-              <p className="mt-2 text-sm font-semibold text-white/50">
+              <p className="mt-2 text-sm font-semibold text-ink-dim">
                 We read these off the photo — check them over, anything can be
                 fixed here or later.
               </p>
@@ -369,53 +367,53 @@ export default function ScanCardPage() {
                 <ReviewField label="website" value={website} onChange={setWebsite} />
               </div>
 
-              <p className="mt-6 text-xs font-semibold text-white/40">
+              <p className="mt-6 text-xs font-semibold text-ink-dim">
                 Suggested look:{" "}
-                <span className="font-black text-white/70">{template}</span>, coloured
+                <span className="font-black text-ink">{template}</span>, coloured
                 from the photo. Everything — including the template — can be changed
                 on the next screen.
               </p>
 
               {autoLogoUrl ? (
-                <label className="mt-4 flex items-center gap-3 text-xs font-semibold text-white/60">
+                <label className="mt-4 flex items-center gap-3 text-xs font-semibold text-ink-dim">
                   <input
                     type="checkbox"
                     checked={useAsLogo}
                     onChange={(e) => setUseAsLogo(e.target.checked)}
-                    className="h-4 w-4 rounded border-2 border-white/30 accent-acid"
+                    className="h-4 w-4 rounded border-2 border-line accent-acid"
                   />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={autoLogoUrl}
                     alt=""
-                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                    className="h-8 w-8 rounded-md border border-line bg-mist object-contain"
                   />
                   Use the logo we found on the card (you can crop or replace it later)
                 </label>
               ) : (
                 frontDataUrl && (
-                  <label className="mt-4 flex items-center gap-2.5 text-xs font-semibold text-white/60">
+                  <label className="mt-4 flex items-center gap-2.5 text-xs font-semibold text-ink-dim">
                     <input
                       type="checkbox"
                       checked={useAsLogo}
                       onChange={(e) => setUseAsLogo(e.target.checked)}
-                      className="h-4 w-4 rounded border-2 border-white/30 accent-acid"
+                      className="h-4 w-4 rounded border-2 border-line accent-acid"
                     />
                     Use the card photo as my logo (you can crop or replace it later)
                   </label>
                 )
               )}
 
-              <div className="mt-4 flex items-center gap-3 text-xs font-semibold text-white/60">
+              <div className="mt-4 flex items-center gap-3 text-xs font-semibold text-ink-dim">
                 {manualLogoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={manualLogoUrl}
                     alt=""
-                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                    className="h-8 w-8 rounded-md border border-line bg-mist object-contain"
                   />
                 )}
-                <label className="cursor-pointer text-white/40 underline decoration-dotted underline-offset-2 hover:text-white/60">
+                <label className="cursor-pointer text-ink-dim underline decoration-dotted underline-offset-2 hover:text-ink">
                   {manualLogoUrl ? "replace my own logo file" : "or upload your own logo file"}
                   <input
                     type="file"
@@ -433,7 +431,7 @@ export default function ScanCardPage() {
                   <button
                     type="button"
                     onClick={() => setManualLogoUrl("")}
-                    className="text-white/40 hover:text-white/60"
+                    className="text-ink-dim hover:text-ink"
                   >
                     remove
                   </button>
@@ -441,17 +439,17 @@ export default function ScanCardPage() {
               </div>
 
               {rawLines.length > 0 && (
-                <details className="mt-4 rounded-xl border-2 border-white/10 bg-white/[0.02] px-4 py-3 text-xs text-white/50">
-                  <summary className="cursor-pointer font-black uppercase tracking-widest text-white/40">
+                <details className="mt-4 rounded-xl border border-line bg-mist px-4 py-3 text-xs text-ink-dim">
+                  <summary className="cursor-pointer font-black uppercase tracking-widest text-ink-dim">
                     what we actually read off the photo
                   </summary>
-                  <p className="mt-2 text-white/35">
+                  <p className="mt-2 text-ink-dim">
                     Line by line, before we sorted it into fields — check this
                     against the photo if anything above looks off.
                   </p>
                   <ul className="mt-2 space-y-1 font-mono">
                     {rawLines.map((line, i) => (
-                      <li key={i} className="break-words text-white/60">
+                      <li key={i} className="break-words text-ink-dim">
                         {line}
                       </li>
                     ))}
@@ -463,14 +461,14 @@ export default function ScanCardPage() {
                 <button
                   onClick={useThisCard}
                   disabled={!name.trim()}
-                  className="sticker sticker-press flex h-14 flex-1 items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-40"
+                  className="sticker sticker-press flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-acid text-base font-black uppercase tracking-tight text-ink disabled:opacity-40"
                 >
                   <Check className="h-4 w-4" />
                   use this
                 </button>
                 <button
                   onClick={() => setStage("capture")}
-                  className="flex h-14 items-center justify-center gap-2 rounded-full border-2 border-white/20 px-5 text-sm font-black uppercase tracking-tight text-white/70"
+                  className="flex h-14 items-center justify-center gap-2 rounded-full border border-line px-5 text-sm font-black uppercase tracking-tight text-ink-dim"
                 >
                   rescan
                 </button>
@@ -499,7 +497,7 @@ function PhotoSlot({
   onClear: () => void;
 }) {
   return (
-    <label className="relative flex aspect-[16/10] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/20 bg-white/[0.02] text-center transition-colors hover:border-acid/60">
+    <label className="relative flex aspect-[16/10] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-line bg-mist text-center transition-colors hover:border-teal/60">
       <input
         type="file"
         accept="image/jpeg,image/png,image/webp"
@@ -527,8 +525,8 @@ function PhotoSlot({
         </>
       ) : (
         <>
-          <Camera className="h-6 w-6 text-white/40" />
-          <span className="text-xs font-black uppercase tracking-widest text-white/40">
+          <Camera className="h-6 w-6 text-ink-dim" />
+          <span className="text-xs font-black uppercase tracking-widest text-ink-dim">
             {label}
           </span>
         </>
@@ -550,12 +548,12 @@ function ReviewField({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-bold uppercase tracking-wide text-white/50">{label}</label>
+      <label className="text-xs font-bold uppercase tracking-wide text-ink-dim">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.03] px-4 text-[15px] font-semibold text-white outline-none focus:border-acid"
+        className="h-12 w-full rounded-xl border border-line bg-mist px-4 text-[15px] font-semibold text-ink outline-none focus:border-teal"
       />
     </div>
   );

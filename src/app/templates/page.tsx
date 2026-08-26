@@ -73,16 +73,8 @@ export default async function PublicTemplatesPage() {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <div className="grain relative min-h-screen overflow-hidden bg-ink text-white">
-      <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-acid/20 blur-[150px]" />
-      <div
-        className="float-orb pointer-events-none absolute top-1/3 -right-40 h-[500px] w-[500px] rounded-full bg-hotpink/20 blur-[150px]"
-        style={{ ["--d" as string]: "4s" }}
-      />
-      <div
-        className="float-orb pointer-events-none absolute bottom-1/4 left-0 h-[460px] w-[460px] rounded-full bg-violet-pop/20 blur-[150px]"
-        style={{ ["--d" as string]: "7s" }}
-      />
+    <div className="relative min-h-screen overflow-hidden bg-paper text-ink">
+      <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-teal/8 blur-[150px]" />
 
       <div
         className="relative mx-auto w-full px-4 pt-14 pb-10 sm:px-6 sm:pt-20 sm:pb-14"
@@ -91,19 +83,19 @@ export default async function PublicTemplatesPage() {
         <header className="max-w-3xl">
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-widest text-white/60 transition-colors hover:border-acid hover:text-acid"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-xs font-black uppercase tracking-widest text-ink-dim transition-colors hover:border-teal hover:text-teal"
           >
             ← ScorlynTap
           </Link>
 
           <h1 className="card-rise mt-7 text-[clamp(2.8rem,8vw,5.5rem)] font-black leading-[0.86] tracking-[-0.05em]">
-            <span className="text-acid">{templatesAll.length}</span> templates.
+            <span className="text-teal">{templatesAll.length}</span> templates.
             <br />
             {TEMPLATE_CATEGORIES.length} sectors.
           </h1>
 
           <p
-            className="card-rise mt-6 max-w-xl text-lg font-medium text-white/60"
+            className="card-rise mt-6 max-w-xl text-lg font-medium text-ink-dim"
             style={{ ["--d" as string]: "80ms" }}
           >
             Start from the kind of page you need — a tap card, a landing page, a
@@ -115,7 +107,7 @@ export default async function PublicTemplatesPage() {
               retyping it. */}
           <Link
             href="/templates/scan"
-            className="card-rise mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-acid/40 bg-acid/10 px-4 text-sm font-black lowercase text-acid transition-colors hover:border-acid hover:bg-acid/20"
+            className="card-rise mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 text-sm font-black lowercase text-teal transition-colors hover:border-teal hover:bg-teal/20"
             style={{ ["--d" as string]: "100ms" }}
           >
             <Camera className="h-4 w-4" />
@@ -136,10 +128,10 @@ export default async function PublicTemplatesPage() {
                 <a
                   key={category.id}
                   href={`#${category.id}`}
-                  className="group inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-sm font-black lowercase text-white/60 transition-colors hover:border-acid hover:bg-acid hover:text-ink"
+                  className="group inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-black lowercase text-ink-dim transition-colors hover:border-teal hover:bg-teal hover:text-white"
                 >
                   {category.name}
-                  <span className="rounded-full bg-white/10 px-1.5 text-[11px] group-hover:bg-ink/15">
+                  <span className="rounded-full bg-mist px-1.5 text-[11px] group-hover:bg-white/15">
                     {count}
                   </span>
                 </a>
@@ -165,22 +157,22 @@ export default async function PublicTemplatesPage() {
             className="relative mx-auto w-full scroll-mt-6 px-4 pt-12 pb-4 sm:px-6 sm:pt-16"
             style={{ maxWidth: `${COLUMN_W + 48}px` }}
           >
-            <div className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b-2 border-white/10 pb-5">
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
               <div className="flex items-start gap-4">
                 {/* Big sector numeral gives the page a spine as you scroll. */}
-                <span className="text-5xl font-black leading-[0.8] tracking-tighter text-white/10 sm:text-6xl">
+                <span className="text-5xl font-black leading-[0.8] tracking-tighter text-ink/10 sm:text-6xl">
                   {String(categoryIndex + 1).padStart(2, "0")}
                 </span>
                 <div>
                   <h2 className="text-3xl font-black lowercase tracking-tighter sm:text-4xl">
                     {category.name}
                   </h2>
-                  <p className="mt-1.5 max-w-md text-sm font-medium text-white/50">
+                  <p className="mt-1.5 max-w-md text-sm font-medium text-ink-dim">
                     {category.blurb}
                   </p>
                 </div>
               </div>
-              <span className="rounded-full border-2 border-white/15 px-3 py-1 text-xs font-black text-white/40">
+              <span className="rounded-full border border-line px-3 py-1 text-xs font-black text-ink-dim">
                 {templates.length} {templates.length === 1 ? "template" : "templates"}
               </span>
             </div>
@@ -205,7 +197,7 @@ export default async function PublicTemplatesPage() {
                         subtree — the iframe included — to be resampled, which
                         left every preview visibly soft. The lift on hover is
                         transform too, but only while hovered. */}
-                    <div className="relative rounded-[1.7rem] border-2 border-white/12 bg-white/[0.03] p-2 transition-all duration-300 group-hover:-translate-y-2 group-hover:border-white/30 sm:rounded-[2rem] sm:p-3">
+                    <div className="sticker relative rounded-[1.7rem] bg-mist p-2 transition-all duration-300 group-hover:-translate-y-2 sm:rounded-[2rem] sm:p-3">
                       {isNew && (
                         <span className="sticker absolute -right-2 -top-3 z-20 rotate-3 rounded-full border-2 border-ink bg-acid px-3 py-1 text-[10px] font-black uppercase tracking-widest text-ink">
                           new
@@ -244,24 +236,24 @@ export default async function PublicTemplatesPage() {
                           className="h-3 w-3 shrink-0 rounded-full border-2 border-ink sm:h-3.5 sm:w-3.5"
                           style={{ background: accent }}
                         />
-                        <h3 className="truncate text-lg font-black lowercase tracking-tight transition-colors group-hover:text-acid sm:text-2xl">
+                        <h3 className="truncate text-lg font-black lowercase tracking-tight transition-colors group-hover:text-teal sm:text-2xl">
                           {template.name}
                         </h3>
                         {/* The vibe tag is the first thing to go — at half width
                             it pushes the name into an ellipsis. */}
-                        <span className="ml-auto hidden shrink-0 rounded-full border-2 border-white/15 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-white/40 lg:inline">
+                        <span className="ml-auto hidden shrink-0 rounded-full border border-line px-2.5 py-0.5 text-[10px] font-black uppercase tracking-widest text-ink-dim lg:inline">
                           {template.vibe}
                         </span>
                       </div>
 
-                      <p className="mt-1.5 text-xs font-medium leading-relaxed text-white/50 sm:mt-2 sm:text-sm">
+                      <p className="mt-1.5 text-xs font-medium leading-relaxed text-ink-dim sm:mt-2 sm:text-sm">
                         {template.blurb}
                       </p>
 
                       {/* Who the preview is showing. Makes it obvious the
                           templates suit different trades, not just palettes. */}
                       {persona && (
-                        <p className="mt-2 hidden items-center gap-1.5 text-[11px] font-bold text-white/30 sm:flex">
+                        <p className="mt-2 hidden items-center gap-1.5 text-[11px] font-bold text-ink/40 sm:flex">
                           <User className="h-3 w-3 shrink-0" />
                           <span className="truncate">
                             {persona.headline} · {persona.location}
@@ -283,7 +275,7 @@ export default async function PublicTemplatesPage() {
                         <Link
                           href={previewHref}
                           target="_blank"
-                          className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-white/20 text-white/70 transition-colors hover:border-acid hover:text-acid lg:inline-flex"
+                          className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border border-line text-ink-dim transition-colors hover:border-teal hover:text-teal lg:inline-flex"
                           title="Open full preview"
                         >
                           <Eye className="h-4 w-4" />
@@ -302,7 +294,7 @@ export default async function PublicTemplatesPage() {
         className="relative mx-auto w-full px-4 pb-20 pt-16 text-center sm:px-6 sm:pb-24 sm:pt-20"
         style={{ maxWidth: `${COLUMN_W + 48}px` }}
       >
-        <div className="sticker-lg rounded-[2rem] border-2 border-ink bg-acid p-10 text-ink">
+        <div className="sticker-lg rounded-[2rem] bg-acid p-10 text-ink">
           <Sparkles className="mx-auto h-7 w-7" />
           <h2 className="mt-4 text-3xl font-black leading-tight tracking-tighter sm:text-4xl">
             can&apos;t decide? just start.
@@ -314,7 +306,7 @@ export default async function PublicTemplatesPage() {
           </p>
           <Link
             href="/templates/sticker/edit"
-            className="sticker sticker-press mt-7 inline-flex h-14 items-center justify-center rounded-full border-2 border-ink bg-ink px-10 text-base font-black uppercase tracking-tight text-acid"
+            className="sticker sticker-press mt-7 inline-flex h-14 items-center justify-center rounded-full bg-ink px-10 text-base font-black uppercase tracking-tight text-acid"
           >
             start with sticker
           </Link>

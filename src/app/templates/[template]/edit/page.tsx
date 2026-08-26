@@ -130,9 +130,9 @@ export default function PublicCardEditor({
 
   if (!isKnownTemplate) {
     return (
-      <div className="grain flex min-h-screen flex-col items-center justify-center gap-4 bg-ink text-white">
-        <p className="text-slate-400">That template doesn&apos;t exist.</p>
-        <Link href="/templates" className="font-black lowercase text-acid hover:underline">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-paper text-ink">
+        <p className="text-ink-dim">That template doesn&apos;t exist.</p>
+        <Link href="/templates" className="font-black lowercase text-teal hover:underline">
           Browse templates
         </Link>
       </div>
@@ -141,36 +141,35 @@ export default function PublicCardEditor({
 
   if (!ready) {
     return (
-      <div className="grain flex min-h-screen items-center justify-center bg-ink">
-        <Loader2 className="h-6 w-6 animate-spin text-acid" />
+      <div className="flex min-h-screen items-center justify-center bg-paper">
+        <Loader2 className="h-6 w-6 animate-spin text-teal" />
       </div>
     );
   }
 
   return (
-    <div className="grain relative min-h-screen bg-ink text-white">
+    <div className="relative min-h-screen bg-paper text-ink">
       <RefCatcher />
-      <div className="float-orb pointer-events-none absolute -left-40 top-40 h-[460px] w-[460px] rounded-full bg-violet-pop/15 blur-[140px]" />
 
       {/* Top bar */}
-      <header className="sticky top-0 z-30 border-b-2 border-white/10 bg-ink/85 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-line bg-paper/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link
             href="/templates"
-            className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-sm font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+            className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-line px-4 text-sm font-black lowercase text-ink-dim transition-colors hover:border-teal hover:text-teal"
           >
             <ArrowLeft className="h-4 w-4" />
             <span className="hidden sm:inline">templates</span>
           </Link>
 
-          <p className="hidden text-xs font-bold text-white/40 md:block">
+          <p className="hidden text-xs font-bold text-ink-dim md:block">
             editing freely — no account needed until you publish
           </p>
 
           <button
             onClick={handlePublish}
             disabled={publishing}
-            className="sticker sticker-press flex shrink-0 items-center gap-2 rounded-full border-2 border-ink bg-acid px-6 py-3 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
+            className="sticker sticker-press flex shrink-0 items-center gap-2 rounded-full bg-acid px-6 py-3 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
           >
             {publishing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -182,15 +181,15 @@ export default function PublicCardEditor({
         </div>
 
         {/* Mobile edit/preview toggle */}
-        <div className="flex border-t-2 border-white/10 lg:hidden">
+        <div className="flex border-t border-line lg:hidden">
           {(["edit", "preview"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setMobileTab(tab)}
               className={`flex flex-1 items-center justify-center gap-2 py-3 text-sm font-black lowercase transition-colors ${
                 mobileTab === tab
-                  ? "border-b-[3px] border-acid text-acid"
-                  : "text-white/40"
+                  ? "border-b-[3px] border-teal text-teal"
+                  : "text-ink-dim"
               }`}
             >
               {tab === "edit" ? <Pencil className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -219,7 +218,7 @@ export default function PublicCardEditor({
             showUsername={false}
           />
 
-          <div className="sticker-lg mt-10 flex items-start gap-4 rounded-2xl border-2 border-ink bg-acid p-5 text-ink">
+          <div className="sticker-lg mt-10 flex items-start gap-4 rounded-2xl bg-acid p-5 text-ink">
             <Lock className="mt-0.5 h-5 w-5 shrink-0" />
             <div>
               <p className="text-[15px] font-black">Your work is saved in this browser.</p>

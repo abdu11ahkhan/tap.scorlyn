@@ -28,7 +28,7 @@ export function EntryListField({
 
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-bold uppercase tracking-wide text-white/50">{label}</label>
+      <label className="text-xs font-bold uppercase tracking-wide text-ink-dim">{label}</label>
       <div className="space-y-2">
         {entries.map((entry, i) => (
           <div key={i} className="flex items-center gap-2">
@@ -37,11 +37,11 @@ export function EntryListField({
                 type="checkbox"
                 checked={entry.use}
                 onChange={(e) => update(i, { use: e.target.checked })}
-                className="h-4 w-4 shrink-0 rounded border-2 border-white/30 accent-acid"
+                className="h-4 w-4 shrink-0 rounded border-2 border-line accent-acid"
               />
             )}
             {entry.label && (
-              <span className="shrink-0 rounded-full border border-white/15 px-2 py-1 text-[10px] font-black uppercase tracking-wide text-white/40">
+              <span className="shrink-0 rounded-full border border-line px-2 py-1 text-[10px] font-black uppercase tracking-wide text-ink-dim">
                 {entry.label}
               </span>
             )}
@@ -49,13 +49,13 @@ export function EntryListField({
               type={type}
               value={entry.value}
               onChange={(e) => update(i, { value: e.target.value })}
-              className="h-11 flex-1 rounded-xl border-2 border-white/15 bg-white/[0.03] px-3.5 text-sm font-semibold text-white outline-none focus:border-acid"
+              className="h-11 flex-1 rounded-xl border border-line bg-mist px-3.5 text-sm font-semibold text-ink outline-none focus:border-teal"
             />
           </div>
         ))}
       </div>
       {entries.length > 1 && (
-        <p className="text-[11px] font-semibold text-white/35">
+        <p className="text-[11px] font-semibold text-ink-dim">
           Found {entries.length} — pick which ones to put on the card.
         </p>
       )}

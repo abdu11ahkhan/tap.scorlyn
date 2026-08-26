@@ -19,11 +19,11 @@ export default function PreviewChrome({
   templateId: string;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-ink">
-      <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b-2 border-white/10 px-4 py-3">
+    <div className="flex min-h-screen flex-col bg-mist">
+      <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-line bg-paper px-4 py-3">
         <Link
           href="/templates"
-          className="flex min-h-11 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+          className="flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-xs font-black lowercase text-ink-dim transition-colors hover:border-teal hover:text-teal"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           templates
@@ -31,7 +31,7 @@ export default function PreviewChrome({
 
         <Link
           href={`/templates/${templateId}/edit`}
-          className="sticker sticker-press rounded-full border-2 border-ink bg-acid px-5 py-2.5 text-xs font-black uppercase tracking-tight text-ink"
+          className="sticker sticker-press rounded-full bg-acid px-5 py-2.5 text-xs font-black uppercase tracking-tight text-ink"
         >
           customise
         </Link>
@@ -39,7 +39,7 @@ export default function PreviewChrome({
 
       <div className="flex flex-1 items-start justify-center overflow-auto p-4 sm:p-6">
         <div
-          className="h-[780px] w-[390px] max-w-full overflow-hidden rounded-[2rem] border border-white/12 bg-black"
+          className="sticker-lg h-[780px] w-[390px] max-w-full overflow-hidden rounded-[2rem] bg-black"
         >
           <iframe
             src={src}
