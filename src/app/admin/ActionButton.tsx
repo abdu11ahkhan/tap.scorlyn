@@ -30,9 +30,9 @@ export default function ActionButton({
 
   const styles = {
     ghost:
-      "border-white/20 text-white/70 hover:border-acid hover:text-acid",
+      "border-sc-border text-sc-text hover:border-acid hover:text-acid",
     acid: "border-ink bg-acid text-ink",
-    danger: "border-white/20 text-white/70 hover:border-hotpink hover:text-hotpink",
+    danger: "border-sc-border text-sc-text hover:border-hotpink hover:text-hotpink",
   }[variant];
 
   return (

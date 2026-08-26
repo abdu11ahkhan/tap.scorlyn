@@ -10,7 +10,7 @@ export default function NewCustomer() {
       <div>
         <Link
           href="/admin/users"
-          className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-widest text-white/40 hover:text-white"
+          className="inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-widest text-sc-text-dimmer hover:text-sc-text"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           customers

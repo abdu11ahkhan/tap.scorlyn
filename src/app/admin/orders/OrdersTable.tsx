@@ -90,15 +90,15 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
       )}
 
       {error && (
-        <p className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
+        <p className="rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-sc-text">
           {error}
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border-2 border-white/12">
+      <div className="overflow-x-auto rounded-2xl border-2 border-sc-border-soft">
         <table className="w-full md:min-w-[900px] text-left">
-          <thead className="bg-white/[0.05]">
-            <tr className="text-[11px] font-black uppercase tracking-widest text-white/40">
+          <thead className="bg-sc-surface-2">
+            <tr className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
               <th className="px-4 py-3.5">
                 <input
                   type="checkbox"
@@ -118,11 +118,11 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
               <th className="px-4 py-3.5 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/8">
+          <tbody className="divide-y divide-sc-border-soft">
             {orders.map((o) => (
               <tr
                 key={o.id}
-                className={`transition-colors hover:bg-white/[0.03] ${o.flagged ? "bg-hotpink/10" : ""}`}
+                className={`transition-colors hover:bg-sc-surface-2 ${o.flagged ? "bg-hotpink/10" : ""}`}
               >
                 <td data-label="" className="px-4 py-4">
                   <input
@@ -139,19 +139,19 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                         which the table has no room for. */}
                     <Link
                       href={`/admin/orders/${o.id}`}
-                      className="font-mono text-sm font-black text-white hover:text-acid hover:underline"
+                      className="font-mono text-sm font-black text-sc-text hover:text-acid hover:underline"
                     >
                       {o.reference}
                     </Link>
                     {/* Survives the badge being cleared on open, so an admin can
                         still tell which orders are the ones that just came in. */}
                     {!o.admin_seen_at && (
-                      <span className="rounded-full bg-hotpink px-1.5 text-[10px] font-black uppercase text-white">
+                      <span className="rounded-full bg-hotpink px-1.5 text-[10px] font-black uppercase text-sc-text">
                         new
                       </span>
                     )}
                   </div>
-                  <p className="text-xs font-semibold text-white/35">
+                  <p className="text-xs font-semibold text-sc-text-dimmer">
                     {new Date(o.created_at).toLocaleDateString("en-GB")}
                   </p>
                   {o.internal_note && (
@@ -168,21 +168,21 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                       href={`/admin/users/${o.user_id}`}
                       className="group/cust block"
                     >
-                      <p className="text-sm font-black text-white group-hover/cust:underline">
+                      <p className="text-sm font-black text-sc-text group-hover/cust:underline">
                         {o.full_name}
                       </p>
-                      <p className="text-xs font-semibold text-white/40">{o.phone}</p>
-                      <p className="text-xs font-semibold text-white/30">{o.city}</p>
+                      <p className="text-xs font-semibold text-sc-text-dimmer">{o.phone}</p>
+                      <p className="text-xs font-semibold text-sc-text-dimmer">{o.city}</p>
                     </Link>
                   ) : (
                     <>
-                      <p className="text-sm font-black text-white">{o.full_name}</p>
-                      <p className="text-xs font-semibold text-white/40">{o.phone}</p>
-                      <p className="text-xs font-semibold text-white/30">{o.city}</p>
+                      <p className="text-sm font-black text-sc-text">{o.full_name}</p>
+                      <p className="text-xs font-semibold text-sc-text-dimmer">{o.phone}</p>
+                      <p className="text-xs font-semibold text-sc-text-dimmer">{o.city}</p>
                     </>
                   )}
                 </td>
-                <td data-label="Plan" className="px-4 py-4 text-sm font-bold lowercase text-white/70">
+                <td data-label="Plan" className="px-4 py-4 text-sm font-bold lowercase text-sc-text">
                   {o.quantity} × {o.plan_id}
                   {/* Printing needs to know this before the card goes out. */}
                   {o.branding === "unbranded" && (
@@ -191,7 +191,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     </span>
                   )}
                 </td>
-                <td data-label="Amount" className="px-4 py-4 text-sm font-black tabular-nums text-white">
+                <td data-label="Amount" className="px-4 py-4 text-sm font-black tabular-nums text-sc-text">
                   Rs.{o.amount_pkr.toLocaleString()}
                 </td>
                 <td data-label="Status" className="px-4 py-4">
@@ -209,7 +209,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     className={`rounded-full border-2 border-ink px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${statusTone(o.status)}`}
                   >
                     {STATUSES.map((s) => (
-                      <option key={s} value={s} className="bg-ink text-white">
+                      <option key={s} value={s} className="bg-ink text-sc-text">
                         {STATUS_LABELS[s] ?? s}
                       </option>
                     ))}
@@ -222,7 +222,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                         type="button"
                         onClick={() => openProof(o.payment_proof_url!)}
                         title="View payment proof"
-                        className="rounded-full border-2 border-white/20 p-2 text-white/60 transition-colors hover:border-acid hover:text-acid"
+                        className="rounded-full border-2 border-sc-border p-2 text-sc-text-dim transition-colors hover:border-acid hover:text-acid"
                       >
                         <Eye className="h-3.5 w-3.5" />
                       </button>
@@ -239,8 +239,8 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                       }
                       className={`rounded-full border-2 p-2 transition-colors ${
                         o.flagged
-                          ? "border-hotpink bg-hotpink text-white"
-                          : "border-white/20 text-white/60 hover:border-hotpink hover:text-hotpink"
+                          ? "border-hotpink bg-hotpink text-sc-text"
+                          : "border-sc-border text-sc-text-dim hover:border-hotpink hover:text-hotpink"
                       }`}
                     >
                       <Flag className="h-3.5 w-3.5" />
@@ -252,7 +252,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                         setNoteFor(o.id);
                         setNoteText(o.internal_note ?? "");
                       }}
-                      className="rounded-full border-2 border-white/20 p-2 text-white/60 transition-colors hover:border-acid hover:text-acid"
+                      className="rounded-full border-2 border-sc-border p-2 text-sc-text-dim transition-colors hover:border-acid hover:text-acid"
                     >
                       <StickyNote className="h-3.5 w-3.5" />
                     </button>
@@ -268,8 +268,8 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
       {noteFor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-md rounded-2xl border-2 border-ink bg-ink p-6">
-            <p className="text-lg font-black text-white">Internal note</p>
-            <p className="mt-1 text-xs font-semibold text-white/40">
+            <p className="text-lg font-black text-sc-text">Internal note</p>
+            <p className="mt-1 text-xs font-semibold text-sc-text-dimmer">
               Only staff see this. The customer never does.
             </p>
             <textarea
@@ -277,7 +277,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
               onChange={(e) => setNoteText(e.target.value)}
               rows={4}
               autoFocus
-              className="mt-4 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] p-3 text-sm font-semibold text-white outline-none focus:border-acid"
+              className="mt-4 w-full rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 p-3 text-sm font-semibold text-sc-text outline-none focus:border-acid"
             />
             <div className="mt-4 flex gap-2">
               <button
@@ -300,7 +300,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
               <button
                 type="button"
                 onClick={() => setNoteFor(null)}
-                className="rounded-full border-2 border-white/20 px-5 py-3 text-sm font-black lowercase text-white/60"
+                className="rounded-full border-2 border-sc-border px-5 py-3 text-sm font-black lowercase text-sc-text-dim"
               >
                 cancel
               </button>

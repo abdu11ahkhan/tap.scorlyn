@@ -78,16 +78,16 @@ export default async function AdminUserDetail({
                     </span>
                   )}
                   {person.suspended && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-hotpink px-2 py-0.5 text-[11px] font-semibold text-white">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-hotpink px-2 py-0.5 text-[11px] font-semibold text-sc-text">
                       <Ban className="h-3 w-3" />
                       Suspended
                     </span>
                   )}
-                  <span className="rounded-md border border-white/12 px-2 py-0.5 text-[11px] font-medium text-white/45">
+                  <span className="rounded-md border border-sc-border-soft px-2 py-0.5 text-[11px] font-medium text-sc-text-dim">
                     Joined {new Date(person.created_at).toLocaleDateString("en-GB")}
                   </span>
                   {person.referral_code && (
-                    <span className="rounded-md border border-white/12 px-2 py-0.5 font-mono text-[11px] text-white/45">
+                    <span className="rounded-md border border-sc-border-soft px-2 py-0.5 font-mono text-[11px] text-sc-text-dim">
                       {person.referral_code}
                     </span>
                   )}
@@ -157,7 +157,7 @@ export default async function AdminUserDetail({
             </div>
 
             {/* Contact */}
-            <div className="mt-5 flex flex-wrap gap-2 border-t border-white/8 pt-4">
+            <div className="mt-5 flex flex-wrap gap-2 border-t border-sc-border-soft pt-4">
               <a
                 href={`mailto:${person.email}?subject=${encodeURIComponent("ScorlynTap")}&body=${encodeURIComponent(greeting)}`}
                 className="app-btn app-btn-ghost"
@@ -186,40 +186,40 @@ export default async function AdminUserDetail({
 
           {/* Orders */}
           <section className="app-panel">
-            <div className="flex items-center justify-between border-b border-white/8 px-5 py-4">
+            <div className="flex items-center justify-between border-b border-sc-border-soft px-5 py-4">
               <h2 className="app-h2">Order history</h2>
-              <span className="text-[13px] text-white/45">
+              <span className="text-[13px] text-sc-text-dim">
                 {orderRows.length} orders · Rs.{spent.toLocaleString()} paid
               </span>
             </div>
 
             {orderRows.length === 0 ? (
-              <p className="px-5 py-8 text-center text-[13px] text-white/35">No orders yet.</p>
+              <p className="px-5 py-8 text-center text-[13px] text-sc-text-dimmer">No orders yet.</p>
             ) : (
               <table className="app-table w-full">
                 <thead>
-                  <tr className="border-b border-white/8">
+                  <tr className="border-b border-sc-border-soft">
                     <th>Reference</th>
                     <th>Plan</th>
                     <th>Amount</th>
                     <th>Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/6">
+                <tbody className="divide-y divide-sc-border-soft">
                   {orderRows.map((o) => (
                     <tr key={o.id}>
                       <td className="font-mono text-[13px]">
                         <Link
                           href={`/admin/orders/${o.id}`}
-                          className="text-white hover:text-acid hover:underline"
+                          className="text-sc-text hover:text-acid hover:underline"
                         >
                           {o.reference}
                         </Link>
                       </td>
-                      <td className="text-white/60">
+                      <td className="text-sc-text-dim">
                         {o.quantity} × {o.plan_id}
                       </td>
-                      <td className="tabular-nums text-white/80">
+                      <td className="tabular-nums text-sc-text">
                         Rs.{o.amount_pkr.toLocaleString()}
                       </td>
                       <td>
@@ -248,14 +248,14 @@ export default async function AdminUserDetail({
                     className="h-3 w-3 rounded-full"
                     style={{ background: card.accent_color || "#111" }}
                   />
-                  <span className="font-medium text-white">@{card.username}</span>
-                  <span className="text-white/35">· {card.template}</span>
+                  <span className="font-medium text-sc-text">@{card.username}</span>
+                  <span className="text-sc-text-dimmer">· {card.template}</span>
                 </div>
                 <p className="app-sub mt-1">{card.view_count} views</p>
 
                 {/* Real render, not a screenshot — an iframe is a real viewport
                     so the card lays out exactly as a visitor sees it. */}
-                <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black">
+                <div className="mt-4 overflow-hidden rounded-xl border border-sc-border-soft bg-black">
                   <iframe
                     src={`/u/${card.username}`}
                     title={`${card.username} preview`}
@@ -274,7 +274,7 @@ export default async function AdminUserDetail({
                 </Link>
               </>
             ) : (
-              <p className="mt-3 text-[13px] text-white/35">No card created yet.</p>
+              <p className="mt-3 text-[13px] text-sc-text-dimmer">No card created yet.</p>
             )}
           </section>
         </aside>

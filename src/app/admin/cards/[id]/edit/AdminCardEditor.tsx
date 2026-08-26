@@ -161,7 +161,7 @@ export default function AdminCardEditor({
           ) : null}
           {saved ? "saved" : "save changes"}
         </button>
-        <Link href="/admin/cards" className="text-sm font-bold text-white/50">
+        <Link href="/admin/cards" className="text-sm font-bold text-sc-text-dim">
           back to cards
         </Link>
       </div>

@@ -58,11 +58,11 @@ export default function AreaSwitch() {
 
   const tab = (active: boolean) =>
     `rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
-      active ? "bg-white text-black" : "text-white/55 hover:text-white"
+      active ? "bg-sc-cta text-sc-cta-ink" : "text-sc-text-dim hover:text-sc-text"
     }`;
 
   return (
-    <div className="inline-flex shrink-0 items-center gap-0.5 rounded-full border border-white/12 bg-white/[0.04] p-0.5">
+    <div className="inline-flex shrink-0 items-center gap-0.5 rounded-full border border-sc-border-soft bg-sc-surface-2 p-0.5">
       {areas.map((a) => (
         <Link key={a.href} href={a.href} className={tab(a.href === current?.href)}>
           {a.label}

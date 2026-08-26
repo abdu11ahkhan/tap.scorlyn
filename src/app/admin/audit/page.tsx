@@ -49,8 +49,8 @@ export default async function AdminAudit() {
 
       {entries.length === 0 ? (
         <div className="app-panel app-panel-pad text-center">
-          <p className="text-sm font-black text-white">Nothing recorded yet</p>
-          <p className="mt-1 text-sm font-semibold text-white/45">
+          <p className="text-sm font-black text-sc-text">Nothing recorded yet</p>
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             Entries appear here the moment an admin edits a card that is not
             their own.
           </p>
@@ -60,9 +60,9 @@ export default async function AdminAudit() {
           {entries.map((entry) => (
             <div key={entry.id} className="app-panel app-panel-pad">
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="text-sm font-black text-white">
+                <p className="text-sm font-black text-sc-text">
                   {entry.actor_email ?? "unknown admin"}{" "}
-                  <span className="font-semibold text-white/45">
+                  <span className="font-semibold text-sc-text-dim">
                     {entry.action}d
                   </span>{" "}
                   {entry.entity_id ? (
@@ -76,15 +76,15 @@ export default async function AdminAudit() {
                     <span>@{entry.entity_label ?? "card"}</span>
                   )}
                 </p>
-                <span className="text-xs font-semibold tabular-nums text-white/35">
+                <span className="text-xs font-semibold tabular-nums text-sc-text-dimmer">
                   {new Date(entry.created_at).toLocaleString("en-GB")}
                 </span>
               </div>
 
               <div className="mt-2 space-y-1">
                 {Object.entries(entry.changed ?? {}).map(([field, change]) => (
-                  <p key={field} className="text-xs font-semibold text-white/50">
-                    <span className="text-white/70">{field}</span>{" "}
+                  <p key={field} className="text-xs font-semibold text-sc-text-dim">
+                    <span className="text-sc-text">{field}</span>{" "}
                     <span className="text-rose-300/70 line-through">
                       {show(change?.from)}
                     </span>{" "}

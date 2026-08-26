@@ -342,7 +342,7 @@ export default function AdminScanTest() {
             {busy ? "scanning…" : "run scan"}
           </button>
           {elapsedMs !== null && (
-            <span className="text-xs font-semibold text-white/40">{elapsedMs}ms total</span>
+            <span className="text-xs font-semibold text-sc-text-dimmer">{elapsedMs}ms total</span>
           )}
         </div>
 
@@ -360,14 +360,14 @@ export default function AdminScanTest() {
                 The fields below default from this, not from tesseract. */}
             <div className="app-panel app-panel-pad">
               <div className="flex items-baseline justify-between">
-                <p className="text-sm font-black text-white">Claude Haiku read</p>
-                <p className="text-xs font-semibold text-white/40">
+                <p className="text-sm font-black text-sc-text">Claude Haiku read</p>
+                <p className="text-xs font-semibold text-sc-text-dimmer">
                   {claudeFields ? `${claudeFields.lines.length} lines` : "no result"}
                   {claudeMs !== null && ` · ${claudeMs}ms`}
                 </p>
               </div>
               {!claudeFields ? (
-                <p className="mt-3 text-xs text-white/40">
+                <p className="mt-3 text-xs text-sc-text-dimmer">
                   No Claude result — either <code className="text-acid">ANTHROPIC_API_KEY</code> isn&apos;t set, or the call failed. Falling back to tesseract below.
                 </p>
               ) : (
@@ -376,7 +376,7 @@ export default function AdminScanTest() {
                     {claudeFields.lines.map((line, i) => (
                       <span
                         key={i}
-                        className="rounded-md bg-white/[0.04] px-2 py-1 font-mono text-[11px] text-white/70"
+                        className="rounded-md bg-sc-surface-2 px-2 py-1 font-mono text-[11px] text-sc-text"
                       >
                         {line}
                       </span>
@@ -384,24 +384,24 @@ export default function AdminScanTest() {
                   </div>
                   <div className="grid gap-1.5 text-xs sm:grid-cols-2">
                     {claudeFields.phones.map((p, i) => (
-                      <span key={`p${i}`} className="text-white/60">
+                      <span key={`p${i}`} className="text-sc-text-dim">
                         <span className="text-acid">phone{p.label ? ` (${p.label})` : ""}:</span> {p.value}
                       </span>
                     ))}
                     {claudeFields.emails.map((e, i) => (
-                      <span key={`e${i}`} className="text-white/60">
+                      <span key={`e${i}`} className="text-sc-text-dim">
                         <span className="text-acid">email{e.label ? ` (${e.label})` : ""}:</span> {e.value}
                       </span>
                     ))}
                   </div>
                   {claudeLogoUrl && (
-                    <div className="flex items-center gap-2 text-xs text-white/50">
+                    <div className="flex items-center gap-2 text-xs text-sc-text-dim">
                       <span>logo_box crop:</span>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={claudeLogoUrl}
                         alt=""
-                        className="h-10 w-10 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                        className="h-10 w-10 rounded-md border-2 border-sc-border-soft bg-sc-surface-2 object-contain"
                       />
                     </div>
                   )}
@@ -414,15 +414,15 @@ export default function AdminScanTest() {
                 it. Kept even when Claude succeeds, to compare against. */}
             <div className="app-panel app-panel-pad">
               <div className="flex items-baseline justify-between">
-                <p className="text-sm font-black text-white">Raw tesseract OCR lines</p>
-                <p className="text-xs font-semibold text-white/40">
+                <p className="text-sm font-black text-sc-text">Raw tesseract OCR lines</p>
+                <p className="text-xs font-semibold text-sc-text-dimmer">
                   {fields.allLines.length} found
                   {tesseractMs !== null && ` · ${tesseractMs}ms`}
                 </p>
               </div>
               <div className="mt-3 space-y-1.5">
                 {fields.allLines.length === 0 && (
-                  <p className="text-xs text-white/40">Nothing detected.</p>
+                  <p className="text-xs text-sc-text-dimmer">Nothing detected.</p>
                 )}
                 {fields.allLines
                   .slice()
@@ -434,8 +434,8 @@ export default function AdminScanTest() {
             </div>
 
             <div className="app-panel app-panel-pad">
-              <p className="text-sm font-black text-white">Derived colour</p>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-semibold text-white/60">
+              <p className="text-sm font-black text-sc-text">Derived colour</p>
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs font-semibold text-sc-text-dim">
                 <Swatch label="accent" hex={vibe.accent} />
                 <Swatch label="surface" hex={vibe.surface} />
                 <span>{vibe.dark ? "dark" : "light"}</span>
@@ -448,7 +448,7 @@ export default function AdminScanTest() {
             </div>
 
             <div className="app-panel app-panel-pad space-y-3">
-              <p className="text-sm font-black text-white">Fields (editable before opening)</p>
+              <p className="text-sm font-black text-sc-text">Fields (editable before opening)</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="full name" value={name} onChange={setName} />
                 <Field label="headline" value={headline} onChange={setHeadline} />
@@ -461,35 +461,35 @@ export default function AdminScanTest() {
               <EntryListField label="email" entries={emails} onChange={setEmails} type="email" />
 
               {claudeLogoUrl ? (
-                <label className="flex items-center gap-3 text-xs font-semibold text-white/60">
+                <label className="flex items-center gap-3 text-xs font-semibold text-sc-text-dim">
                   <input
                     type="checkbox"
                     checked={useLogo}
                     onChange={(e) => setUseLogo(e.target.checked)}
                     disabled={Boolean(manualLogoUrl)}
-                    className="h-4 w-4 rounded border-2 border-white/30 accent-acid disabled:opacity-40"
+                    className="h-4 w-4 rounded border-2 border-sc-border accent-acid disabled:opacity-40"
                   />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={claudeLogoUrl}
                     alt=""
-                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                    className="h-8 w-8 rounded-md border-2 border-sc-border-soft bg-sc-surface-2 object-contain"
                   />
                   Use the logo Claude found on the card
                 </label>
               ) : (
-                <p className="text-xs text-white/35">No logo detected — upload one manually below if the card has one.</p>
+                <p className="text-xs text-sc-text-dimmer">No logo detected — upload one manually below if the card has one.</p>
               )}
-              <div className="flex items-center gap-3 text-xs font-semibold text-white/60">
+              <div className="flex items-center gap-3 text-xs font-semibold text-sc-text-dim">
                 {manualLogoUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={manualLogoUrl}
                     alt=""
-                    className="h-8 w-8 rounded-md border-2 border-white/15 bg-white/5 object-contain"
+                    className="h-8 w-8 rounded-md border-2 border-sc-border-soft bg-sc-surface-2 object-contain"
                   />
                 )}
-                <label className="cursor-pointer text-white/40 underline decoration-dotted underline-offset-2 hover:text-white/60">
+                <label className="cursor-pointer text-sc-text-dimmer underline decoration-dotted underline-offset-2 hover:text-sc-text-dim">
                   {manualLogoUrl ? "replace logo file" : "or upload a logo file"}
                   <input
                     type="file"
@@ -504,7 +504,7 @@ export default function AdminScanTest() {
                   />
                 </label>
                 {manualLogoUrl && (
-                  <button type="button" onClick={() => setManualLogoUrl("")} className="text-white/40 hover:text-white/60">
+                  <button type="button" onClick={() => setManualLogoUrl("")} className="text-sc-text-dimmer hover:text-sc-text-dim">
                     remove
                   </button>
                 )}
@@ -518,15 +518,15 @@ export default function AdminScanTest() {
                 <ExternalLink className="h-4 w-4" />
                 open in editor
               </button>
-              <p className="text-xs text-white/35">
+              <p className="text-xs text-sc-text-dimmer">
                 An anonymous draft — for previewing, or handing to someone who&apos;ll
                 sign up themselves later.
               </p>
             </div>
 
             <div className="app-panel app-panel-pad space-y-3">
-              <p className="text-sm font-black text-white">Create their account</p>
-              <p className="text-xs text-white/35">
+              <p className="text-sm font-black text-sc-text">Create their account</p>
+              <p className="text-xs text-sc-text-dimmer">
                 Makes a real, already-confirmed login right now, pre-filled from the
                 scan — for a customer standing here, same as{" "}
                 <code className="text-acid">admin/users/new</code>.
@@ -538,7 +538,7 @@ export default function AdminScanTest() {
                     <Check className="h-4 w-4" />
                     account created
                   </p>
-                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-lg bg-black/40 p-3 text-[13px] leading-relaxed text-white">
+                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-lg bg-black/40 p-3 text-[13px] leading-relaxed text-sc-text">
                     {`Card: https://tap.scorlyn.com/u/${createdAccount.username}
 Login: https://tap.scorlyn.com/login
 Email: ${createdAccount.email}
@@ -583,7 +583,7 @@ Password: ${createdAccount.password}`}
                       onChange={setAccountPassword}
                     />
                   </div>
-                  <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/12 p-3.5">
+                  <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border-soft p-3.5">
                     <input
                       type="checkbox"
                       checked={accountPublish}
@@ -591,8 +591,8 @@ Password: ${createdAccount.password}`}
                       className="mt-0.5 h-4 w-4 accent-lime-400"
                     />
                     <span>
-                      <span className="block text-sm font-semibold text-white">Publish immediately</span>
-                      <span className="mt-0.5 block text-xs text-white/40">
+                      <span className="block text-sm font-semibold text-sc-text">Publish immediately</span>
+                      <span className="mt-0.5 block text-xs text-sc-text-dimmer">
                         Off by default — theirs to release once they&apos;ve checked it.
                       </span>
                     </span>
@@ -637,10 +637,10 @@ function tagFor(line: ScanLine, fields: ScanFields): string | null {
 
 function LineRow({ line, tag }: { line: ScanLine; tag: string | null }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg bg-white/[0.03] px-3 py-2 text-xs">
-      <span className="min-w-0 flex-1 truncate font-semibold text-white/80">{line.text}</span>
-      <span className="shrink-0 font-mono text-white/35">h{Math.round(line.height)}</span>
-      <span className="shrink-0 font-mono text-white/35">{Math.round(line.confidence)}%</span>
+    <div className="flex items-center gap-3 rounded-lg bg-sc-surface-2 px-3 py-2 text-xs">
+      <span className="min-w-0 flex-1 truncate font-semibold text-sc-text">{line.text}</span>
+      <span className="shrink-0 font-mono text-sc-text-dimmer">h{Math.round(line.height)}</span>
+      <span className="shrink-0 font-mono text-sc-text-dimmer">{Math.round(line.confidence)}%</span>
       {tag && (
         <span className="shrink-0 rounded-full bg-acid/15 px-2 py-0.5 font-black uppercase tracking-tight text-acid">
           {tag}
@@ -653,8 +653,8 @@ function LineRow({ line, tag }: { line: ScanLine; tag: string | null }) {
 function Swatch({ label, hex }: { label: string; hex: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span className="h-4 w-4 rounded-full border border-white/20" style={{ background: hex }} />
-      {label} <span className="font-mono text-white/40">{hex}</span>
+      <span className="h-4 w-4 rounded-full border border-sc-border" style={{ background: hex }} />
+      {label} <span className="font-mono text-sc-text-dimmer">{hex}</span>
     </span>
   );
 }
@@ -670,7 +670,7 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-bold uppercase tracking-wide text-white/50">{label}</label>
+      <label className="text-xs font-bold uppercase tracking-wide text-sc-text-dim">{label}</label>
       <input value={value} onChange={(e) => onChange(e.target.value)} className="app-input" />
     </div>
   );
@@ -688,7 +688,7 @@ function PhotoSlot({
   onClear: () => void;
 }) {
   return (
-    <label className="relative flex aspect-[16/10] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/15 bg-white/[0.02] text-center transition-colors hover:border-acid/60">
+    <label className="relative flex aspect-[16/10] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sc-border-soft bg-sc-surface-2 text-center transition-colors hover:border-acid/60">
       <input
         type="file"
         accept="image/jpeg,image/png,image/webp"
@@ -709,15 +709,15 @@ function PhotoSlot({
               e.preventDefault();
               onClear();
             }}
-            className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ink/80 text-white"
+            className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-ink/80 text-sc-text"
           >
             <X className="h-4 w-4" />
           </button>
         </>
       ) : (
         <>
-          <Camera className="h-6 w-6 text-white/30" />
-          <span className="text-xs font-black uppercase tracking-widest text-white/40">{label}</span>
+          <Camera className="h-6 w-6 text-sc-text-dimmer" />
+          <span className="text-xs font-black uppercase tracking-widest text-sc-text-dimmer">{label}</span>
         </>
       )}
     </label>

@@ -62,7 +62,7 @@ export default function EmailComposer({
     });
 
   const field =
-    "w-full rounded-xl border border-white/12 bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/30";
+    "w-full rounded-xl border border-sc-border-soft bg-sc-surface-2 px-3.5 py-2.5 text-sm text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-border";
 
   return (
     <div className="space-y-6">
@@ -74,14 +74,14 @@ export default function EmailComposer({
       )}
 
       <div className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Start from</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-sc-text-dimmer">Start from</p>
         <div className="flex flex-wrap gap-2">
           {EMAIL_PRESETS.map((p) => (
             <button
               key={p.id}
               type="button"
               onClick={() => applyPreset(p.id)}
-              className="rounded-full border border-white/12 px-3.5 py-1.5 text-xs font-semibold text-white/70 transition-colors hover:border-white/35 hover:text-white"
+              className="rounded-full border border-sc-border-soft px-3.5 py-1.5 text-xs font-semibold text-sc-text transition-colors hover:border-sc-border hover:text-sc-text"
             >
               {p.name}
             </button>
@@ -102,14 +102,14 @@ export default function EmailComposer({
           rows={12}
           className={`${field} font-mono text-[13px] leading-relaxed`}
         />
-        <p className="text-xs text-white/40">
+        <p className="text-xs text-sc-text-dimmer">
           <code>{"{{link}}"}</code> is replaced with each person&apos;s own referral link, so the
           same message credits whoever it goes to.
         </p>
       </div>
 
       <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Send to</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-sc-text-dimmer">Send to</p>
         <div className="grid gap-2 sm:grid-cols-2">
           {AUDIENCES.map((a) => (
             <button
@@ -118,12 +118,12 @@ export default function EmailComposer({
               onClick={() => setAudience(a.value)}
               className={`rounded-xl border px-3.5 py-3 text-left transition-colors ${
                 audience === a.value
-                  ? "border-white/45 bg-white/[0.07]"
-                  : "border-white/12 hover:border-white/25"
+                  ? "border-sc-border bg-sc-surface-2"
+                  : "border-sc-border-soft hover:border-sc-border"
               }`}
             >
-              <span className="block text-sm font-semibold text-white">{a.label}</span>
-              <span className="mt-0.5 block text-xs text-white/40">{a.hint}</span>
+              <span className="block text-sm font-semibold text-sc-text">{a.label}</span>
+              <span className="mt-0.5 block text-xs text-sc-text-dimmer">{a.hint}</span>
             </button>
           ))}
         </div>
@@ -141,7 +141,7 @@ export default function EmailComposer({
                 <option key={e} value={e} />
               ))}
             </datalist>
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-sc-text-dimmer">
               Separate several with a comma or a space. Start typing to pick an existing customer.
             </p>
           </div>
@@ -177,7 +177,7 @@ export default function EmailComposer({
             type="button"
             disabled={pending || !when || (audience === "custom" && !custom.trim())}
             onClick={() => run(() => schedule(subject, body, audience, when, custom), "Scheduled.")}
-            className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/20 px-4 text-sm font-semibold text-white disabled:opacity-40"
+            className="inline-flex h-11 items-center gap-2 rounded-xl border border-sc-border px-4 text-sm font-semibold text-sc-text disabled:opacity-40"
           >
             <CalendarClock className="h-4 w-4" />
             Schedule
@@ -198,19 +198,19 @@ export default function EmailComposer({
       )}
 
       <div className="space-y-3 pt-2">
-        <p className="text-xs font-semibold uppercase tracking-wider text-white/40">History</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-sc-text-dimmer">History</p>
         {campaigns.length === 0 ? (
-          <p className="text-sm text-white/35">Nothing sent yet.</p>
+          <p className="text-sm text-sc-text-dimmer">Nothing sent yet.</p>
         ) : (
           <ul className="space-y-2">
             {campaigns.map((c) => (
               <li
                 key={c.id}
-                className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3"
+                className="flex items-center gap-3 rounded-xl border border-sc-border-soft px-4 py-3"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-white">{c.subject}</p>
-                  <p className="mt-0.5 text-xs text-white/40">
+                  <p className="truncate text-sm font-semibold text-sc-text">{c.subject}</p>
+                  <p className="mt-0.5 text-xs text-sc-text-dimmer">
                     {c.status}
                     {c.sent_at && ` · ${new Date(c.sent_at).toLocaleString()} · ${c.recipient_count} sent`}
                     {c.scheduled_for && !c.sent_at && ` · ${new Date(c.scheduled_for).toLocaleString()}`}
@@ -223,7 +223,7 @@ export default function EmailComposer({
                   <button
                     type="button"
                     onClick={() => run(() => cancelScheduled(c.id), "Cancelled.")}
-                    className="shrink-0 rounded-lg border border-white/12 p-2 text-white/50 hover:text-white"
+                    className="shrink-0 rounded-lg border border-sc-border-soft p-2 text-sc-text-dim hover:text-sc-text"
                     aria-label="Cancel"
                   >
                     <Trash2 className="h-4 w-4" />

@@ -124,7 +124,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 <span className="min-w-0 flex-1 truncate">{label}</span>
                 {Boolean(badge) && (
                   <span
-                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sc-error px-1 text-[11px] font-black text-white"
+                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sc-error px-1 text-[11px] font-black text-sc-text"
                     title={`${badge} order${badge === 1 ? "" : "s"} you haven't opened`}
                   >
                     {badge}
@@ -146,7 +146,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               >
                 {label}
                 {Boolean(badge) && (
-                  <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-sc-error px-1 text-[10px] font-black text-white">
+                  <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-sc-error px-1 text-[10px] font-black text-sc-text">
                     {badge}
                   </span>
                 )}

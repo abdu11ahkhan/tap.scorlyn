@@ -23,7 +23,7 @@ export default function MarkSeen({ unseen }: { unseen: number }) {
   return (
     <div className="app-panel app-panel-pad mb-4 flex flex-wrap items-center gap-3 border-hotpink/40">
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-hotpink">
-        <BellRing className="h-4 w-4 text-white" />
+        <BellRing className="h-4 w-4 text-sc-text" />
       </span>
 
       <p className="min-w-0 flex-1 text-[13px] font-semibold">

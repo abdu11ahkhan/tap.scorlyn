@@ -104,7 +104,7 @@ export default function ContentForm({ initial }: { initial: State }) {
             />
           )}
 
-          <p className="mt-2 text-[12px] text-white/30">
+          <p className="mt-2 text-[12px] text-sc-text-dimmer">
             Leave empty to use the default.
           </p>
         </div>

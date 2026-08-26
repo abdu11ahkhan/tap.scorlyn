@@ -41,8 +41,8 @@ export default function NewCustomerForm() {
   };
 
   const field =
-    "h-11 w-full rounded-xl border border-white/12 bg-white/[0.04] px-3.5 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/35";
-  const label = "text-[11px] font-bold uppercase tracking-widest text-white/40";
+    "h-11 w-full rounded-xl border border-sc-border-soft bg-sc-surface-2 px-3.5 text-sm text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-border";
+  const label = "text-[11px] font-bold uppercase tracking-widest text-sc-text-dimmer";
 
   if (created) {
     const lines = `Card: https://tap.scorlyn.com/u/${created.username}
@@ -57,12 +57,12 @@ Password: ${created.password}`;
             <Check className="h-4 w-4" />
             account created
           </p>
-          <p className="mt-2 text-sm text-white/60">
+          <p className="mt-2 text-sm text-sc-text-dim">
             Hand these over. The password is shown once here and nowhere else —
             it is not stored in readable form.
           </p>
 
-          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap rounded-xl bg-black/40 p-4 text-[13px] leading-relaxed text-white">
+          <pre className="mt-4 overflow-x-auto whitespace-pre-wrap rounded-xl bg-black/40 p-4 text-[13px] leading-relaxed text-sc-text">
             {lines}
           </pre>
 
@@ -132,7 +132,7 @@ Password: ${created.password}`;
             className={field}
           />
         </div>
-        <p className="text-xs text-white/35">
+        <p className="text-xs text-sc-text-dimmer">
           The account is created already confirmed, so they can sign in
           immediately without an email round trip.
         </p>
@@ -210,7 +210,7 @@ Password: ${created.password}`;
                 onClick={() => set({ accentColor: preset.value })}
                 aria-label={preset.name}
                 className={`h-8 w-8 rounded-full border-2 ${
-                  form.accentColor === preset.value ? "border-white" : "border-white/15"
+                  form.accentColor === preset.value ? "border-sc-border" : "border-sc-border-soft"
                 }`}
                 style={{ background: preset.value }}
               />
@@ -219,7 +219,7 @@ Password: ${created.password}`;
         </div>
       </section>
 
-      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/12 p-3.5">
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border-soft p-3.5">
         <input
           type="checkbox"
           checked={form.publish}
@@ -227,8 +227,8 @@ Password: ${created.password}`;
           className="mt-0.5 h-4 w-4 accent-lime-400"
         />
         <span>
-          <span className="block text-sm font-semibold text-white">Publish immediately</span>
-          <span className="mt-0.5 block text-xs text-white/40">
+          <span className="block text-sm font-semibold text-sc-text">Publish immediately</span>
+          <span className="mt-0.5 block text-xs text-sc-text-dimmer">
             Off by default — a card built for someone is theirs to release once
             they have checked it.
           </span>

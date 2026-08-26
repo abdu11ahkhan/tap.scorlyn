@@ -77,17 +77,17 @@ export default function FinishPicker({
     <div className="app-panel app-panel-pad print:hidden">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div>
-          <h2 className="text-sm font-black text-white">
+          <h2 className="text-sm font-black text-sc-text">
             Choose the card for this customer
           </h2>
-          <p className="mt-1 text-sm font-semibold text-white/45">
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             Saves to their profile straight away — same as if they had picked
             it themselves.
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs font-bold">
           {pending && (
-            <span className="flex items-center gap-1.5 text-white/50">
+            <span className="flex items-center gap-1.5 text-sc-text-dim">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               saving
             </span>
@@ -106,7 +106,7 @@ export default function FinishPicker({
           address because nobody could switch it off is the failure here.
           Disabled until a design is chosen: these save against a finish, so
           toggling them first would look like it worked and save nothing. */}
-      <p className="mt-4 text-xs font-black uppercase tracking-[0.2em] text-white/35">
+      <p className="mt-4 text-xs font-black uppercase tracking-[0.2em] text-sc-text-dimmer">
         printed on the card {picked ? "" : "— choose a design first"}
       </p>
       <div className="mt-2 flex flex-wrap gap-2">
@@ -122,7 +122,7 @@ export default function FinishPicker({
               className={`rounded-full border-2 px-3.5 py-1.5 text-xs font-black lowercase transition-colors disabled:opacity-60 ${
                 on
                   ? "border-acid bg-acid/10 text-acid"
-                  : "border-white/15 text-white/40 hover:border-white/30"
+                  : "border-sc-border-soft text-sc-text-dimmer hover:border-sc-border"
               }`}
             >
               {opt.label}
@@ -142,7 +142,7 @@ export default function FinishPicker({
               disabled={pending}
               aria-pressed={active}
               className={`rounded-2xl border-2 p-2.5 text-left transition-colors disabled:opacity-60 ${
-                active ? "border-acid bg-acid/10" : "border-white/12 hover:border-white/30"
+                active ? "border-acid bg-acid/10" : "border-sc-border-soft hover:border-sc-border"
               }`}
             >
               <NfcCardArt
@@ -153,7 +153,7 @@ export default function FinishPicker({
                 width={240}
               />
               <div className="mt-2 flex items-center justify-between gap-2">
-                <span className="truncate text-xs font-black lowercase text-white">
+                <span className="truncate text-xs font-black lowercase text-sc-text">
                   {f.name}
                 </span>
                 {active && (

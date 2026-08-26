@@ -54,7 +54,7 @@ export default async function AdminNfc() {
         <p className="mt-2 font-mono text-sm text-acid">
           {origin}/api/nfc/&lt;code&gt;
         </p>
-        <p className="mt-2 text-sm font-medium text-white/45">
+        <p className="mt-2 text-sm font-medium text-sc-text-dim">
           That endpoint looks the card up and redirects, so you can reassign a
           card to a different person later without rewriting the chip. Lock the
           tag once written — an unlocked NTAG can be repointed by anyone.
@@ -68,13 +68,13 @@ export default async function AdminNfc() {
       )}
 
       {rows.length === 0 ? (
-        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-sc-text-dimmer">
           No cards issued yet.
         </p>
       ) : (
         <div className="app-panel overflow-x-auto">
           <table className="app-table w-full md:min-w-[820px]">
-            <thead className="border-b border-white/8">
+            <thead className="border-b border-sc-border-soft">
               <tr>
                 <th>Code</th>
                 <th>Batch</th>
@@ -83,30 +83,30 @@ export default async function AdminNfc() {
                 <th className="px-5 py-3.5 text-right">Assign / remove</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/6">
+            <tbody className="divide-y divide-sc-border-soft">
               {rows.map((row) => (
-                <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
+                <tr key={row.id} className="transition-colors hover:bg-sc-surface-2">
                   <td data-label="Code" className="font-mono text-sm font-bold text-acid">
                     {row.card_url}
                   </td>
-                  <td data-label="Batch" className="text-sm font-semibold text-white/45">
+                  <td data-label="Batch" className="text-sm font-semibold text-sc-text-dim">
                     {row.batch ?? "—"}
                   </td>
                   <td data-label="Assigned to">
                     {row.card_profiles ? (
                       <>
                         <p className="text-sm font-black">{row.card_profiles.full_name}</p>
-                        <p className="text-xs font-semibold text-white/40">
+                        <p className="text-xs font-semibold text-sc-text-dimmer">
                           @{row.card_profiles.username}
                         </p>
                       </>
                     ) : (
-                      <span className="rounded-full border-2 border-white/20 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-white/40">
+                      <span className="rounded-full border-2 border-sc-border px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-sc-text-dimmer">
                         blank
                       </span>
                     )}
                   </td>
-                  <td data-label="Issued" className="text-sm font-semibold tabular-nums text-white/45">
+                  <td data-label="Issued" className="text-sm font-semibold tabular-nums text-sc-text-dim">
                     {new Date(row.created_at).toLocaleDateString("en-GB")}
                   </td>
                   <td data-label="Assign / remove">

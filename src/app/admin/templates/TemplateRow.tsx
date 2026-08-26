@@ -51,18 +51,18 @@ export default function TemplateRow({
   };
 
   const field =
-    "h-10 rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 text-sm font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid";
+    "h-10 rounded-lg border-2 border-sc-border-soft bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-acid";
 
   return (
     <div
       className={`rounded-2xl border-2 p-4 transition-colors ${
-        enabled ? "border-white/12 bg-white/[0.03]" : "border-white/8 bg-white/[0.01] opacity-60"
+        enabled ? "border-sc-border-soft bg-sc-surface-2" : "border-sc-border-soft bg-sc-surface-2 opacity-60"
       }`}
     >
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-[130px] flex-1">
           <p className="text-lg font-black lowercase">{defaults.name}</p>
-          <p className="font-mono text-[11px] text-white/35">{templateId}</p>
+          <p className="font-mono text-[11px] text-sc-text-dimmer">{templateId}</p>
         </div>
 
         <button
@@ -71,7 +71,7 @@ export default function TemplateRow({
           className={`rounded-full border-2 px-4 py-2 text-xs font-black lowercase transition-colors ${
             enabled
               ? "border-ink bg-acid text-ink"
-              : "border-white/20 text-white/50 hover:text-white"
+              : "border-sc-border text-sc-text-dim hover:text-sc-text"
           }`}
         >
           {enabled ? "live" : "hidden"}
@@ -82,8 +82,8 @@ export default function TemplateRow({
           onClick={() => setIsNew((v) => !v)}
           className={`rounded-full border-2 px-4 py-2 text-xs font-black lowercase transition-colors ${
             isNew
-              ? "border-ink bg-hotpink text-white"
-              : "border-white/20 text-white/50 hover:text-white"
+              ? "border-ink bg-hotpink text-sc-text"
+              : "border-sc-border text-sc-text-dim hover:text-sc-text"
           }`}
         >
           new badge
@@ -141,7 +141,7 @@ export default function TemplateRow({
           ) : null}
           {saved ? "saved" : "save"}
         </button>
-        <span className="text-[11px] font-semibold text-white/30">
+        <span className="text-[11px] font-semibold text-sc-text-dimmer">
           Blank fields fall back to the built-in wording.
         </span>
         {error && <span className="text-[11px] font-bold text-hotpink">{error}</span>}

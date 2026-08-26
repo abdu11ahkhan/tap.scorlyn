@@ -51,16 +51,16 @@ export default async function AdminInvoices() {
 
       {invoices.length === 0 ? (
         <div className="app-panel app-panel-pad text-center">
-          <FileText className="mx-auto h-8 w-8 text-white/20" />
-          <p className="mt-3 text-sm font-black text-white">No invoices yet</p>
-          <p className="mt-1 text-sm font-semibold text-white/45">
+          <FileText className="mx-auto h-8 w-8 text-sc-text-dimmer" />
+          <p className="mt-3 text-sm font-black text-sc-text">No invoices yet</p>
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             The first one you write gets number INV-{new Date().getFullYear()}-0001.
           </p>
         </div>
       ) : (
         <div className="app-panel overflow-x-auto">
           <table className="app-table w-full">
-            <thead className="border-b border-white/8">
+            <thead className="border-b border-sc-border-soft">
               <tr>
                 <th>Invoice</th>
                 <th>Billed to</th>
@@ -85,26 +85,26 @@ export default async function AdminInvoices() {
                     <td data-label="Invoice">
                       <Link
                         href={`/admin/invoices/${invoice.id}`}
-                        className="font-mono text-sm font-black text-white hover:text-acid"
+                        className="font-mono text-sm font-black text-sc-text hover:text-acid"
                       >
                         {invoice.number}
                       </Link>
                     </td>
                     <td
                       data-label="Billed to"
-                      className="text-sm font-bold text-white/70"
+                      className="text-sm font-bold text-sc-text"
                     >
                       {invoice.customer_name}
                     </td>
                     <td
                       data-label="Issued"
-                      className="text-sm font-semibold tabular-nums text-white/45"
+                      className="text-sm font-semibold tabular-nums text-sc-text-dim"
                     >
                       {new Date(invoice.issued_on).toLocaleDateString("en-GB")}
                     </td>
                     <td
                       data-label="Total"
-                      className="text-sm font-black tabular-nums text-white"
+                      className="text-sm font-black tabular-nums text-sc-text"
                     >
                       {money(totals.total)}
                     </td>
@@ -114,7 +114,7 @@ export default async function AdminInvoices() {
                           invoice.status === "paid"
                             ? "bg-acid/15 text-acid"
                             : invoice.status === "void"
-                              ? "bg-white/10 text-white/40"
+                              ? "bg-sc-surface-2 text-sc-text-dimmer"
                               : "bg-amber-400/15 text-amber-300"
                         }`}
                       >
@@ -125,7 +125,7 @@ export default async function AdminInvoices() {
                       <div className="inline-flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/invoices/${invoice.id}`}
-                          className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3.5 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                          className="inline-flex items-center gap-1.5 rounded-full border-2 border-sc-border px-3.5 py-2 text-xs font-black lowercase text-sc-text transition-colors hover:border-acid hover:text-acid"
                         >
                           open
                         </Link>

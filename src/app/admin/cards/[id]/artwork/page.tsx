@@ -45,13 +45,13 @@ export default async function CardArtwork({
   const artworkPanel = signed?.signedUrl ? (
     <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 print:hidden">
           <div className="min-w-0">
-            <p className="text-sm font-black text-white">
+            <p className="text-sm font-black text-sc-text">
               This customer supplied their own artwork
             </p>
-            <p className="mt-1 truncate text-sm font-semibold text-white/50">
+            <p className="mt-1 truncate text-sm font-semibold text-sc-text-dim">
               {(card.nfc_artwork_name as string | null) ?? artworkPath}
             </p>
-            <p className="mt-1 text-xs font-semibold text-white/35">
+            <p className="mt-1 text-xs font-semibold text-sc-text-dimmer">
               Print this file. The sheet below is only the fallback finish they
               picked, in case there is a problem with it.
             </p>

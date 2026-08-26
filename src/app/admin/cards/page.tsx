@@ -88,7 +88,7 @@ export default async function AdminCards({
             and can be linked to. */}
         <form method="get" className="flex gap-2">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-sc-text-dimmer" />
             <input
               name="q"
               defaultValue={q ?? ""}
@@ -117,13 +117,13 @@ export default async function AdminCards({
       {needsDesign.length > 0 && (
         <div className="app-panel app-panel-pad mb-4 flex flex-wrap items-center justify-between gap-3 border-amber-400/40">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-white/70">
+            <p className="text-sm font-semibold text-sc-text">
               <span className="font-black text-amber-300">
                 {needsDesign.length} card{needsDesign.length === 1 ? "" : "s"}
               </span>{" "}
               have no NFC design — nothing to print for them yet.
             </p>
-            <p className="mt-1 text-xs font-semibold text-white/40">
+            <p className="mt-1 text-xs font-semibold text-sc-text-dimmer">
               Assigning gives each one a design matching their page. Anyone can
               change it afterwards.
             </p>
@@ -151,13 +151,13 @@ export default async function AdminCards({
       )}
 
       {cards.length === 0 ? (
-        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-sc-text-dimmer">
           No cards match that.
         </p>
       ) : (
 <div className="app-panel overflow-x-auto">
           <table className="app-table w-full md:min-w-[720px]">
-            <thead className="border-b border-white/8">
+            <thead className="border-b border-sc-border-soft">
               <tr>
                 <th>Card</th>
                 <th>Template</th>
@@ -168,9 +168,9 @@ export default async function AdminCards({
                 <th />
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/6">
+            <tbody className="divide-y divide-sc-border-soft">
               {cards.map((card) => (
-                <tr key={card.id} className="transition-colors hover:bg-white/[0.03]">
+                <tr key={card.id} className="transition-colors hover:bg-sc-surface-2">
                   <td data-label="Card">
                     <div className="flex items-center gap-3">
                       <span
@@ -179,7 +179,7 @@ export default async function AdminCards({
                       />
                       <div className="min-w-0">
                         <p className="truncate font-black">{card.full_name}</p>
-                        <p className="truncate text-xs font-semibold text-white/40">
+                        <p className="truncate text-xs font-semibold text-sc-text-dimmer">
                           @{card.username}
                           {card.headline ? ` · ${card.headline}` : ""}
                         </p>
@@ -203,7 +203,7 @@ export default async function AdminCards({
                       className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1.5 text-xs font-black transition-colors ${
                         card.nfc_finish
                           ? "border-acid/40 text-acid hover:bg-acid/10"
-                          : "border-white/20 text-white/50 hover:border-acid hover:text-acid"
+                          : "border-sc-border text-sc-text-dim hover:border-acid hover:text-acid"
                       }`}
                     >
                       <Printer className="h-3.5 w-3.5" />
@@ -214,7 +214,7 @@ export default async function AdminCards({
                   </td>
                   <td data-label="Approval" className="text-sm">
                     {card.approval_status === "approved" ? (
-                      <span className="text-xs font-bold text-white/35">approved</span>
+                      <span className="text-xs font-bold text-sc-text-dimmer">approved</span>
                     ) : (
                       <div className="flex flex-col items-start gap-1.5">
                         <span className="rounded-full bg-amber-400/15 px-2.5 py-1 text-[11px] font-black uppercase text-amber-300">
@@ -231,7 +231,7 @@ export default async function AdminCards({
                         )}
                         {/* What to look for on the statement before approving. */}
                         {(card.approval_amount_pkr || card.approval_reference) && (
-                          <span className="text-[11px] font-semibold text-white/50">
+                          <span className="text-[11px] font-semibold text-sc-text-dim">
                             claims Rs.{card.approval_amount_pkr ?? "?"}
                             {card.approval_reference
                               ? ` · ref ${card.approval_reference}`
@@ -261,10 +261,10 @@ export default async function AdminCards({
                     <span
                       className={`rounded-full border-2 border-ink px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${
                         card.owner_suspended
-                          ? "bg-hotpink text-white"
+                          ? "bg-hotpink text-sc-text"
                           : card.published
                             ? "bg-acid text-ink"
-                            : "bg-white/15 text-white/60"
+                            : "bg-sc-surface-2 text-sc-text-dim"
                       }`}
                     >
                       {card.owner_suspended
@@ -274,7 +274,7 @@ export default async function AdminCards({
                           : "hidden"}
                     </span>
                   </td>
-                  <td data-label="Created" className="text-sm font-semibold tabular-nums text-white/45">
+                  <td data-label="Created" className="text-sm font-semibold tabular-nums text-sc-text-dim">
                     {new Date(card.created_at).toLocaleDateString("en-GB")}
                   </td>
                   <td data-label="" className="text-right">
@@ -282,7 +282,7 @@ export default async function AdminCards({
                       <Link
                         href={`/u/${card.username}`}
                         target="_blank"
-                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3.5 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-sc-border px-3.5 py-2 text-xs font-black lowercase text-sc-text transition-colors hover:border-acid hover:text-acid"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                         open
@@ -292,7 +292,7 @@ export default async function AdminCards({
                           expects someone else to type them in. */}
                       <Link
                         href={`/admin/cards/${card.id}/edit`}
-                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3.5 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid"
+                        className="inline-flex items-center gap-1.5 rounded-full border-2 border-sc-border px-3.5 py-2 text-xs font-black lowercase text-sc-text transition-colors hover:border-acid hover:text-acid"
                       >
                         <Pencil className="h-3.5 w-3.5" />
                         edit
@@ -323,7 +323,7 @@ export default async function AdminCards({
 
       {pages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-white/40">
+          <p className="text-sm font-bold text-sc-text-dimmer">
             Page {currentPage} of {pages}
           </p>
           <div className="flex gap-2">

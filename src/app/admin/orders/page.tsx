@@ -152,7 +152,7 @@ export default async function AdminOrders({
             <div key={s.label} className="app-panel app-panel-pad">
               <p className="text-2xl font-semibold tabular-nums tracking-tight">{s.value}</p>
               <p className="app-sub mt-1">{s.label}</p>
-              {s.hint && <p className="mt-1 text-[12px] text-white/35">{s.hint}</p>}
+              {s.hint && <p className="mt-1 text-[12px] text-sc-text-dimmer">{s.hint}</p>}
             </div>
           )
         )}
@@ -174,7 +174,7 @@ export default async function AdminOrders({
       {/* Filters */}
       <form method="get" className="flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-sc-text-dimmer" />
           <input
             name="q"
             defaultValue={q ?? ""}
@@ -224,7 +224,7 @@ export default async function AdminOrders({
       )}
 
       {orders.length === 0 ? (
-        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-sc-text-dimmer">
           No orders match.
         </p>
       ) : (

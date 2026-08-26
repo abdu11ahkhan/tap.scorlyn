@@ -56,7 +56,7 @@ export default function ConfirmByName({
 
   const styles =
     variant === "danger"
-      ? "border-white/20 text-white/70 hover:border-hotpink hover:text-hotpink"
+      ? "border-sc-border text-sc-text hover:border-hotpink hover:text-hotpink"
       : "border-ink bg-acid text-ink";
 
   return (
@@ -71,7 +71,7 @@ export default function ConfirmByName({
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 backdrop-blur-sm sm:items-center"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center"
           onClick={(e) => {
             if (e.target === e.currentTarget && !pending) close();
           }}
@@ -87,7 +87,7 @@ export default function ConfirmByName({
               </span>
 
               <div className="min-w-0 flex-1">
-                <p className="text-[15px] font-semibold text-white">{title}</p>
+                <p className="text-[15px] font-semibold text-sc-text">{title}</p>
                 <p className="app-sub mt-1">{body}</p>
               </div>
 
@@ -96,7 +96,7 @@ export default function ConfirmByName({
                 onClick={() => close()}
                 disabled={pending}
                 aria-label="Cancel"
-                className="shrink-0 p-1 text-white/35 transition-colors hover:text-white"
+                className="shrink-0 p-1 text-sc-text-dimmer transition-colors hover:text-sc-text"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -104,7 +104,7 @@ export default function ConfirmByName({
 
             <label className="mt-5 block">
               <span className="app-sub">
-                Type <span className="font-mono font-bold text-white">{expected}</span> to
+                Type <span className="font-mono font-bold text-sc-text">{expected}</span> to
                 confirm
               </span>
               <input

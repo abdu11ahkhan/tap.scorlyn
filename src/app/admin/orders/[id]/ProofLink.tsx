@@ -60,7 +60,7 @@ export default function ProofLink({ path }: { path: string | null }) {
           <img
             src={url}
             alt="Payment proof"
-            className="max-h-80 w-full rounded-lg border border-white/10 bg-black/30 object-contain"
+            className="max-h-80 w-full rounded-lg border border-sc-border-soft bg-black/30 object-contain"
           />
         </a>
       )}

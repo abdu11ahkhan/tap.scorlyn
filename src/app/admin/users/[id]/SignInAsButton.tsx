@@ -41,7 +41,7 @@ export default function SignInAsButton({
         <AlertTriangle className="h-4 w-4" />
         Sign in as {name || email}?
       </p>
-      <p className="mt-1.5 text-[13px] text-white/60">
+      <p className="mt-1.5 text-[13px] text-sc-text-dim">
         You&apos;ll land in their dashboard and can set up their card, buttons
         and links exactly as they would. This signs you out of the admin
         console in this browser — log back in when you&apos;re done. Nothing is
@@ -52,7 +52,7 @@ export default function SignInAsButton({
         value={reason}
         onChange={(e) => setReason(e.target.value)}
         placeholder="Why? (optional — kept in the log)"
-        className="mt-3 h-10 w-full rounded-lg border border-white/12 bg-white/[0.04] px-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/35"
+        className="mt-3 h-10 w-full rounded-lg border border-sc-border-soft bg-sc-surface-2 px-3 text-sm text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-border"
       />
 
       {error && <p className="mt-2 text-[13px] font-semibold text-rose-300">{error}</p>}

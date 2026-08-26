@@ -22,10 +22,10 @@ export default function IssueForm() {
           else setBatch("");
         });
       }}
-      className="flex flex-wrap items-end gap-3 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5"
+      className="flex flex-wrap items-end gap-3 rounded-2xl border-2 border-sc-border-soft bg-sc-surface-2 p-5"
     >
       <div>
-        <label className="mb-1.5 block text-[11px] font-black uppercase tracking-widest text-white/40">
+        <label className="mb-1.5 block text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
           how many
         </label>
         <input
@@ -34,19 +34,19 @@ export default function IssueForm() {
           max={100}
           value={count}
           onChange={(e) => setCount(Number(e.target.value))}
-          className="h-12 w-28 rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-bold text-white outline-none focus:border-acid"
+          className="h-12 w-28 rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 px-4 font-bold text-sc-text outline-none focus:border-acid"
         />
       </div>
 
       <div className="min-w-[180px] flex-1">
-        <label className="mb-1.5 block text-[11px] font-black uppercase tracking-widest text-white/40">
+        <label className="mb-1.5 block text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
           batch label (optional)
         </label>
         <input
           value={batch}
           onChange={(e) => setBatch(e.target.value)}
           placeholder="e.g. Aug-2026 matte black"
-          className="h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+          className="h-12 w-full rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 px-4 font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-acid"
         />
       </div>
 

@@ -27,7 +27,7 @@ export default function AssignCell({
             setSaved(false);
           }}
           placeholder="handle"
-          className="h-9 w-32 rounded-lg border-2 border-white/15 bg-white/[0.04] px-3 text-xs font-bold text-white outline-none placeholder:text-white/25 focus:border-acid"
+          className="h-9 w-32 rounded-lg border-2 border-sc-border-soft bg-sc-surface-2 px-3 text-xs font-bold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-acid"
         />
         <button
           type="button"
@@ -40,7 +40,7 @@ export default function AssignCell({
               else setSaved(true);
             });
           }}
-          className="inline-flex items-center gap-1.5 rounded-full border-2 border-white/20 px-3 py-2 text-xs font-black lowercase text-white/70 transition-colors hover:border-acid hover:text-acid disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-full border-2 border-sc-border px-3 py-2 text-xs font-black lowercase text-sc-text transition-colors hover:border-acid hover:text-acid disabled:opacity-50"
         >
           {pending ? (
             <Loader2 className="h-3 w-3 animate-spin" />

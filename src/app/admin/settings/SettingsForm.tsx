@@ -51,11 +51,11 @@ export default function SettingsForm({
       {toggles.map((t) => (
         <div
           key={t.label}
-          className="flex items-center justify-between gap-4 rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5"
+          className="flex items-center justify-between gap-4 rounded-2xl border-2 border-sc-border-soft bg-sc-surface-2 p-5"
         >
           <div>
             <p className="text-lg font-black lowercase">{t.label}</p>
-            <p className="mt-0.5 text-sm font-medium text-white/45">{t.help}</p>
+            <p className="mt-0.5 text-sm font-medium text-sc-text-dim">{t.help}</p>
           </div>
           <button
             type="button"
@@ -67,7 +67,7 @@ export default function SettingsForm({
             className={`shrink-0 rounded-full border-2 px-5 py-2.5 text-xs font-black lowercase transition-colors ${
               t.value
                 ? "border-ink bg-acid text-ink"
-                : "border-white/20 text-white/50 hover:text-white"
+                : "border-sc-border text-sc-text-dim hover:text-sc-text"
             }`}
           >
             {t.value ? "on" : "off"}
@@ -75,9 +75,9 @@ export default function SettingsForm({
         </div>
       ))}
 
-      <div className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
+      <div className="rounded-2xl border-2 border-sc-border-soft bg-sc-surface-2 p-5">
         <label className="text-lg font-black lowercase">announcement</label>
-        <p className="mt-0.5 text-sm font-medium text-white/45">
+        <p className="mt-0.5 text-sm font-medium text-sc-text-dim">
           Leave empty for none. Stored site-wide, ready to surface in a banner.
         </p>
         <input
@@ -87,13 +87,13 @@ export default function SettingsForm({
             setSaved(false);
           }}
           placeholder="e.g. Cards ship in 3 days this week"
-          className="mt-3 h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+          className="mt-3 h-12 w-full rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 px-4 font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-acid"
         />
       </div>
 
-      <div className="rounded-2xl border-2 border-white/12 bg-white/[0.03] p-5">
+      <div className="rounded-2xl border-2 border-sc-border-soft bg-sc-surface-2 p-5">
         <label className="text-lg font-black lowercase">maintenance message</label>
-        <p className="mt-0.5 text-sm font-medium text-white/45">
+        <p className="mt-0.5 text-sm font-medium text-sc-text-dim">
           Shown while maintenance mode is on.
         </p>
         <input
@@ -103,7 +103,7 @@ export default function SettingsForm({
             setSaved(false);
           }}
           placeholder="Back in an hour — upgrading the card editor."
-          className="mt-3 h-12 w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-4 font-semibold text-white outline-none placeholder:text-white/25 focus:border-acid"
+          className="mt-3 h-12 w-full rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 px-4 font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-acid"
         />
       </div>
 

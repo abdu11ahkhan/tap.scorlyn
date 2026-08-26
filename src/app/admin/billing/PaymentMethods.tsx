@@ -126,13 +126,13 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
         {methods.map((m) => (
           <div
             key={m.id}
-            className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-white/10 bg-white/[0.02] p-4"
+            className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-sc-border-soft bg-sc-surface-2 p-4"
           >
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold">
                 {m.label}
                 {!m.enabled && (
-                  <span className="ml-2 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold text-white/50">
+                  <span className="ml-2 rounded-full bg-sc-surface-2 px-2 py-0.5 text-[11px] font-bold text-sc-text-dim">
                     hidden
                   </span>
                 )}
@@ -140,7 +140,7 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
               <p className="app-sub mt-0.5 font-mono text-[13px]">
                 {[m.account_name, m.account_number, m.iban].filter(Boolean).join("  ·  ")}
               </p>
-              {m.note && <p className="mt-1 text-[12px] text-white/35">{m.note}</p>}
+              {m.note && <p className="mt-1 text-[12px] text-sc-text-dimmer">{m.note}</p>}
             </div>
 
             <button
@@ -155,7 +155,7 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
               disabled={pending}
               onClick={() => remove(m.id)}
               aria-label={`Delete ${m.label}`}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white/40 transition-colors hover:text-hotpink"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-hotpink"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -164,7 +164,7 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
       </div>
 
       {editing && (
-        <div className="mt-4 rounded-xl border border-acid/30 bg-white/[0.03] p-4">
+        <div className="mt-4 rounded-xl border border-acid/30 bg-sc-surface-2 p-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block">
               <span className="app-sub">Name shown to customers</span>

@@ -36,8 +36,8 @@ export default async function AdminTemplates() {
       {/* Being straight about the limit rather than implying a UI can author React. */}
       <div className="flex items-start gap-4 app-panel app-panel-pad">
         <Info className="mt-0.5 h-5 w-5 shrink-0 text-acid" />
-        <div className="text-sm font-medium text-white/55">
-          <p className="font-black text-white">Adding a brand-new design needs code.</p>
+        <div className="text-sm font-medium text-sc-text-dim">
+          <p className="font-black text-sc-text">Adding a brand-new design needs code.</p>
           <p className="mt-1">
             Each template is a React component in{" "}
             <code className="text-acid">src/components/card-templates/</code>, registered
@@ -64,7 +64,7 @@ export default async function AdminTemplates() {
 
         return (
           <section key={category.id}>
-            <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.25em] text-white/35">
+            <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.25em] text-sc-text-dimmer">
               {category.name} · {inCategory.length}
             </h2>
             <div className="space-y-3">

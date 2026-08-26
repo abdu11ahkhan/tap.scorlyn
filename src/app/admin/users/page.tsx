@@ -69,7 +69,7 @@ export default async function AdminUsers({
 
         <form method="get" className="flex gap-2">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-sc-text-dimmer" />
             <input
               name="q"
               defaultValue={q ?? ""}
@@ -93,13 +93,13 @@ export default async function AdminUsers({
       )}
 
       {rows.length === 0 ? (
-        <p className="app-panel app-panel-pad text-center text-[13px] text-white/35">
+        <p className="app-panel app-panel-pad text-center text-[13px] text-sc-text-dimmer">
           No accounts yet.
         </p>
       ) : (
         <div className="app-panel overflow-x-auto">
           <table className="app-table w-full md:min-w-[760px]">
-            <thead className="border-b border-white/8">
+            <thead className="border-b border-sc-border-soft">
               <tr>
                 <th>Person</th>
                 <th>Referral</th>
@@ -108,11 +108,11 @@ export default async function AdminUsers({
                 <th className="px-5 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/6">
+            <tbody className="divide-y divide-sc-border-soft">
               {rows.map((row) => {
                 const isMe = row.id === me?.id;
                 return (
-                  <tr key={row.id} className="transition-colors hover:bg-white/[0.03]">
+                  <tr key={row.id} className="transition-colors hover:bg-sc-surface-2">
                     <td data-label="Person">
                       <p className="font-black">
                         <a href={`/admin/users/${row.id}`} className="hover:text-acid">
@@ -120,14 +120,14 @@ export default async function AdminUsers({
                         </a>
                         {" "}
                         {isMe && (
-                          <span className="ml-2 rounded-full border-2 border-white/20 px-2 py-0.5 text-[10px] font-black uppercase text-white/50">
+                          <span className="ml-2 rounded-full border-2 border-sc-border px-2 py-0.5 text-[10px] font-black uppercase text-sc-text-dim">
                             you
                           </span>
                         )}
                       </p>
-                      <p className="text-xs font-semibold text-white/40">{row.email}</p>
+                      <p className="text-xs font-semibold text-sc-text-dimmer">{row.email}</p>
                     </td>
-                    <td data-label="Referral" className="font-mono text-xs text-white/50">
+                    <td data-label="Referral" className="font-mono text-xs text-sc-text-dim">
                       {row.referral_code ?? "—"}
                     </td>
                     <td data-label="Status">
@@ -139,17 +139,17 @@ export default async function AdminUsers({
                           </span>
                         )}
                         {row.suspended && (
-                          <span className="flex items-center gap-1 rounded-full border-2 border-ink bg-hotpink px-2.5 py-1 text-[10px] font-black uppercase text-white">
+                          <span className="flex items-center gap-1 rounded-full border-2 border-ink bg-hotpink px-2.5 py-1 text-[10px] font-black uppercase text-sc-text">
                             <Ban className="h-3 w-3" />
                             suspended
                           </span>
                         )}
                         {!row.is_admin && !row.suspended && (
-                          <span className="text-xs font-bold text-white/35">member</span>
+                          <span className="text-xs font-bold text-sc-text-dimmer">member</span>
                         )}
                       </div>
                     </td>
-                    <td data-label="Joined" className="text-sm font-semibold tabular-nums text-white/45">
+                    <td data-label="Joined" className="text-sm font-semibold tabular-nums text-sc-text-dim">
                       {new Date(row.created_at).toLocaleDateString("en-GB")}
                     </td>
                     <td data-label="Actions">
@@ -227,14 +227,14 @@ export default async function AdminUsers({
 
       {pages > 1 && (
         <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-white/40">
+          <p className="text-sm font-bold text-sc-text-dimmer">
             Page {currentPage} of {pages}
           </p>
           <div className="flex gap-2">
             {currentPage > 1 && (
               <a
                 href={`/admin/users?page=${currentPage - 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-                className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-black lowercase text-white/70 hover:border-acid hover:text-acid"
+                className="rounded-full border-2 border-sc-border px-5 py-2.5 text-sm font-black lowercase text-sc-text hover:border-acid hover:text-acid"
               >
                 previous
               </a>
@@ -242,7 +242,7 @@ export default async function AdminUsers({
             {currentPage < pages && (
               <a
                 href={`/admin/users?page=${currentPage + 1}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-                className="rounded-full border-2 border-white/20 px-5 py-2.5 text-sm font-black lowercase text-white/70 hover:border-acid hover:text-acid"
+                className="rounded-full border-2 border-sc-border px-5 py-2.5 text-sm font-black lowercase text-sc-text hover:border-acid hover:text-acid"
               >
                 next
               </a>

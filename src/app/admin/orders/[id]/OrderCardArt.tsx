@@ -29,7 +29,7 @@ export default function OrderCardArt({
     <div className="flex flex-wrap gap-5">
       {(["front", "back"] as const).map((face) => (
         <figure key={face} className="min-w-0">
-          <figcaption className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/35">
+          <figcaption className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-sc-text-dimmer">
             {face}
           </figcaption>
           <NfcCardArt

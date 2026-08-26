@@ -16,9 +16,9 @@ import {
 import type { InvoiceFields } from "../actions";
 
 const FIELD =
-  "w-full rounded-xl border-2 border-white/15 bg-white/[0.04] px-3.5 py-2.5 text-sm font-semibold text-white placeholder:text-white/25 focus-visible:border-acid focus-visible:outline-none";
+  "w-full rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 px-3.5 py-2.5 text-sm font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-acid focus-visible:outline-none";
 
-const LABEL = "text-xs font-black uppercase tracking-[0.15em] text-white/40";
+const LABEL = "text-xs font-black uppercase tracking-[0.15em] text-sc-text-dimmer";
 
 const BLANK_ITEM: InvoiceItem = { description: "", quantity: 1, unit_price_pkr: 0 };
 
@@ -132,7 +132,7 @@ export default function InvoiceEditor({
         <h2 className={LABEL}>billed to</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Name</label>
+            <label className="text-xs font-bold text-sc-text-dim">Name</label>
             <input
               className={FIELD}
               value={form.customer_name}
@@ -141,7 +141,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Phone</label>
+            <label className="text-xs font-bold text-sc-text-dim">Phone</label>
             <input
               className={FIELD}
               value={form.customer_phone ?? ""}
@@ -150,7 +150,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Email</label>
+            <label className="text-xs font-bold text-sc-text-dim">Email</label>
             <input
               className={FIELD}
               value={form.customer_email ?? ""}
@@ -159,7 +159,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Address</label>
+            <label className="text-xs font-bold text-sc-text-dim">Address</label>
             <input
               className={FIELD}
               value={form.customer_address ?? ""}
@@ -171,7 +171,7 @@ export default function InvoiceEditor({
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Issued</label>
+            <label className="text-xs font-bold text-sc-text-dim">Issued</label>
             <input
               type="date"
               className={FIELD}
@@ -180,7 +180,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Due</label>
+            <label className="text-xs font-bold text-sc-text-dim">Due</label>
             <input
               type="date"
               className={FIELD}
@@ -189,7 +189,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Status</label>
+            <label className="text-xs font-bold text-sc-text-dim">Status</label>
             <select
               className={FIELD}
               value={form.status}
@@ -213,7 +213,7 @@ export default function InvoiceEditor({
           <div key={index} className="flex flex-wrap items-end gap-2 sm:flex-nowrap">
             <div className="min-w-0 flex-1 space-y-1.5">
               {index === 0 && (
-                <label className="text-xs font-bold text-white/50">Description</label>
+                <label className="text-xs font-bold text-sc-text-dim">Description</label>
               )}
               <input
                 className={FIELD}
@@ -224,7 +224,7 @@ export default function InvoiceEditor({
             </div>
             <div className="w-20 space-y-1.5">
               {index === 0 && (
-                <label className="text-xs font-bold text-white/50">Qty</label>
+                <label className="text-xs font-bold text-sc-text-dim">Qty</label>
               )}
               <input
                 type="number"
@@ -238,7 +238,7 @@ export default function InvoiceEditor({
             </div>
             <div className="w-28 space-y-1.5">
               {index === 0 && (
-                <label className="text-xs font-bold text-white/50">Unit Rs.</label>
+                <label className="text-xs font-bold text-sc-text-dim">Unit Rs.</label>
               )}
               <input
                 type="number"
@@ -252,9 +252,9 @@ export default function InvoiceEditor({
             </div>
             <div className="w-28 shrink-0 space-y-1.5 text-right">
               {index === 0 && (
-                <label className="block text-xs font-bold text-white/50">Line</label>
+                <label className="block text-xs font-bold text-sc-text-dim">Line</label>
               )}
-              <p className="py-2.5 text-sm font-black text-white">
+              <p className="py-2.5 text-sm font-black text-sc-text">
                 {money(lineTotal(item))}
               </p>
             </div>
@@ -272,7 +272,7 @@ export default function InvoiceEditor({
                 }))
               }
               aria-label="Remove line"
-              className="mb-1 shrink-0 rounded-full p-2.5 text-white/40 transition-colors hover:bg-white/10 hover:text-rose-300"
+              className="mb-1 shrink-0 rounded-full p-2.5 text-sc-text-dimmer transition-colors hover:bg-sc-surface-2 hover:text-rose-300"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -280,8 +280,8 @@ export default function InvoiceEditor({
         ))}
 
         {catalogue.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 border-t border-white/10 pt-3">
-            <span className="text-xs font-black uppercase tracking-[0.15em] text-white/35">
+          <div className="flex flex-wrap items-center gap-2 border-t border-sc-border-soft pt-3">
+            <span className="text-xs font-black uppercase tracking-[0.15em] text-sc-text-dimmer">
               add from catalogue
             </span>
             {catalogue.map((product) => (
@@ -306,10 +306,10 @@ export default function InvoiceEditor({
                     return { ...prev, items };
                   })
                 }
-                className="rounded-full border-2 border-white/20 px-3 py-1.5 text-xs font-bold text-white/70 transition-colors hover:border-acid hover:text-acid"
+                className="rounded-full border-2 border-sc-border px-3 py-1.5 text-xs font-bold text-sc-text transition-colors hover:border-acid hover:text-acid"
               >
                 {product.name}
-                <span className="ml-1.5 text-white/40">
+                <span className="ml-1.5 text-sc-text-dimmer">
                   {money(product.price_pkr)}
                 </span>
               </button>
@@ -322,7 +322,7 @@ export default function InvoiceEditor({
           onClick={() =>
             setForm((prev) => ({ ...prev, items: [...prev.items, { ...BLANK_ITEM }] }))
           }
-          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-white/20 px-4 text-xs font-black uppercase tracking-tight text-white transition-colors hover:border-acid hover:text-acid"
+          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-acid hover:text-acid"
         >
           <Plus className="h-4 w-4" />
           add line
@@ -333,7 +333,7 @@ export default function InvoiceEditor({
       <section className="app-panel app-panel-pad space-y-3">
         <div>
           <h2 className={LABEL}>on the invoice</h2>
-          <p className="mt-1 text-sm font-semibold text-white/45">
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             Switch off anything this customer does not need. A line with no
             value is left out either way.
           </p>
@@ -350,7 +350,7 @@ export default function InvoiceEditor({
                 className={`rounded-full border-2 px-3.5 py-1.5 text-xs font-black lowercase transition-colors ${
                   on
                     ? "border-acid bg-acid/10 text-acid"
-                    : "border-white/15 text-white/40 hover:border-white/30"
+                    : "border-sc-border-soft text-sc-text-dimmer hover:border-sc-border"
                 }`}
               >
                 {opt.label}
@@ -366,7 +366,7 @@ export default function InvoiceEditor({
           <h2 className={LABEL}>adjustments</h2>
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-white/50">Discount</label>
+              <label className="text-xs font-bold text-sc-text-dim">Discount</label>
               <input
                 type="number"
                 min={0}
@@ -376,7 +376,7 @@ export default function InvoiceEditor({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-white/50">Delivery</label>
+              <label className="text-xs font-bold text-sc-text-dim">Delivery</label>
               <input
                 type="number"
                 min={0}
@@ -386,7 +386,7 @@ export default function InvoiceEditor({
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-white/50">Tax %</label>
+              <label className="text-xs font-bold text-sc-text-dim">Tax %</label>
               <input
                 type="number"
                 min={0}
@@ -399,7 +399,7 @@ export default function InvoiceEditor({
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-white/50">Notes</label>
+            <label className="text-xs font-bold text-sc-text-dim">Notes</label>
             <textarea
               rows={3}
               className={FIELD}
@@ -412,7 +412,7 @@ export default function InvoiceEditor({
 
         {/* The same numbers the printed invoice will show, from the same
             function — so what is on screen while editing is what prints. */}
-        <div className="space-y-2 self-start rounded-2xl border-2 border-white/12 p-5">
+        <div className="space-y-2 self-start rounded-2xl border-2 border-sc-border-soft p-5">
           <Row label="Subtotal" value={money(totals.subtotal)} />
           {totals.discount > 0 && (
             <Row label="Discount" value={`− ${money(totals.discount)}`} />
@@ -423,8 +423,8 @@ export default function InvoiceEditor({
           {totals.shipping > 0 && (
             <Row label="Delivery" value={money(totals.shipping)} />
           )}
-          <div className="mt-2 flex items-baseline justify-between border-t-2 border-white/12 pt-3">
-            <span className="text-sm font-black uppercase tracking-tight text-white">
+          <div className="mt-2 flex items-baseline justify-between border-t-2 border-sc-border-soft pt-3">
+            <span className="text-sm font-black uppercase tracking-tight text-sc-text">
               Total
             </span>
             <span className="text-2xl font-black text-acid">
@@ -452,8 +452,8 @@ export default function InvoiceEditor({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
-      <span className="text-sm font-semibold text-white/50">{label}</span>
-      <span className="text-sm font-bold text-white">{value}</span>
+      <span className="text-sm font-semibold text-sc-text-dim">{label}</span>
+      <span className="text-sm font-bold text-sc-text">{value}</span>
     </div>
   );
 }

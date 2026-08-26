@@ -106,7 +106,7 @@ export default async function AdminOverview() {
       {(newOrders ?? []).length > 0 && (
         <section className="app-panel app-panel-pad border-hotpink/40">
           <div className="mb-4 flex items-center gap-2">
-            <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-hotpink px-1.5 text-[12px] font-black text-white">
+            <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-hotpink px-1.5 text-[12px] font-black text-sc-text">
               {newOrders!.length}
             </span>
             <h2 className="font-black lowercase">new orders</h2>
@@ -117,16 +117,16 @@ export default async function AdminOverview() {
               open all
             </Link>
           </div>
-          <ul className="divide-y divide-white/8">
+          <ul className="divide-y divide-sc-border-soft">
             {newOrders!.map((o) => (
               <li key={o.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5">
-                <span className="font-mono text-[13px] font-black text-white">
+                <span className="font-mono text-[13px] font-black text-sc-text">
                   {o.reference}
                 </span>
-                <span className="text-[13px] font-semibold text-white/70">
+                <span className="text-[13px] font-semibold text-sc-text">
                   {o.full_name} · {o.city}
                 </span>
-                <span className="text-[12px] text-white/40">
+                <span className="text-[12px] text-sc-text-dimmer">
                   {o.quantity} × {o.plan_id}
                   {o.branding === "unbranded" && " · no branding"}
                 </span>
@@ -136,7 +136,7 @@ export default async function AdminOverview() {
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-[12px] text-white/30">
+          <p className="mt-3 text-[12px] text-sc-text-dimmer">
             Stays here until you hit &ldquo;mark all read&rdquo; on the orders
             page. An email also goes out within fifteen minutes — set
             ORDER_ALERT_EMAIL to send it somewhere other than the address the
@@ -156,7 +156,7 @@ export default async function AdminOverview() {
               <Icon className="mb-4 h-5 w-5" />
               <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
               <p className="app-sub mt-1">{stat.label}</p>
-              <p className="mt-1 text-[12px] text-white/35">{stat.hint}</p>
+              <p className="mt-1 text-[12px] text-sc-text-dimmer">{stat.hint}</p>
             </>
           );
 
@@ -164,7 +164,7 @@ export default async function AdminOverview() {
             <Link
               key={stat.label}
               href={href}
-              className="app-panel app-panel-pad transition-colors hover:bg-white/[0.05]"
+              className="app-panel app-panel-pad transition-colors hover:bg-sc-surface-2"
             >
               {body}
             </Link>
@@ -191,7 +191,7 @@ export default async function AdminOverview() {
                   title={`${day.date}: ${day.count} taps`}
                 />
               </div>
-              <span className="text-[9px] font-bold tabular-nums text-white/35">
+              <span className="text-[9px] font-bold tabular-nums text-sc-text-dimmer">
                 {day.date.slice(8)}
               </span>
             </div>

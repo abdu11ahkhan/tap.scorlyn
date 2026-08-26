@@ -42,7 +42,7 @@ export default async function AdminBilling() {
           <div key={s.label} className="app-panel app-panel-pad">
             <p className="text-2xl font-semibold tabular-nums tracking-tight">{s.value}</p>
             <p className="app-sub mt-1">{s.label}</p>
-            <p className="mt-1 text-[12px] text-white/35">{s.hint}</p>
+            <p className="mt-1 text-[12px] text-sc-text-dimmer">{s.hint}</p>
           </div>
         ))}
       </div>
