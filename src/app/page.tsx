@@ -41,16 +41,16 @@ export default async function Home() {
       />
 
       {/* Closing call to action */}
-      <section className="grain relative overflow-hidden bg-acid py-24 text-ink">
+      <section className="relative overflow-hidden bg-paper py-24 text-ink">
         <div className="relative mx-auto max-w-4xl px-6 text-center">
-          <h2 className="text-[clamp(2.6rem,8vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em]">
-            go make one.
+          <h2 className="text-[clamp(2.6rem,8vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-ink">
+            go make <span className="text-teal">one.</span>
             <br />
             takes 2 minutes.
           </h2>
           <Link
             href="/templates"
-            className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-ink px-12 text-lg font-black uppercase tracking-tight text-acid"
+            className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-teal px-12 text-lg font-black uppercase tracking-tight text-white"
           >
             build my card
           </Link>
