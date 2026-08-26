@@ -38,7 +38,7 @@ export async function generateMetadata({
   const { username } = await params;
   const card = await getCard(username);
 
-  if (!card) return { title: "Card not found" };
+  if (!card) return { title: "Card not found", manifest: null };
 
   const title = card.headline ? `${card.full_name} — ${card.headline}` : card.full_name;
   const description = card.bio ?? `Contact ${card.full_name}`;
@@ -50,6 +50,15 @@ export async function generateMetadata({
   return {
     title,
     description,
+    // manifest.ts (start_url: "/dashboard") is meant for installing the
+    // *app*, not a page you land on from a physical NFC tap — Next's file
+    // convention auto-links it on every route by default. On Android that
+    // makes Chrome show its "Add to Home Screen" install banner over this
+    // page, which sits right on top of the Save to Contacts button (iOS
+    // Safari has no equivalent auto-banner, which is why this only showed up
+    // for Android customers). null overrides the inherited link for this
+    // route only — /dashboard keeps it.
+    manifest: null,
     alternates: { canonical: `${SITE_URL}/u/${card.username}` },
     openGraph: {
       title,
