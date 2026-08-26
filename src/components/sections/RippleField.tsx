@@ -3,12 +3,18 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A field of dots clustered toward one corner of a section — matching the
- * reference: a soft diagonal cloud of teal (and a few orange) dots fading
- * out from `origin`, not a full-bleed even grid. Pure canvas, no
- * dependency. Each dot's size/opacity rides a sharply-peaked travelling
- * ring (cubed sine, not a smooth gradient) so an actual wave is visible
- * moving outward through the cluster rather than a shimmering texture.
+ * Water-ripple rings, like a stone dropped near one corner of a section —
+ * pure canvas, no dependency. New rings are born at `origin` on a steady
+ * interval and expand outward, fading as they grow, so 2-3 concentric
+ * circles are visible and moving at any moment (the part a single
+ * standing wave never actually shows: real ripples are born, travel, and
+ * die, they don't just breathe in place). Dots only light up where a
+ * ring's current radius passes near them, so the shape reads as distinct
+ * circles, not a density gradient.
+ *
+ * Dot spacing and count scale down on narrow viewports to stay light on
+ * mobile, and the canvas is measured with ResizeObserver so it re-fits on
+ * orientation change/resize rather than assuming a fixed layout.
  *
  * Pauses itself off-screen (IntersectionObserver) so seven of these on one
  * page don't all animate at once, and renders a single still frame instead
@@ -21,7 +27,7 @@ export function RippleField({
   accent = "#f58800",
 }: {
   className?: string;
-  /** 0-1 fraction of the container's own width/height. */
+  /** 0-1 fraction of the container's own width/height — where rings are born. */
   origin?: { x: number; y: number };
   color?: string;
   accent?: string;
@@ -35,10 +41,18 @@ export function RippleField({
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const SPACING = 22;
+
+    // A ring is born every INTERVAL seconds and takes DURATION seconds to
+    // expand from 0 to maxRadius, fading out as it grows — several are
+    // alive and overlapping at once, same as real water.
+    const INTERVAL = 1.3;
+    const DURATION = 3.4;
+    const RING_SPEED_FACTOR = 1 / DURATION;
+    const BAND_WIDTH = 30;
 
     let width = 0;
     let height = 0;
+    let spacing = 22;
     let raf = 0;
     let start = performance.now();
 
@@ -49,6 +63,9 @@ export function RippleField({
       canvas!.width = width * dpr;
       canvas!.height = height * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Fewer, more widely-spaced dots on a phone-width section — keeps
+      // the grid (and the per-frame cost) proportional to the screen.
+      spacing = width < 480 ? 28 : width < 820 ? 24 : 22;
     }
 
     function draw(time: number) {
@@ -58,30 +75,45 @@ export function RippleField({
       const t = reduceMotion ? 0 : (time - start) / 1000;
       const ox = width * origin.x;
       const oy = height * origin.y;
-      // A tight cluster radius, not the whole section — a corner cloud,
-      // like the reference, rather than an even field.
-      const clusterRadius = Math.max(width, height) * 0.42;
-      const cols = Math.ceil(width / SPACING) + 1;
-      const rows = Math.ceil(height / SPACING) + 1;
+      const maxRadius = Math.max(width, height) * 0.55;
+      const ringSpeed = maxRadius * RING_SPEED_FACTOR;
+
+      // Every ring that's currently mid-expansion, oldest first.
+      const newestIndex = Math.floor(t / INTERVAL);
+      const rings: { radius: number; fade: number }[] = [];
+      for (let k = newestIndex; k >= 0 && k > newestIndex - Math.ceil(DURATION / INTERVAL) - 1; k--) {
+        const age = t - k * INTERVAL;
+        if (age < 0) continue;
+        const radius = age * ringSpeed;
+        if (radius > maxRadius) continue;
+        rings.push({ radius, fade: 1 - radius / maxRadius });
+      }
+      if (rings.length === 0) return;
+
+      const cols = Math.ceil(width / spacing) + 1;
+      const rows = Math.ceil(height / spacing) + 1;
 
       for (let iy = 0; iy < rows; iy++) {
         for (let ix = 0; ix < cols; ix++) {
-          const x = ix * SPACING;
-          const y = iy * SPACING;
+          const x = ix * spacing;
+          const y = iy * spacing;
           const dist = Math.hypot(x - ox, y - oy);
-          const cluster = Math.max(0, 1 - dist / clusterRadius);
-          if (cluster <= 0) continue;
+          if (dist > maxRadius + BAND_WIDTH) continue;
 
-          // Cubing turns a smooth gradient into a distinct travelling
-          // ring — bright band, near-invisible trough — the part that
-          // actually reads as "a wave" moving through the cloud.
-          const raw = 0.5 + 0.5 * Math.sin(dist * 0.05 - t * 1.7);
-          const wave = raw * raw * raw;
-          const alpha = cluster * cluster * (0.15 + wave * 0.55);
+          let alpha = 0;
+          let peakStrength = 0;
+          for (const ring of rings) {
+            const bandDist = Math.abs(dist - ring.radius);
+            if (bandDist >= BAND_WIDTH) continue;
+            const closeness = 1 - bandDist / BAND_WIDTH;
+            const strength = closeness * closeness * ring.fade;
+            alpha += strength * 0.6;
+            if (strength > peakStrength) peakStrength = strength;
+          }
           if (alpha < 0.02) continue;
 
           const isAccent = (ix * 7 + iy * 13) % 21 === 0;
-          const radius = 0.8 + wave * 1.8;
+          const radius = 0.8 + peakStrength * 1.7;
 
           ctx!.beginPath();
           ctx!.fillStyle = isAccent ? accent : color;
