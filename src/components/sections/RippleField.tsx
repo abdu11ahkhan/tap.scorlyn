@@ -3,16 +3,50 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A quiet, auto-animating field of dots behind a section's content — pure
- * canvas, no dependency. Each dot's size/opacity rides a wave travelling
- * outward from `origin`, so the pattern reads as a slow ripple rather than
- * a static texture, clustered toward one corner rather than an even grid
- * (an even grid at full opacity would fight the copy sitting on top of it).
+ * Faint, continuously-scrolling heart-monitor traces behind a section's
+ * content — pure canvas, no dependency. Several horizontal lines, each
+ * drawing the same repeating pulse shape (flat → small bump → sharp
+ * spike → settle → flat, the familiar ECG silhouette) and scrolling
+ * sideways at a slightly different speed/phase so they don't pulse in
+ * lockstep. Concentrated vertically around `origin.y`, fading out above
+ * and below it rather than covering the whole section evenly.
  *
  * Pauses itself off-screen (IntersectionObserver) so seven of these on one
  * page don't all animate at once, and renders a single still frame instead
  * of animating for prefers-reduced-motion.
  */
+
+// One pulse cycle as (position-in-cycle, amplitude) keyframes, linearly
+// interpolated between — the classic P / QRS / T silhouette of a heart
+// monitor line, not a smooth sine.
+const PULSE: [number, number][] = [
+  [0.0, 0],
+  [0.34, 0],
+  [0.38, 0.12],
+  [0.42, 0],
+  [0.455, -0.12],
+  [0.49, 1],
+  [0.525, -0.55],
+  [0.56, 0.08],
+  [0.6, 0],
+  [0.66, 0.22],
+  [0.72, 0],
+  [1.0, 0],
+];
+
+function pulseValue(frac: number): number {
+  const f = ((frac % 1) + 1) % 1;
+  for (let i = 0; i < PULSE.length - 1; i++) {
+    const [x0, y0] = PULSE[i];
+    const [x1, y1] = PULSE[i + 1];
+    if (f >= x0 && f <= x1) {
+      const along = (f - x0) / (x1 - x0 || 1);
+      return y0 + (y1 - y0) * along;
+    }
+  }
+  return 0;
+}
+
 export function RippleField({
   className = "",
   origin = { x: 0.5, y: 0.5 },
@@ -20,7 +54,8 @@ export function RippleField({
   accent = "#f58800",
 }: {
   className?: string;
-  /** 0-1 fraction of the container's own width/height. */
+  /** 0-1 fraction of the container's own width/height — y is where the
+   *  traces concentrate, x seeds each row's starting phase. */
   origin?: { x: number; y: number };
   color?: string;
   accent?: string;
@@ -34,7 +69,9 @@ export function RippleField({
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const SPACING = 26;
+    const ROW_SPACING = 64;
+    const PERIOD = 240;
+    const STEP = 4;
 
     let width = 0;
     let height = 0;
@@ -55,38 +92,38 @@ export function RippleField({
       ctx!.clearRect(0, 0, width, height);
 
       const t = reduceMotion ? 0 : (time - start) / 1000;
-      const ox = width * origin.x;
       const oy = height * origin.y;
-      const maxDist = Math.hypot(width, height) * 0.9;
-      const cols = Math.ceil(width / SPACING) + 1;
-      const rows = Math.ceil(height / SPACING) + 1;
+      const rows = Math.ceil(height / ROW_SPACING) + 1;
+      const maxRowDist = height * 0.55 + ROW_SPACING;
 
-      for (let iy = 0; iy < rows; iy++) {
-        for (let ix = 0; ix < cols; ix++) {
-          const x = ix * SPACING;
-          const y = iy * SPACING;
-          const dist = Math.hypot(x - ox, y - oy);
-          const falloff = Math.max(0, 1 - dist / maxDist);
-          if (falloff <= 0) continue;
+      for (let row = 0; row < rows; row++) {
+        const y = row * ROW_SPACING;
+        const rowDist = Math.abs(y - oy);
+        const falloff = Math.max(0, 1 - rowDist / maxRowDist);
+        if (falloff <= 0) continue;
 
-          // Cubing the raw sine turns a smooth gradient into a distinct
-          // travelling band — bright ring, then a near-invisible trough —
-          // which is what actually reads as "a wave" instead of ambient
-          // texture that happens to shimmer.
-          const raw = 0.5 + 0.5 * Math.sin(dist * 0.05 - t * 1.8);
-          const wave = raw * raw * raw;
-          const alpha = falloff * wave * 0.5;
-          if (alpha < 0.02) continue;
+        const amplitude = 10 + falloff * 12;
+        const alpha = falloff * falloff * 0.42;
+        if (alpha < 0.02) continue;
 
-          const isAccent = (ix * 7 + iy * 13) % 23 === 0;
-          const radius = 0.6 + wave * 2.2;
+        const phaseSeed = origin.x + row * 0.37;
+        const speed = 0.12 + (row % 3) * 0.03;
+        const scroll = t * speed;
 
-          ctx!.beginPath();
-          ctx!.fillStyle = isAccent ? accent : color;
-          ctx!.globalAlpha = alpha;
-          ctx!.arc(x, y, radius, 0, Math.PI * 2);
-          ctx!.fill();
+        const isAccent = row % 5 === 0;
+        ctx!.beginPath();
+        ctx!.strokeStyle = isAccent ? accent : color;
+        ctx!.lineWidth = 1.4;
+        ctx!.globalAlpha = alpha;
+
+        for (let x = 0; x <= width; x += STEP) {
+          const frac = x / PERIOD + phaseSeed - scroll;
+          const v = pulseValue(frac);
+          const py = y - v * amplitude;
+          if (x === 0) ctx!.moveTo(x, py);
+          else ctx!.lineTo(x, py);
         }
+        ctx!.stroke();
       }
       ctx!.globalAlpha = 1;
     }
