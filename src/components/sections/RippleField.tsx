@@ -3,31 +3,61 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Water-ripple rings, like a stone dropped near one corner of a section —
- * pure canvas, no dependency. New rings are born at `origin` on a steady
- * interval and expand outward, fading as they grow, so 2-3 concentric
- * circles are visible and moving at any moment (the part a single
- * standing wave never actually shows: real ripples are born, travel, and
- * die, they don't just breathe in place). Dots only light up where a
- * ring's current radius passes near them, so the shape reads as distinct
- * circles, not a density gradient.
+ * Rows of dots tracing an ECG-style pulse shape — flat, small bump, sharp
+ * spike, settle, flat — scrolling sideways, stacked like a bank of swells
+ * seen from the shoreline rather than looking straight down at them. Each
+ * row is built from dots plotted along the pulse curve (not a stroked
+ * line), matching the reference's dotted texture while still reading as
+ * a wave shape instead of scattered noise. Rows fade and shrink with
+ * distance from `origin.y`, giving the "further rows recede" read of a
+ * side view rather than a flat, even field.
  *
- * Dot spacing and count scale down on narrow viewports to stay light on
- * mobile, and the canvas is measured with ResizeObserver so it re-fits on
- * orientation change/resize rather than assuming a fixed layout.
- *
- * Pauses itself off-screen (IntersectionObserver) so seven of these on one
- * page don't all animate at once, and renders a single still frame instead
- * of animating for prefers-reduced-motion.
+ * Dot spacing/row count scale down on narrow viewports to stay light on
+ * mobile. Pauses itself off-screen (IntersectionObserver) so seven of
+ * these on one page don't all animate at once, and renders one still
+ * frame instead of animating for prefers-reduced-motion.
  */
+
+// One wave cycle as (position-in-cycle, amplitude) keyframes, linearly
+// interpolated — the ECG P/QRS/T silhouette, not a smooth sine, so it
+// still reads as "a pulse" once reduced to dots.
+const PULSE: [number, number][] = [
+  [0.0, 0],
+  [0.34, 0],
+  [0.38, 0.12],
+  [0.42, 0],
+  [0.455, -0.12],
+  [0.49, 1],
+  [0.525, -0.55],
+  [0.56, 0.08],
+  [0.6, 0],
+  [0.66, 0.22],
+  [0.72, 0],
+  [1.0, 0],
+];
+
+function pulseValue(frac: number): number {
+  const f = ((frac % 1) + 1) % 1;
+  for (let i = 0; i < PULSE.length - 1; i++) {
+    const [x0, y0] = PULSE[i];
+    const [x1, y1] = PULSE[i + 1];
+    if (f >= x0 && f <= x1) {
+      const along = (f - x0) / (x1 - x0 || 1);
+      return y0 + (y1 - y0) * along;
+    }
+  }
+  return 0;
+}
+
 export function RippleField({
   className = "",
-  origin = { x: 0.16, y: 0.28 },
+  origin = { x: 0.5, y: 0.4 },
   color = "#266867",
   accent = "#f58800",
 }: {
   className?: string;
-  /** 0-1 fraction of the container's own width/height — where rings are born. */
+  /** 0-1 fraction of the container's own width/height — y is where the
+   *  wave bank concentrates, x seeds each row's starting phase. */
   origin?: { x: number; y: number };
   color?: string;
   accent?: string;
@@ -41,18 +71,12 @@ export function RippleField({
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    // A ring is born every INTERVAL seconds and takes DURATION seconds to
-    // expand from 0 to maxRadius, fading out as it grows — several are
-    // alive and overlapping at once, same as real water.
-    const INTERVAL = 1.3;
-    const DURATION = 3.4;
-    const RING_SPEED_FACTOR = 1 / DURATION;
-    const BAND_WIDTH = 30;
+    const PERIOD = 220;
 
     let width = 0;
     let height = 0;
-    let spacing = 22;
+    let rowSpacing = 46;
+    let dotStep = 7;
     let raf = 0;
     let start = performance.now();
 
@@ -63,9 +87,10 @@ export function RippleField({
       canvas!.width = width * dpr;
       canvas!.height = height * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // Fewer, more widely-spaced dots on a phone-width section — keeps
-      // the grid (and the per-frame cost) proportional to the screen.
-      spacing = width < 480 ? 28 : width < 820 ? 24 : 22;
+      // A phone-width section gets fewer, more widely-spaced rows and
+      // dots, keeping the per-frame point count proportional.
+      rowSpacing = width < 480 ? 38 : width < 820 ? 42 : 46;
+      dotStep = width < 480 ? 9 : 7;
     }
 
     function draw(time: number) {
@@ -73,52 +98,43 @@ export function RippleField({
       ctx!.clearRect(0, 0, width, height);
 
       const t = reduceMotion ? 0 : (time - start) / 1000;
-      const ox = width * origin.x;
       const oy = height * origin.y;
-      const maxRadius = Math.max(width, height) * 0.55;
-      const ringSpeed = maxRadius * RING_SPEED_FACTOR;
+      const rows = Math.ceil(height / rowSpacing) + 1;
+      const maxRowDist = height * 0.6 + rowSpacing;
 
-      // Every ring that's currently mid-expansion, oldest first.
-      const newestIndex = Math.floor(t / INTERVAL);
-      const rings: { radius: number; fade: number }[] = [];
-      for (let k = newestIndex; k >= 0 && k > newestIndex - Math.ceil(DURATION / INTERVAL) - 1; k--) {
-        const age = t - k * INTERVAL;
-        if (age < 0) continue;
-        const radius = age * ringSpeed;
-        if (radius > maxRadius) continue;
-        rings.push({ radius, fade: 1 - radius / maxRadius });
-      }
-      if (rings.length === 0) return;
+      for (let row = 0; row < rows; row++) {
+        const y = row * rowSpacing;
+        const rowDist = Math.abs(y - oy);
+        const falloff = Math.max(0, 1 - rowDist / maxRowDist);
+        if (falloff <= 0) continue;
 
-      const cols = Math.ceil(width / spacing) + 1;
-      const rows = Math.ceil(height / spacing) + 1;
+        // Further-from-center rows sit smaller and fainter — the
+        // "receding toward the horizon" read of a side view.
+        const amplitude = 6 + falloff * 16;
+        const baseAlpha = falloff * falloff * 0.7;
+        if (baseAlpha < 0.03) continue;
+        const dotRadius = 0.7 + falloff * 1.1;
 
-      for (let iy = 0; iy < rows; iy++) {
-        for (let ix = 0; ix < cols; ix++) {
-          const x = ix * spacing;
-          const y = iy * spacing;
-          const dist = Math.hypot(x - ox, y - oy);
-          if (dist > maxRadius + BAND_WIDTH) continue;
+        const phaseSeed = origin.x + row * 0.41;
+        const speed = 0.09 + (row % 3) * 0.025;
+        const scroll = t * speed;
+        const isAccentRow = row % 5 === 0;
 
-          let alpha = 0;
-          let peakStrength = 0;
-          for (const ring of rings) {
-            const bandDist = Math.abs(dist - ring.radius);
-            if (bandDist >= BAND_WIDTH) continue;
-            const closeness = 1 - bandDist / BAND_WIDTH;
-            const strength = closeness * closeness * ring.fade;
-            alpha += strength * 0.6;
-            if (strength > peakStrength) peakStrength = strength;
-          }
-          if (alpha < 0.02) continue;
+        ctx!.fillStyle = isAccentRow ? accent : color;
 
-          const isAccent = (ix * 7 + iy * 13) % 21 === 0;
-          const radius = 0.8 + peakStrength * 1.7;
+        for (let x = 0; x <= width; x += dotStep) {
+          const frac = x / PERIOD + phaseSeed - scroll;
+          const v = pulseValue(frac);
+          const py = y - v * amplitude;
+          // Dots near a spike sit brighter/bigger than the flat stretches
+          // between beats, same emphasis an ECG trace itself has.
+          const emphasis = Math.abs(v);
+          const alpha = baseAlpha * (0.35 + emphasis * 0.65);
+          if (alpha < 0.03) continue;
 
-          ctx!.beginPath();
-          ctx!.fillStyle = isAccent ? accent : color;
           ctx!.globalAlpha = Math.min(1, alpha);
-          ctx!.arc(x, y, radius, 0, Math.PI * 2);
+          ctx!.beginPath();
+          ctx!.arc(x, py, dotRadius + emphasis * 0.8, 0, Math.PI * 2);
           ctx!.fill();
         }
       }
