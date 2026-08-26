@@ -42,7 +42,7 @@ export default async function AdminInvoices() {
         </div>
         <Link
           href="/admin/invoices/new"
-          className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 text-sm font-black uppercase tracking-tight text-ink"
+          className="app-btn app-btn-primary"
         >
           <Plus className="h-4 w-4" />
           new invoice

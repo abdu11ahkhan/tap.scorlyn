@@ -193,7 +193,7 @@ Password: ${created.password}`;
             className={field}
           >
             {CARD_TEMPLATES.map((t) => (
-              <option key={t.id} value={t.id} className="bg-[#14161a]">
+              <option key={t.id} value={t.id} className="bg-sc-surface-2">
                 {t.name}
               </option>
             ))}

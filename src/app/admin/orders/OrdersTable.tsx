@@ -96,7 +96,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
       )}
 
       <div className="overflow-x-auto rounded-2xl border-2 border-sc-border-soft">
-        <table className="w-full md:min-w-[900px] text-left">
+        <table className="app-table w-full md:min-w-[900px] text-left">
           <thead className="bg-sc-surface-2">
             <tr className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">
               <th className="px-4 py-3.5">
@@ -267,7 +267,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
       {/* Note editor */}
       {noteFor && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-md rounded-2xl border-2 border-ink bg-ink p-6">
+          <div className="app-panel w-full max-w-md p-6">
             <p className="text-lg font-black text-sc-text">Internal note</p>
             <p className="mt-1 text-xs font-semibold text-sc-text-dimmer">
               Only staff see this. The customer never does.
@@ -293,14 +293,14 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     }
                   })
                 }
-                className="sticker sticker-press flex-1 rounded-full border-2 border-ink bg-acid py-3 text-sm font-black uppercase text-ink disabled:opacity-60"
+                className="app-btn app-btn-primary flex-1 disabled:opacity-60"
               >
                 {pending ? "saving" : "save note"}
               </button>
               <button
                 type="button"
                 onClick={() => setNoteFor(null)}
-                className="rounded-full border-2 border-sc-border px-5 py-3 text-sm font-black lowercase text-sc-text-dim"
+                className="app-btn app-btn-ghost"
               >
                 cancel
               </button>
