@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import { RippleField } from "./RippleField";
 
 /**
  * Kept in step with the `plans` table by hand.
@@ -62,6 +63,7 @@ const PLANS = [
 export function Pricing({ note }: { note?: string | null } = {}) {
   return (
     <section id="pricing" className="relative overflow-hidden bg-mist py-28">
+      <RippleField origin={{ x: 0.5, y: 0.1 }} />
       <div className="relative mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

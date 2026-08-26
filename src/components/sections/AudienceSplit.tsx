@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, User, Building2, Check } from "lucide-react";
+import { RippleField } from "./RippleField";
 
 /**
  * Both lists are real, shipped features — nothing here is aspirational.
@@ -29,6 +30,7 @@ const CORPORATE = [
 export function AudienceSplit() {
   return (
     <section className="relative overflow-hidden bg-paper py-28">
+      <RippleField origin={{ x: 0.22, y: 0.2 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

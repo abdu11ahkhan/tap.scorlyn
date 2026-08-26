@@ -1,5 +1,6 @@
 import { MessageCircle, Mail, Package, Palette, Truck, Clock } from "lucide-react";
 import { normalizeWhatsapp } from "@/lib/referral";
+import { RippleField } from "./RippleField";
 
 /**
  * How to reach a human — for questions, and for bulk orders.
@@ -70,6 +71,7 @@ export function Contact({
 
   return (
     <section id="contact" className="relative overflow-hidden bg-paper py-28 text-ink">
+      <RippleField origin={{ x: 0.8, y: 0.4 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <div className="mb-14 max-w-3xl">
           <p className="text-[12px] font-black uppercase tracking-[0.25em] text-ink/40">

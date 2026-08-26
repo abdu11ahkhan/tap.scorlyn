@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, PlayCircle, Star } from "lucide-react";
 import BrandMark from "@/components/layout/BrandMark";
+import { RippleField } from "./RippleField";
 
 /**
  * No photography, no pinned scroll sequence. The old hero loaded a full-bleed
@@ -26,6 +27,7 @@ export function Hero({
       <div
         className="float-orb pointer-events-none absolute -right-24 top-24 h-[620px] w-[620px] rounded-full bg-teal/10 blur-[140px]"
       />
+      <RippleField origin={{ x: 0.16, y: 0.34 }} />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-[1.15fr_1fr]">
         {/* ---------------- Copy ---------------- */}

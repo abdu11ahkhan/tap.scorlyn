@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
+import { RippleField } from "./RippleField";
 
 /**
  * Real templates, real names, real accents — CARD_TEMPLATES.preview is the
@@ -14,6 +15,7 @@ import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 export function TemplateShowcase() {
   return (
     <section id="designs" className="relative overflow-hidden bg-paper py-28">
+      <RippleField origin={{ x: 0.88, y: 0.8 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -34,7 +36,7 @@ export function TemplateShowcase() {
           </div>
           <Link
             href="/templates"
-            className="sticker sticker-press inline-flex h-14 shrink-0 items-center gap-2 rounded-full bg-mist px-7 text-base font-black uppercase tracking-tight text-ink"
+            className="sticker sticker-press inline-flex h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-mist px-7 text-base font-black uppercase tracking-tight text-ink"
           >
             see all templates
           </Link>

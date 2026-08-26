@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { LayoutTemplate, IdCard, Smartphone, Share2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { RippleField } from "./RippleField";
 
 /**
  * The concept in four beats, not a feature list: build the page, get the
@@ -43,6 +44,7 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="relative overflow-hidden bg-mist py-28">
+      <RippleField origin={{ x: 0.85, y: 0.15 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -108,14 +110,14 @@ export function HowItWorks() {
         >
           <Link
             href="/templates"
-            className="sticker sticker-press inline-flex h-14 items-center gap-2 rounded-full bg-teal px-8 text-base font-black uppercase tracking-tight text-white"
+            className="sticker sticker-press inline-flex h-14 items-center justify-center gap-2 rounded-full bg-teal px-8 text-base font-black uppercase tracking-tight text-white"
           >
             create your card
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/dashboard/nfc"
-            className="inline-flex h-14 items-center rounded-full px-7 text-base font-bold text-ink transition-colors hover:text-teal"
+            className="inline-flex h-14 items-center justify-center rounded-full px-7 text-base font-bold text-ink transition-colors hover:text-teal"
           >
             get your nfc card
           </Link>
