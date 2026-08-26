@@ -71,7 +71,7 @@ export function Contact({
 
   return (
     <section id="contact" className="relative overflow-hidden bg-paper py-28 text-ink">
-      <RippleField origin={{ x: 0.8, y: 0.4 }} />
+      <RippleField />
       <div className="relative mx-auto max-w-6xl px-6">
         <div className="mb-14 max-w-3xl">
           <p className="text-[12px] font-black uppercase tracking-[0.25em] text-ink/40">

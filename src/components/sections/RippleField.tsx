@@ -15,7 +15,7 @@ import { useEffect, useRef } from "react";
  */
 export function RippleField({
   className = "",
-  origin = { x: 0.18, y: 0.32 },
+  origin = { x: 0.5, y: 0.5 },
   color = "#266867",
   accent = "#f58800",
 }: {
@@ -70,7 +70,7 @@ export function RippleField({
           if (falloff <= 0) continue;
 
           const wave = 0.5 + 0.5 * Math.sin(dist * 0.045 - t * 1.4);
-          const alpha = falloff * wave * 0.55;
+          const alpha = falloff * falloff * wave * 0.22;
           if (alpha < 0.02) continue;
 
           const isAccent = (ix * 7 + iy * 13) % 23 === 0;
@@ -126,7 +126,7 @@ export function RippleField({
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 ${className}`}
+      className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
     />
   );
 }
