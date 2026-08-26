@@ -119,7 +119,7 @@ export default function HouseStyleSection({
           </button>
         </div>
       ) : (
-        <label className="flex h-12 w-fit cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold">
+        <label className="flex h-12 w-fit cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text">
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"

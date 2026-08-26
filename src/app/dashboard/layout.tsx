@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={cn(
                   "hidden shrink-0 items-center rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight sm:inline-flex",
                   account.type === "corporate"
-                    ? "bg-sc-gold/15 text-sc-gold"
+                    ? "bg-sc-gold/15 text-sc-gold-text"
                     : "bg-sc-surface-2 text-sc-text-dim"
                 )}
               >

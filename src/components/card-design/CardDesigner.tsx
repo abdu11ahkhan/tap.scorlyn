@@ -87,7 +87,7 @@ export default function CardDesigner({
         <button
           type="button"
           onClick={() => setFace((f) => (f === "front" ? "back" : "front"))}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-sc-border px-5 text-xs font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-sc-border px-5 text-xs font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
         >
           <RotateCw className="h-3.5 w-3.5" />
           {face === "front" ? "see back" : "see front"}
@@ -140,7 +140,7 @@ export default function CardDesigner({
                 aria-pressed={on}
                 className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border-2 px-4 text-xs font-black lowercase transition-colors ${
                   on
-                    ? "border-sc-gold/70 bg-sc-gold/15 text-sc-gold"
+                    ? "border-sc-gold/70 bg-sc-gold/15 text-sc-gold-text"
                     : "border-sc-border text-sc-text-dimmer hover:border-sc-border-soft hover:text-sc-text-dim"
                 }`}
               >

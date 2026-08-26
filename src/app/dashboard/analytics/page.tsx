@@ -136,7 +136,7 @@ export default async function AnalyticsPage({
           {/* Engagement rate — only shown once there's enough signal to mean anything */}
           <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold-text">
                 <TrendingUp className="h-4 w-4" />
               </span>
               <div>
@@ -211,7 +211,7 @@ export default async function AnalyticsPage({
                             href={`/u/${c.username}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-semibold text-sc-text hover:text-sc-gold"
+                            className="font-semibold text-sc-text hover:text-sc-gold-text"
                           >
                             {c.label}
                           </Link>
@@ -235,7 +235,7 @@ export default async function AnalyticsPage({
                 {nfcBreakdown.map((nc) => (
                   <div key={nc.nfcCardId} className="flex items-center justify-between p-3.5">
                     <span className="flex items-center gap-2.5 text-[13px] font-semibold text-sc-text">
-                      <SmartphoneNfc className="h-4 w-4 text-sc-gold" />
+                      <SmartphoneNfc className="h-4 w-4 text-sc-gold-text" />
                       {nc.label}
                     </span>
                     <span className="text-[13px] font-bold tabular-nums text-sc-text-dim">
@@ -278,7 +278,7 @@ function Stat({
 }) {
   return (
     <div className="app-panel app-panel-pad">
-      <Icon className="mb-3 h-4 w-4 text-sc-gold" />
+      <Icon className="mb-3 h-4 w-4 text-sc-gold-text" />
       <p className="text-2xl font-semibold tabular-nums tracking-tight text-sc-text">{value}</p>
       <p className="app-sub mt-0.5">{label}</p>
       {hint && <p className="mt-1 text-[11px] text-sc-text-dimmer">{hint}</p>}
@@ -299,7 +299,7 @@ function EmptyState({
 }) {
   return (
     <div className="app-panel app-panel-pad flex flex-col items-center gap-3 py-12 text-center">
-      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold">
+      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold-text">
         <MousePointerClick className="h-5 w-5" />
       </span>
       <div>

@@ -221,7 +221,7 @@ export default function CardEditorFields({
               onClick={() => onFormChange({ surface_color: "" })}
               className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3 text-[11px] font-black lowercase transition-colors sm:h-7 ${
                 !form.surface_color
-                  ? "border-sc-gold text-sc-gold"
+                  ? "border-sc-gold text-sc-gold-text"
                   : "border-sc-border text-sc-text-dim hover:text-sc-text"
               }`}
             >
@@ -293,7 +293,7 @@ export default function CardEditorFields({
                 onClick={() => onFormChange({ background_effect: opt.id })}
                 className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
                   (form.background_effect || "none") === opt.id
-                    ? "border-sc-gold text-sc-gold"
+                    ? "border-sc-gold text-sc-gold-text"
                     : "border-sc-border text-sc-text-dim hover:text-sc-text"
                 }`}
               >
@@ -318,7 +318,7 @@ export default function CardEditorFields({
                 onClick={() => onFormChange({ intro_style: opt.id })}
                 className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
                   (form.intro_style || "rise") === opt.id
-                    ? "border-sc-gold text-sc-gold"
+                    ? "border-sc-gold text-sc-gold-text"
                     : "border-sc-border text-sc-text-dim hover:text-sc-text"
                 }`}
               >
@@ -540,7 +540,7 @@ export default function CardEditorFields({
           <button
             type="button"
             onClick={() => onGalleryChange([...gallery, { url: "", caption: "" }])}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
           >
             <Plus className="h-4 w-4" />
             add photo
@@ -672,7 +672,7 @@ export default function CardEditorFields({
                       className={`flex h-11 w-11 items-center justify-center rounded-lg transition-colors @min-[420px]:h-9 @min-[420px]:w-9 ${
                         button.enabled === false
                           ? "text-sc-text-dimmer hover:text-sc-text-dim"
-                          : "text-sc-gold hover:text-sc-text"
+                          : "text-sc-gold-text hover:text-sc-text"
                       }`}
                     >
                       {button.enabled === false ? (
@@ -699,7 +699,7 @@ export default function CardEditorFields({
         <button
           type="button"
           onClick={() => onButtonsChange([...buttons, { label: "", kind: "link", value: "" }])}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
         >
           <Plus className="w-4 h-4" />
           Add button

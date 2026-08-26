@@ -293,7 +293,7 @@ function MyCardEditor() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <Loader2 className="h-6 w-6 animate-spin text-sc-gold" />
+        <Loader2 className="h-6 w-6 animate-spin text-sc-gold-text" />
       </div>
     );
   }
@@ -302,7 +302,7 @@ function MyCardEditor() {
     <div className="grid max-w-6xl gap-10 pb-20 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start">
       <div className="min-w-0">
       <h1 className="app-h1 text-4xl">
-        my <span className="text-sc-gold">card.</span>
+        my <span className="text-sc-gold-text">card.</span>
       </h1>
       <p className="app-sub mt-2">
         This is what opens when someone taps your NFC card.
@@ -312,7 +312,7 @@ function MyCardEditor() {
         <Link
           href={`/u/${form.username}`}
           target="_blank"
-          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-sc-gold px-4 py-2 text-sm font-black text-sc-gold transition-colors hover:bg-sc-gold hover:text-sc-gold-ink"
+          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-sc-gold px-4 py-2 text-sm font-black text-sc-gold-text transition-colors hover:bg-sc-gold hover:text-sc-gold-ink"
         >
           <ExternalLink className="h-4 w-4" />
           /u/{form.username}
@@ -469,7 +469,7 @@ function MyCardEditor() {
             href="/dashboard/nfc"
             className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-4 transition-colors hover:border-sc-gold"
           >
-            <Nfc className="h-6 w-6 shrink-0 text-sc-gold" />
+            <Nfc className="h-6 w-6 shrink-0 text-sc-gold-text" />
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-black uppercase tracking-tight text-sc-text">
                 put this on a real card
@@ -478,7 +478,7 @@ function MyCardEditor() {
                 Blank from Rs.1,600, your design from Rs.2,200 — see both
               </span>
             </span>
-            <ArrowRight className="h-5 w-5 shrink-0 text-sc-gold" />
+            <ArrowRight className="h-5 w-5 shrink-0 text-sc-gold-text" />
           </Link>
         )}
 
@@ -560,7 +560,7 @@ export default function MyCardPage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center py-32">
-          <Loader2 className="h-6 w-6 animate-spin text-sc-gold" />
+          <Loader2 className="h-6 w-6 animate-spin text-sc-gold-text" />
         </div>
       }
     >

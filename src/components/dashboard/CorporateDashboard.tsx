@@ -54,7 +54,7 @@ export default function CorporateDashboard({
       {/* Company overview */}
       <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sc-gold/15 text-sc-gold">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sc-gold/15 text-sc-gold-text">
             <Building2 className="h-5 w-5" />
           </span>
           <div>
@@ -102,7 +102,7 @@ export default function CorporateDashboard({
           </h2>
           <Link
             href="/dashboard/team"
-            className="flex min-h-11 items-center text-xs font-black uppercase tracking-tight text-sc-text-dim transition-colors hover:text-sc-gold"
+            className="flex min-h-11 items-center text-xs font-black uppercase tracking-tight text-sc-text-dim transition-colors hover:text-sc-gold-text"
           >
             manage team →
           </Link>
@@ -144,7 +144,7 @@ export default function CorporateDashboard({
                     (e.owner_suspended
                       ? "bg-rose-400/15 text-rose-300"
                       : e.published
-                        ? "bg-sc-gold/15 text-sc-gold"
+                        ? "bg-sc-gold/15 text-sc-gold-text"
                         : "bg-sc-surface-2 text-sc-text-dim")
                   }
                 >
@@ -155,7 +155,7 @@ export default function CorporateDashboard({
             {employees.length > 6 && (
               <Link
                 href="/dashboard/team"
-                className="block text-center text-xs font-black uppercase tracking-widest text-sc-text-dimmer hover:text-sc-gold"
+                className="block text-center text-xs font-black uppercase tracking-widest text-sc-text-dimmer hover:text-sc-gold-text"
               >
                 +{employees.length - 6} more
               </Link>
@@ -167,7 +167,7 @@ export default function CorporateDashboard({
       {/* NFC */}
       <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold-text">
             <IdCard className="h-4 w-4" />
           </span>
           <div>
@@ -198,7 +198,7 @@ function QuickAction({
       href={href}
       className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-sc-border-soft p-4 transition-colors hover:border-sc-gold"
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold-text transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
         <Icon className="h-4 w-4" />
       </span>
       <span className="text-[13px] font-black leading-tight text-sc-text">{label}</span>

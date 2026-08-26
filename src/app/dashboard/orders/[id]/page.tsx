@@ -98,7 +98,7 @@ export default async function OrderDetail({
     <div className="max-w-3xl space-y-8 pb-16">
       <Link
         href="/dashboard/orders"
-        className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2 text-xs font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+        className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2 text-xs font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         orders
@@ -172,7 +172,7 @@ export default async function OrderDetail({
           {order.estimated_delivery && currentStep < 4 && (
             <p className="mt-5 text-center text-sm font-bold text-sc-text-dim">
               Estimated delivery{" "}
-              <span className="text-sc-gold">
+              <span className="text-sc-gold-text">
                 {new Date(order.estimated_delivery).toLocaleDateString("en-GB", {
                   weekday: "short",
                   day: "numeric",
@@ -285,7 +285,7 @@ export default async function OrderDetail({
       <div className="flex flex-wrap gap-3">
         <Link
           href={`/dashboard/orders/${order.id}/invoice`}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-6 py-3 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-6 py-3 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
         >
           <FileText className="h-4 w-4" />
           invoice

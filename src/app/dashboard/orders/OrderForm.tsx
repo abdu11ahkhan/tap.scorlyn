@@ -214,7 +214,7 @@ export default function OrderForm({
                 }`}
               >
                 <p className="text-lg font-black lowercase">{p.name}</p>
-                <p className={`mt-1 text-2xl font-black tracking-tighter ${active ? "text-sc-gold" : ""}`}>
+                <p className={`mt-1 text-2xl font-black tracking-tighter ${active ? "text-sc-gold-text" : ""}`}>
                   {p.price_pkr === 0 ? "Free" : `Rs.${p.price_pkr.toLocaleString()}`}
                 </p>
                 {p.blurb && (

@@ -43,7 +43,7 @@ export default function PhysicalCardStatus({ status }: { status: Status }) {
                   step.done
                     ? "bg-sc-gold text-sc-gold-ink"
                     : step.current
-                      ? "border-2 border-sc-gold bg-sc-surface text-sc-gold"
+                      ? "border-2 border-sc-gold bg-sc-surface text-sc-gold-text"
                       : "bg-sc-surface-2 text-sc-text-dimmer"
                 }`}
               >
@@ -66,7 +66,7 @@ export default function PhysicalCardStatus({ status }: { status: Status }) {
           {assignments.map((a, i) => (
             <div key={a.nfcCardId} className="flex items-center justify-between gap-3 text-sm">
               <span className="font-bold text-sc-text-dim">Physical card {i + 1}</span>
-              <span className={`text-xs font-black ${a.firstTapAt ? "text-sc-success" : "text-sc-gold"}`}>
+              <span className={`text-xs font-black ${a.firstTapAt ? "text-sc-success" : "text-sc-gold-text"}`}>
                 {a.firstTapAt ? "Active" : "Ready to tap"}
               </span>
             </div>

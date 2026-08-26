@@ -177,11 +177,11 @@ export default function CardFeePanel({
                   <button
                     type="button"
                     onClick={() => copy(value)}
-                    className="shrink-0 rounded-full border-2 border-sc-border p-2 text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+                    className="shrink-0 rounded-full border-2 border-sc-border p-2 text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
                     aria-label={`Copy ${m.label}`}
                   >
                     {copied === value ? (
-                      <Check className="h-4 w-4 text-sc-gold" />
+                      <Check className="h-4 w-4 text-sc-gold-text" />
                     ) : (
                       <Copy className="h-4 w-4" />
                     )}
@@ -215,7 +215,7 @@ export default function CardFeePanel({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold">
+        <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text">
           <FileUp className="h-4 w-4" />
           {file ? "change receipt" : "attach receipt"}
           <input

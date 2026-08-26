@@ -52,7 +52,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <h1 className="text-4xl font-black tracking-tighter">not your door.</h1>
         <p className="max-w-sm font-medium text-sc-text-dim">
           This area is for ScorlynTap staff. If you think that&apos;s wrong, ask an
-          admin to flip <code className="text-sc-gold">is_admin</code> on your account.
+          admin to flip <code className="text-sc-gold-text">is_admin</code> on your account.
         </p>
         <Link
           href="/dashboard"

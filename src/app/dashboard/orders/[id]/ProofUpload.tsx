@@ -89,7 +89,7 @@ export default function ProofUpload({
         className={`flex h-13 w-full items-center justify-center gap-2 rounded-full border-2 py-3.5 text-sm font-black uppercase tracking-tight transition-colors disabled:opacity-60 ${
           done
             ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
-            : "border-sc-border text-sc-text hover:border-sc-gold hover:text-sc-gold"
+            : "border-sc-border text-sc-text hover:border-sc-gold hover:text-sc-gold-text"
         }`}
       >
         {working ? (

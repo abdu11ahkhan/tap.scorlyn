@@ -179,7 +179,7 @@ export default function TeamManager({
         <button
           type="button"
           onClick={() => setShowAdd((v) => !v)}
-          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold"
+          className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text"
         >
           <Plus className="h-4 w-4" />
           add employee
@@ -196,7 +196,7 @@ export default function TeamManager({
           the account — only the on-screen copy of the credentials goes away. */}
       {fresh && (
         <div className="app-panel app-panel-pad border-sc-gold/40">
-          <p className="text-sm font-black text-sc-gold">Account created — copy this now.</p>
+          <p className="text-sm font-black text-sc-gold-text">Account created — copy this now.</p>
           <p className="mt-1 text-xs font-semibold text-sc-text-dim">
             It won&apos;t be shown again. Send it to them directly.
           </p>
@@ -367,7 +367,7 @@ export default function TeamManager({
                 setMode("scan");
                 setShowAdd(true);
               }}
-              className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold"
+              className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text"
             >
               <Camera className="h-4 w-4" />
               scan business card
@@ -397,7 +397,7 @@ export default function TeamManager({
                     (card.owner_suspended
                       ? "bg-rose-400/15 text-rose-300"
                       : card.published
-                        ? "bg-sc-gold/15 text-sc-gold"
+                        ? "bg-sc-gold/15 text-sc-gold-text"
                         : "bg-sc-surface-2 text-sc-text-dim")
                   }
                 >
@@ -410,7 +410,7 @@ export default function TeamManager({
                 {physical ? (
                   <Link
                     href={"/dashboard/orders/" + physical.orderId}
-                    className="rounded-full bg-sc-surface-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dim transition-colors hover:text-sc-gold"
+                    className="rounded-full bg-sc-surface-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dim transition-colors hover:text-sc-gold-text"
                   >
                     {physicalCardShortLabel(physical)}
                   </Link>
@@ -418,7 +418,7 @@ export default function TeamManager({
                   <button
                     type="button"
                     onClick={() => setOrderingFor(card)}
-                    className="rounded-full border-2 border-dashed border-sc-border px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dimmer transition-colors hover:border-sc-gold hover:text-sc-gold"
+                    className="rounded-full border-2 border-dashed border-sc-border px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-sc-text-dimmer transition-colors hover:border-sc-gold hover:text-sc-gold-text"
                   >
                     No NFC order — order one
                   </button>
@@ -513,7 +513,7 @@ function CredentialLine({ label, value }: { label: string; value: string }) {
         {value}
       </span>
       {copied ? (
-        <Check className="h-3.5 w-3.5 shrink-0 text-sc-gold" />
+        <Check className="h-3.5 w-3.5 shrink-0 text-sc-gold-text" />
       ) : (
         <Copy className="h-3.5 w-3.5 shrink-0 text-sc-text-dimmer" />
       )}

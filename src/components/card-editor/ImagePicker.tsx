@@ -166,7 +166,7 @@ export default function ImagePicker({
             type="button"
             onClick={() => input.current?.click()}
             disabled={busy}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold disabled:opacity-60"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text disabled:opacity-60"
           >
             <ImagePlus className="h-4 w-4" />
             {busy ? "working…" : value ? "change photo" : "choose photo"}

@@ -81,7 +81,7 @@ export default function PasteLinks({
               className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
                 link.duplicate
                   ? "bg-sc-surface-2 text-sc-text-dimmer line-through"
-                  : "bg-sc-gold/15 text-sc-gold"
+                  : "bg-sc-gold/15 text-sc-gold-text"
               }`}
               title={link.value}
             >
@@ -110,7 +110,7 @@ export default function PasteLinks({
         )}
 
         {result && (
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-sc-gold">
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-sc-gold-text">
             <Check className="h-3.5 w-3.5" />
             Added {result.added}
             {result.skipped > 0 && `, skipped ${result.skipped} already there`}

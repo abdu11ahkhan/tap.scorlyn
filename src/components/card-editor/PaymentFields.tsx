@@ -139,7 +139,7 @@ export default function PaymentFields({
                 payment_methods: [...methods, { label: "", kind: "bank" }],
               })
             }
-            className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-sc-border px-4 py-2.5 text-sm font-black lowercase text-sc-text-dim transition-colors hover:border-sc-gold hover:text-sc-gold-text"
           >
             <Plus className="h-4 w-4" />
             add payment method

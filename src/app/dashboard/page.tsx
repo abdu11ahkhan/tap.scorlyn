@@ -288,10 +288,10 @@ export default function DashboardPage() {
               className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 border-sc-gold/40"
             >
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">
+                <p className="text-sm font-black text-sc-text">
                   Pick the NFC card you want printed
                 </p>
-                <p className="mt-1 text-sm font-semibold text-white/45">
+                <p className="mt-1 text-sm font-semibold text-sc-text-dim">
                   Choose a design and we will keep it on your profile, ready
                   whenever you order. Takes a few seconds.
                 </p>
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                     writeStorage("local", NFC_BANNER_KEY, "1");
                     setDismissedNow(true);
                   }}
-                  className="text-sm font-bold text-white/45 transition-colors hover:text-white"
+                  className="text-sm font-bold text-sc-text-dim transition-colors hover:text-sc-text"
                 >
                   Not now
                 </button>
@@ -335,7 +335,7 @@ export default function DashboardPage() {
                 {card.full_name.slice(0, 2).toUpperCase()}
               </span>
               <div>
-                <p className="text-[17px] font-semibold leading-tight text-white">
+                <p className="text-[17px] font-semibold leading-tight text-sc-text">
                   {card.full_name}
                 </p>
                 <p className="app-sub mt-0.5">
@@ -395,8 +395,8 @@ export default function DashboardPage() {
               const Icon = s.icon;
               return (
                 <div key={s.label} className="app-panel app-panel-pad">
-                  <Icon className="mb-3 h-4 w-4 text-sc-gold" />
-                  <p className="text-2xl font-semibold capitalize tabular-nums tracking-tight text-white">
+                  <Icon className="mb-3 h-4 w-4 text-sc-gold-text" />
+                  <p className="text-2xl font-semibold capitalize tabular-nums tracking-tight text-sc-text">
                     {s.value}
                   </p>
                   <p className="app-sub mt-0.5">{s.label}</p>
@@ -412,7 +412,7 @@ export default function DashboardPage() {
           {card.username && (
             <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">Your referral link</p>
+                <p className="text-sm font-black text-sc-text">Your referral link</p>
                 <p className="app-sub mt-0.5 truncate">
                   {referralCount > 0
                     ? `${referralCount} signup${referralCount === 1 ? "" : "s"} or order${referralCount === 1 ? "" : "s"} so far`
@@ -449,7 +449,7 @@ export default function DashboardPage() {
               className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4 transition-colors hover:border-sc-gold/50"
             >
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">Your physical card</p>
+                <p className="text-sm font-black text-sc-text">Your physical card</p>
                 <p className="app-sub mt-0.5">Order #{latestOrder.reference}</p>
               </div>
               <span
@@ -467,7 +467,7 @@ export default function DashboardPage() {
           ) : (
             <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-sm font-black text-white">Get your NFC card</p>
+                <p className="text-sm font-black text-sc-text">Get your NFC card</p>
                 <p className="app-sub mt-0.5">Order the physical card that shares this with one tap.</p>
               </div>
               <Link href="/dashboard/nfc" className="app-btn app-btn-primary shrink-0">
@@ -479,7 +479,7 @@ export default function DashboardPage() {
         </>
       ) : (
         <div className="app-panel app-panel-pad">
-          <p className="text-[17px] font-semibold text-white">Let&apos;s create your card.</p>
+          <p className="text-[17px] font-semibold text-sc-text">Let&apos;s create your card.</p>
           <p className="app-sub mt-1 max-w-md">
             Three ways in — all of them land in the same editor, and you can
             change anything afterward.
@@ -489,11 +489,11 @@ export default function DashboardPage() {
               href="/templates/scan"
               className="group flex flex-col gap-3 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold-text transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
                 <Camera className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-sm font-black text-white">Scan a business card</span>
+                <span className="block text-sm font-black text-sc-text">Scan a business card</span>
                 <span className="app-sub mt-0.5 block text-[13px]">
                   We read the details, colours and logo off a photo.
                 </span>
@@ -503,11 +503,11 @@ export default function DashboardPage() {
               href="/templates"
               className="group flex flex-col gap-3 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold-text transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
                 <LayoutTemplate className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-sm font-black text-white">Choose a template</span>
+                <span className="block text-sm font-black text-sc-text">Choose a template</span>
                 <span className="app-sub mt-0.5 block text-[13px]">
                   Browse all 36 designs and pick one to start from.
                 </span>
@@ -517,11 +517,11 @@ export default function DashboardPage() {
               href="/templates/minimal/edit"
               className="group flex flex-col gap-3 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sc-surface-2 text-sc-gold-text transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
                 <Plus className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-sm font-black text-white">Start from scratch</span>
+                <span className="block text-sm font-black text-sc-text">Start from scratch</span>
                 <span className="app-sub mt-0.5 block text-[13px]">
                   A blank card, ready to fill in yourself.
                 </span>
@@ -561,10 +561,10 @@ function QuickAction({
       onClick={onClick}
       className="group flex flex-col items-start gap-2.5 rounded-2xl border-2 border-sc-border p-4 transition-colors hover:border-sc-gold"
     >
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sc-surface-2 text-sc-gold-text transition-colors group-hover:bg-sc-gold group-hover:text-sc-gold-ink">
         <Icon className="h-4 w-4" />
       </span>
-      <span className="text-[13px] font-black leading-tight text-white">{label}</span>
+      <span className="text-[13px] font-black leading-tight text-sc-text">{label}</span>
     </Link>
   );
 }

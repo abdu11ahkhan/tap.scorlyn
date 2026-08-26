@@ -135,7 +135,7 @@ export default function NfcFormatPrompt({
               </div>
               {ownFile ? (
                 <div className="flex items-center gap-2">
-                  <span className="max-w-[14rem] truncate rounded-full bg-sc-gold/15 px-3 py-1.5 text-xs font-bold text-sc-gold">
+                  <span className="max-w-[14rem] truncate rounded-full bg-sc-gold/15 px-3 py-1.5 text-xs font-bold text-sc-gold-text">
                     {ownFile.name}
                   </span>
                   <button
@@ -148,7 +148,7 @@ export default function NfcFormatPrompt({
                   </button>
                 </div>
               ) : (
-                <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold">
+                <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text">
                   <FileUp className="h-4 w-4" />
                   Upload file
                   <input

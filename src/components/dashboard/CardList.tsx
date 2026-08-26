@@ -79,7 +79,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
               retyping it, and lands in the same editor either way. */}
           <Link
             href="/templates/scan"
-            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold"
+            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text"
           >
             <Camera className="h-4 w-4" />
             scan a card
@@ -88,7 +88,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
             type="button"
             onClick={createCard}
             disabled={creating}
-            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold disabled:opacity-60"
+            className="inline-flex h-10 items-center gap-2 rounded-full border-2 border-sc-border px-4 text-xs font-black uppercase tracking-tight text-sc-text transition-colors hover:border-sc-gold hover:text-sc-gold-text disabled:opacity-60"
           >
             {creating ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -135,7 +135,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
             <span
               className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight ${
                 live
-                  ? "bg-sc-gold/15 text-sc-gold"
+                  ? "bg-sc-gold/15 text-sc-gold-text"
                   : waiting
                     ? "bg-amber-400/15 text-amber-300"
                     : "bg-sc-surface-2 text-sc-text-dim"

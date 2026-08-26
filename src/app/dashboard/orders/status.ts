@@ -18,7 +18,7 @@ export function statusTone(status: string): string {
     case "printing":
       return "bg-sc-warning/15 text-sc-warning";
     case "paid":
-      return "bg-sc-gold/15 text-sc-gold";
+      return "bg-sc-gold/15 text-sc-gold-text";
     case "cancelled":
       return "bg-sc-error/15 text-sc-error";
     default:

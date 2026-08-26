@@ -47,7 +47,7 @@ export default function NfcChooser({
           <section className={panel}>
             <div className="flex items-baseline justify-between gap-3">
               <h2 className="text-xl font-black text-sc-text">Blank card</h2>
-              <p className="shrink-0 text-xl font-black text-sc-gold">{money(blank.price_pkr)}</p>
+              <p className="shrink-0 text-xl font-black text-sc-gold-text">{money(blank.price_pkr)}</p>
             </div>
             <p className="mt-1.5 text-sm font-semibold text-sc-text-dim">
               A completely blank card. Your link lives on the chip inside, so
@@ -62,7 +62,7 @@ export default function NfcChooser({
               {["Tap opens your page", "Nothing printed — blank on both faces", "Posted anywhere in Pakistan"].map(
                 (line) => (
                   <li key={line} className="flex gap-2">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-sc-gold" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-sc-gold-text" />
                     {line}
                   </li>
                 )
@@ -84,7 +84,7 @@ export default function NfcChooser({
           <section className={`${panel} border-sc-gold/40`}>
             <div className="flex items-baseline justify-between gap-3">
               <h2 className="text-xl font-black text-sc-text">Your design</h2>
-              <p className="shrink-0 text-xl font-black text-sc-gold">{money(custom.price_pkr)}</p>
+              <p className="shrink-0 text-xl font-black text-sc-gold-text">{money(custom.price_pkr)}</p>
             </div>
             <p className="mt-1.5 text-sm font-semibold text-sc-text-dim">
               Your name, your details and your colour printed on the card

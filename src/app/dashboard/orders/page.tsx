@@ -67,7 +67,7 @@ export default async function MyOrders() {
               >
                 <div className="flex items-center gap-4">
                   <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-sc-surface-2">
-                    <Package className="h-5 w-5 text-sc-gold" />
+                    <Package className="h-5 w-5 text-sc-gold-text" />
                   </span>
                   <div>
                     <p className="font-mono text-sm font-black text-sc-text">{o.reference}</p>
