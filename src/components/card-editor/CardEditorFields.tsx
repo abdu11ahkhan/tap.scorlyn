@@ -529,7 +529,7 @@ export default function CardEditorFields({
               <button
                 type="button"
                 onClick={() => onGalleryChange(gallery.filter((_, i) => i !== index))}
-                className="flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 sm:h-9 sm:w-9"
+                className="flex h-11 w-11 shrink-0 items-center justify-center self-center rounded-lg text-sc-text-dimmer transition-colors hover:text-sc-error sm:h-9 sm:w-9"
                 aria-label="Remove photo"
               >
                 <Trash2 className="h-4 w-4" />
@@ -684,7 +684,7 @@ export default function CardEditorFields({
                     <button
                       type="button"
                       onClick={() => onButtonsChange(buttons.filter((_, i) => i !== index))}
-                      className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 @min-[420px]:h-9 @min-[420px]:w-9"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-sc-error @min-[420px]:h-9 @min-[420px]:w-9"
                       aria-label="Remove button"
                     >
                       <Trash2 className="w-4 h-4" />

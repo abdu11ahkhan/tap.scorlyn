@@ -115,7 +115,7 @@ export default async function AdminInvoices() {
                             ? "bg-acid/15 text-acid"
                             : invoice.status === "void"
                               ? "bg-sc-surface-2 text-sc-text-dimmer"
-                              : "bg-amber-400/15 text-amber-300"
+                              : "bg-sc-warning/15 text-sc-warning"
                         }`}
                       >
                         {invoice.status}

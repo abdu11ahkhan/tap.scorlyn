@@ -36,8 +36,8 @@ export default function SignInAsButton({
   }
 
   return (
-    <div className="w-full rounded-xl border border-amber-400/30 bg-amber-400/[0.07] p-4">
-      <p className="flex items-center gap-2 text-sm font-bold text-amber-200">
+    <div className="w-full rounded-xl border border-sc-warning/30 bg-sc-warning/10 p-4">
+      <p className="flex items-center gap-2 text-sm font-bold text-sc-warning">
         <AlertTriangle className="h-4 w-4" />
         Sign in as {name || email}?
       </p>
@@ -55,7 +55,7 @@ export default function SignInAsButton({
         className="mt-3 h-10 w-full rounded-lg border border-sc-border-soft bg-sc-surface-2 px-3 text-sm text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-border"
       />
 
-      {error && <p className="mt-2 text-[13px] font-semibold text-rose-300">{error}</p>}
+      {error && <p className="mt-2 text-[13px] font-semibold text-sc-error">{error}</p>}
 
       <div className="mt-3 flex gap-2">
         <button

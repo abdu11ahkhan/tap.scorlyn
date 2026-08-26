@@ -85,7 +85,7 @@ export default async function AdminAudit() {
                 {Object.entries(entry.changed ?? {}).map(([field, change]) => (
                   <p key={field} className="text-xs font-semibold text-sc-text-dim">
                     <span className="text-sc-text">{field}</span>{" "}
-                    <span className="text-rose-300/70 line-through">
+                    <span className="text-sc-error/70 line-through">
                       {show(change?.from)}
                     </span>{" "}
                     → <span className="text-acid">{show(change?.to)}</span>

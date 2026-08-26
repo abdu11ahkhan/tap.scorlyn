@@ -142,11 +142,11 @@ export default async function AdminOrders({
             <Link
               key={s.label}
               href="/admin/orders?unassigned=1"
-              className="app-panel app-panel-pad border-amber-400/40 transition-colors hover:border-amber-400"
+              className="app-panel app-panel-pad border-sc-warning/40 transition-colors hover:border-sc-warning"
             >
-              <p className="text-2xl font-semibold tabular-nums tracking-tight text-amber-300">{s.value}</p>
+              <p className="text-2xl font-semibold tabular-nums tracking-tight text-sc-warning">{s.value}</p>
               <p className="app-sub mt-1">{s.label}</p>
-              {s.hint && <p className="mt-1 text-[12px] text-amber-300/70">{s.hint}</p>}
+              {s.hint && <p className="mt-1 text-[12px] text-sc-warning/70">{s.hint}</p>}
             </Link>
           ) : (
             <div key={s.label} className="app-panel app-panel-pad">
@@ -159,8 +159,8 @@ export default async function AdminOrders({
       </div>
 
       {unassigned === "1" && (
-        <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-3 border-amber-400/40">
-          <p className="text-[13px] font-medium text-amber-300">
+        <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-3 border-sc-warning/40">
+          <p className="text-[13px] font-medium text-sc-warning">
             Showing delivered orders with no NFC card linked yet.
           </p>
           <Link href="/admin/orders" className="app-btn app-btn-ghost">

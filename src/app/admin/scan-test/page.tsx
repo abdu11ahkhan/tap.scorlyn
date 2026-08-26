@@ -347,7 +347,7 @@ export default function AdminScanTest() {
         </div>
 
         {error && (
-          <p className="rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm font-bold text-rose-200">
+          <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
             {error}
           </p>
         )}
@@ -588,7 +588,7 @@ Password: ${createdAccount.password}`}
                       type="checkbox"
                       checked={accountPublish}
                       onChange={(e) => setAccountPublish(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 accent-lime-400"
+                      className="mt-0.5 h-4 w-4 accent-acid"
                     />
                     <span>
                       <span className="block text-sm font-semibold text-sc-text">Publish immediately</span>
@@ -598,7 +598,7 @@ Password: ${createdAccount.password}`}
                     </span>
                   </label>
                   {accountError && (
-                    <p className="rounded-xl bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{accountError}</p>
+                    <p className="rounded-xl bg-sc-error/10 px-4 py-3 text-sm text-sc-error">{accountError}</p>
                   )}
                   <button
                     onClick={createAccount}

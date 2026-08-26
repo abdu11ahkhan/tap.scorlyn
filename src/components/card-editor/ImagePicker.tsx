@@ -182,7 +182,7 @@ export default function ImagePicker({
           <button
             type="button"
             onClick={() => onChange("")}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-sc-error"
             aria-label={`Remove ${label}`}
           >
             <Trash2 className="h-4 w-4" />

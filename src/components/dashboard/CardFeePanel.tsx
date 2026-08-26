@@ -116,8 +116,8 @@ export default function CardFeePanel({
 
   if (status === "awaiting_review") {
     return (
-      <div className="app-panel app-panel-pad border-amber-400/40">
-        <p className="flex items-center gap-2 text-sm font-black text-amber-300">
+      <div className="app-panel app-panel-pad border-sc-warning/40">
+        <p className="flex items-center gap-2 text-sm font-black text-sc-warning">
           <Clock className="h-4 w-4" />
           We are checking your payment
         </p>
@@ -131,8 +131,8 @@ export default function CardFeePanel({
 
   if (status === "rejected") {
     return (
-      <div className="app-panel app-panel-pad border-rose-400/40">
-        <p className="text-sm font-black text-rose-200">This card was not approved</p>
+      <div className="app-panel app-panel-pad border-sc-error/40">
+        <p className="text-sm font-black text-sc-error">This card was not approved</p>
         <p className="mt-1 text-sm font-semibold text-sc-text-dim">
           {note || "Get in touch and we will sort it out."}
         </p>
@@ -143,9 +143,9 @@ export default function CardFeePanel({
   if (status !== "awaiting_payment") return null;
 
   return (
-    <div className="app-panel app-panel-pad border-amber-400/40">
+    <div className="app-panel app-panel-pad border-sc-warning/40">
       <p className="flex items-center gap-2 text-sm font-black text-sc-text">
-        <Lock className="h-4 w-4 text-amber-300" />
+        <Lock className="h-4 w-4 text-sc-warning" />
         Rs.{fee ?? 500} to publish this card
       </p>
       <p className="mt-1 text-sm font-semibold text-sc-text-dim">
@@ -194,7 +194,7 @@ export default function CardFeePanel({
       )}
 
       {error && (
-        <p className="mt-3 rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-3 py-2 text-sm font-bold text-rose-200">
+        <p className="mt-3 rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-3 py-2 text-sm font-bold text-sc-error">
           {error}
         </p>
       )}

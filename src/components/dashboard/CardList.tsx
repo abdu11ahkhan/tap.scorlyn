@@ -102,7 +102,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
       </div>
 
       {error && (
-        <p className="rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm font-bold text-rose-200">
+        <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
           {error}
         </p>
       )}
@@ -137,7 +137,7 @@ export default function CardList({ cards }: { cards: CardSummary[] }) {
                 live
                   ? "bg-sc-gold/15 text-sc-gold-text"
                   : waiting
-                    ? "bg-amber-400/15 text-amber-300"
+                    ? "bg-sc-warning/15 text-sc-warning"
                     : "bg-sc-surface-2 text-sc-text-dim"
               }`}
             >

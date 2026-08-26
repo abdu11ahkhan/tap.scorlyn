@@ -97,7 +97,7 @@ export default function FinishPicker({
       </div>
 
       {error && (
-        <p className="mt-3 rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-3 py-2 text-sm font-bold text-rose-200">
+        <p className="mt-3 rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-3 py-2 text-sm font-bold text-sc-error">
           {error}
         </p>
       )}

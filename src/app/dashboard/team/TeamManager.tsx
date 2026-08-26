@@ -338,7 +338,7 @@ export default function TeamManager({
       )}
 
       {error && (
-        <p className="rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm font-bold text-rose-200">
+        <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
           {error}
         </p>
       )}
@@ -395,7 +395,7 @@ export default function TeamManager({
                   className={
                     "rounded-full px-3 py-1.5 text-[11px] font-black uppercase tracking-tight " +
                     (card.owner_suspended
-                      ? "bg-rose-400/15 text-rose-300"
+                      ? "bg-sc-error/15 text-sc-error"
                       : card.published
                         ? "bg-sc-gold/15 text-sc-gold-text"
                         : "bg-sc-surface-2 text-sc-text-dim")
@@ -466,7 +466,7 @@ export default function TeamManager({
                   onClick={() => remove(card)}
                   disabled={busyId === card.id}
                   title="Remove"
-                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-rose-400/10 hover:text-rose-300 disabled:opacity-50"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-sc-text-dim transition-colors hover:bg-sc-error/10 hover:text-sc-error disabled:opacity-50"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

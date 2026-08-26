@@ -67,7 +67,7 @@ export default function EmailComposer({
   return (
     <div className="space-y-6">
       {!configured && (
-        <p className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+        <p className="rounded-xl border border-sc-warning/30 bg-sc-warning/10 px-4 py-3 text-sm text-sc-warning">
           Email isn&apos;t configured on the server yet — set <code>SMTP_USER</code> and{" "}
           <code>SMTP_PASS</code>. You can still write and schedule; nothing will send until then.
         </p>
@@ -148,7 +148,7 @@ export default function EmailComposer({
         )}
 
         {audience === "all" && (
-          <p className="text-xs text-amber-200/80">
+          <p className="text-xs text-sc-warning/80">
             This goes to every registered account. Send it to yourself first and check it lands
             in the inbox.
           </p>
@@ -189,8 +189,8 @@ export default function EmailComposer({
         <p
           className={`rounded-xl px-4 py-3 text-sm ${
             msg.ok
-              ? "bg-emerald-400/10 text-emerald-200"
-              : "bg-rose-500/10 text-rose-200"
+              ? "bg-sc-success/10 text-sc-success"
+              : "bg-sc-error/10 text-sc-error"
           }`}
         >
           {msg.text}
@@ -216,7 +216,7 @@ export default function EmailComposer({
                     {c.scheduled_for && !c.sent_at && ` · ${new Date(c.scheduled_for).toLocaleString()}`}
                   </p>
                   {c.last_error && (
-                    <p className="mt-1 truncate text-xs text-rose-300/80">{c.last_error}</p>
+                    <p className="mt-1 truncate text-xs text-sc-error/80">{c.last_error}</p>
                   )}
                 </div>
                 {c.status === "scheduled" && (

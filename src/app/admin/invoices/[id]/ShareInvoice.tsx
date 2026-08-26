@@ -76,7 +76,7 @@ export default function ShareInvoice({
         )}
         {copied ? "link copied" : token ? "copy link" : "share"}
       </button>
-      {error && <span className="text-xs font-bold text-rose-300">{error}</span>}
+      {error && <span className="text-xs font-bold text-sc-error">{error}</span>}
     </div>
   );
 }

@@ -115,10 +115,10 @@ export default async function AdminCards({
           about them: see just those cards, or give them all a design that
           matches their page. Counting a problem is not solving it. */}
       {needsDesign.length > 0 && (
-        <div className="app-panel app-panel-pad mb-4 flex flex-wrap items-center justify-between gap-3 border-amber-400/40">
+        <div className="app-panel app-panel-pad mb-4 flex flex-wrap items-center justify-between gap-3 border-sc-warning/40">
           <div className="min-w-0">
             <p className="text-sm font-semibold text-sc-text">
-              <span className="font-black text-amber-300">
+              <span className="font-black text-sc-warning">
                 {needsDesign.length} card{needsDesign.length === 1 ? "" : "s"}
               </span>{" "}
               have no NFC design — nothing to print for them yet.
@@ -217,7 +217,7 @@ export default async function AdminCards({
                       <span className="text-xs font-bold text-sc-text-dimmer">approved</span>
                     ) : (
                       <div className="flex flex-col items-start gap-1.5">
-                        <span className="rounded-full bg-amber-400/15 px-2.5 py-1 text-[11px] font-black uppercase text-amber-300">
+                        <span className="rounded-full bg-sc-warning/15 px-2.5 py-1 text-[11px] font-black uppercase text-sc-warning">
                           {card.approval_status === "awaiting_payment"
                             ? `Rs.${card.approval_fee_pkr ?? 500} unpaid`
                             : card.approval_status === "awaiting_review"

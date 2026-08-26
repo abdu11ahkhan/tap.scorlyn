@@ -142,7 +142,7 @@ export default function CorporateDashboard({
                   className={
                     "shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-tight " +
                     (e.owner_suspended
-                      ? "bg-rose-400/15 text-rose-300"
+                      ? "bg-sc-error/15 text-sc-error"
                       : e.published
                         ? "bg-sc-gold/15 text-sc-gold-text"
                         : "bg-sc-surface-2 text-sc-text-dim")

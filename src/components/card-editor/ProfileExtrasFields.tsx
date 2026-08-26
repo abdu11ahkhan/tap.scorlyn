@@ -88,7 +88,7 @@ export default function ProfileExtrasFields({
             <button
               type="button"
               onClick={() => onChange({ business_hours: hours.filter((_, x) => x !== i) })}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-red-400 sm:h-9 sm:w-9"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-sc-error sm:h-9 sm:w-9"
               aria-label="Remove hours row"
             >
               <Trash2 className="h-4 w-4" />

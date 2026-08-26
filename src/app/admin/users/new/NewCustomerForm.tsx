@@ -224,7 +224,7 @@ Password: ${created.password}`;
           type="checkbox"
           checked={form.publish}
           onChange={(e) => set({ publish: e.target.checked })}
-          className="mt-0.5 h-4 w-4 accent-lime-400"
+          className="mt-0.5 h-4 w-4 accent-acid"
         />
         <span>
           <span className="block text-sm font-semibold text-sc-text">Publish immediately</span>
@@ -236,7 +236,7 @@ Password: ${created.password}`;
       </label>
 
       {error && (
-        <p className="rounded-xl bg-rose-500/10 px-4 py-3 text-sm text-rose-200">{error}</p>
+        <p className="rounded-xl bg-sc-error/10 px-4 py-3 text-sm text-sc-error">{error}</p>
       )}
 
       <button

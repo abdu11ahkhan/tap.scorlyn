@@ -249,7 +249,7 @@ export default function PaymentMethods({ methods }: { methods: ShopPayment[] }) 
               type="checkbox"
               checked={editing.enabled}
               onChange={(e) => setEditing({ ...editing, enabled: e.target.checked })}
-              className="h-4 w-4 accent-lime-400"
+              className="h-4 w-4 accent-acid"
             />
             <span className="app-sub">Show this one to customers</span>
           </label>

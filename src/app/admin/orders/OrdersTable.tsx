@@ -107,7 +107,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     setSelected(allSelected ? new Set() : new Set(orders.map((o) => o.id)))
                   }
                   aria-label="Select all"
-                  className="h-4 w-4 accent-lime-400"
+                  className="h-4 w-4 accent-acid"
                 />
               </th>
               <th className="px-4 py-3.5">Order</th>
@@ -130,7 +130,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     checked={selected.has(o.id)}
                     onChange={() => toggle(o.id)}
                     aria-label={`Select ${o.reference}`}
-                    className="h-4 w-4 accent-lime-400"
+                    className="h-4 w-4 accent-acid"
                   />
                 </td>
                 <td data-label="Order" className="px-4 py-4">

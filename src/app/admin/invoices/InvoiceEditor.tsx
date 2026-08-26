@@ -122,7 +122,7 @@ export default function InvoiceEditor({
       </div>
 
       {error && (
-        <p className="rounded-xl border-2 border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm font-bold text-rose-200">
+        <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
           {error}
         </p>
       )}
@@ -272,7 +272,7 @@ export default function InvoiceEditor({
                 }))
               }
               aria-label="Remove line"
-              className="mb-1 shrink-0 rounded-full p-2.5 text-sc-text-dimmer transition-colors hover:bg-sc-surface-2 hover:text-rose-300"
+              className="mb-1 shrink-0 rounded-full p-2.5 text-sc-text-dimmer transition-colors hover:bg-sc-surface-2 hover:text-sc-error"
             >
               <Trash2 className="h-4 w-4" />
             </button>
