@@ -57,40 +57,37 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Deliberately kept dark — a common, effective light-SaaS pattern
-          (dark "anchor" footer under an otherwise light page), not leftover
-          dark theme. See the light-theme redesign plan for the reasoning. */}
-      <footer className="border-t border-white/10 bg-ink py-14">
+      <footer className="border-t border-line bg-mist py-14">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 sm:flex-row sm:justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <BrandMark size={36} />
-            <span className="text-xl font-black tracking-tighter text-white">ScorlynTap</span>
+            <span className="text-xl font-black tracking-tighter text-ink">ScorlynTap</span>
           </Link>
 
           {/* inline-flex + min-h-11 so each link is a thumb-sized target, not
               just a 20px line of text. */}
-          <div className="flex items-center gap-4 text-sm font-bold text-white/50 sm:gap-7">
+          <div className="flex items-center gap-4 text-sm font-bold text-ink-dim sm:gap-7">
             <Link
               href="/templates"
-              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-teal"
             >
               templates
             </Link>
             <Link
               href="/#pricing"
-              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-teal"
             >
               pricing
             </Link>
             <Link
               href="/#contact"
-              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-acid"
+              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-teal"
             >
               contact
             </Link>
           </div>
 
-          <p className="text-xs font-bold uppercase tracking-widest text-white/30">
+          <p className="text-xs font-bold uppercase tracking-widest text-ink-dim">
             © {new Date().getFullYear()} ScorlynTap
           </p>
         </div>
