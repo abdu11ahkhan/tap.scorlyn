@@ -44,7 +44,7 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="relative overflow-hidden bg-mist py-28">
-      <RippleField />
+      <RippleField origin={{ x: 0.88, y: 0.15 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

@@ -30,7 +30,7 @@ const CORPORATE = [
 export function AudienceSplit() {
   return (
     <section className="relative overflow-hidden bg-paper py-28">
-      <RippleField />
+      <RippleField origin={{ x: 0.2, y: 0.1 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

@@ -63,7 +63,7 @@ const PLANS = [
 export function Pricing({ note }: { note?: string | null } = {}) {
   return (
     <section id="pricing" className="relative overflow-hidden bg-mist py-28">
-      <RippleField />
+      <RippleField origin={{ x: 0.5, y: 0.05 }} />
       <div className="relative mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

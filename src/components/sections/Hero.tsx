@@ -27,10 +27,7 @@ export function Hero({
       <div
         className="float-orb pointer-events-none absolute -right-24 top-24 h-[620px] w-[620px] rounded-full bg-teal/10 blur-[140px]"
       />
-      {/* min-h-screen makes this section much taller than its visible
-          content, so a literal center origin lands below the fold —
-          pulled up to sit behind the actual copy instead. */}
-      <RippleField origin={{ x: 0.5, y: 0.32 }} />
+      <RippleField origin={{ x: 0.14, y: 0.22 }} />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-[1.15fr_1fr]">
         {/* ---------------- Copy ---------------- */}

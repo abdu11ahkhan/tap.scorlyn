@@ -15,7 +15,7 @@ import { RippleField } from "./RippleField";
 export function TemplateShowcase() {
   return (
     <section id="designs" className="relative overflow-hidden bg-paper py-28">
-      <RippleField />
+      <RippleField origin={{ x: 0.9, y: 0.9 }} />
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
