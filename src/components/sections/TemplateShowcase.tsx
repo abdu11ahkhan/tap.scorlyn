@@ -13,7 +13,7 @@ import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
  */
 export function TemplateShowcase() {
   return (
-    <section id="designs" className="grain relative overflow-hidden bg-ink py-28">
+    <section id="designs" className="relative overflow-hidden bg-paper py-28">
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -23,10 +23,10 @@ export function TemplateShowcase() {
           className="mb-14 flex flex-wrap items-end justify-between gap-6"
         >
           <div className="max-w-xl">
-            <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-white">
-              explore <span className="text-acid">36 designs.</span>
+            <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-ink">
+              explore <span className="text-teal">36 designs.</span>
             </h2>
-            <p className="mt-5 text-lg font-medium text-white/55">
+            <p className="mt-5 text-lg font-medium text-ink-dim">
               Five kinds of page, thirty-six looks. Whatever you lead with —
               a single link-in-bio card or a whole portfolio — there&apos;s a
               starting point already built.
@@ -34,7 +34,7 @@ export function TemplateShowcase() {
           </div>
           <Link
             href="/templates"
-            className="sticker sticker-press inline-flex h-14 shrink-0 items-center gap-2 rounded-full border-2 border-ink bg-white px-7 text-base font-black uppercase tracking-tight text-ink"
+            className="sticker sticker-press inline-flex h-14 shrink-0 items-center gap-2 rounded-full bg-mist px-7 text-base font-black uppercase tracking-tight text-ink"
           >
             see all templates
           </Link>
@@ -47,10 +47,10 @@ export function TemplateShowcase() {
             return (
               <div key={cat.id}>
                 <div className="mb-4 flex items-baseline gap-3">
-                  <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white">
+                  <h3 className="text-sm font-black uppercase tracking-[0.2em] text-ink">
                     {cat.name}
                   </h3>
-                  <span className="text-sm font-medium text-white/35">{cat.blurb}</span>
+                  <span className="text-sm font-medium text-ink/35">{cat.blurb}</span>
                 </div>
 
                 {/* Horizontally scrollable on mobile — 36 tiles in fixed
@@ -62,7 +62,7 @@ export function TemplateShowcase() {
                     <Link
                       key={t.id}
                       href={`/templates/${t.id}/edit`}
-                      className="group sticker relative h-32 w-40 shrink-0 overflow-hidden rounded-2xl border-2 border-ink transition-transform duration-300 hover:-translate-y-1"
+                      className="group sticker relative h-32 w-40 shrink-0 overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
                       style={{ background: t.preview }}
                     >
                       <div className="absolute inset-0 flex flex-col justify-between p-4">

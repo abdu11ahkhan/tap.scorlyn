@@ -24,7 +24,7 @@ export default async function Home() {
     .maybeSingle();
 
   return (
-    <main className="flex-1 bg-ink">
+    <main className="flex-1 bg-paper">
       <Navbar />
       <Hero title={content?.hero_title} subtitle={content?.hero_subtitle} />
 
@@ -50,14 +50,17 @@ export default async function Home() {
           </h2>
           <Link
             href="/templates"
-            className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full border-2 border-ink bg-ink px-12 text-lg font-black uppercase tracking-tight text-acid"
+            className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-ink px-12 text-lg font-black uppercase tracking-tight text-acid"
           >
             build my card
           </Link>
         </div>
       </section>
 
-      <footer className="border-t-2 border-white/10 bg-ink py-14">
+      {/* Deliberately kept dark — a common, effective light-SaaS pattern
+          (dark "anchor" footer under an otherwise light page), not leftover
+          dark theme. See the light-theme redesign plan for the reasoning. */}
+      <footer className="border-t border-white/10 bg-ink py-14">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 sm:flex-row sm:justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <BrandMark size={36} />

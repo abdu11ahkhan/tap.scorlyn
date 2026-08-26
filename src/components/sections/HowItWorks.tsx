@@ -15,36 +15,34 @@ const STEPS = [
     title: "create your card",
     body: "Pick from 36 templates, drop in your links. Free, and it takes about two minutes.",
     icon: LayoutTemplate,
-    color: "bg-acid text-ink",
+    chip: "bg-acid text-ink",
   },
   {
     n: "02",
     title: "get your nfc card",
     body: "Order the physical card once your page is live. It's paired to your card, ready to print.",
     icon: IdCard,
-    color: "bg-teal text-white",
+    chip: "bg-teal text-white",
   },
   {
     n: "03",
     title: "tap your phone",
     body: "Hold it near any phone — theirs, not just yours. No app, no QR, nothing to scan first.",
     icon: Smartphone,
-    color: "bg-violet-pop text-white",
+    chip: "bg-ink text-white",
   },
   {
     n: "04",
     title: "they connect",
     body: "Your page opens instantly. They save your contact, message you, or follow — right there.",
     icon: Share2,
-    color: "bg-sand text-ink",
+    chip: "bg-sand text-ink",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="grain relative overflow-hidden bg-ink py-28">
-      <div className="float-orb pointer-events-none absolute -right-40 top-1/3 h-[440px] w-[440px] rounded-full bg-acid/15 blur-[130px]" />
-
+    <section id="how-it-works" className="relative overflow-hidden bg-mist py-28">
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -53,12 +51,12 @@ export function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="mb-16 max-w-2xl"
         >
-          <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-white">
+          <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-ink">
             one card.
             <br />
-            <span className="text-acid">four steps.</span>
+            <span className="text-teal">four steps.</span>
           </h2>
-          <p className="mt-5 text-lg font-medium text-white/55">
+          <p className="mt-5 text-lg font-medium text-ink-dim">
             A digital page you build once, and a physical card that opens it on
             any phone. Here&apos;s the whole loop.
           </p>
@@ -76,23 +74,15 @@ export function HowItWorks() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 className="relative"
               >
-                <div
-                  className={`sticker-lg h-full rounded-[1.75rem] border-2 border-ink p-6 transition-transform duration-300 hover:-translate-y-1 ${step.color}`}
-                >
+                <div className="sticker-lg h-full rounded-[1.75rem] bg-paper p-6 text-ink transition-transform duration-300 hover:-translate-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-black tracking-widest opacity-40">{step.n}</span>
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-ink bg-ink/10">
+                    <span className="text-sm font-black tracking-widest text-ink/30">{step.n}</span>
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${step.chip}`}>
                       <Icon className="h-5 w-5" />
                     </div>
                   </div>
                   <h3 className="mt-5 text-xl font-black tracking-tight">{step.title}</h3>
-                  <p
-                    className={`mt-2 text-sm font-medium leading-relaxed ${
-                      step.color.includes("text-white") ? "opacity-95" : "opacity-70"
-                    }`}
-                  >
-                    {step.body}
-                  </p>
+                  <p className="mt-2 text-sm font-medium leading-relaxed text-ink-dim">{step.body}</p>
                 </div>
 
                 {/* Connector — a step in a real sequence, not four unrelated
@@ -101,7 +91,7 @@ export function HowItWorks() {
                     mobile's single column). */}
                 {i < STEPS.length - 1 && (
                   <div className="pointer-events-none absolute -right-3 top-1/2 z-10 hidden -translate-y-1/2 md:block">
-                    <ArrowRight className="h-6 w-6 text-white/25" strokeWidth={3} />
+                    <ArrowRight className="h-6 w-6 text-ink/20" strokeWidth={3} />
                   </div>
                 )}
               </motion.div>
@@ -118,14 +108,14 @@ export function HowItWorks() {
         >
           <Link
             href="/templates"
-            className="sticker sticker-press inline-flex h-14 items-center gap-2 rounded-full border-2 border-ink bg-acid px-8 text-base font-black uppercase tracking-tight text-ink"
+            className="sticker sticker-press inline-flex h-14 items-center gap-2 rounded-full bg-teal px-8 text-base font-black uppercase tracking-tight text-white"
           >
             create your card
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/dashboard/nfc"
-            className="inline-flex h-14 items-center rounded-full border-2 border-white/25 px-7 text-base font-bold text-white transition-colors hover:border-white hover:bg-white/5"
+            className="inline-flex h-14 items-center rounded-full px-7 text-base font-bold text-ink transition-colors hover:text-teal"
           >
             get your nfc card
           </Link>

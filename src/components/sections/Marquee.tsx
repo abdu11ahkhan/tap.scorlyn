@@ -30,7 +30,7 @@ export function Marquee({
 
   return (
     <div
-      className={`relative overflow-hidden border-y-2 border-ink py-4 ${className}`}
+      className={`relative overflow-hidden py-4 ${className}`}
       aria-hidden="true"
     >
       <div

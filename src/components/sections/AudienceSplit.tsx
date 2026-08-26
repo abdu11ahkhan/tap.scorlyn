@@ -28,7 +28,7 @@ const CORPORATE = [
 
 export function AudienceSplit() {
   return (
-    <section className="grain relative overflow-hidden bg-ink py-28">
+    <section className="relative overflow-hidden bg-paper py-28">
       <div className="relative mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -37,25 +37,26 @@ export function AudienceSplit() {
           transition={{ duration: 0.6 }}
           className="mb-14 max-w-2xl"
         >
-          <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-white">
-            {/* Teal (text-hotpink) fails contrast as bare text on this dark
-                background (2.81:1); Golden Yellow (text-sand) passes at
-                10.5:1. */}
-            built for <span className="text-sand">one</span>,
+          <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-ink">
+            built for <span className="text-teal">one</span>,
             <br />
             or a whole <span className="text-acid">team.</span>
           </h2>
         </motion.div>
 
+        {/* "For your team" stays on the dark ink surface deliberately — a
+            corporate/enterprise tier reading as the premium, "serious"
+            option is a common and effective light-SaaS pattern, not
+            leftover dark theme (same reasoning as keeping the footer dark). */}
         <div className="grid gap-6 md:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: 34 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5 }}
-            className="sticker-lg rounded-[1.75rem] border-2 border-ink bg-white p-8 text-ink"
+            className="sticker-lg rounded-[1.75rem] bg-mist p-8 text-ink"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-ink bg-acid">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-acid">
               <User className="h-6 w-6" />
             </div>
             <h3 className="mt-5 text-2xl font-black tracking-tight">for you</h3>
@@ -65,14 +66,14 @@ export function AudienceSplit() {
             <ul className="mt-6 space-y-3">
               {INDIVIDUAL.map((item) => (
                 <li key={item} className="flex items-start gap-2.5 text-[15px] font-medium leading-snug">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-hotpink" strokeWidth={3} />
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal" strokeWidth={3} />
                   {item}
                 </li>
               ))}
             </ul>
             <Link
               href="/templates"
-              className="sticker sticker-press mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full border-2 border-ink bg-acid px-6 text-base font-black uppercase tracking-tight text-ink"
+              className="sticker sticker-press mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-acid px-6 text-base font-black uppercase tracking-tight text-ink"
             >
               create your card
               <ArrowRight className="h-4 w-4" />
@@ -84,9 +85,9 @@ export function AudienceSplit() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: 0.08 }}
-            className="sticker-lg rounded-[1.75rem] border-2 border-ink bg-ink p-8 text-white"
+            className="sticker-lg rounded-[1.75rem] bg-ink p-8 text-white"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-white/30 bg-white/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
               <Building2 className="h-6 w-6" />
             </div>
             <h3 className="mt-5 text-2xl font-black tracking-tight">for your team</h3>
@@ -103,7 +104,7 @@ export function AudienceSplit() {
             </ul>
             <Link
               href="#contact"
-              className="sticker sticker-press mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full border-2 border-ink bg-white px-6 text-base font-black uppercase tracking-tight text-ink"
+              className="sticker sticker-press mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-black uppercase tracking-tight text-ink"
             >
               talk to us
               <ArrowRight className="h-4 w-4" />

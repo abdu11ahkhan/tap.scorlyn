@@ -19,21 +19,21 @@ const POINTS = [
     icon: Palette,
     title: "your design",
     body: "Send us your artwork and we print it on the card. No artwork? We'll set it up from your logo.",
-    className: "bg-acid text-ink",
+    chip: "bg-acid text-ink",
     tilt: "-1.5deg",
   },
   {
     icon: Package,
     title: "volume pricing",
     body: "Ordering ten or more? The rate drops. Tell us the quantity and we'll quote you the same day.",
-    className: "bg-teal text-white",
+    chip: "bg-teal text-white",
     tilt: "2deg",
   },
   {
     icon: Truck,
     title: "delivered to you",
     body: "Anywhere in Pakistan, cash on delivery. Every card arrives programmed and ready to tap.",
-    className: "bg-violet-pop text-white",
+    chip: "bg-ink text-white",
     tilt: "-2deg",
   },
 ];
@@ -63,29 +63,24 @@ export function Contact({
     "Hi ScorlynTap, I'd like a quote for a bulk order of NFC cards."
   );
 
-  // The same button shape the rest of the page uses: h-14, full radius, heavy
-  // ink border, uppercase. Anything else reads as bolted on.
+  // The same button shape the rest of the page uses: h-14, full radius,
+  // uppercase, soft sticker shadow. Anything else reads as bolted on.
   const cta =
-    "sticker sticker-press flex h-14 items-center justify-center gap-2.5 rounded-full border-2 border-ink px-6 text-base font-black uppercase tracking-tight";
+    "sticker sticker-press flex h-14 items-center justify-center gap-2.5 rounded-full px-6 text-base font-black uppercase tracking-tight";
 
   return (
-    <section
-      id="contact"
-      className="grain relative overflow-hidden bg-ink py-28 text-white"
-    >
-      <div className="float-orb pointer-events-none absolute -left-40 top-1/4 h-[420px] w-[420px] rounded-full bg-acid/15 blur-[130px]" />
-
+    <section id="contact" className="relative overflow-hidden bg-paper py-28 text-ink">
       <div className="relative mx-auto max-w-6xl px-6">
         <div className="mb-14 max-w-3xl">
-          <p className="text-[12px] font-black uppercase tracking-[0.25em] text-white/40">
+          <p className="text-[12px] font-black uppercase tracking-[0.25em] text-ink/40">
             talk to us
           </p>
           <h2 className="mt-4 text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em]">
             questions?
             <br />
-            <span className="text-acid">bulk order?</span>
+            <span className="text-teal">bulk order?</span>
           </h2>
-          <p className="mt-6 max-w-lg text-lg font-medium text-white/60">
+          <p className="mt-6 max-w-lg text-lg font-medium text-ink-dim">
             Message us directly — a real person answers. For teams, clubs and
             offices we do custom artwork and volume pricing.
           </p>
@@ -98,29 +93,23 @@ export function Contact({
               <article
                 key={point.title}
                 style={{ rotate: point.tilt }}
-                className={`sticker-lg rounded-[1.75rem] border-2 border-ink p-7 transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${point.className}`}
+                className="sticker-lg rounded-[1.75rem] bg-mist p-7 text-ink transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1"
               >
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border-2 border-ink bg-ink/10">
+                <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${point.chip}`}>
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2.5 text-2xl font-black tracking-tight">{point.title}</h3>
-                <p
-                  className={`text-[15px] font-medium leading-relaxed ${
-                    point.className.includes("text-white") ? "opacity-95" : "opacity-70"
-                  }`}
-                >
-                  {point.body}
-                </p>
+                <p className="text-[15px] font-medium leading-relaxed text-ink-dim">{point.body}</p>
               </article>
             );
           })}
         </div>
 
-        <div className="mt-14 rounded-[1.75rem] border-2 border-white/12 bg-white/[0.03] p-7 sm:p-9">
+        <div className="mt-14 rounded-[1.75rem] bg-mist p-7 sm:p-9">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-sm">
               <h3 className="text-2xl font-black tracking-tight">Start a conversation</h3>
-              <p className="mt-2 flex items-center gap-2 text-[15px] font-semibold text-white/50">
+              <p className="mt-2 flex items-center gap-2 text-[15px] font-semibold text-ink-dim">
                 <Clock className="h-4 w-4 shrink-0" />
                 We usually reply within a few hours.
               </p>

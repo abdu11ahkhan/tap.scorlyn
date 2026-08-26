@@ -61,9 +61,7 @@ const PLANS = [
 
 export function Pricing({ note }: { note?: string | null } = {}) {
   return (
-    <section id="pricing" className="grain relative overflow-hidden bg-ink py-28">
-      <div className="float-orb pointer-events-none absolute -right-32 top-1/3 h-[460px] w-[460px] rounded-full bg-teal/20 blur-[130px]" />
-
+    <section id="pricing" className="relative overflow-hidden bg-mist py-28">
       <div className="relative mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -72,14 +70,10 @@ export function Pricing({ note }: { note?: string | null } = {}) {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-white">
-            {/* Teal (text-hotpink) measures 2.81:1 as bare text on this dark
-                background — fails WCAG. Golden Yellow (text-sand) passes at
-                10.5:1 and still reads as a second, distinct emphasis colour
-                from Orange (text-acid) used elsewhere. */}
-            cheap. <span className="text-sand">obviously.</span>
+          <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-ink">
+            cheap. <span className="text-teal">obviously.</span>
           </h2>
-          <p className="mt-5 max-w-lg text-lg font-medium text-white/60">
+          <p className="mt-5 max-w-lg text-lg font-medium text-ink-dim">
             The card page is free forever. You only pay when you want the
             physical card in your pocket.
           </p>
@@ -94,10 +88,10 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
               style={{ rotate: plan.tilt }}
-              className={`sticker-lg relative rounded-[2rem] border-2 border-ink p-8 transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${plan.className}`}
+              className={`sticker-lg relative rounded-[2rem] p-8 transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${plan.className}`}
             >
               {plan.featured && (
-                <span className="sticker absolute -top-4 right-7 rounded-full border-2 border-ink bg-teal px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
+                <span className="sticker absolute -top-4 right-7 rounded-full bg-teal px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
                   most popular
                 </span>
               )}
@@ -114,7 +108,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               <ul className="mb-9 space-y-3.5">
                 {plan.perks.map((perk) => (
                   <li key={perk} className="flex items-start gap-3 text-[15px] font-semibold">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-ink">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current/30">
                       <Check className="h-3 w-3" strokeWidth={3.5} />
                     </span>
                     {perk}
@@ -124,8 +118,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
 
               <Link
                 href={plan.href}
-                className={`sticker sticker-press flex h-14 items-center justify-center rounded-full border-2 border-ink text-base font-black uppercase tracking-tight ${plan.button}`}
-                style={{ ["--sticker-color" as string]: "#051821" }}
+                className={`sticker sticker-press flex h-14 items-center justify-center rounded-full text-base font-black uppercase tracking-tight ${plan.button}`}
               >
                 {plan.cta}
               </Link>
@@ -133,7 +126,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
           ))}
         </div>
 
-        <p className="mt-10 text-center text-sm font-semibold text-white/40">
+        <p className="mt-10 text-center text-sm font-semibold text-ink-dim">
           {note || "Prices in PKR. Bulk orders for teams — just ask."}
         </p>
       </div>
