@@ -29,7 +29,7 @@ export function Navbar() {
       className="fixed inset-x-0 top-0 z-50 px-4 py-4"
     >
       <nav
-        className={`mx-auto flex max-w-6xl items-center justify-between rounded-full border-2 border-ink px-4 py-2.5 transition-all duration-300 sm:px-5 ${
+        className={`mx-auto flex max-w-6xl items-center justify-between rounded-full border border-line px-4 py-2.5 transition-all duration-300 sm:px-5 ${
           scrolled ? "sticker bg-white/95 backdrop-blur-xl" : "bg-white"
         }`}
       >
@@ -63,7 +63,7 @@ export function Navbar() {
               lines and overlapped the wordmark. The menu button carries it. */}
           <Link
             href="/templates"
-            className="sticker sticker-press hidden shrink-0 whitespace-nowrap rounded-full border-2 border-ink bg-acid px-4 py-2 text-[14px] font-black uppercase tracking-tight text-ink sm:inline-flex sm:px-5 sm:py-2.5 sm:text-[15px]"
+            className="sticker sticker-press hidden shrink-0 whitespace-nowrap rounded-full bg-teal px-4 py-2 text-[14px] font-black uppercase tracking-tight text-white sm:inline-flex sm:px-5 sm:py-2.5 sm:text-[15px]"
           >
             get started
           </Link>
@@ -71,7 +71,7 @@ export function Navbar() {
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
-            className="ml-1 rounded-full border-2 border-ink p-2 text-ink md:hidden"
+            className="ml-1 rounded-full border border-line p-2 text-ink md:hidden"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -79,13 +79,13 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="sticker mx-auto mt-3 max-w-6xl rounded-3xl border-2 border-ink bg-white p-4 md:hidden">
+        <div className="sticker mx-auto mt-3 max-w-6xl rounded-3xl border border-line bg-white p-4 md:hidden">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="block rounded-xl px-4 py-3 text-lg font-black text-ink hover:bg-acid"
+              className="block rounded-xl px-4 py-3 text-lg font-black text-ink hover:bg-mist"
             >
               {link.label}
             </Link>
