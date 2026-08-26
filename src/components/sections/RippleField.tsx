@@ -69,12 +69,17 @@ export function RippleField({
           const falloff = Math.max(0, 1 - dist / maxDist);
           if (falloff <= 0) continue;
 
-          const wave = 0.5 + 0.5 * Math.sin(dist * 0.045 - t * 1.4);
-          const alpha = falloff * falloff * wave * 0.22;
+          // Cubing the raw sine turns a smooth gradient into a distinct
+          // travelling band — bright ring, then a near-invisible trough —
+          // which is what actually reads as "a wave" instead of ambient
+          // texture that happens to shimmer.
+          const raw = 0.5 + 0.5 * Math.sin(dist * 0.05 - t * 1.8);
+          const wave = raw * raw * raw;
+          const alpha = falloff * wave * 0.5;
           if (alpha < 0.02) continue;
 
           const isAccent = (ix * 7 + iy * 13) % 23 === 0;
-          const radius = 1 + wave * 1.6;
+          const radius = 0.6 + wave * 2.2;
 
           ctx!.beginPath();
           ctx!.fillStyle = isAccent ? accent : color;
