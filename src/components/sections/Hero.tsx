@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, PlayCircle, Star } from "lucide-react";
+import { ArrowRight, CheckCircle2, PlayCircle, Star, Zap } from "lucide-react";
 import BrandMark from "@/components/layout/BrandMark";
 import { RippleField } from "./RippleField";
 
@@ -92,32 +92,52 @@ export function Hero({
             className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-ink-dim"
           >
             {subtitle ||
-              "Tap your card on any phone and it opens instantly — every link, every way to reach you. No app. No QR. Build it in about two minutes."}
+              "Build your online profile — every link, every way to reach you, on one page a tap opens instantly. No app. No QR. About two minutes."}
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
+            className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
           >
+            {/* This is the profile page, not a physical product — the copy
+                used to say "create your card," which read as ordering
+                something, when what actually happens on the other side of
+                this button is building an online profile. */}
             <Link
               href="/templates"
               className="sticker-lg group inline-flex h-16 items-center justify-center gap-2 rounded-full bg-teal px-10 text-lg font-black uppercase tracking-tight text-white transition-transform hover:-translate-y-0.5"
             >
-              create your card
+              build your online profile
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
 
+            {/* The other path: skip the profile entirely and go straight to
+                a physical card that does one thing on a tap. */}
+            <Link
+              href="/dashboard/quick-order"
+              className="sticker group inline-flex h-16 items-center justify-center gap-2 rounded-full border-2 border-ink bg-white px-8 text-lg font-black uppercase tracking-tight text-ink transition-transform hover:-translate-y-0.5"
+            >
+              <Zap className="h-5 w-5" />
+              order an nfc card
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+          >
             {/* Points at the new step-by-step demonstration section — a
                 stronger second path than the pricing anchor this used to
                 point to, now that the page actually has something to show
                 rather than only tell. */}
             <Link
               href="#how-it-works"
-              className="group inline-flex h-16 items-center justify-center gap-2 px-2 text-lg font-bold text-ink transition-colors hover:text-teal"
+              className="group mt-3 inline-flex h-11 items-center gap-2 text-[15px] font-bold text-ink-dim transition-colors hover:text-teal"
             >
-              <PlayCircle className="h-6 w-6 transition-colors" />
+              <PlayCircle className="h-5 w-5 transition-colors" />
               see how it works
             </Link>
           </motion.div>

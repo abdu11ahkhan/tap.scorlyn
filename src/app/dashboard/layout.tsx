@@ -13,6 +13,7 @@ import {
   Nfc,
   Users,
   BarChart3,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -24,6 +25,7 @@ const sidebarLinks = [
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "My portfolio", href: "/dashboard/card", icon: IdCard },
   { name: "Get a card", href: "/dashboard/nfc", icon: Nfc },
+  { name: "Order an NFC card", href: "/dashboard/quick-order", icon: Zap },
   { name: "Orders", href: "/dashboard/orders", icon: Package },
   { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import NfcChooser from "./NfcChooser";
-import type { CardProfile } from "@/lib/card";
+import { cardLinkUrl, type CardProfile } from "@/lib/card";
 
 export const dynamic = "force-dynamic";
 
@@ -12,16 +12,37 @@ export const dynamic = "force-dynamic";
  * so the paid plans were two lines of text beside something they already had
  * for nothing. This draws both options with their own card and their own link.
  */
-export default async function GetNfcCard() {
+export default async function GetNfcCard({
+  searchParams,
+}: {
+  searchParams: Promise<{ card?: string }>;
+}) {
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Which of the account's (possibly several) cards this is for. Absent
+  // means "their first" — the original, single-card-per-account default.
+  const { card: requestedCardId } = await searchParams;
+
   const [{ data: card }, { data: plans }] = await Promise.all([
     user
-      ? supabase.from("card_profiles").select("*").eq("user_id", user.id).maybeSingle()
+      ? requestedCardId
+        ? supabase
+            .from("card_profiles")
+            .select("*")
+            .eq("id", requestedCardId)
+            .eq("user_id", user.id)
+            .maybeSingle()
+        : supabase
+            .from("card_profiles")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: true })
+            .limit(1)
+            .maybeSingle()
       : Promise.resolve({ data: null }),
     supabase.from("plans").select("id, name, price_pkr, blurb").eq("enabled", true),
   ]);
@@ -58,7 +79,8 @@ export default async function GetNfcCard() {
 
       <NfcChooser
         card={card as CardProfile}
-        profileUrl={`https://tap.scorlyn.com/u/${card.username}`}
+        cardId={(card as { id: string }).id}
+        profileUrl={cardLinkUrl(card as CardProfile, "https://tap.scorlyn.com")}
         blank={find("printed")}
         custom={find("custom")}
       />

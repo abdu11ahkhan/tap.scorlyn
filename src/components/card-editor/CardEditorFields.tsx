@@ -56,6 +56,8 @@ export default function CardEditorFields({
   showUsername = true,
   lockUsername = false,
   ownHandle,
+  showIdentity = true,
+  showLinks = true,
 }: {
   form: CardForm;
   onFormChange: (patch: Partial<CardForm>) => void;
@@ -68,6 +70,11 @@ export default function CardEditorFields({
   showUsername?: boolean;
   lockUsername?: boolean;
   ownHandle?: string;
+  /** Off for a single-purpose card — it has no "who you are" to fill in. */
+  showIdentity?: boolean;
+  /** Off for a single-purpose card — its one action lives in its own panel,
+   *  not the generic links list, and it has no payment/extras either. */
+  showLinks?: boolean;
 }) {
   // Shown on the collapsed section headers so it's obvious what's already
   // filled in without opening each one.
@@ -352,6 +359,7 @@ export default function CardEditorFields({
       </EditorSection>
 
       {/* ---------------- Identity ---------------- */}
+      {showIdentity && (
       <EditorSection
         title="your details"
         hint="Name, role, company, bio"
@@ -432,6 +440,7 @@ export default function CardEditorFields({
       </section>
 
       </EditorSection>
+      )}
 
       {/* ---------------- Photos ---------------- */}
       <EditorSection
@@ -551,6 +560,8 @@ export default function CardEditorFields({
       </EditorSection>
 
       {/* ---------------- Buttons ---------------- */}
+      {showLinks && (
+      <>
       <EditorSection
         title="links"
         hint="WhatsApp, email, socials, anything"
@@ -733,6 +744,8 @@ export default function CardEditorFields({
       >
         <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
       </EditorSection>
+      </>
+      )}
     </div>
   );
 }

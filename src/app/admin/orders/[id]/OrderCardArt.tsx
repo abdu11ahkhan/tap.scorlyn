@@ -5,7 +5,7 @@ import NfcCardArt, {
   type CardFields,
   type CardFinish,
 } from "@/components/card-design/NfcCardArt";
-import type { CardProfile } from "@/lib/card";
+import { cardLinkUrl, type CardProfile } from "@/lib/card";
 
 /**
  * Both faces of the ordered card, at a size you can actually check.
@@ -23,7 +23,7 @@ export default function OrderCardArt({
   finish: string;
   fields: CardFields | null;
 }) {
-  const profileUrl = `https://tap.scorlyn.com/u/${card.username}`;
+  const profileUrl = cardLinkUrl(card, "https://tap.scorlyn.com");
 
   return (
     <div className="flex flex-wrap gap-5">

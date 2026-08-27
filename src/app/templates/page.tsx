@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Camera, Eye, Sparkles, User } from "lucide-react";
-import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
+import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import { DEMO_PERSONAS } from "@/app/preview/card/[template]/demo-data";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
@@ -35,7 +35,18 @@ const COLUMN_W = 1060;
 /** Anything after this index is newer than the original five. */
 const ORIGINAL_COUNT = 5;
 
-export default async function PublicTemplatesPage() {
+export default async function PublicTemplatesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ purpose?: string }>;
+}) {
+  // Set when arriving from /single/new — carried through to the editor so a
+  // template pick continues the single-purpose flow instead of starting a
+  // normal profile card.
+  const { purpose: purposeId } = await searchParams;
+  const purpose = CARD_PURPOSES.find((p) => p.id === purposeId) ?? null;
+  const purposeQuery = purpose ? `?purpose=${purpose.id}` : "";
+
   // Anyone can browse. We only read the session to decide what the footer says.
   const supabase = await createClient();
 
@@ -87,6 +98,12 @@ export default async function PublicTemplatesPage() {
           >
             ← ScorlynTap
           </Link>
+
+          {purpose && (
+            <p className="card-rise mt-6 inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 py-2 text-sm font-black lowercase text-teal">
+              building a {purpose.label} card — pick any template below
+            </p>
+          )}
 
           <h1 className="card-rise mt-7 text-[clamp(2.8rem,8vw,5.5rem)] font-black leading-[0.86] tracking-[-0.05em]">
             <span className="text-teal">{templatesAll.length}</span> templates.
@@ -263,7 +280,7 @@ export default async function PublicTemplatesPage() {
 
                       <div className="mt-auto flex min-w-0 items-center gap-2 pt-3 sm:pt-4">
                         <Link
-                          href={`/templates/${template.id}/edit`}
+                          href={`/templates/${template.id}/edit${purposeQuery}`}
                           className="sticker sticker-press group/btn inline-flex h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border-2 border-ink bg-acid text-xs font-black uppercase tracking-tight text-ink sm:h-12 sm:gap-2 sm:text-sm"
                         >
                           customise
@@ -305,7 +322,7 @@ export default async function PublicTemplatesPage() {
             {!isLoggedIn && " Editing is free; sign in only when you publish."}
           </p>
           <Link
-            href="/templates/sticker/edit"
+            href={`/templates/sticker/edit${purposeQuery}`}
             className="sticker sticker-press mt-7 inline-flex h-14 items-center justify-center rounded-full bg-ink px-10 text-base font-black uppercase tracking-tight text-acid"
           >
             start with sticker

@@ -41,6 +41,16 @@ export async function placeOrder(input: {
   finish?: string;
   fields?: Record<string, boolean> | null;
   accent?: string | null;
+  /** Which of the account's (possibly several) cards this order is for.
+   *  Absent falls back to their first card — the original, single-card-per-
+   *  account behaviour, kept for callers written before a second card was
+   *  possible. */
+  cardProfileId?: string;
+  /** Came through the "order an NFC card" fast-track (destination + finish
+   *  + delivery, one page, no template/preview step) rather than the normal
+   *  publish-then-order flow — flagged so admin can queue these separately
+   *  for a look before printing. */
+  quick?: boolean;
 }): Promise<Result<{ id: string; reference: string }>> {
   try {
     const { supabase, user } = await requireUser();
@@ -75,11 +85,23 @@ export async function placeOrder(input: {
 
     if (!plan?.enabled) throw new Error("That plan isn't available.");
 
-    const { data: card } = await supabase
-      .from("card_profiles")
-      .select("id, username")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    // RLS already scopes card_profiles to the caller, so a passed-in id can't
+    // reach someone else's card — this filter just makes that explicit and
+    // turns a wrong id into "no card" rather than someone else's.
+    const { data: card } = input.cardProfileId
+      ? await supabase
+          .from("card_profiles")
+          .select("id, username")
+          .eq("id", input.cardProfileId)
+          .eq("user_id", user.id)
+          .maybeSingle()
+      : await supabase
+          .from("card_profiles")
+          .select("id, username")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
 
     // The form disables this, but a Server Action is reachable by direct POST.
     // A printed card is a chip holding a link to a page — with no page there
@@ -101,6 +123,7 @@ export async function placeOrder(input: {
         address: input.address.trim(),
         city: input.city.trim(),
         customer_note: input.note?.trim() || null,
+        is_quick_order: input.quick ?? false,
         // What to actually print. Captured at order time rather than read
         // from the profile later, because the profile keeps changing and the
         // printed card has to match what the customer approved.
@@ -144,7 +167,7 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
     // supplied orderId and another customer's delivery details.
     const { data: old } = await supabase
       .from("orders")
-      .select("plan_id, quantity, full_name, phone, address, city, card_design")
+      .select("plan_id, quantity, full_name, phone, address, city, card_design, card_profile_id")
       .eq("id", orderId)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -167,6 +190,7 @@ export async function reorder(orderId: string): Promise<Result<{ reference: stri
       finish: design?.finish,
       fields: design?.fields,
       accent: design?.accent,
+      cardProfileId: (old.card_profile_id as string | null) ?? undefined,
     });
 
     return result.ok && result.data

@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import ArtworkSheet from "@/app/admin/orders/[id]/artwork/ArtworkSheet";
 import FinishPicker from "./FinishPicker";
 import { setCardFinish } from "@/app/admin/actions";
-import type { CardProfile } from "@/lib/card";
+import { cardLinkUrl, type CardProfile } from "@/lib/card";
 import type { CardFields } from "@/components/card-design/NfcCardArt";
 
 export const dynamic = "force-dynamic";
@@ -72,7 +72,7 @@ export default async function CardArtwork({
       card={card as CardProfile}
       current={finish}
       currentFields={(card.nfc_fields as CardFields | null) ?? null}
-      profileUrl={`https://tap.scorlyn.com/u/${card.username}`}
+      profileUrl={cardLinkUrl(card as CardProfile, "https://tap.scorlyn.com")}
       onSave={async (next: string, nextFields: CardFields) => {
         "use server";
         return setCardFinish(id, next, nextFields as unknown as Record<string, boolean>);

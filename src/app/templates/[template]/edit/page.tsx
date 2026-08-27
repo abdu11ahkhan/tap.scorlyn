@@ -1,15 +1,18 @@
 "use client";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { Suspense, use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Loader2, Lock, Upload, Eye, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
+  CARD_PURPOSES,
+  cardLinkUrl,
   resolveButtonsForPreview,
   resolveGallery,
   TEMPLATE_IDS,
   type CardButton,
+  type CardPurpose,
   type GalleryItem,
 } from "@/lib/card";
 import {
@@ -25,6 +28,7 @@ import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import RefCatcher from "@/components/nfc/RefCatcher";
+import PurposeDestinationFields from "@/components/card-editor/PurposeDestinationFields";
 
 const EMPTY_EXTRAS: ExtrasState = {
   available_for_work: false,
@@ -46,11 +50,44 @@ export default function PublicCardEditor({
 }: {
   params: Promise<{ template: string }>;
 }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-paper">
+          <Loader2 className="h-6 w-6 animate-spin text-teal" />
+        </div>
+      }
+    >
+      <PublicCardEditorInner params={params} />
+    </Suspense>
+  );
+}
+
+function PublicCardEditorInner({
+  params,
+}: {
+  params: Promise<{ template: string }>;
+}) {
   const { template } = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [form, setForm] = useState<CardForm>({ ...EMPTY_CARD_FORM, template });
-  const [buttons, setButtons] = useState<CardButton[]>(STARTER_BUTTONS);
+  // Set when arriving from /single/new — a card dedicated to one action, not
+  // a person's profile. Same templates, editor and publish pipeline; only the
+  // "who you are" fields are swapped for a single destination field.
+  const purposeId = searchParams.get("purpose");
+  const purpose: CardPurpose | null = CARD_PURPOSES.find((p) => p.id === purposeId) ?? null;
+
+  const starterButtons: CardButton[] = purpose
+    ? [{ label: purpose.label, kind: purpose.kind, value: "" }]
+    : STARTER_BUTTONS;
+
+  const [form, setForm] = useState<CardForm>({
+    ...EMPTY_CARD_FORM,
+    template,
+    is_single_purpose: Boolean(purpose),
+  });
+  const [buttons, setButtons] = useState<CardButton[]>(starterButtons);
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [extras, setExtras] = useState<ExtrasState>(EMPTY_EXTRAS);
   const [ready, setReady] = useState(false);
@@ -71,7 +108,11 @@ export default function PublicCardEditor({
   // writing the empty defaults back over the saved draft in the meantime.
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    const draft = loadDraft();
+    // A purpose link always starts a fresh single-purpose draft — carrying
+    // over a previous (possibly profile) draft here would silently mix the
+    // two flows, e.g. keeping an old full_name for what's meant to be a
+    // destination-only card.
+    const draft = purpose ? null : loadDraft();
     if (draft) {
       setForm({ ...draft.form, template: isKnownTemplate ? template : draft.form.template });
       setButtons(draft.buttons.length ? draft.buttons : STARTER_BUTTONS);
@@ -101,7 +142,7 @@ export default function PublicCardEditor({
 
   // Whatever host this is served from, so the QR works in dev and production.
   const origin = typeof window === "undefined" ? "" : window.location.origin;
-  const profileUrl = `${origin}/u/${previewCard.username}`;
+  const profileUrl = cardLinkUrl(previewCard, origin);
 
   /**
    * Publishing is the only gated step. The draft is already in localStorage, so
@@ -117,7 +158,25 @@ export default function PublicCardEditor({
    */
   const handlePublish = async () => {
     setPublishing(true);
-    saveDraft({ form, buttons, gallery, extras });
+
+    // A single-purpose card has no "who you are" to type in — full_name and
+    // username are filled in here rather than asked for, the same way the
+    // dashboard's quick "new card" button seeds a placeholder handle.
+    let finalForm = form;
+    let finalButtons = buttons;
+    if (purpose) {
+      const suffix = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+      finalForm = {
+        ...form,
+        full_name: `${purpose.label} Card`,
+        username: form.username || `sp-${suffix}`,
+      };
+      finalButtons = [{ ...(buttons[0] ?? { label: purpose.label, kind: purpose.kind, value: "" }) }];
+      setForm(finalForm);
+      setButtons(finalButtons);
+    }
+
+    saveDraft({ form: finalForm, buttons: finalButtons, gallery, extras });
 
     const supabase = createClient();
     const {
@@ -147,6 +206,8 @@ export default function PublicCardEditor({
     );
   }
 
+  const destinationMissing = Boolean(purpose) && !buttons[0]?.value?.trim();
+
   return (
     <div className="relative min-h-screen bg-paper text-ink">
       <RefCatcher />
@@ -168,7 +229,8 @@ export default function PublicCardEditor({
 
           <button
             onClick={handlePublish}
-            disabled={publishing}
+            disabled={publishing || destinationMissing}
+            title={destinationMissing ? "Add the destination below first" : undefined}
             className="sticker sticker-press flex shrink-0 items-center gap-2 rounded-full bg-acid px-6 py-3 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
           >
             {publishing ? (
@@ -203,8 +265,30 @@ export default function PublicCardEditor({
         {/* Fields */}
         <div className={`min-w-0 ${mobileTab === "edit" ? "" : "hidden lg:block"}`}>
           <h1 className="mb-6 text-3xl font-black tracking-tighter sm:text-4xl">
-            make it <span className="text-acid">yours.</span>
+            {purpose ? (
+              <>
+                what does it <span className="text-acid">open?</span>
+              </>
+            ) : (
+              <>
+                make it <span className="text-acid">yours.</span>
+              </>
+            )}
           </h1>
+
+          {purpose && (
+            <PurposeDestinationFields
+              purpose={purpose}
+              button={buttons[0] ?? { label: purpose.label, kind: purpose.kind, value: "" }}
+              onChange={(patch) =>
+                setButtons((prev) => {
+                  const current = prev[0] ?? { label: purpose.label, kind: purpose.kind, value: "" };
+                  return [{ ...current, ...patch }];
+                })
+              }
+            />
+          )}
+
           <CardEditorFields
             form={form}
             onFormChange={updateForm}
@@ -216,6 +300,8 @@ export default function PublicCardEditor({
             onExtrasChange={(patch) => setExtras((prev) => ({ ...prev, ...patch }))}
             // Username is claimed at publish time, once there's an account.
             showUsername={false}
+            showIdentity={!purpose}
+            showLinks={!purpose}
           />
 
           <div className="sticker-lg mt-10 flex items-start gap-4 rounded-2xl bg-acid p-5 text-ink">

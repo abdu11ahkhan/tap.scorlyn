@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Loader2, ExternalLink, Check, Nfc, ArrowRight } from "lucide-react";
 import {
   TEMPLATE_IDS,
+  cardLinkUrl,
   resolveButtonsForPreview,
   resolveGallery,
   type CardButton,
@@ -120,6 +121,7 @@ function MyCardEditor() {
             accent_color: data.accent_color ?? "#111111",
             template: data.template ?? "minimal",
             font: data.font ?? "sans",
+            is_single_purpose: data.is_single_purpose ?? false,
           }
         : null;
 
@@ -178,7 +180,7 @@ function MyCardEditor() {
   const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
 
   const origin = typeof window === "undefined" ? "" : window.location.origin;
-  const profileUrl = `${origin}/u/${previewCard.username}`;
+  const profileUrl = cardLinkUrl(previewCard, origin);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();

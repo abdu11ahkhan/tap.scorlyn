@@ -15,7 +15,11 @@ type Plan = {
   perks: string[];
 };
 
-export default async function MyOrders() {
+export default async function MyOrders({
+  searchParams,
+}: {
+  searchParams: Promise<{ card?: string }>;
+}) {
   const supabase = await createClient();
 
   const {
@@ -23,6 +27,11 @@ export default async function MyOrders() {
   } = await supabase.auth.getUser();
 
   if (!user) return <p className="app-sub font-bold">Please log in.</p>;
+
+  // Which of the account's (possibly several) cards this order is for.
+  // Absent means "their first" — the original, single-card-per-account
+  // default this page assumed before a second card was possible.
+  const { card: requestedCardId } = await searchParams;
 
   // The profile was read only to pre-fill the order form's name, which it
   // deliberately does not do — the person ordering may not be the person the
@@ -34,11 +43,20 @@ export default async function MyOrders() {
       .from("orders")
       .select("id, reference, status, amount_pkr, quantity, plan_id, created_at, estimated_delivery")
       .order("created_at", { ascending: false }),
-    supabase
-      .from("card_profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle(),
+    requestedCardId
+      ? supabase
+          .from("card_profiles")
+          .select("*")
+          .eq("id", requestedCardId)
+          .eq("user_id", user.id)
+          .maybeSingle()
+      : supabase
+          .from("card_profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle(),
   ]);
 
   const rows = orders ?? [];
@@ -105,6 +123,7 @@ export default async function MyOrders() {
           plans={(plans ?? []) as Plan[]}
           hasCard={Boolean(card?.username)}
           card={(card as CardProfile | null) ?? null}
+          cardProfileId={(card?.id as string | undefined) ?? null}
         />
       </section>
     </div>

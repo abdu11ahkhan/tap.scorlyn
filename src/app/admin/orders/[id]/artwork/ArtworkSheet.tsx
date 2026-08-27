@@ -7,7 +7,7 @@ import NfcCardArt, {
   type CardFields,
   type CardFinish,
 } from "@/components/card-design/NfcCardArt";
-import type { CardProfile } from "@/lib/card";
+import { cardLinkUrl, type CardProfile } from "@/lib/card";
 
 /**
  * Both faces of the card at print size, plus what the printer needs to know.
@@ -42,7 +42,7 @@ export default function ArtworkSheet({
   finish: string;
   fields: CardFields | null;
 }) {
-  const profileUrl = `https://tap.scorlyn.com/u/${card.username}`;
+  const profileUrl = cardLinkUrl(card, "https://tap.scorlyn.com");
 
   /**
    * "Save as PDF" names the file after the document title, so every sheet

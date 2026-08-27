@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, MapPin, Phone, User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { cardLinkUrl } from "@/lib/card";
 import { STATUS_LABELS, statusTone } from "@/app/dashboard/orders/status";
 import ProofLink from "./ProofLink";
 import OrderCardArt from "./OrderCardArt";
@@ -46,11 +47,14 @@ export default async function AdminOrderDetail({
           .eq("id", order.user_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
-    order.user_id
+    // By card_profile_id, not user_id — an account can own several cards
+    // now (a profile card plus one or more single-purpose/quick-order
+    // cards), so "their card" is no longer unambiguous.
+    order.card_profile_id
       ? supabase
           .from("card_profiles")
           .select("*")
-          .eq("user_id", order.user_id)
+          .eq("id", order.card_profile_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
@@ -91,6 +95,11 @@ export default async function AdminOrderDetail({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {order.is_quick_order && (
+            <span className="rounded-full border-2 border-sc-gold/50 bg-sc-gold/10 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-sc-gold-text">
+              quick order
+            </span>
+          )}
           {/* Only paid orders carry artwork; the free plan prints nothing. */}
           {order.card_profile_id && (
             <Link
@@ -175,12 +184,12 @@ export default async function AdminOrderDetail({
 
               <div className="flex flex-wrap gap-2">
                 <a
-                  href={`https://tap.scorlyn.com/u/${card.username}`}
+                  href={cardLinkUrl(card as CardProfileType, "https://tap.scorlyn.com")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="app-btn app-btn-ghost"
                 >
-                  Open their page
+                  {card.is_single_purpose ? "Open the destination" : "Open their page"}
                 </a>
                 <Link
                   href={`/admin/orders/${order.id}/artwork`}
@@ -191,8 +200,17 @@ export default async function AdminOrderDetail({
               </div>
             </div>
 
+            {/* Single-purpose/quick-order cards have no profile page worth
+                reading — what matters is exactly where the tap goes. */}
+            {card.is_single_purpose && card.buttons?.[0] && (
+              <p className="mt-3 break-all rounded-lg border border-sc-border-soft bg-sc-surface-2 px-3 py-2 text-[13px] font-semibold text-sc-text">
+                opens: {card.buttons[0].kind} — {card.buttons[0].value}
+                {card.buttons[0].message ? ` ("${card.buttons[0].message}")` : ""}
+              </p>
+            )}
+
             <p className="mt-3 break-all font-mono text-[12px] text-sc-text-dimmer">
-              chip URL — https://tap.scorlyn.com/u/{card.username}
+              chip URL — {cardLinkUrl(card as CardProfileType, "https://tap.scorlyn.com")}
             </p>
 
             <div className="mt-4">
@@ -220,7 +238,7 @@ export default async function AdminOrderDetail({
                 <Link href={`/admin/users/${profile.id}`} className="app-btn app-btn-ghost">
                   Open customer
                 </Link>
-                {card?.username && (
+                {card?.username && !card.is_single_purpose && (
                   <a
                     href={`/u/${card.username}`}
                     target="_blank"

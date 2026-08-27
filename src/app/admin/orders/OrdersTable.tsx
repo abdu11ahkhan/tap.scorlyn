@@ -25,6 +25,7 @@ export type AdminOrder = {
   branding: string | null;
   admin_seen_at: string | null;
   created_at: string;
+  is_quick_order: boolean;
 };
 
 const STATUSES = ["pending", "paid", "printing", "shipped", "delivered", "cancelled"];
@@ -148,6 +149,14 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     {!o.admin_seen_at && (
                       <span className="rounded-full bg-hotpink px-1.5 text-[10px] font-black uppercase text-sc-text">
                         new
+                      </span>
+                    )}
+                    {o.is_quick_order && (
+                      <span
+                        title="Order an NFC card — no template/preview step"
+                        className="rounded-full bg-sc-gold/20 px-1.5 text-[10px] font-black uppercase text-sc-gold-text"
+                      >
+                        quick
                       </span>
                     )}
                   </div>

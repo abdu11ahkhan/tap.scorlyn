@@ -10,6 +10,7 @@ import { AudienceSplit } from "@/components/sections/AudienceSplit";
 import { Pricing } from "@/components/sections/Pricing";
 import { Contact } from "@/components/sections/Contact";
 import BrandMark from "@/components/layout/BrandMark";
+import BuildMyCardButton from "@/components/nfc/BuildMyCardButton";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -48,12 +49,7 @@ export default async function Home() {
             <br />
             takes 2 minutes.
           </h2>
-          <Link
-            href="/templates"
-            className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-teal px-12 text-lg font-black uppercase tracking-tight text-white"
-          >
-            build my card
-          </Link>
+          <BuildMyCardButton className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-teal px-12 text-lg font-black uppercase tracking-tight text-white" />
         </div>
       </section>
 

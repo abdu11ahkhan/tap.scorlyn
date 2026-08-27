@@ -8,7 +8,7 @@ import Link from "next/link";
 import { placeOrder } from "@/app/orders/actions";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import type { CardFields } from "@/components/card-design/NfcCardArt";
-import type { CardProfile } from "@/lib/card";
+import { cardLinkUrl, type CardProfile } from "@/lib/card";
 
 type Plan = { id: string; name: string; price_pkr: number; blurb: string | null; perks: string[] };
 
@@ -76,6 +76,7 @@ export default function OrderForm({
   plans,
   hasCard,
   card,
+  cardProfileId,
 }: {
   plans: Plan[];
   /** Whether this account has a card page yet. A printed card is a link to
@@ -83,6 +84,9 @@ export default function OrderForm({
   hasCard: boolean;
   /** The card being printed, so the artwork shown is the real thing. */
   card: CardProfile | null;
+  /** Which of the account's (possibly several) cards this order is for —
+   *  passed straight through to placeOrder so it isn't re-guessed there. */
+  cardProfileId: string | null;
 }) {
   const router = useRouter();
   // Arriving from the card chooser carries the decision already made; landing
@@ -146,6 +150,7 @@ export default function OrderForm({
             finish,
             fields,
             accent: card?.accent_color ?? null,
+            cardProfileId: cardProfileId ?? undefined,
           });
           if (!r.ok) setError(r.error ?? "Could not place the order.");
           else router.push(`/dashboard/orders/${r.data!.id}`);
@@ -165,7 +170,7 @@ export default function OrderForm({
           <div className="mt-4">
             <CardDesigner
               card={card}
-              profileUrl={`https://tap.scorlyn.com/u/${card.username}`}
+              profileUrl={cardLinkUrl(card, "https://tap.scorlyn.com")}
               width={340}
               onChange={(d) => {
                 setFinish(d.finish);

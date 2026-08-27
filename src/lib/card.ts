@@ -195,6 +195,8 @@ export type CardButton = {
   value: string;
   /** Off keeps the link saved but hides it from the public card. */
   enabled?: boolean;
+  /** WhatsApp only — pre-fills the chat's message box. */
+  message?: string;
 };
 
 export type BusinessHour = { day: string; hours: string };
@@ -254,12 +256,16 @@ export type CardProfile = {
   template: string;
   font: string;
   referral_code: string | null;
+  /** A card dedicated to one action — a tap opens that action directly,
+   *  never this profile page. See resolveButton/cardLinkUrl. */
+  is_single_purpose?: boolean;
 };
 
 export type ResolvedButton = CardButton & { href: string; external: boolean };
 
 /** Turns a stored button into something an <a> can use. */
-export function resolveButton(button: CardButton): ResolvedButton | null {
+export function resolveButton(button: CardButton | null | undefined): ResolvedButton | null {
+  if (!button) return null;
   const value = (button.value ?? "").trim();
   if (!value) return null;
 
@@ -268,7 +274,12 @@ export function resolveButton(button: CardButton): ResolvedButton | null {
   switch (button.kind) {
     case "whatsapp": {
       const number = normalizeWhatsapp(value);
-      return number ? { ...base, href: `https://wa.me/${number}`, external: true } : null;
+      if (!number) return null;
+      const text = button.message?.trim();
+      const href = text
+        ? `https://wa.me/${number}?text=${encodeURIComponent(text)}`
+        : `https://wa.me/${number}`;
+      return { ...base, href, external: true };
     }
     case "phone":
       return { ...base, href: `tel:${value.replace(/\s/g, "")}`, external: false };
@@ -314,6 +325,25 @@ function withProtocol(url: string): string {
   return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 
+/**
+ * What a card actually opens: the profile page, or — for a single-purpose
+ * card — its one action, directly.
+ *
+ * The single shared source of truth for both the printed QR and the NFC tap
+ * handler, so the two can never point at different places. `origin` is the
+ * site host (e.g. `https://tap.scorlyn.com` or `window.location.origin`).
+ */
+export function cardLinkUrl(
+  card: Pick<CardProfile, "username" | "is_single_purpose" | "buttons">,
+  origin: string
+): string {
+  if (card.is_single_purpose) {
+    const resolved = resolveButton(card.buttons?.[0]);
+    if (resolved) return resolved.href;
+  }
+  return `${origin}/u/${card.username}`;
+}
+
 export const KIND_LABELS: Record<ButtonKind, string> = {
   link: "Link",
   whatsapp: "WhatsApp",
@@ -351,6 +381,120 @@ export function defaultLabelFor(kind: ButtonKind): string {
 function defaultLabel(kind: ButtonKind): string {
   return KIND_LABELS[kind] ?? "Link";
 }
+
+/**
+ * A single-purpose card's action, offered on the "pick a purpose" entry
+ * page. Distinct from ButtonKind: "link" covers three different purposes
+ * here (review, website, file), each with its own label and placeholder,
+ * which a keyed-by-kind list can't express.
+ */
+export type CardPurpose = {
+  id: string;
+  kind: ButtonKind;
+  label: string;
+  blurb: string;
+  fieldLabel: string;
+  placeholder: string;
+};
+
+export const CARD_PURPOSES: CardPurpose[] = [
+  {
+    id: "whatsapp",
+    kind: "whatsapp",
+    label: "WhatsApp",
+    blurb: "A tap opens a chat with you, ready to send.",
+    fieldLabel: "WhatsApp number",
+    placeholder: "923001234567",
+  },
+  {
+    id: "instagram",
+    kind: "instagram",
+    label: "Instagram",
+    blurb: "A tap opens your Instagram profile.",
+    fieldLabel: "Instagram link",
+    placeholder: "https://instagram.com/...",
+  },
+  {
+    id: "maps",
+    kind: "maps",
+    label: "Location",
+    blurb: "A tap opens directions to your place.",
+    fieldLabel: "Google Maps link",
+    placeholder: "https://maps.app.goo.gl/...",
+  },
+  {
+    id: "review",
+    kind: "link",
+    label: "Google Review",
+    blurb: "A tap opens your review page, ready to write.",
+    fieldLabel: "Review link",
+    placeholder: "https://g.page/r/.../review",
+  },
+  {
+    id: "pay",
+    kind: "pay",
+    label: "Payment",
+    blurb: "A tap opens your payment link or page.",
+    fieldLabel: "Payment link",
+    placeholder: "https://...",
+  },
+  {
+    id: "website",
+    kind: "link",
+    label: "Website",
+    blurb: "A tap opens your website.",
+    fieldLabel: "Website link",
+    placeholder: "https://yoursite.com",
+  },
+  {
+    id: "menu",
+    kind: "menu",
+    label: "Menu / Catalogue",
+    blurb: "A tap opens your menu or catalogue.",
+    fieldLabel: "Menu link",
+    placeholder: "https://yourmenu.com",
+  },
+  {
+    id: "file",
+    kind: "link",
+    label: "File",
+    blurb: "A tap opens or downloads a file.",
+    fieldLabel: "File link",
+    placeholder: "https://.../file.pdf",
+  },
+  {
+    id: "call",
+    kind: "phone",
+    label: "Call",
+    blurb: "A tap opens the phone dialer.",
+    fieldLabel: "Phone number",
+    placeholder: "+92 300 1234567",
+  },
+  {
+    id: "email",
+    kind: "email",
+    label: "Email",
+    blurb: "A tap opens a new email to you.",
+    fieldLabel: "Email address",
+    placeholder: "you@example.com",
+  },
+  {
+    id: "linkedin",
+    kind: "linkedin",
+    label: "LinkedIn",
+    blurb: "A tap opens your LinkedIn profile.",
+    fieldLabel: "LinkedIn link",
+    placeholder: "https://linkedin.com/in/...",
+  },
+  {
+    id: "tiktok",
+    kind: "tiktok",
+    label: "TikTok",
+    blurb: "A tap opens your TikTok profile.",
+    fieldLabel: "TikTok link",
+    placeholder: "https://tiktok.com/@...",
+  },
+];
 
 /**
  * The one-line "who you are" under the name: "Architect · Studio Nine".

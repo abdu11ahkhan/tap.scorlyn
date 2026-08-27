@@ -8,7 +8,7 @@ import NfcCardArt, {
   DEFAULT_CARD_FIELDS,
   type CardFinish,
 } from "@/components/card-design/NfcCardArt";
-import type { CardProfile } from "@/lib/card";
+import { cardLinkUrl, type CardProfile } from "@/lib/card";
 
 /**
  * Asked once, the moment a card goes live: which physical card do you want?
@@ -38,10 +38,10 @@ export default function NfcFormatPrompt({
   const [ownFile, setOwnFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const profileUrl =
-    typeof window === "undefined"
-      ? `https://tap.scorlyn.com/u/${card.username}`
-      : `${window.location.origin}/u/${card.username}`;
+  const profileUrl = cardLinkUrl(
+    card,
+    typeof window === "undefined" ? "https://tap.scorlyn.com" : window.location.origin
+  );
 
   const save = async () => {
     setSaving(true);

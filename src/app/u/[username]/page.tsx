@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { resolveButtons, type CardProfile } from "@/lib/card";
+import { resolveButton, resolveButtons, type CardProfile } from "@/lib/card";
 import { renderCardTemplate } from "@/components/card-templates";
 import TapTracker from "@/components/nfc/TapTracker";
 import OutboundClickTracker from "@/components/nfc/OutboundClickTracker";
@@ -87,6 +87,14 @@ export default async function CardProfilePage({
 
   const card = await getCard(username);
   if (!card) return notFound();
+
+  // Defense in depth: the NFC tap handler already redirects a single-purpose
+  // card straight to its action and never sends anyone here, but this covers
+  // an old bookmark, a shared link, or someone typing the URL directly.
+  if (card.is_single_purpose) {
+    const resolved = resolveButton(card.buttons?.[0]);
+    if (resolved) redirect(resolved.href);
+  }
 
   // `src=nfc` is appended by the NFC redirect handler, so a physical tap is
   // distinguishable from someone who was sent the link. `nfc` carries the

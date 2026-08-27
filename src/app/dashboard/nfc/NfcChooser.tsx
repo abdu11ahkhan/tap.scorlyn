@@ -24,11 +24,15 @@ type Plan = { id: string; name: string; price_pkr: number; blurb: string | null 
  */
 export default function NfcChooser({
   card,
+  cardId,
   profileUrl,
   blank,
   custom,
 }: {
   card: CardProfile;
+  /** Which of the account's cards this order is for — carried into the
+   *  order form so a multi-card account can't have the wrong one guessed. */
+  cardId: string;
   profileUrl: string;
   blank: Plan | null;
   custom: Plan | null;
@@ -70,7 +74,7 @@ export default function NfcChooser({
             </ul>
 
             <Link
-              href={`/dashboard/orders?plan=${blank.id}`}
+              href={`/dashboard/orders?plan=${blank.id}&card=${cardId}`}
               className="app-btn app-btn-secondary mt-5"
             >
               order blank
@@ -127,7 +131,7 @@ export default function NfcChooser({
             </div>
 
             <Link
-              href={`/dashboard/orders?plan=${custom.id}&finish=${finish}`}
+              href={`/dashboard/orders?plan=${custom.id}&finish=${finish}&card=${cardId}`}
               className="app-btn app-btn-primary mt-5"
             >
               order this design

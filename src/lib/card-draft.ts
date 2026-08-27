@@ -21,6 +21,8 @@ export type CardForm = {
   accent_color: string;
   template: string;
   font: string;
+  /** A card dedicated to one action — see CardProfile.is_single_purpose. */
+  is_single_purpose: boolean;
 };
 
 export const EMPTY_CARD_FORM: CardForm = {
@@ -41,6 +43,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   accent_color: "#111111",
   template: "minimal",
   font: "sans",
+  is_single_purpose: false,
 };
 
 export type CardDraft = {
@@ -129,6 +132,7 @@ export function draftToCardProfile(
     template: form.template,
     font: form.font,
     referral_code: null,
+    is_single_purpose: form.is_single_purpose,
   };
 }
 

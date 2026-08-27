@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import BrandMark from "@/components/layout/BrandMark";
 import AccountMenu, { MobileAccountLinks } from "@/components/layout/AccountMenu";
+import StartChooserModal from "@/components/nfc/StartChooserModal";
 
 const LINKS = [
   { label: "templates", href: "/templates" },
@@ -17,6 +18,7 @@ const LINKS = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [chooserOpen, setChooserOpen] = useState(false);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => setScrolled(latest > 40));
@@ -61,12 +63,13 @@ export function Navbar() {
           <AccountMenu />
           {/* Hidden on the smallest screens: at 360px it wrapped onto two
               lines and overlapped the wordmark. The menu button carries it. */}
-          <Link
-            href="/templates"
+          <button
+            type="button"
+            onClick={() => setChooserOpen(true)}
             className="sticker sticker-press hidden shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-teal px-4 py-2 text-[14px] font-black uppercase tracking-tight text-white sm:inline-flex sm:px-5 sm:py-2.5 sm:text-[15px]"
           >
             get started
-          </Link>
+          </button>
 
           <button
             onClick={() => setOpen((v) => !v)}
@@ -80,6 +83,16 @@ export function Navbar() {
 
       {open && (
         <div className="sticker mx-auto mt-3 max-w-6xl rounded-3xl border border-line bg-white p-4 md:hidden">
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false);
+              setChooserOpen(true);
+            }}
+            className="block w-full rounded-xl bg-teal px-4 py-3 text-left text-lg font-black uppercase tracking-tight text-white"
+          >
+            get started
+          </button>
           {LINKS.map((link) => (
             <Link
               key={link.href}
@@ -93,6 +106,8 @@ export function Navbar() {
           <MobileAccountLinks onNavigate={() => setOpen(false)} />
         </div>
       )}
+
+      <StartChooserModal open={chooserOpen} onClose={() => setChooserOpen(false)} />
     </motion.header>
   );
 }

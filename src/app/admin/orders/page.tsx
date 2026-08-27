@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download, Flag, Search } from "lucide-react";
+import { Download, Flag, Search, Zap } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { fetchAll } from "@/lib/supabase/fetch-all";
 import OrdersTable, { type AdminOrder } from "./OrdersTable";
@@ -12,9 +12,16 @@ const PAGE_SIZE = 50;
 export default async function AdminOrders({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string; plan?: string; flagged?: string; unassigned?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    status?: string;
+    plan?: string;
+    flagged?: string;
+    unassigned?: string;
+    quick?: string;
+  }>;
 }) {
-  const { q, status, plan, flagged, unassigned } = await searchParams;
+  const { q, status, plan, flagged, unassigned, quick } = await searchParams;
   const supabase = await createClient();
 
   // Delivered orders whose card_profile_id has no matching nfc_cards row —
@@ -49,6 +56,7 @@ export default async function AdminOrders({
   if (status) query = query.eq("status", status);
   if (plan) query = query.eq("plan_id", plan);
   if (flagged === "1") query = query.eq("flagged", true);
+  if (quick === "1") query = query.eq("is_quick_order", true);
   if (unassigned === "1") query = query.in("id", unassignedOrderIds.length > 0 ? unassignedOrderIds : ["00000000-0000-0000-0000-000000000000"]);
   if (q?.trim()) {
     const term = `%${q.trim()}%`;
@@ -75,10 +83,11 @@ export default async function AdminOrders({
     status: string;
     plan_id: string | null;
     created_at: string;
+    is_quick_order: boolean;
   }>((from, to) =>
     supabase
       .from("orders")
-      .select("amount_pkr, status, plan_id, created_at")
+      .select("amount_pkr, status, plan_id, created_at, is_quick_order")
       .range(from, to)
   );
   const paidStatuses = ["paid", "printing", "shipped", "delivered"];
@@ -96,6 +105,11 @@ export default async function AdminOrders({
   const pending = all.filter((o) => o.status === "pending");
   const pendingTotal = pending.reduce((s, o) => s + o.amount_pkr, 0);
 
+  // Came through the "order an NFC card" fast-track — no template/preview
+  // step, so these are worth a look before print rather than assuming
+  // they're as clean as one built through the normal editor.
+  const quickOrders = all.filter((o) => o.is_quick_order);
+
   const byPlan = all.reduce<Record<string, number>>((acc, o) => {
     const k = o.plan_id ?? "—";
     acc[k] = (acc[k] ?? 0) + 1;
@@ -112,6 +126,12 @@ export default async function AdminOrders({
       value: `${unassignedOrderIds.length}`,
       hint: unassignedOrderIds.length > 0 ? "needs an NFC card linked" : undefined,
       warn: unassignedOrderIds.length > 0,
+    },
+    {
+      label: "quick orders",
+      value: `${quickOrders.length}`,
+      hint: "the fast-track \"order an nfc card\" flow — no preview step, worth a look",
+      href: "/admin/orders?quick=1",
     },
   ];
 
@@ -136,9 +156,9 @@ export default async function AdminOrders({
       </div>
 
       {/* Money */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-6">
         {stats.map((s) =>
-          s.label === "delivered, unassigned" && s.warn ? (
+          s.warn ? (
             <Link
               key={s.label}
               href="/admin/orders?unassigned=1"
@@ -147,6 +167,16 @@ export default async function AdminOrders({
               <p className="text-2xl font-semibold tabular-nums tracking-tight text-sc-warning">{s.value}</p>
               <p className="app-sub mt-1">{s.label}</p>
               {s.hint && <p className="mt-1 text-[12px] text-sc-warning/70">{s.hint}</p>}
+            </Link>
+          ) : s.href ? (
+            <Link
+              key={s.label}
+              href={s.href}
+              className="app-panel app-panel-pad transition-colors hover:border-sc-gold/50"
+            >
+              <p className="text-2xl font-semibold tabular-nums tracking-tight">{s.value}</p>
+              <p className="app-sub mt-1">{s.label}</p>
+              {s.hint && <p className="mt-1 text-[12px] text-sc-text-dimmer">{s.hint}</p>}
             </Link>
           ) : (
             <div key={s.label} className="app-panel app-panel-pad">
@@ -162,6 +192,17 @@ export default async function AdminOrders({
         <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-3 border-sc-warning/40">
           <p className="text-[13px] font-medium text-sc-warning">
             Showing delivered orders with no NFC card linked yet.
+          </p>
+          <Link href="/admin/orders" className="app-btn app-btn-ghost">
+            Clear
+          </Link>
+        </div>
+      )}
+
+      {quick === "1" && (
+        <div className="app-panel app-panel-pad flex flex-wrap items-center justify-between gap-3 border-sc-gold/40">
+          <p className="text-[13px] font-medium text-sc-gold-text">
+            Showing orders placed through &quot;order an NFC card&quot; — destination and design chosen in one step, no preview. Worth a check before printing.
           </p>
           <Link href="/admin/orders" className="app-btn app-btn-ghost">
             Clear
@@ -214,6 +255,13 @@ export default async function AdminOrders({
         >
           <Flag className="h-3.5 w-3.5" />
           Flagged
+        </Link>
+        <Link
+          href={quick === "1" ? "/admin/orders" : "/admin/orders?quick=1"}
+          className={`app-btn ${quick === "1" ? "app-btn-primary" : "app-btn-ghost"}`}
+        >
+          <Zap className="h-3.5 w-3.5" />
+          Quick orders
         </Link>
       </form>
 
