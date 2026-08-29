@@ -188,7 +188,16 @@ export default function ReferralBanner({
           exit={{ scale: 0.7, opacity: 0 }}
           transition={SPRING}
           onClick={() => setShown("full")}
-          className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border-2 border-sc-gold bg-sc-gold px-4 py-2.5 text-[12px] font-black uppercase tracking-tight text-sc-gold-ink shadow-[0_6px_20px_rgba(0,0,0,0.45)] mb-[env(safe-area-inset-bottom)]"
+          // Stacked above the save/QR dock rather than beside it: the dock
+          // is centred and, on a phone-width screen, wide enough to reach
+          // under this corner, which used to put "get a card" right on top
+          // of "save contact". --sc-dock-offset is that dock's own measured
+          // height, published the same way this component publishes its own
+          // for the QR trigger and logo watermark to read.
+          className="fixed right-4 z-50 flex items-center gap-2 rounded-full border-2 border-sc-gold bg-sc-gold px-4 py-2.5 text-[12px] font-black uppercase tracking-tight text-sc-gold-ink shadow-[0_6px_20px_rgba(0,0,0,0.45)]"
+          style={{
+            bottom: "calc(1rem + var(--sc-dock-offset, 0px) + 0.5rem + env(safe-area-inset-bottom))",
+          }}
         >
           <SmartphoneNfc className="h-4 w-4" />
           get a card

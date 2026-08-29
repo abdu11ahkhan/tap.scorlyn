@@ -8,7 +8,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -30,7 +29,7 @@ export default function StudioCard({
   // assumption. On the native surface every value below matches what the
   // literal white/#111 pair used to produce exactly.
   const theme = resolveCardTheme(card, "#FFFFFF");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
   const gallery = resolveGallery(card.gallery);
 
   const sections = [
@@ -149,13 +148,6 @@ export default function StudioCard({
               })}
             </nav>
 
-            <SaveContact
-              card={card}
-              className="mt-5 flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
-              style={{ background: accent, color: onAccent }}
-            >
-              Save to contacts
-            </SaveContact>
           </section>
         )}
       </main>

@@ -9,7 +9,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -143,13 +142,6 @@ export default function GridCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-8 flex min-h-12 items-center justify-center border text-center text-[12px] font-black uppercase tracking-[0.2em]"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${200 + buttons.length * 60}ms` }}
-        >
-          save to contacts
-        </SaveContact>
       </main>
     </div>
   );

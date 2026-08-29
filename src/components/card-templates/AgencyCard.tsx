@@ -8,7 +8,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -189,9 +188,9 @@ export default function AgencyCard({
 
       {/* Contact */}
       {/* Extra bottom padding, not the family's usual py-14: this is the last
-          thing on the page, and the platform's QR trigger is permanently
-          fixed to the bottom of the viewport — anything shorter left "save
-          to contacts" partially behind it once scrolled all the way down. */}
+          thing on the page, and the platform's save/QR dock is permanently
+          fixed to the bottom of the viewport — anything shorter left this
+          section partially behind it once scrolled all the way down. */}
       <section
         id="contact"
         className="scroll-mt-14 border-t px-6 pt-14 pb-28 text-center"
@@ -201,13 +200,6 @@ export default function AgencyCard({
           work with us
         </h2>
         <p className="mt-4 text-[24px] font-black tracking-tight">Let&apos;s talk.</p>
-        <SaveContact
-          card={card}
-          className="mt-6 inline-flex items-center justify-center rounded-full px-8 py-4 text-[13px] font-black uppercase tracking-tight"
-          style={{ background: accent, color: onAccent }}
-        >
-          save to contacts
-        </SaveContact>
       </section>
     </div>
   );

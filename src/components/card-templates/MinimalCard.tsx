@@ -1,7 +1,6 @@
-import { ArrowUpRight, Download, MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -114,18 +113,6 @@ export default function MinimalCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors"
-          style={{
-            borderColor: theme.fgMuted,
-            color: theme.fg,
-            ["--d" as string]: `${300 + buttons.length * 45}ms`,
-          }}
-        >
-          <Download className="h-3.5 w-3.5" />
-          Save to contacts
-        </SaveContact>
 
         <p
           className="card-rise mt-8 text-[10px] uppercase tracking-[0.2em]"

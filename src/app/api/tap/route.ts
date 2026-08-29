@@ -25,7 +25,7 @@ const EVENT_TYPES = new Set([
 /**
  * Records an interaction with a card — a page view, or (Phase 7) a specific
  * action on it: a save, a share, a QR open, an outbound link tap. Called from
- * TapTracker/OutboundClickTracker/ShareButton/CardQr/SaveContact on the
+ * TapTracker/OutboundClickTracker/ShareButton/CardQr on the
  * moment it happens. Fire-and-forget from every caller's point of view — a
  * failure here must never break the card itself, and callers never await
  * this before letting their own action (a tel:/mailto: navigation, a native

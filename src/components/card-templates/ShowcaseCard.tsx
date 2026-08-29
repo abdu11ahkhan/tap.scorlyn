@@ -1,7 +1,6 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -146,13 +145,6 @@ export default function ShowcaseCard({
           })}
         </div>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-9 flex min-h-12 items-center justify-center rounded-xl border text-center text-[12px] font-black uppercase tracking-[0.2em]"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${230 + buttons.length * 60}ms` }}
-        >
-          save to contacts
-        </SaveContact>
       </main>
     </div>
   );

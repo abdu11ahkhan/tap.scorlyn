@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { QrCode, X, UserPlus, Download } from "lucide-react";
 import { buildVCard, vcardFilename, type VCardSource } from "@/lib/vcard";
@@ -16,7 +16,14 @@ import { trackCardEvent } from "@/lib/track-event";
  * A tap is the primary way this card is handed over, but plenty of phones will
  * not read a tag, and often the card is being shown on a screen rather than
  * held out — the QR covers both without cluttering the card until asked for.
+ *
+ * The dock publishes its own measured height as --sc-dock-offset, the same
+ * pattern ReferralBanner uses for itself. It's always mounted now (this is
+ * the card's one save/QR control), so anything else fixed to the bottom —
+ * right now just the referral pill — reads the var to sit above it instead
+ * of guessing a fixed offset that drifts the moment this dock's padding does.
  */
+const DOCK_OFFSET_VAR = "--sc-dock-offset";
 export default function CardQr({
   card,
   url,
@@ -38,6 +45,24 @@ export default function CardQr({
   const [saved, setSaved] = useState(false);
 
   const href = url ?? resolved;
+
+  const dockRef = useRef<HTMLDivElement>(null);
+
+  // Measured rather than guessed, and republished on resize: the dock's
+  // height changes with showQr (one button vs two) and with font-size zoom.
+  useEffect(() => {
+    const root = document.documentElement;
+    const el = dockRef.current;
+    if (!el) return;
+    const publish = () => root.style.setProperty(DOCK_OFFSET_VAR, `${el.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      root.style.setProperty(DOCK_OFFSET_VAR, "0px");
+    };
+  }, [showQr]);
 
   // Escape closes, and the page behind must not scroll under the sheet.
   useEffect(() => {
@@ -139,6 +164,7 @@ export default function CardQr({
           so this lifts clear of it instead of being covered. It sits above
           the logo watermark's z-30 so a wide logo can never obscure it. */}
       <div
+        ref={dockRef}
         className="pointer-events-none fixed inset-x-0 z-40 flex justify-center px-4"
         style={{ bottom: "calc(1rem + var(--sc-referral-offset, 0px))" }}
       >

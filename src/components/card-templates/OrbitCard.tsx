@@ -1,7 +1,6 @@
 import { MapPin } from "lucide-react";
 import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -20,7 +19,7 @@ export default function OrbitCard({
   buttons: ResolvedButton[];
 }) {
   const theme = resolveCardTheme(card, "#0B0B0F");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
 
   return (
@@ -118,17 +117,6 @@ export default function OrbitCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-10 inline-flex h-12 items-center justify-center rounded-full px-7 text-[13px] font-semibold"
-          style={{
-            background: accent,
-            color: onAccent,
-            ["--d" as string]: `${320 + buttons.length * 60}ms`,
-          }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

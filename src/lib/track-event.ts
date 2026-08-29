@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Fires a card interaction event at /api/tap. Every caller (SaveContact,
- * ShareButton, CardQr, OutboundClickTracker) uses this instead of its own
+ * Fires a card interaction event at /api/tap. Every caller (ShareButton,
+ * CardQr, OutboundClickTracker) uses this instead of its own
  * fetch, so the "never block, never throw, never await" contract lives in
  * one place. Never call this before letting the real action (a tel:/
  * mailto: navigation, a native share, a vCard download) proceed — it's

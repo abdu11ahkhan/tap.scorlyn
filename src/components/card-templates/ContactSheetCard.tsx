@@ -1,6 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
 import {
-  readableOn,
   fontStack,
   initialsOf,
   resolveCardTheme,
@@ -8,7 +7,6 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -112,13 +110,6 @@ export default function ContactSheetCard({
           ))}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="mt-7 flex h-12 items-center justify-center border text-[13px] font-bold uppercase tracking-widest"
-          style={{ background: accent, color: readableOn(accent), borderColor: theme.fg }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

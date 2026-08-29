@@ -9,7 +9,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -27,7 +26,7 @@ export default function ReelCard({
   buttons: ResolvedButton[];
 }) {
   const theme = resolveCardTheme(card, "#0B0B0B");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
   const gallery = resolveGallery(card.gallery);
   const slots = gallery.length > 0 ? gallery : [null, null, null];
@@ -61,13 +60,6 @@ export default function ReelCard({
             <p className="card-headline truncate text-[11px] font-semibold" style={{ color: theme.fgMuted }}>{role}</p>
           )}
         </div>
-        <SaveContact
-          card={card}
-          className="flex min-h-11 shrink-0 items-center justify-center rounded-full px-3.5 text-[11px] font-black uppercase tracking-widest"
-          style={{ background: accent, color: onAccent }}
-        >
-          save
-        </SaveContact>
       </header>
 
       {card.bio && (

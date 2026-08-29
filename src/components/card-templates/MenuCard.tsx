@@ -8,7 +8,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -146,13 +145,6 @@ export default function MenuCard({
           </a>
         )}
 
-        <SaveContact
-          card={card}
-          className="mt-3 flex h-12 items-center justify-center rounded-lg border text-[13px] font-bold transition-colors"
-          style={{ borderColor: theme.fgMuted, color: theme.fg }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

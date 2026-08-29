@@ -1,7 +1,6 @@
 import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
 import { fontStack, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -149,18 +148,6 @@ export default function WaitlistCard({
             );
           })}
         </div>
-
-        {/* This template's CTA is the waitlist form, but a card handed over
-            in person still has to be savable — every other template offers
-            it, and leaving it out here made it look like the feature was
-            missing on "coming soon" cards. */}
-        <SaveContact
-          card={card}
-          className="card-rise mt-8 inline-flex min-h-12 items-center justify-center rounded-full border px-6 text-[13px] font-bold backdrop-blur-xl"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: "300ms" }}
-        >
-          Save to contacts
-        </SaveContact>
 
         <p className="mt-12 text-[11px] font-bold" style={{ color: theme.fgMuted }}>
           {card.full_name}

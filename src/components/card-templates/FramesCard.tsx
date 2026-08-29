@@ -1,14 +1,12 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import {
   roleLine,
-  readableOn,
   fontStack,
   resolveCardTheme,
   resolveGallery,
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -98,13 +96,6 @@ export default function FramesCard({
           ))}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="mt-6 flex h-12 items-center justify-center rounded-full text-[13px] font-bold"
-          style={{ background: accent, color: readableOn(accent) }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

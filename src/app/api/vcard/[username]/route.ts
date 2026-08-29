@@ -7,8 +7,8 @@ export const dynamic = "force-dynamic";
 /**
  * vCard for a published profile.
  *
- * The buttons themselves build the file client-side (see SaveContact) so they
- * work on previews and unsaved drafts too; this route stays as the no-JS
+ * The card's own save control (see CardQr) builds the file client-side so it
+ * works on previews and unsaved drafts too; this route stays as the no-JS
  * fallback and for anything linking straight to the .vcf.
  */
 export async function GET(

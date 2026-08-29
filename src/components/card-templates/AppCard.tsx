@@ -8,7 +8,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -134,13 +133,6 @@ export default function AppCard({
           </section>
         )}
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-8 flex min-h-12 items-center justify-center rounded-2xl text-[12px] font-black uppercase tracking-[0.2em] transition-transform active:scale-[0.98]"
-          style={{ background: accent, color: theme.onAccent, ["--d" as string]: "420ms" }}
-        >
-          save to contacts
-        </SaveContact>
       </main>
     </div>
   );

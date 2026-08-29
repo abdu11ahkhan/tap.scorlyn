@@ -12,11 +12,11 @@ const KEY_PREFIX = "scorlyntap_ref_note:";
  *
  * Rendered once, at the true bottom of every card page (see
  * src/app/u/[username]/page.tsx), independent of which of the 36
- * templates is active — a template's own "save to contacts" control can
- * sit anywhere on the page, so the two are bridged through sessionStorage
- * rather than React state: SaveContact is a completely separate client
- * component instance, possibly rendered by server-rendered template
- * markup with no shared component tree to pass state through.
+ * templates is active — the save/QR dock (see CardQr) that actually saves
+ * the contact is fixed to the bottom of the viewport, so the two are
+ * bridged through sessionStorage rather than React state: CardQr is a
+ * completely separate client component instance with no shared component
+ * tree to pass state through.
  *
  * sessionStorage, not localStorage: this is a note about *this specific
  * visit*, not something that should reappear the next time the same

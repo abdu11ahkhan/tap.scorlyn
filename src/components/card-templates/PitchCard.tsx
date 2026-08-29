@@ -7,7 +7,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -172,13 +171,6 @@ export default function PitchCard({
       )}
 
       <footer className="px-6 pb-20 pt-4 text-center">
-        <SaveContact
-          card={card}
-          className="flex min-h-12 items-center justify-center rounded-lg border text-[12px] font-black uppercase tracking-widest"
-          style={{ borderColor: theme.fgMuted, color: theme.fg }}
-        >
-          save to contacts
-        </SaveContact>
       </footer>
     </div>
   );

@@ -1,7 +1,6 @@
 import { MapPin } from "lucide-react";
 import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -19,7 +18,7 @@ export default function DockCard({
   buttons: ResolvedButton[];
 }) {
   const theme = resolveCardTheme(card, "#000000");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
 
   return (
@@ -118,17 +117,6 @@ export default function DockCard({
 
           {/* Outside the scroller. Inside it, the primary action slid off the
               right edge as soon as there were more than four links. */}
-          <SaveContact
-            card={card}
-            className="card-rise flex h-14 shrink-0 items-center justify-center rounded-2xl px-5 text-[13px] font-bold"
-            style={{
-              background: accent,
-              color: onAccent,
-              ["--d" as string]: `${260 + buttons.length * 55}ms`,
-            }}
-          >
-            Save
-          </SaveContact>
         </div>
       </div>
     </div>

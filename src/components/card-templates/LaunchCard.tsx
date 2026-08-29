@@ -5,7 +5,6 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -99,13 +98,6 @@ export default function LaunchCard({
           </div>
         )}
 
-        <SaveContact
-          card={card}
-          className="mt-10 inline-flex min-h-12 items-center justify-center rounded-lg border px-6 text-[13px] font-semibold"
-          style={{ borderColor: theme.fgMuted, color: theme.fg }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

@@ -1,7 +1,6 @@
 import { MapPin } from "lucide-react";
 import { initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -121,13 +120,6 @@ export default function EditorialCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-9 flex min-h-12 items-center justify-center border-y text-center text-[12px] uppercase tracking-[0.3em]"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${310 + buttons.length * 55}ms` }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

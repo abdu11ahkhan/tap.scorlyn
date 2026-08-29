@@ -8,7 +8,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -115,13 +114,6 @@ export default function BoldCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-6 inline-flex min-h-12 items-center justify-center rounded-full border-2 px-6 text-[12px] font-bold uppercase tracking-widest"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${320 + buttons.length * 60}ms` }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

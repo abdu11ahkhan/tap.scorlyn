@@ -9,7 +9,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -27,7 +26,7 @@ export default function MosaicCard({
   buttons: ResolvedButton[];
 }) {
   const theme = resolveCardTheme(card, "#0F0F12");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
   const gallery = resolveGallery(card.gallery);
 
@@ -117,13 +116,6 @@ export default function MosaicCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="mt-5 flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
-          style={{ background: accent, color: onAccent }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

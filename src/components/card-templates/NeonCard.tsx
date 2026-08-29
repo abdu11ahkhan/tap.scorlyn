@@ -1,7 +1,6 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -143,18 +142,6 @@ export default function NeonCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-7 inline-flex min-h-12 items-center gap-2 rounded-full border-2 px-5 text-[12px] font-bold uppercase tracking-[0.2em]"
-          style={{
-            borderColor: accent,
-            color: theme.fg,
-            boxShadow: `0 0 14px ${accent}55`,
-            ["--d" as string]: `${280 + buttons.length * 45}ms`,
-          }}
-        >
-          save to contacts
-        </SaveContact>
       </main>
     </div>
   );

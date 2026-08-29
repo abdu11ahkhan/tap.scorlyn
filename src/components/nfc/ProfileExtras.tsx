@@ -1,7 +1,6 @@
-import { Banknote, ChevronDown, Clock, Download, PlayCircle } from "lucide-react";
+import { Banknote, ChevronDown, Clock, PlayCircle } from "lucide-react";
 import { readableOn, type BusinessHour, type CardProfile, type PaymentMethod } from "@/lib/card";
 import CopyRow from "./CopyRow";
-import SaveContact from "@/components/card-templates/SaveContact";
 
 /**
  * Optional blocks appended below whichever template rendered above.
@@ -113,8 +112,8 @@ export default function ProfileExtras({
       // a `fixed inset-0` layer carrying no z-index. A positioned element
       // inside an earlier sibling paints above a later static one, so that
       // backdrop was laid over this whole section — on glass it veiled the
-      // hours, the pay control and the save button alike, which reads as the
-      // buttons being transparent when they are simply underneath something.
+      // hours and the pay control alike, which reads as the buttons being
+      // transparent when they are simply underneath something.
       className="card-extras relative z-10 pb-20 pt-2"
       style={
         {
@@ -123,10 +122,10 @@ export default function ProfileExtras({
           "--x-panel": dark ? "rgba(255,255,255,0.055)" : "#ffffff",
           // Controls get their own fill, because a panel tint and a button are
           // not the same job. At 5.5% white over a near-black card the panel
-          // colour is a wash, which left "Pay ..." and "Save to contacts"
-          // looking like outlines with a hole in them rather than things you
-          // press. Lifted off the card's own ground rather than a fixed grey,
-          // so it still sits right when the owner has picked a surface colour.
+          // colour is a wash, which left "Pay ..." looking like an outline
+          // with a hole in it rather than something you press. Lifted off the
+          // card's own ground rather than a fixed grey, so it still sits
+          // right when the owner has picked a surface colour.
           "--x-button": dark ? lift(tone, 0.12) : "#ffffff",
           // The controls are drawn in the sticker language — ink border, hard
           // offset shadow — and ink is #0a0a0a. On a near-black card that is
@@ -233,15 +232,6 @@ export default function ProfileExtras({
             </div>
           </details>
         )}
-
-        <SaveContact
-          card={card}
-          style={stamp}
-          className="flex h-[68px] items-center justify-center gap-2 rounded-2xl border-2 [border-color:var(--x-edge)] [background:var(--x-button)] text-[15px] font-black"
-        >
-          <Download className="h-4 w-4" />
-          Save to contacts
-        </SaveContact>
       </div>
     </section>
   );

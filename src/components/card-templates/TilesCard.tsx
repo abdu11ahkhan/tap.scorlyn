@@ -1,7 +1,6 @@
 import { MapPin } from "lucide-react";
 import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -98,17 +97,6 @@ export default function TilesCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-8 flex h-13 items-center justify-center rounded-2xl py-4 text-[13px] font-semibold"
-          style={{
-            background: accent,
-            color: onAccent,
-            ["--d" as string]: `${180 + buttons.length * 55}ms`,
-          }}
-        >
-          Save to contacts
-        </SaveContact>
 
         <p className="mt-6 text-center text-[11px] font-medium uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
           @{card.username}

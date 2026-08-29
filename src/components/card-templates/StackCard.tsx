@@ -1,7 +1,6 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -22,7 +21,7 @@ export default function StackCard({
   // assumption. On the native surface every value below matches what the
   // literal white/#101010 pair used to produce exactly.
   const theme = resolveCardTheme(card, "#FFFFFF");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
 
   const sections = [
     { id: "top", label: "home" },
@@ -141,10 +140,10 @@ export default function StackCard({
         )}
 
         {/* Contact. Extra bottom padding, not the family's usual py-14: this
-            is the last thing on the page, and the platform's QR trigger is
+            is the last thing on the page, and the platform's save/QR dock is
             permanently fixed to the bottom of the viewport — anything
-            shorter left "save to contacts" partially behind it once
-            scrolled all the way down. */}
+            shorter left this section partially behind it once scrolled all
+            the way down. */}
         <section id="contact" className="scroll-mt-16 border-t pt-14 pb-28 text-center" style={{ borderColor: theme.border }}>
           <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             get in touch
@@ -152,13 +151,6 @@ export default function StackCard({
           <p className="mt-4 text-[24px] font-black tracking-tight">
             Let&apos;s make something.
           </p>
-          <SaveContact
-            card={card}
-            className="mt-6 inline-flex h-13 items-center justify-center rounded-full px-8 py-3.5 text-[13px] font-black uppercase tracking-tight"
-            style={{ background: accent, color: onAccent }}
-          >
-            save to contacts
-          </SaveContact>
         </section>
       </main>
     </div>

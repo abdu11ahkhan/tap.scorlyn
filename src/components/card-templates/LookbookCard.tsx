@@ -7,7 +7,6 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -35,7 +34,7 @@ export default function LookbookCard({
   // assumption. On the native surface every value below matches what the
   // literal #0A0A0A/white pair used to produce exactly.
   const theme = resolveCardTheme(card, "#0A0A0A");
-  const { accent, accentText: ink, onAccent } = theme;
+  const { accent, accentText: ink } = theme;
   const role = roleLine(card);
   const gallery = resolveGallery(card.gallery);
   const [lead, ...rest] = gallery;
@@ -126,13 +125,6 @@ export default function LookbookCard({
           ))}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="mt-8 flex h-12 items-center justify-center rounded-full text-[13px] font-bold"
-          style={{ background: accent, color: onAccent }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

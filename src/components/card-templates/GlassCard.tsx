@@ -1,7 +1,6 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { fontStack, initialsOf, mixHex, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -139,13 +138,6 @@ export default function GlassCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-6 flex min-h-12 items-center justify-center rounded-2xl border text-center text-[13px] font-semibold backdrop-blur-xl"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${160 + buttons.length * 60}ms` }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

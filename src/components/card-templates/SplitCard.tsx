@@ -7,7 +7,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -144,13 +143,6 @@ export default function SplitCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-8 inline-flex min-h-12 items-center justify-center rounded-lg border px-6 text-[13px] font-semibold tracking-wide"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${320 + buttons.length * 60}ms` }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

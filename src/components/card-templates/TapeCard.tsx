@@ -1,7 +1,6 @@
 import { MapPin } from "lucide-react";
 import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -143,13 +142,6 @@ export default function TapeCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-8 flex min-h-12 items-center justify-center rounded-lg border text-center text-[13px] font-bold"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${240 + buttons.length * 60}ms` }}
-        >
-          save to contacts
-        </SaveContact>
       </main>
     </div>
   );

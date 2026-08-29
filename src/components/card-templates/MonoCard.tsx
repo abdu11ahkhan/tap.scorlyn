@@ -1,6 +1,5 @@
 import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -137,13 +136,6 @@ export default function MonoCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-6 inline-flex min-h-12 items-center gap-2 rounded border px-4 text-[13px]"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: "320ms" }}
-        >
-          <span style={{ color: ink }}>$</span> save-contact
-        </SaveContact>
       </main>
     </div>
   );

@@ -7,7 +7,6 @@ import {
   type ResolvedButton,
 } from "@/lib/card";
 import { iconFor } from "./button-icons";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -128,13 +127,6 @@ export default function StickerCard({
           })}
         </nav>
 
-        <SaveContact
-          card={card}
-          className="card-rise mt-6 flex min-h-12 items-center justify-center rounded-full border-2 text-center text-[12px] font-black uppercase tracking-widest"
-          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${190 + buttons.length * 60}ms` }}
-        >
-          save to contacts
-        </SaveContact>
       </main>
     </div>
   );

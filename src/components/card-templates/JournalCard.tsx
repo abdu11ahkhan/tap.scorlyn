@@ -6,7 +6,6 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -96,13 +95,6 @@ export default function JournalCard({
           </div>
         </nav>
 
-        <SaveContact
-          card={card}
-          className="mt-8 inline-flex min-h-12 items-center rounded-sm border px-5 font-serif text-[16px] italic"
-          style={{ borderColor: theme.fgMuted, color: theme.fg }}
-        >
-          Save to contacts
-        </SaveContact>
       </main>
     </div>
   );

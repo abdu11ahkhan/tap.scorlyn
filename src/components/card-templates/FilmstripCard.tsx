@@ -8,7 +8,6 @@ import {
   type CardProfile,
   type ResolvedButton,
 } from "@/lib/card";
-import SaveContact from "./SaveContact";
 
 import BackgroundEffect from "./BackgroundEffect";
 /**
@@ -134,13 +133,6 @@ export default function FilmstripCard({
       </nav>
 
       <div className="mt-6 px-5">
-        <SaveContact
-          card={card}
-          className="flex h-12 items-center justify-center rounded-xl text-[13px] font-bold"
-          style={{ background: accent, color: theme.onAccent }}
-        >
-          Save to contacts
-        </SaveContact>
       </div>
       </main>
     </div>
