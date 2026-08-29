@@ -128,10 +128,10 @@ export default async function CardTemplatePreview({
   searchParams,
 }: {
   params: Promise<{ template: string }>;
-  searchParams: Promise<{ accent?: string; font?: string; raw?: string }>;
+  searchParams: Promise<{ accent?: string; font?: string; raw?: string; purpose?: string }>;
 }) {
   const { template } = await params;
-  const { accent, font, raw } = await searchParams;
+  const { accent, font, raw, purpose } = await searchParams;
 
   if (!TEMPLATE_IDS.includes(template as (typeof TEMPLATE_IDS)[number])) {
     return notFound();
@@ -157,6 +157,10 @@ export default async function CardTemplatePreview({
   const query = new URLSearchParams({ accent: safeAccent, font: safeFont, raw: "1" });
 
   return (
-    <PreviewChrome src={`/preview/card/${template}?${query}`} templateId={template} />
+    <PreviewChrome
+      src={`/preview/card/${template}?${query}`}
+      templateId={template}
+      purpose={purpose ?? null}
+    />
   );
 }

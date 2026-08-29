@@ -14,15 +14,21 @@ import { ArrowLeft } from "lucide-react";
 export default function PreviewChrome({
   src,
   templateId,
+  purpose,
 }: {
   src: string;
   templateId: string;
+  /** Carried from the gallery when this preview was opened mid single-purpose
+   *  flow, so "customise" continues it instead of starting a normal card. */
+  purpose?: string | null;
 }) {
+  const purposeQuery = purpose ? `?purpose=${encodeURIComponent(purpose)}` : "";
+
   return (
     <div className="flex min-h-screen flex-col bg-mist">
       <header className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-line bg-paper px-4 py-3">
         <Link
-          href="/templates"
+          href={`/templates${purposeQuery}`}
           className="flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-xs font-black lowercase text-ink-dim transition-colors hover:border-teal hover:text-teal"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
@@ -30,7 +36,7 @@ export default function PreviewChrome({
         </Link>
 
         <Link
-          href={`/templates/${templateId}/edit`}
+          href={`/templates/${templateId}/edit${purposeQuery}`}
           className="sticker sticker-press rounded-full bg-acid px-5 py-2.5 text-xs font-black uppercase tracking-tight text-ink"
         >
           customise
