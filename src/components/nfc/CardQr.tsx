@@ -22,6 +22,7 @@ export default function CardQr({
   url,
   tone,
   accent,
+  showQr = true,
 }: {
   card: VCardSource;
   /** Public address of this card. Falls back to the current page. */
@@ -29,6 +30,8 @@ export default function CardQr({
   /** The template's background, so the trigger sits on its own page. */
   tone: string;
   accent: string;
+  /** The owner can switch the QR off; saving the contact stays either way. */
+  showQr?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [resolved, setResolved] = useState("");
@@ -73,12 +76,24 @@ export default function CardQr({
     const published =
       Boolean(username) && window.location.pathname.startsWith("/u/");
 
+    // The visitor's own note (ReferenceNote renders separately, with no
+    // shared React tree to pass state through) — read at click time so a
+    // save from this dock carries it just like the in-template button does.
+    let note = "";
+    try {
+      note = sessionStorage.getItem(`scorlyntap_ref_note:${username ?? ""}`) ?? "";
+    } catch {
+      // Private browsing / storage blocked — the save still works.
+    }
+    note = note.trim();
+
     if (published) {
-      window.location.href = `/api/vcard/${encodeURIComponent(username as string)}`;
+      const base = `/api/vcard/${encodeURIComponent(username as string)}`;
+      window.location.href = note ? `${base}?note=${encodeURIComponent(note)}` : base;
       return;
     }
 
-    const blob = new Blob([buildVCard(card, window.location.origin)], {
+    const blob = new Blob([buildVCard(card, window.location.origin, note)], {
       type: "text/vcard;charset=utf-8",
     });
     const objectUrl = URL.createObjectURL(blob);
@@ -109,32 +124,63 @@ export default function CardQr({
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => {
-          if (!url) setResolved(window.location.href.split("?")[0]);
-          setOpen(true);
-          const username = (card as { username?: string }).username;
-          if (username) trackCardEvent(username, "qr_open");
-        }}
-        aria-label="Show QR code"
-        // Bottom-centre: the share control sits top-right and the logo
-        // watermark bottom-left, so this is the one place left that a thumb
-        // reaches without covering anything — except the referral banner,
-        // which also docks to the bottom and is taller. The bottom offset
-        // reads a CSS var ReferralBanner publishes with its measured height,
-        // so this lifts clear of it instead of being covered.
-        className="fixed left-1/2 z-30 flex h-12 -translate-x-1/2 items-center gap-2 rounded-full px-5 text-[13px] font-bold shadow-lg backdrop-blur-md transition-transform active:scale-95"
-        style={{
-          bottom: "calc(1rem + var(--sc-referral-offset, 0px))",
-          background: dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.075)",
-          color: dark ? "#fff" : "#111",
-          border: `1px solid ${dark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.12)"}`,
-        }}
+      {/* The persistent dock.
+          Every template also carries its own "save to contacts", but that one
+          scrolls away with the layout — and on a long card (gallery, menu,
+          case study) the visitor is usually somewhere in the middle when they
+          decide to keep the contact. This stays put, so the primary action of
+          the whole card is never more than a thumb-reach away.
+
+          Bottom-centre: the share control sits top-right and the logo
+          watermark bottom-left, so this is the one place left that a thumb
+          reaches without covering anything — except the referral banner,
+          which also docks to the bottom and is taller. The bottom offset
+          reads a CSS var ReferralBanner publishes with its measured height,
+          so this lifts clear of it instead of being covered. It sits above
+          the logo watermark's z-30 so a wide logo can never obscure it. */}
+      <div
+        className="pointer-events-none fixed inset-x-0 z-40 flex justify-center px-4"
+        style={{ bottom: "calc(1rem + var(--sc-referral-offset, 0px))" }}
       >
-        <QrCode className="h-4 w-4" />
-        QR code
-      </button>
+        <div
+          className="pointer-events-auto flex max-w-full items-center gap-1.5 rounded-full p-1.5 shadow-lg backdrop-blur-md"
+          style={{
+            background: dark ? "rgba(20,20,20,0.72)" : "rgba(255,255,255,0.82)",
+            border: `1px solid ${dark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.12)"}`,
+          }}
+        >
+          <button
+            type="button"
+            onClick={save}
+            className="flex h-11 min-w-0 items-center gap-2 rounded-full px-5 text-[13px] font-bold transition-transform active:scale-95"
+            style={{ background: accent, color: readableOn(accent) }}
+          >
+            <UserPlus className="h-4 w-4 shrink-0" />
+            <span className="truncate">{saved ? "Opening contacts…" : "Save contact"}</span>
+          </button>
+
+          {showQr && (
+            <button
+              type="button"
+              onClick={() => {
+                if (!url) setResolved(window.location.href.split("?")[0]);
+                setOpen(true);
+                const username = (card as { username?: string }).username;
+                if (username) trackCardEvent(username, "qr_open");
+              }}
+              aria-label="Show QR code"
+              title="QR code"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-transform active:scale-95"
+              style={{
+                background: dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)",
+                color: dark ? "#fff" : "#111",
+              }}
+            >
+              <QrCode className="h-[18px] w-[18px]" />
+            </button>
+          )}
+        </div>
+      </div>
 
       {open && (
         <div

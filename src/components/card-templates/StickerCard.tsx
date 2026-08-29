@@ -130,8 +130,8 @@ export default function StickerCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] font-black uppercase tracking-widest hover:[color:var(--fg)]"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${190 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 flex min-h-12 items-center justify-center rounded-full border-2 text-center text-[12px] font-black uppercase tracking-widest"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${190 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

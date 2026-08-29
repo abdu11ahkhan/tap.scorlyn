@@ -139,8 +139,8 @@ export default function MonoCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 inline-block text-[11px] transition-colors hover:[color:var(--hover-fg)]"
-          style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fgDim, ["--d" as string]: "320ms" }}
+          className="card-rise mt-6 inline-flex min-h-12 items-center gap-2 rounded border px-4 text-[13px]"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: "320ms" }}
         >
           <span style={{ color: ink }}>$</span> save-contact
         </SaveContact>

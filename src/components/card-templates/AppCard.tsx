@@ -136,8 +136,8 @@ export default function AppCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--hover-fg)]"
-          style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fg, ["--d" as string]: "420ms" }}
+          className="card-rise mt-8 flex min-h-12 items-center justify-center rounded-2xl text-[12px] font-black uppercase tracking-[0.2em] transition-transform active:scale-[0.98]"
+          style={{ background: accent, color: theme.onAccent, ["--d" as string]: "420ms" }}
         >
           save to contacts
         </SaveContact>

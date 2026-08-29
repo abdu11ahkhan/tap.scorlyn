@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, type Transition } from "framer-motion";
-import { readStorage, writeStorage } from "@/lib/safe-storage";
-import { useClientValue } from "@/lib/use-client-value";
 import { ArrowRight, SmartphoneNfc, X } from "lucide-react";
 import { referralOrderUrl, referralTemplateUrl } from "@/lib/referral";
 
@@ -14,17 +12,17 @@ import { referralOrderUrl, referralTemplateUrl } from "@/lib/referral";
  * No push permission involved — a sticky in-page CTA is the only thing that
  * works on every phone, and it costs the visitor nothing.
  *
- * Dismissal used to write a permanent, card-agnostic flag, so one tap on the
- * X switched the loop off for that browser on every card, forever. It expires
- * now, and dismissing collapses the CTA to a small pill rather than removing
- * it — the visitor stops being nagged, but the way in is still there.
+ * It opens closed. The full CTA used to raise itself over the card 1.8s after
+ * landing, which put an ad over someone else's business card at the moment
+ * they were reading it — and over the save-contact dock, which is the one
+ * thing they actually came to press. Now only the pill shows, and the full
+ * panel is something the visitor asks for by tapping it. Dismissing the panel
+ * puts it back to the pill, so the way in is always there and never in front.
  *
  * Shown to the owner too. Hiding it from them was tidier in theory and worse
  * in practice: the owner is the one person who checks their own card, so they
  * were the only person who could never confirm the loop was working.
  */
-const DISMISS_KEY = "ScorlynTap_banner_dismissed_at";
-const DISMISS_DAYS = 7;
 const SPRING: Transition = { type: "spring", stiffness: 260, damping: 26 };
 
 /**
@@ -36,7 +34,7 @@ const SPRING: Transition = { type: "spring", stiffness: 260, damping: 26 };
  */
 const BANNER_OFFSET_VAR = "--sc-referral-offset";
 
-type Stage = "hidden" | "full" | "pill";
+type Stage = "full" | "pill";
 
 export default function ReferralBanner({
   refCode,
@@ -53,23 +51,12 @@ export default function ReferralBanner({
   /** Cheapest physical plan, so the CTA can quote a real number. */
   cardPrice?: number | null;
 }) {
-  /**
-   * Whether they dismissed it recently enough that it should stay a pill.
-   * Read through the store rather than set from the effect below, which had to
-   * render twice to say "actually, hidden" on every quiet visit.
-   */
-  const stillQuiet = useClientValue(() => {
-    const dismissedAt = Number(readStorage("local", DISMISS_KEY) ?? 0);
-    return (
-      dismissedAt > 0 && Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000
-    );
-  }, false);
+  // Starts on the pill directly — nothing opens on its own, ever, so there
+  // is no "hidden" state to flip out of after mount.
+  const [shown, setShown] = useState<Stage>("pill");
 
-  const [stage, setStage] = useState<Stage>("hidden");
-
-  /** A recent dismissal means it opens as the pill rather than not at all. */
-  const shown: Stage = stage === "hidden" && stillQuiet ? "pill" : stage;
-
+  // One ref for whichever of the two is mounted — AnimatePresence only ever
+  // renders one at a time, and both need measuring (see below).
   const bannerRef = useRef<HTMLDivElement>(null);
 
   // Only the full-width "full" stage collides with anything — the pill sits
@@ -92,13 +79,6 @@ export default function ReferralBanner({
     };
   }, [shown]);
 
-  useEffect(() => {
-    if (stillQuiet) return;
-    // Let the card land first — an instant banner reads as a popup ad.
-    const timer = setTimeout(() => setStage("full"), 1800);
-    return () => clearTimeout(timer);
-  }, [stillQuiet]);
-
   // Declared above the effect that calls it. As a const below, the effect
   // closed over a binding that did not exist yet at the point it was written —
   // it happened to work because effects run after the whole body, but it is
@@ -117,14 +97,11 @@ export default function ReferralBanner({
   );
 
   useEffect(() => {
-    if (stage !== "full" || !refCode) return;
+    if (shown !== "full" || !refCode) return;
     track("banner_view");
-  }, [stage, refCode, track]);
+  }, [shown, refCode, track]);
 
-  const dismiss = () => {
-    writeStorage("local", DISMISS_KEY, String(Date.now()));
-    setStage("pill");
-  };
+  const dismiss = () => setShown("pill");
 
   const firstName = ownerName.trim().split(" ")[0] || "theirs";
 
@@ -210,7 +187,7 @@ export default function ReferralBanner({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.7, opacity: 0 }}
           transition={SPRING}
-          onClick={() => setStage("full")}
+          onClick={() => setShown("full")}
           className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border-2 border-sc-gold bg-sc-gold px-4 py-2.5 text-[12px] font-black uppercase tracking-tight text-sc-gold-ink shadow-[0_6px_20px_rgba(0,0,0,0.45)] mb-[env(safe-area-inset-bottom)]"
         >
           <SmartphoneNfc className="h-4 w-4" />

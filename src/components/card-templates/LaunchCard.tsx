@@ -101,8 +101,8 @@ export default function LaunchCard({
 
         <SaveContact
           card={card}
-          className="mt-10 flex min-h-11 items-center text-[13px] font-semibold underline-offset-4 transition-colors hover:[color:var(--fg)] hover:underline"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
+          className="mt-10 inline-flex min-h-12 items-center justify-center rounded-lg border px-6 text-[13px] font-semibold"
+          style={{ borderColor: theme.fgMuted, color: theme.fg }}
         >
           Save to contacts
         </SaveContact>

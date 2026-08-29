@@ -145,8 +145,13 @@ export default function NeonCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-7 inline-flex min-h-11 items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors"
-          style={{ color: theme.fgMuted, ["--d" as string]: `${280 + buttons.length * 45}ms` }}
+          className="card-rise mt-7 inline-flex min-h-12 items-center gap-2 rounded-full border-2 px-5 text-[12px] font-bold uppercase tracking-[0.2em]"
+          style={{
+            borderColor: accent,
+            color: theme.fg,
+            boxShadow: `0 0 14px ${accent}55`,
+            ["--d" as string]: `${280 + buttons.length * 45}ms`,
+          }}
         >
           save to contacts
         </SaveContact>

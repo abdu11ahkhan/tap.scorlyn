@@ -118,8 +118,8 @@ export default function MinimalCard({
           card={card}
           className="card-rise mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border px-5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors"
           style={{
-            borderColor: theme.border,
-            color: theme.fgDim,
+            borderColor: theme.fgMuted,
+            color: theme.fg,
             ["--d" as string]: `${300 + buttons.length * 45}ms`,
           }}
         >

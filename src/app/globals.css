@@ -878,6 +878,18 @@ textarea.app-input {
   animation: none !important;
 }
 
+/* Saving the contact is the point of the whole card, so no template may ship
+   it as a ghost. Each of the thirty-six still picks its own colour, shape and
+   type — this only guarantees a real 44px tap target and that nothing leaves
+   the control permanently hidden. Opacity is deliberately not forced: the
+   entrance animation starts at 0 and the two rules above already cover the
+   cases where that animation never finishes. */
+[data-save-contact] {
+  min-height: 44px;
+  cursor: pointer;
+  visibility: visible;
+}
+
 /* Decorative glow orbs.
    These are ~500px circles carrying a 100-150px blur(). That is a very large
    GPU pass, and on some iOS devices it overflows and paints the element as a

@@ -141,8 +141,8 @@ export default function GlassCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 block text-center text-[11px] transition-colors hover:[color:var(--fg)]"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${160 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 flex min-h-12 items-center justify-center rounded-2xl border text-center text-[13px] font-semibold backdrop-blur-xl"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${160 + buttons.length * 60}ms` }}
         >
           Save to contacts
         </SaveContact>

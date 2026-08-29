@@ -123,8 +123,8 @@ export default function EditorialCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-9 block text-center text-[11px] uppercase tracking-[0.3em] transition-colors hover:[color:var(--fg)]"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${310 + buttons.length * 55}ms` }}
+          className="card-rise mt-9 flex min-h-12 items-center justify-center border-y text-center text-[12px] uppercase tracking-[0.3em]"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${310 + buttons.length * 55}ms` }}
         >
           Save to contacts
         </SaveContact>

@@ -117,8 +117,8 @@ export default function BoldCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-6 inline-block text-[11px] font-bold uppercase tracking-widest transition-colors hover:[color:var(--fg)]"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${320 + buttons.length * 60}ms` }}
+          className="card-rise mt-6 inline-flex min-h-12 items-center justify-center rounded-full border-2 px-6 text-[12px] font-bold uppercase tracking-widest"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${320 + buttons.length * 60}ms` }}
         >
           Save to contacts
         </SaveContact>

@@ -148,8 +148,8 @@ export default function ShowcaseCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-9 block text-center text-[11px] font-black uppercase tracking-[0.25em] transition-colors hover:[color:var(--hover-fg)]"
-          style={{ color: theme.fgMuted, ["--hover-fg" as string]: theme.fg, ["--d" as string]: `${230 + buttons.length * 60}ms` }}
+          className="card-rise mt-9 flex min-h-12 items-center justify-center rounded-xl border text-center text-[12px] font-black uppercase tracking-[0.2em]"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${230 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

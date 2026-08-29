@@ -149,7 +149,7 @@ export default function MenuCard({
         <SaveContact
           card={card}
           className="mt-3 flex h-12 items-center justify-center rounded-lg border text-[13px] font-bold transition-colors"
-          style={{ borderColor: theme.border, color: theme.fgDim }}
+          style={{ borderColor: theme.fgMuted, color: theme.fg }}
         >
           Save to contacts
         </SaveContact>

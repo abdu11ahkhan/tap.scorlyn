@@ -145,8 +145,8 @@ export default function TapeCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 block text-center text-[11px] font-bold hover:[color:var(--fg)]"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg, ["--d" as string]: `${240 + buttons.length * 60}ms` }}
+          className="card-rise mt-8 flex min-h-12 items-center justify-center rounded-lg border text-center text-[13px] font-bold"
+          style={{ borderColor: theme.fgMuted, color: theme.fg, ["--d" as string]: `${240 + buttons.length * 60}ms` }}
         >
           save to contacts
         </SaveContact>

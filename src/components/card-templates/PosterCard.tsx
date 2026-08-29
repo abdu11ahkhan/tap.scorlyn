@@ -132,7 +132,7 @@ export default function PosterCard({
 
         <SaveContact
           card={card}
-          className="card-rise mt-8 text-[11px] font-black uppercase tracking-[0.25em] text-white/35 hover:text-white"
+          className="card-rise mt-8 flex min-h-12 items-center justify-center rounded-full border border-white/70 bg-white/15 text-[12px] font-black uppercase tracking-[0.2em] text-white backdrop-blur-xl"
           style={{ ["--d" as string]: "360ms" }}
         >
           save to contacts

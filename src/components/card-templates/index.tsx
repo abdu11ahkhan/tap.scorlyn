@@ -178,7 +178,9 @@ export function renderCardTemplate(props: CardTemplateProps) {
     </div>
   );
 
-  if (!needsBand && !card.logo_url && !wantsQr && !surface) return body;
+  // No early return on the dock any more: the persistent "save contact"
+  // control lives inside CardQr and has to render on every card, including
+  // one whose owner switched the QR off.
 
   return (
     <>
@@ -194,9 +196,12 @@ export function renderCardTemplate(props: CardTemplateProps) {
           appending anything after the template silently re-armed a full
           viewport of dead space above the extras. */}
       {card.logo_url && <LogoMark src={card.logo_url} tone={surface ?? tone} />}
-      {wantsQr && (
-        <CardQr card={card} tone={surface ?? tone} accent={card.accent_color || "#111111"} />
-      )}
+      <CardQr
+        card={card}
+        tone={surface ?? tone}
+        accent={card.accent_color || "#111111"}
+        showQr={wantsQr}
+      />
       {/* The chosen ground goes behind the template rather than into it, so
           none of the thirty-six needs to know about the feature. The band
           fades into it too, otherwise the seam comes back. */}

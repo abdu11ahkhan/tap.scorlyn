@@ -98,8 +98,8 @@ export default function JournalCard({
 
         <SaveContact
           card={card}
-          className="-mx-2 mt-8 inline-flex min-h-11 items-center px-2 font-serif text-[15px] italic underline underline-offset-4 transition-colors hover:[color:var(--fg)]"
-          style={{ color: theme.fgMuted, ["--fg" as string]: theme.fg }}
+          className="mt-8 inline-flex min-h-12 items-center rounded-sm border px-5 font-serif text-[16px] italic"
+          style={{ borderColor: theme.fgMuted, color: theme.fg }}
         >
           Save to contacts
         </SaveContact>
