@@ -14,7 +14,6 @@ type GalleryTemplate = {
   name: string;
   category: string;
   preview: string;
-  isNew: boolean;
 };
 
 type GalleryCategory = { id: string; name: string; blurb?: string };
@@ -78,12 +77,6 @@ export default function TemplateGallery({
                   tile. The lift is transform-only, so it never resamples the
                   iframe inside. */}
               <div className="sticker relative overflow-hidden rounded-[1.4rem] transition-transform duration-300 group-hover:-translate-y-1.5">
-                {template.isNew && (
-                  <span className="sticker absolute -right-2 -top-2 z-20 rotate-3 rounded-full border-2 border-ink bg-acid px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-ink">
-                    new
-                  </span>
-                )}
-
                 <span className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-ink/70 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
                   <span className="sticker flex items-center gap-2 rounded-full border-2 border-ink bg-acid px-4 py-2 text-xs font-black uppercase tracking-tight text-ink">
                     <Eye className="h-4 w-4" />

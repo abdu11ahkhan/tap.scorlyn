@@ -52,12 +52,12 @@ export const THUMB_TOP: Record<string, number> = {
   contactsheet: 452,
   dock: 0,
   editorial: 534,
-  filmstrip: 452,
+  filmstrip: 1807,
   frames: 460,
   glass: 98,
   grid: 460,
   journal: 497,
-  launch: 2457,
+  launch: 577,
   lookbook: 3594,
   masonry: 452,
   menu: 460,
@@ -67,7 +67,7 @@ export const THUMB_TOP: Record<string, number> = {
   neon: 486,
   orbit: 500,
   pitch: 843,
-  poster: 4136,
+  poster: 295,
   quote: 536,
   reel: 416,
   reply: 468,
@@ -78,7 +78,7 @@ export const THUMB_TOP: Record<string, number> = {
   studio: 416,
   tape: 477,
   tiles: 468,
-  waitlist: 2531,
+  waitlist: 520,
 };
 
 /** Templates added without a measured frame start at the top, as before. */

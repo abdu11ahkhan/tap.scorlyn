@@ -17,9 +17,6 @@ export const metadata: Metadata = {
  *  wide desktop without the grid ever needing to know its own width. */
 const PAGE_W = 1360;
 
-/** Anything after this index is newer than the original five. */
-const ORIGINAL_COUNT = 5;
-
 export default async function PublicTemplatesPage({
   searchParams,
 }: {
@@ -44,7 +41,7 @@ export default async function PublicTemplatesPage({
     // is public), and absent rows just fall back to the compiled-in definition.
     supabase
       .from("template_settings")
-      .select("template_id, enabled, name, category, sort_order, is_new"),
+      .select("template_id, enabled, name, category, sort_order"),
   ]);
 
   const isLoggedIn = Boolean(userData.user);
@@ -53,7 +50,7 @@ export default async function PublicTemplatesPage({
     (overrideRows ?? []).map((o) => [o.template_id as string, o])
   );
 
-  const templatesAll = CARD_TEMPLATES.map((t, index) => {
+  const templatesAll = CARD_TEMPLATES.map((t) => {
     const o = overrides.get(t.id);
     return {
       id: t.id,
@@ -62,7 +59,6 @@ export default async function PublicTemplatesPage({
       preview: t.preview,
       enabled: o?.enabled ?? true,
       sortOrder: o?.sort_order ?? 0,
-      isNew: o?.is_new ?? index >= ORIGINAL_COUNT,
     };
   })
     .filter((t) => t.enabled)
