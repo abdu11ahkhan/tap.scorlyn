@@ -4,6 +4,7 @@ import { Camera, Sparkles } from "lucide-react";
 import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
+import { Navbar } from "@/components/layout/Navbar";
 import TemplateGallery from "./TemplateGallery";
 
 export const dynamic = "force-dynamic";
@@ -66,19 +67,15 @@ export default async function PublicTemplatesPage({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-paper text-ink">
+      <Navbar />
       <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-teal/8 blur-[150px]" />
 
+      {/* pt-32 clears the fixed Navbar — same offset Hero uses on the
+          homepage, so the gap above the headline reads the same everywhere. */}
       <div
-        className="relative mx-auto w-full px-4 pt-14 pb-10 text-center sm:px-6 sm:pt-20 sm:pb-14"
+        className="relative mx-auto w-full px-4 pt-32 pb-10 text-center sm:px-6 sm:pt-36 sm:pb-14"
         style={{ maxWidth: `${PAGE_W}px` }}
       >
-        <Link
-          href="/"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-xs font-black uppercase tracking-widest text-ink-dim transition-colors hover:border-teal hover:text-teal"
-        >
-          ← ScorlynTap
-        </Link>
-
         {purpose && (
           <p className="card-rise mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 py-2 text-sm font-black lowercase text-teal">
             building a {purpose.label} card — pick any template below

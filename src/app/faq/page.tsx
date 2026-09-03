@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { Navbar } from "@/components/layout/Navbar";
 
 export const dynamic = "force-dynamic";
 
@@ -21,17 +21,12 @@ export default async function FaqPage() {
 
   return (
     <div className="grain relative min-h-screen overflow-hidden bg-ink text-white">
+      <Navbar />
       <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[520px] w-[600px] rounded-full bg-acid/15 blur-[150px]" />
 
-      <div className="relative mx-auto max-w-2xl px-6 py-20">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 rounded-full border-2 border-white/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-white/60 transition-colors hover:border-acid hover:text-acid"
-        >
-          ← ScorlynTap
-        </Link>
-
-        <h1 className="mt-7 text-[clamp(2.4rem,7vw,4rem)] font-black leading-[0.9] tracking-[-0.04em]">
+      {/* pt-32 clears the fixed Navbar — same offset Hero uses on the homepage. */}
+      <div className="relative mx-auto max-w-2xl px-6 pb-20 pt-32">
+        <h1 className="text-[clamp(2.4rem,7vw,4rem)] font-black leading-[0.9] tracking-[-0.04em]">
           questions<span className="text-acid">.</span>
         </h1>
 

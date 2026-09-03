@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CARD_PURPOSES } from "@/lib/card";
 import { iconFor } from "@/components/card-templates/button-icons";
+import { Navbar } from "@/components/layout/Navbar";
 
 export const metadata: Metadata = {
   title: "Build a direct-action card — ScorlynTap",
@@ -20,17 +21,12 @@ export const metadata: Metadata = {
 export default function PickPurposePage() {
   return (
     <div className="relative min-h-screen bg-paper text-ink">
+      <Navbar />
       <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-teal/8 blur-[150px]" />
 
-      <div className="relative mx-auto w-full max-w-4xl px-4 pt-14 pb-20 sm:px-6 sm:pt-20">
-        <Link
-          href="/"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-4 text-xs font-black uppercase tracking-widest text-ink-dim transition-colors hover:border-teal hover:text-teal"
-        >
-          ← ScorlynTap
-        </Link>
-
-        <h1 className="card-rise mt-7 text-[clamp(2.6rem,7vw,4.5rem)] font-black leading-[0.9] tracking-[-0.05em]">
+      {/* pt-32 clears the fixed Navbar — same offset Hero uses on the homepage. */}
+      <div className="relative mx-auto w-full max-w-4xl px-4 pb-20 pt-32 sm:px-6 sm:pt-36">
+        <h1 className="card-rise text-[clamp(2.6rem,7vw,4.5rem)] font-black leading-[0.9] tracking-[-0.05em]">
           one tap. <span className="text-teal">one action.</span>
         </h1>
         <p
