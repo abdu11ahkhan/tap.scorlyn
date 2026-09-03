@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, ExternalLink, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
-import { type CardForm } from "@/lib/card-draft";
-import type { CardButton, GalleryItem } from "@/lib/card";
+import { draftToCardProfile, type CardForm } from "@/lib/card-draft";
+import { cardLinkUrl, resolveButtonsForPreview, resolveGallery, type CardButton, type GalleryItem } from "@/lib/card";
+import { renderCardTemplate } from "@/components/card-templates";
+import CardDesigner from "@/components/card-design/CardDesigner";
+import DevicePreview from "@/components/card-editor/DevicePreview";
 
 /**
  * An employee's own editor, driven by the company that owns their card —
@@ -50,6 +53,16 @@ export default function EmployeeCardEditor({
     setSaved(false);
     setError(null);
   };
+
+  // Same live preview the customer's own editors have — this one was
+  // previously blind, same as its admin equivalent.
+  const previewCard = useMemo(
+    () => draftToCardProfile(form, buttons, resolveGallery(gallery), extras),
+    [form, buttons, gallery, extras]
+  );
+  const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  const profileUrl = cardLinkUrl(previewCard, origin);
 
   const save = async () => {
     setSaving(true);
@@ -114,75 +127,87 @@ export default function EmployeeCardEditor({
   };
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight text-sc-text">
-            Editing @{username}
-          </h1>
-          <p className="mt-1 text-sm font-medium text-sc-text-dim">
-            Changes go straight to their live card.
-          </p>
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start">
+      <div className="min-w-0 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-black tracking-tight text-sc-text">
+              Editing @{username}
+            </h1>
+            <p className="mt-1 text-sm font-medium text-sc-text-dim">
+              Changes go straight to their live card.
+            </p>
+          </div>
+          <Link
+            href={"/u/" + username}
+            target="_blank"
+            className="app-pill inline-flex items-center gap-1.5"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            view card
+          </Link>
         </div>
-        <Link
-          href={"/u/" + username}
-          target="_blank"
-          className="app-pill inline-flex items-center gap-1.5"
-        >
-          <ExternalLink className="h-3.5 w-3.5" />
-          view card
-        </Link>
+
+        {error && (
+          <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
+            {error}
+          </p>
+        )}
+
+        <CardEditorFields
+          form={form}
+          onFormChange={(patch) => {
+            setForm((prev) => ({ ...prev, ...patch }));
+            touch();
+          }}
+          buttons={buttons}
+          onButtonsChange={(next) => {
+            setButtons(next);
+            touch();
+          }}
+          gallery={gallery}
+          onGalleryChange={(next) => {
+            setGallery(next);
+            touch();
+          }}
+          extras={extras}
+          onExtrasChange={(patch) => {
+            setExtras((prev) => ({ ...prev, ...patch }));
+            touch();
+          }}
+          showUsername
+          lockUsername
+          ownHandle={username}
+        />
+
+        <div className="sticky bottom-4 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={save}
+            disabled={saving}
+            className="app-btn app-btn-primary px-7"
+          >
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : saved ? (
+              <Check className="h-4 w-4" />
+            ) : null}
+            {saved ? "saved" : "save changes"}
+          </button>
+          <Link href="/dashboard/team" className="text-sm font-bold text-sc-text-dim">
+            back to team
+          </Link>
+        </div>
       </div>
 
-      {error && (
-        <p className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
-          {error}
-        </p>
-      )}
-
-      <CardEditorFields
-        form={form}
-        onFormChange={(patch) => {
-          setForm((prev) => ({ ...prev, ...patch }));
-          touch();
-        }}
-        buttons={buttons}
-        onButtonsChange={(next) => {
-          setButtons(next);
-          touch();
-        }}
-        gallery={gallery}
-        onGalleryChange={(next) => {
-          setGallery(next);
-          touch();
-        }}
-        extras={extras}
-        onExtrasChange={(patch) => {
-          setExtras((prev) => ({ ...prev, ...patch }));
-          touch();
-        }}
-        showUsername
-        lockUsername
-        ownHandle={username}
-      />
-
-      <div className="sticky bottom-4 flex items-center gap-3">
-        <button
-          type="button"
-          onClick={save}
-          disabled={saving}
-          className="app-btn app-btn-primary px-7"
+      <div className="min-w-0 lg:sticky lg:top-6">
+        <DevicePreview
+          cardView={
+            <CardDesigner card={previewCard} profileUrl={profileUrl} width={340} compact />
+          }
         >
-          {saving ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : saved ? (
-            <Check className="h-4 w-4" />
-          ) : null}
-          {saved ? "saved" : "save changes"}
-        </button>
-        <Link href="/dashboard/team" className="text-sm font-bold text-sc-text-dim">
-          back to team
-        </Link>
+          {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
+        </DevicePreview>
       </div>
     </div>
   );

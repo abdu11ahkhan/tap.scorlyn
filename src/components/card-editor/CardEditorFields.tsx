@@ -163,6 +163,7 @@ export default function CardEditorFields({
         value={form.template}
         accent={form.accent_color}
         surface={form.surface_color}
+        font={form.font}
         onChange={(template) => onFormChange({ template })}
       />
 

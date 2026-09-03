@@ -70,10 +70,18 @@ export function saveDraft(draft: CardDraft): void {
 }
 
 export function loadDraft(): CardDraft | null {
+  const raw = readStorage("local", DRAFT_KEY) ?? readStorage("local", LEGACY_DRAFT_KEY);
+  if (!raw) return null;
+  return parseDraft(raw);
+}
+
+export function clearDraft(): void {
+  removeStorage("local", DRAFT_KEY);
+  removeStorage("local", LEGACY_DRAFT_KEY);
+}
+
+function parseDraft(raw: string): CardDraft | null {
   try {
-    const raw =
-      readStorage("local", DRAFT_KEY) ?? readStorage("local", LEGACY_DRAFT_KEY);
-    if (!raw) return null;
     const parsed = JSON.parse(raw) as CardDraft;
     if (!parsed?.form) return null;
     return {
@@ -87,9 +95,59 @@ export function loadDraft(): CardDraft | null {
   }
 }
 
-export function clearDraft(): void {
-  removeStorage("local", DRAFT_KEY);
-  removeStorage("local", LEGACY_DRAFT_KEY);
+/**
+ * Unsaved in-progress edits to a card that already exists in the dashboard.
+ *
+ * Separate from the DRAFT_KEY above, which is the one-time hand-off for
+ * someone designing a card before they have an account. This is the ongoing
+ * case: a logged-in customer editing a real card, typing for a minute, then
+ * closing the tab (or their phone locks, or a call comes in) before pressing
+ * "save changes" — the dashboard editor had nowhere for that work to live but
+ * React state, so it was gone the moment the page unmounted. Keyed per card
+ * (or "new" while a first card has no id yet) so editing two cards in two
+ * tabs — or the dashboard's own team-card editor — can't clobber each other.
+ */
+const EDIT_DRAFT_PREFIX = "scorlyntap_edit_draft:";
+
+export function editDraftKey(cardId: string | null): string {
+  return `${EDIT_DRAFT_PREFIX}${cardId ?? "new"}`;
+}
+
+export type EditDraft = CardDraft & {
+  /** When this snapshot was taken, so a stale draft from another device
+   *  (or an earlier abandoned session) never overwrites a newer save. */
+  savedAt: number;
+};
+
+export function saveEditDraft(key: string, draft: CardDraft): void {
+  const withStamp: EditDraft = { ...draft, savedAt: Date.now() };
+  writeStorage("local", key, JSON.stringify(withStamp));
+}
+
+/**
+ * Only returns the draft if it postdates `serverUpdatedAt` — otherwise the
+ * server row was saved more recently than this browser's local copy (from
+ * another device, or a since-superseded session here), and applying it would
+ * silently roll a real save backwards.
+ */
+export function loadEditDraft(key: string, serverUpdatedAt: string | null): EditDraft | null {
+  const raw = readStorage("local", key);
+  if (!raw) return null;
+  let savedAt = 0;
+  try {
+    const rawParsed = JSON.parse(raw) as { savedAt?: unknown };
+    savedAt = typeof rawParsed.savedAt === "number" ? rawParsed.savedAt : 0;
+  } catch {
+    return null;
+  }
+  if (serverUpdatedAt && savedAt <= new Date(serverUpdatedAt).getTime()) return null;
+  const parsed = parseDraft(raw);
+  if (!parsed) return null;
+  return { ...parsed, savedAt };
+}
+
+export function clearEditDraft(key: string): void {
+  removeStorage("local", key);
 }
 
 /** Builds the object the card templates expect from in-progress form state. */

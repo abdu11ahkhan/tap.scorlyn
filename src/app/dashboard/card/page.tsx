@@ -17,8 +17,12 @@ import {
   EMPTY_CARD_FORM,
   USERNAME_PATTERN,
   clearDraft,
+  clearEditDraft,
   draftToCardProfile,
+  editDraftKey,
   loadDraft,
+  loadEditDraft,
+  saveEditDraft,
   type CardForm,
 } from "@/lib/card-draft";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
@@ -65,6 +69,11 @@ function MyCardEditor() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [draftApplied, setDraftApplied] = useState(false);
+  const [localEditsRestored, setLocalEditsRestored] = useState(false);
+  /** Whether load() confirmed a signed-in user. Guards the autosave effect
+   *  below — without it, a signed-out visit writes an empty draft over
+   *  whatever real one is sitting in this slot. */
+  const [authed, setAuthed] = useState(false);
   /** Set when a live card still has no printable design chosen. */
   const [askNfcFor, setAskNfcFor] = useState<string | null>(null);
   /** The one clean "your card is live" moment — replaces an auto-opened tab
@@ -93,6 +102,7 @@ function MyCardEditor() {
         setLoading(false);
         return;
       }
+      setAuthed(true);
 
       // RLS scopes this to their own cards, so an id from the URL cannot
       // reach anyone else's — but it is still filtered by user_id so a wrong
@@ -146,12 +156,26 @@ function MyCardEditor() {
       // username is the one thing the anonymous editor couldn't collect.
       const draft = fromDraft ? loadDraft() : null;
 
+      // Typing that never made it to "save changes" — a tab closed, a call
+      // came in, the browser back button. Only trusted if it postdates the
+      // row actually on the server (loadEditDraft checks that), so a stale
+      // local copy from another device can never roll a real save backwards.
+      const localEdits = !draft
+        ? loadEditDraft(editDraftKey(requestedCardId), data?.updated_at ?? null)
+        : null;
+
       if (draft) {
         setForm({ ...draft.form, username: saved?.username ?? draft.form.username });
         setButtons(draft.buttons);
         setGallery(draft.gallery ?? []);
         setExtras({ ...EMPTY_EXTRAS, ...(draft.extras ?? {}) });
         setDraftApplied(true);
+      } else if (localEdits) {
+        setForm({ ...localEdits.form, template: presetTemplate ?? localEdits.form.template });
+        setButtons(localEdits.buttons);
+        setGallery(localEdits.gallery ?? []);
+        setExtras({ ...EMPTY_EXTRAS, ...(localEdits.extras ?? {}) });
+        setLocalEditsRestored(true);
       } else if (saved) {
         setForm({ ...saved, template: presetTemplate ?? saved.template });
         setButtons(Array.isArray(data!.buttons) ? data!.buttons : []);
@@ -166,6 +190,15 @@ function MyCardEditor() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedCardId]);
+
+  // Autosaves as they type, so the work above has somewhere to come back
+  // from. Gated on `loading`: without it, this fires once on mount with the
+  // empty initial state and immediately stomps whatever load() is about to
+  // restore.
+  useEffect(() => {
+    if (loading || !authed) return;
+    saveEditDraft(editDraftKey(requestedCardId), { form, buttons, gallery, extras });
+  }, [form, buttons, gallery, extras, loading, authed, requestedCardId]);
 
   const updateForm = (patch: Partial<CardForm>) => {
     setForm((prev) => ({ ...prev, ...patch }));
@@ -265,6 +298,12 @@ function MyCardEditor() {
       // Published — the local draft has served its purpose.
       clearDraft();
       setDraftApplied(false);
+      // The server now matches what was just typed, so the local safety net
+      // for *this* slot is stale by definition — clearing it stops a later
+      // visit from restoring edits that are already saved (or, worse, from
+      // reverting a save made from another device after this one).
+      clearEditDraft(editDraftKey(requestedCardId));
+      setLocalEditsRestored(false);
 
       // Tell them, on the page, that it worked — only on the first publish:
       // doing it on every save would interrupt someone editing a line.
@@ -384,6 +423,16 @@ function MyCardEditor() {
           <p className="font-black text-sc-text">We picked up where you left off.</p>
           <p className="mt-1 text-sm font-semibold text-sc-text-dim">
             Choose a username below, then publish to put your card live.
+          </p>
+        </div>
+      )}
+
+      {localEditsRestored && (
+        <div className="mt-6 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
+          <p className="font-black text-sc-text">We restored your unsaved changes.</p>
+          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
+            You had edits that never made it to &quot;save changes&quot; last time —
+            they&apos;re back below.
           </p>
         </div>
       )}

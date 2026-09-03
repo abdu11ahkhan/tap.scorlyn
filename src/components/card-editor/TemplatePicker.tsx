@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import TemplateSwatch from "./TemplateSwatch";
+import TemplateThumb from "@/app/templates/TemplateThumb";
+import { SRC_H, SRC_W } from "@/app/templates/thumb-geometry";
+import { thumbTop } from "@/app/templates/thumb-frames";
+
+const THUMB_ASPECT = SRC_H / SRC_W;
 
 /**
  * Compact template control.
@@ -18,12 +23,15 @@ export default function TemplatePicker({
   accent,
   onChange,
   surface,
+  font,
 }: {
   value: string;
   accent: string;
   onChange: (templateId: string) => void;
   /** The background they picked, so every miniature shows it. */
   surface?: string;
+  /** The font they picked, so a switch to another template previews in it too. */
+  font?: string;
 }) {
   const [open, setOpen] = useState(false);
   const current = CARD_TEMPLATES.find((t) => t.id === value) ?? CARD_TEMPLATES[0];
@@ -85,6 +93,9 @@ export default function TemplatePicker({
                 <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
                   {inCategory.map((template) => {
                     const isActive = template.id === value;
+                    const previewSrc = `/preview/card/${template.id}?accent=${encodeURIComponent(accent)}${
+                      font ? `&font=${encodeURIComponent(font)}` : ""
+                    }&raw=1`;
                     return (
                       <button
                         key={template.id}
@@ -94,13 +105,20 @@ export default function TemplatePicker({
                           onChange(template.id);
                           setOpen(false);
                         }}
-                        className={`overflow-hidden rounded-xl border-2 text-left transition-all hover:-translate-y-0.5 ${
+                        className={`overflow-hidden rounded-xl border-2 bg-black text-left transition-all hover:-translate-y-0.5 ${
                           isActive ? "border-sc-gold" : "border-sc-border hover:border-sc-gold/50"
                         }`}
                       >
-                        <div className="aspect-[3/4]">
-                          <TemplateSwatch id={template.id} accent={accent} surface={surface} />
-                        </div>
+                        {/* The real template, rendered exactly like the public
+                            gallery's thumbnails — not the abstract swatch, which
+                            only ever showed a stand-in shape and colour rather
+                            than what the layout actually looks like. */}
+                        <TemplateThumb
+                          src={previewSrc}
+                          title={`${template.name} template preview`}
+                          aspect={THUMB_ASPECT}
+                          top={thumbTop(template.id)}
+                        />
                         <div
                           className={`flex items-center justify-between gap-1 px-2 py-1.5 ${
                             isActive ? "bg-sc-gold" : "bg-sc-surface-2"

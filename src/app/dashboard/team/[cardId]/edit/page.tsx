@@ -46,11 +46,14 @@ export default async function EditEmployeeCard({
     logo_url: card.logo_url ?? "",
     show_qr: card.show_qr !== false,
     surface_color: card.surface_color ?? "",
+    background_effect: card.background_effect ?? "none",
+    intro_style: card.intro_style ?? "rise",
     published: card.published !== false,
     location: card.location ?? "",
     accent_color: card.accent_color ?? "#111111",
     template: card.template ?? "minimal",
     font: card.font ?? "sans",
+    is_single_purpose: card.is_single_purpose ?? false,
   };
 
   const extras: ExtrasState = {
