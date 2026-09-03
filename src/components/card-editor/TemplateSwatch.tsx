@@ -54,7 +54,11 @@ const SKINS: Record<string, Skin> = {
   orbit: { bg: "#0B0B0F", ink: "#ffffff", shape: "stack" },
   quote: { bg: "#F7F8F8", ink: "#111111", shape: "form", paper: true },
   studio: { bg: "#ffffff", ink: "#111111", shape: "split", paper: true },
-  tiles: { bg: "#F4F4F2", ink: "#111111", shape: "grid", paper: true },};
+  tiles: { bg: "#F4F4F2", ink: "#111111", shape: "grid", paper: true },
+  badge: { bg: "#F7F8FA", ink: "#111111", shape: "rows", paper: true },
+  summit: { bg: "#111511", ink: "#ffffff", shape: "stack" },
+  flare: { bg: "#150A1E", ink: "#ffffff", shape: "stack" },
+};
 
 /** Same threshold the card templates use to decide their own text colour. */
 function isDarkHex(hex: string): boolean {

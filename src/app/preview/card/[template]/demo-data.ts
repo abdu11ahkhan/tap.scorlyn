@@ -545,6 +545,31 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
     location: "Rawalpindi",
     links: [["WhatsApp a quote", "whatsapp", wa("0036")], ["Call", "phone", tel("0036")], ["Rates", "link", "https://example.pk/rates"]],
   }),
+
+  badge: person({
+    n: "0037", username: "hassaniqbal", full_name: "Hassan Iqbal",
+    headline: "Senior Financial Analyst", company: "Horizon Holdings",
+    bio: "Corporate finance and treasury. Eight years across banking and manufacturing.",
+    location: "Karachi",
+    links: [["LinkedIn", "linkedin", "https://linkedin.com/in/example"], ["Email", "email", "hassan@example.pk"], ["Book a meeting", "calendar", "https://example.pk/book"], ["Call", "phone", tel("0037")]],
+  }),
+
+  summit: person({
+    n: "0038", username: "faisalchaudhry", full_name: "Faisal Chaudhry",
+    headline: "Chief Executive Officer", company: "Chaudhry Textiles Group",
+    bio: "Built the company from one mill in Faisalabad to four, without ever changing the name on the door.",
+    location: "Lahore",
+    links: [["LinkedIn", "linkedin", "https://linkedin.com/in/example"], ["Book time with me", "calendar", "https://example.pk/book"], ["Email", "email", "faisal@example.pk"]],
+  }),
+
+  flare: person({
+    n: "0039", username: "mahiraza", full_name: "Mahi Raza",
+    headline: "Beauty & lifestyle creator", company: "",
+    bio: "Skincare, thrift hauls, and too many oat milk lattes. Based between Karachi and wherever the light is good.",
+    location: "Karachi",
+    captions: ["Get ready with me", "Thrift haul", "Skincare shelf", "Studio day"],
+    links: [["Instagram", "instagram", "https://instagram.com/example"], ["TikTok", "tiktok", "https://tiktok.com/@example"], ["YouTube", "youtube", "https://youtube.com/@example"], ["Collab enquiries", "whatsapp", wa("0039")]],
+  }),
 };
 
 export const FALLBACK_PERSONA = DEMO_PERSONAS.minimal;

@@ -38,6 +38,8 @@ const DARK_TEMPLATES = new Set([
   "reel",
   "showcase",
   "waitlist",
+  "summit",
+  "flare",
 ]);
 
 /** Neutral defaults: clean, printable, and unlikely to offend anyone's taste. */

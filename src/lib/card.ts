@@ -1094,6 +1094,30 @@ export const CARD_TEMPLATES = [
     vibe: "practical",
     preview: "#24939E",
   },
+  {
+    id: "badge",
+    name: "Badge",
+    blurb: "A squared photo, a colour band, links as a printed detail sheet.",
+    category: 'profile',
+    vibe: "corporate",
+    preview: "#2C4F96",
+  },
+  {
+    id: "summit",
+    name: "Summit",
+    blurb: "Dark and serif, restrained. For when the title does the talking.",
+    category: 'profile',
+    vibe: "executive",
+    preview: "#285D44",
+  },
+  {
+    id: "flare",
+    name: "Flare",
+    blurb: "Big bio, a pill for every link, a gradient behind it all.",
+    category: 'profile',
+    vibe: "creator",
+    preview: "#D04CF0",
+  },
 ] as const;
 
 export const TEMPLATE_IDS = CARD_TEMPLATES.map((t) => t.id);

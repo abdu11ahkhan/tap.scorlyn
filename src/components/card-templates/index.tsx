@@ -38,6 +38,9 @@ import LaunchCard from "./LaunchCard";
 import StudioCard from "./StudioCard";
 import JournalCard from "./JournalCard";
 import QuoteCard from "./QuoteCard";
+import BadgeCard from "./BadgeCard";
+import SummitCard from "./SummitCard";
+import FlareCard from "./FlareCard";
 
 /**
  * Templates that build the cover photo into their own layout. Everything else
@@ -99,6 +102,9 @@ export const TEMPLATE_TONE: Record<string, string> = {
   tape: "#F4F1EA",
   tiles: "#F4F4F2",
   waitlist: "#08060F",
+  badge: "#F7F8FA",
+  summit: "#111511",
+  flare: "#150A1E",
 };
 
 /**
@@ -153,6 +159,9 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   studio: StudioCard,
   journal: JournalCard,
   quote: QuoteCard,
+  badge: BadgeCard,
+  summit: SummitCard,
+  flare: FlareCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */
