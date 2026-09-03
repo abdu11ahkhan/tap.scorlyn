@@ -106,7 +106,7 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     email: persona.email,
     buttons: persona.buttons,
     available_for_work: true,
-    availability_note: "Taking new work this month",
+    availability_note: persona.availabilityNote ?? "Taking new work this month",
     business_hours: [
       { day: "Mon – Fri", hours: "10am – 7pm" },
       { day: "Saturday", hours: "12pm – 5pm" },

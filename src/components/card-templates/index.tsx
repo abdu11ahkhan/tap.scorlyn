@@ -41,6 +41,9 @@ import QuoteCard from "./QuoteCard";
 import BadgeCard from "./BadgeCard";
 import SummitCard from "./SummitCard";
 import FlareCard from "./FlareCard";
+import ClinicCard from "./ClinicCard";
+import CoachCard from "./CoachCard";
+import WellnessCard from "./WellnessCard";
 
 /**
  * Templates that build the cover photo into their own layout. Everything else
@@ -105,6 +108,9 @@ export const TEMPLATE_TONE: Record<string, string> = {
   badge: "#F7F8FA",
   summit: "#111511",
   flare: "#150A1E",
+  clinic: "#F5FAF9",
+  coach: "#0A0A0A",
+  wellness: "#0E1410",
 };
 
 /**
@@ -162,6 +168,9 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   badge: BadgeCard,
   summit: SummitCard,
   flare: FlareCard,
+  clinic: ClinicCard,
+  coach: CoachCard,
+  wellness: WellnessCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */

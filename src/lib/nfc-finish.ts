@@ -40,6 +40,8 @@ const DARK_TEMPLATES = new Set([
   "waitlist",
   "summit",
   "flare",
+  "coach",
+  "wellness",
 ]);
 
 /** Neutral defaults: clean, printable, and unlikely to offend anyone's taste. */

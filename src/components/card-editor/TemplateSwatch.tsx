@@ -58,6 +58,9 @@ const SKINS: Record<string, Skin> = {
   badge: { bg: "#F7F8FA", ink: "#111111", shape: "rows", paper: true },
   summit: { bg: "#111511", ink: "#ffffff", shape: "stack" },
   flare: { bg: "#150A1E", ink: "#ffffff", shape: "stack" },
+  clinic: { bg: "#F5FAF9", ink: "#111111", shape: "stack", paper: true },
+  coach: { bg: "#0A0A0A", ink: "#ffffff", shape: "rows" },
+  wellness: { bg: "#0E1410", ink: "#ffffff", shape: "stack" },
 };
 
 /** Same threshold the card templates use to decide their own text colour. */

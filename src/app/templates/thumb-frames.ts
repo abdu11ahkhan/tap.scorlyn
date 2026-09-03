@@ -50,6 +50,8 @@ export const THUMB_TOP: Record<string, number> = {
   bold: 484,
   booking: 108,
   case: 497,
+  clinic: 488,
+  coach: 518,
   contactsheet: 452,
   dock: 0,
   editorial: 534,
@@ -82,6 +84,7 @@ export const THUMB_TOP: Record<string, number> = {
   tape: 477,
   tiles: 468,
   waitlist: 520,
+  wellness: 501,
 };
 
 /** Templates added without a measured frame start at the top, as before. */

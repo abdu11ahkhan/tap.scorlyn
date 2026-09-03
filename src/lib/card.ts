@@ -1118,6 +1118,30 @@ export const CARD_TEMPLATES = [
     vibe: "creator",
     preview: "#D04CF0",
   },
+  {
+    id: "clinic",
+    name: "Clinic",
+    blurb: "Clean and calm, with an availability status up front.",
+    category: 'profile',
+    vibe: "healthcare",
+    preview: "#1B8D7A",
+  },
+  {
+    id: "coach",
+    name: "Coach",
+    blurb: "Black, blocky, one diagonal stripe of colour. Built to move fast.",
+    category: 'profile',
+    vibe: "energetic",
+    preview: "#F35F20",
+  },
+  {
+    id: "wellness",
+    name: "Wellness",
+    blurb: "Soft-edged and unhurried, with a slow breathing ring round the photo.",
+    category: 'profile',
+    vibe: "calm",
+    preview: "#599051",
+  },
 ] as const;
 
 export const TEMPLATE_IDS = CARD_TEMPLATES.map((t) => t.id);

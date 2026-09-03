@@ -23,6 +23,10 @@ export type DemoPersona = {
   email: string;
   buttons: CardButton[];
   captions?: string[];
+  /** Overrides the generic "Taking new work this month" a few templates
+   *  (Clinic, Coach, Wellness) show as a status pill — a physio's "now
+   *  booking sessions" reads oddly as "taking new work". */
+  availabilityNote?: string;
 };
 
 const wa = (n: string) => `92300000${n}`;
@@ -569,6 +573,33 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
     location: "Karachi",
     captions: ["Get ready with me", "Thrift haul", "Skincare shelf", "Studio day"],
     links: [["Instagram", "instagram", "https://instagram.com/example"], ["TikTok", "tiktok", "https://tiktok.com/@example"], ["YouTube", "youtube", "https://youtube.com/@example"], ["Collab enquiries", "whatsapp", wa("0039")]],
+  }),
+
+  clinic: person({
+    n: "0040", username: "dranaya", full_name: "Dr. Anaya Malik",
+    headline: "General Physician", company: "Family Care Clinic",
+    bio: "MBBS, FCPS. General medicine and preventive care for the whole family.",
+    location: "Lahore",
+    availabilityNote: "Accepting new patients",
+    links: [["Book an appointment", "calendar", "https://example.pk/book"], ["WhatsApp", "whatsapp", wa("0040")], ["Directions", "maps", "https://maps.google.com/?q=example"]],
+  }),
+
+  coach: person({
+    n: "0041", username: "bilalfit", full_name: "Bilal Sheikh",
+    headline: "Strength & Conditioning Coach", company: "",
+    bio: "Twelve-week programmes, in person or online. No fads — just showing up and adding weight to the bar.",
+    location: "Karachi",
+    availabilityNote: "Taking new clients",
+    links: [["Book a session", "calendar", "https://example.pk/book"], ["WhatsApp", "whatsapp", wa("0041")], ["Instagram", "instagram", "https://instagram.com/example"]],
+  }),
+
+  wellness: person({
+    n: "0042", username: "sarayoga", full_name: "Sara Kamal",
+    headline: "Yoga & Breathwork", company: "",
+    bio: "Small group classes and one-on-one sessions. Mats provided, egos left at the door.",
+    location: "Islamabad",
+    availabilityNote: "Now booking sessions",
+    links: [["Book a class", "calendar", "https://example.pk/book"], ["WhatsApp", "whatsapp", wa("0042")], ["Instagram", "instagram", "https://instagram.com/example"]],
   }),
 };
 
