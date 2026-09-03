@@ -13,7 +13,7 @@ import { RippleField } from "./RippleField";
  */
 const INDIVIDUAL = [
   "Your own page, live in minutes",
-  "36 templates to start from",
+  "42 templates to start from",
   "Every link in one tap — phone, email, WhatsApp, socials",
   "A physical NFC card, whenever you're ready",
   "Real analytics on who's opening it",

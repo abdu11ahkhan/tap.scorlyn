@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Camera, Sparkles } from "lucide-react";
+import { Camera, LayoutTemplate, Sparkles } from "lucide-react";
 import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
@@ -73,25 +73,32 @@ export default async function PublicTemplatesPage({
       {/* pt-32 clears the fixed Navbar — same offset Hero uses on the
           homepage, so the gap above the headline reads the same everywhere. */}
       <div
-        className="relative mx-auto w-full px-4 pt-32 pb-10 text-center sm:px-6 sm:pt-36 sm:pb-14"
+        className="relative mx-auto w-full px-4 pt-28 pb-10 text-center sm:px-6 sm:pt-36 sm:pb-14"
         style={{ maxWidth: `${PAGE_W}px` }}
       >
-        {purpose && (
-          <p className="card-rise mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 py-2 text-sm font-black lowercase text-teal">
+        {purpose ? (
+          <p className="card-rise mx-auto inline-flex min-h-11 items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 text-sm font-black lowercase text-teal">
             building a {purpose.label} card — pick any template below
+          </p>
+        ) : (
+          // Same eyebrow-badge shape the homepage Hero opens with — a border,
+          // an icon, uppercase tracked text — so this reads as the next page
+          // of the same site instead of a bolted-on gallery.
+          <p className="card-rise mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 text-[13px] font-black uppercase tracking-tight text-teal shadow-sm">
+            <LayoutTemplate className="h-4 w-4" />
+            {templatesAll.length} templates, {TEMPLATE_CATEGORIES.length} kinds of card
           </p>
         )}
 
-        <h1 className="card-rise mx-auto mt-7 max-w-2xl text-[clamp(2.6rem,7vw,4.5rem)] font-black leading-[0.92] tracking-[-0.04em]">
+        <h1 className="card-rise mx-auto mt-7 max-w-2xl text-[clamp(2.4rem,8vw,4.5rem)] font-black leading-[0.94] tracking-[-0.04em] sm:leading-[0.92]">
           A template for every card you need to hand over.
         </h1>
 
         <p
-          className="card-rise mx-auto mt-5 max-w-xl text-lg font-medium text-ink-dim"
+          className="card-rise mx-auto mt-5 max-w-xl text-base font-medium text-ink-dim sm:text-lg"
           style={{ ["--d" as string]: "80ms" }}
         >
-          {templatesAll.length} templates, {TEMPLATE_CATEGORIES.length} kinds of card. Editing
-          is free; you only need an account to publish.
+          Editing is free; you only need an account to publish.
         </p>
 
         <div
@@ -105,8 +112,8 @@ export default async function PublicTemplatesPage({
             href="/templates/scan"
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 text-sm font-black lowercase text-teal transition-colors hover:border-teal hover:bg-teal/20"
           >
-            <Camera className="h-4 w-4" />
-            got a business card already? scan it instead
+            <Camera className="h-4 w-4 shrink-0" />
+            <span>got a business card already? scan it instead</span>
           </Link>
         </div>
       </div>
@@ -128,9 +135,9 @@ export default async function PublicTemplatesPage({
         className="relative mx-auto w-full px-4 pb-20 pt-4 text-center sm:px-6 sm:pb-24"
         style={{ maxWidth: `${PAGE_W}px` }}
       >
-        <div className="sticker-lg rounded-[2rem] bg-acid p-10 text-ink">
+        <div className="sticker-lg rounded-[2rem] bg-acid p-7 text-ink sm:p-10">
           <Sparkles className="mx-auto h-7 w-7" />
-          <h2 className="mt-4 text-3xl font-black leading-tight tracking-tighter sm:text-4xl">
+          <h2 className="mt-4 text-[28px] font-black leading-tight tracking-tighter sm:text-4xl">
             can&apos;t decide? just start.
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[15px] font-semibold opacity-70">
@@ -140,7 +147,7 @@ export default async function PublicTemplatesPage({
           </p>
           <Link
             href={`/templates/sticker/edit${purposeQuery}`}
-            className="sticker sticker-press mt-7 inline-flex h-14 items-center justify-center rounded-full bg-ink px-10 text-base font-black uppercase tracking-tight text-acid"
+            className="sticker sticker-press mt-7 inline-flex h-14 w-full items-center justify-center rounded-full bg-ink px-10 text-base font-black uppercase tracking-tight text-acid sm:w-auto"
           >
             start with sticker
           </Link>

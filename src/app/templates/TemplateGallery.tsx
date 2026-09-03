@@ -45,8 +45,14 @@ export default function TemplateGallery({
 
   return (
     <div>
+      {/* Horizontal scroll on mobile rather than wrapping — the same
+          treatment the homepage's own template strip (TemplateShowcase)
+          uses for its tiles, so a row of pills that can't fit 390px of
+          screen doesn't stack into a ragged multi-line block. Negative
+          margin lets it bleed to the true screen edge so the last pill
+          isn't clipped mid-card by the page's own padding. */}
       <div
-        className="flex flex-wrap gap-2"
+        className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
         role="tablist"
         aria-label="Filter templates by category"
       >
@@ -61,7 +67,7 @@ export default function TemplateGallery({
         ))}
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6 xl:grid-cols-5">
+      <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-4 lg:gap-x-6 xl:grid-cols-5">
         {visible.map((template) => {
           const previewHref = `/preview/card/${template.id}?accent=${encodeURIComponent(template.preview)}${purposeQuery}`;
 
@@ -126,8 +132,8 @@ function FilterPill({
       onClick={onClick}
       className={
         active
-          ? "sticker inline-flex h-10 items-center rounded-full border-2 border-ink bg-ink px-4 text-sm font-black lowercase tracking-tight text-paper"
-          : "inline-flex h-10 items-center rounded-full border border-line px-4 text-sm font-black lowercase tracking-tight text-ink-dim transition-colors hover:border-teal hover:text-teal"
+          ? "sticker inline-flex min-h-11 shrink-0 items-center rounded-full border-2 border-ink bg-ink px-4 text-sm font-black lowercase tracking-tight text-paper"
+          : "inline-flex min-h-11 shrink-0 items-center rounded-full border border-line px-4 text-sm font-black lowercase tracking-tight text-ink-dim transition-colors hover:border-teal hover:text-teal"
       }
     >
       {label}

@@ -509,7 +509,7 @@ export default function DashboardPage() {
               <span>
                 <span className="block text-sm font-black text-sc-text">Choose a template</span>
                 <span className="app-sub mt-0.5 block text-[13px]">
-                  Browse all 36 designs and pick one to start from.
+                  Browse all 42 designs and pick one to start from.
                 </span>
               </span>
             </Link>

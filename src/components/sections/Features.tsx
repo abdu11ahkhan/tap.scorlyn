@@ -15,7 +15,7 @@ const CARDS = [
   },
   {
     title: "looks unreal",
-    body: "36 templates that actually slap. Pick your colour, pick your font, done.",
+    body: "42 templates that actually slap. Pick your colour, pick your font, done.",
     icon: Palette,
     chip: "bg-teal text-white",
     span: "",

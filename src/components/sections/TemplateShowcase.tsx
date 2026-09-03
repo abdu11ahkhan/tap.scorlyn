@@ -26,10 +26,10 @@ export function TemplateShowcase() {
         >
           <div className="max-w-xl">
             <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-ink">
-              explore <span className="text-teal">36 designs.</span>
+              explore <span className="text-teal">42 designs.</span>
             </h2>
             <p className="mt-5 text-lg font-medium text-ink-dim">
-              Five kinds of page, thirty-six looks. Whatever you lead with —
+              Five kinds of page, forty-two looks. Whatever you lead with —
               a single link-in-bio card or a whole portfolio — there&apos;s a
               starting point already built.
             </p>

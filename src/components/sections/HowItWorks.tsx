@@ -14,7 +14,7 @@ const STEPS = [
   {
     n: "01",
     title: "create your card",
-    body: "Pick from 36 templates, drop in your links. Free, and it takes about two minutes.",
+    body: "Pick from 42 templates, drop in your links. Free, and it takes about two minutes.",
     icon: LayoutTemplate,
     chip: "bg-acid text-ink",
   },
