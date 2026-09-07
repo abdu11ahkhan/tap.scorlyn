@@ -3,6 +3,7 @@ import { fontStack, initialsOf, mixHex, resolveCardTheme, type CardProfile, type
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Dark, frosted, lit by drifting orbs — all derived from the owner's own
  * accent color, never a fixed hue of ours, so the ambient glow still reads
@@ -107,7 +108,10 @@ export default function GlassCard({
           {card.bio && <p className="card-bio mt-5 text-[13px] leading-relaxed" style={{ color: theme.fgDim }}>{card.bio}</p>}
         </div>
 
-        <nav className="mt-4 space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-4 space-y-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -137,6 +141,7 @@ export default function GlassCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Oversized display name, hard left alignment, gradient-filled buttons that
  * catch a shine on touch. The name is the design; the colour does the rest.
@@ -90,7 +91,10 @@ export default function BoldCard({
           >{card.bio}</p>
         )}
 
-        <nav className="mt-10 space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-10 space-y-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -113,6 +117,7 @@ export default function BoldCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

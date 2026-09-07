@@ -3,6 +3,7 @@ import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Icon-only, as a grid of square tiles.
  *
@@ -70,7 +71,10 @@ export default function TilesCard({
           >{card.bio}</p>
         )}
 
-        <nav className="mt-8 grid grid-cols-3 gap-3">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-8 grid grid-cols-3 gap-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             const primary = index === 0;
@@ -96,6 +100,7 @@ export default function TilesCard({
             );
           })}
         </nav>
+        )}
 
 
         <p className="mt-6 text-center text-[11px] font-medium uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>

@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * After dark. Left-aligned and asymmetric on purpose — Minimal is the quiet,
  * centred default, and this exists for the card that wants to look like it
@@ -114,7 +115,10 @@ export default function NeonCard({
         {/* Chips wrap rather than stack full-width — a different rhythm to
             Minimal's list, and the right shape for a shorter, punchier label
             set (handles, socials, a set time). */}
-        <nav className="mt-8 flex flex-wrap gap-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-8 flex flex-wrap gap-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -141,6 +145,7 @@ export default function NeonCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

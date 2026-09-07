@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * SECTIONED — a whole small site on one page.
  *
@@ -38,7 +39,10 @@ export default function StackCard({
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       {/* Jump nav */}
-      <nav
+      {hasButtonOverride(card) ? (
+        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+      ) : (
+        <nav
         className="sticky top-0 z-30 border-b backdrop-blur-xl"
         style={{ backgroundColor: `${theme.surface}E6`, borderColor: theme.border }}
       >
@@ -55,6 +59,7 @@ export default function StackCard({
           ))}
         </div>
       </nav>
+      )}
 
       <main className="mx-auto w-full max-w-md px-6">
         {/* Hero */}

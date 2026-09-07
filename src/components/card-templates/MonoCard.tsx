@@ -2,6 +2,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Monospace grid, live terminal caret, rows that light up as you move down
  * them — the identity carries in the layout (the `dl`/`dt`/`dd` key-value
@@ -96,7 +97,10 @@ export default function MonoCard({
           >{card.bio}</p>
         )}
 
-        <nav
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav
           className="card-rise mt-8 divide-y overflow-hidden rounded border"
           style={{ borderColor: theme.border, ["--d" as string]: "260ms" }}
         >
@@ -135,6 +139,7 @@ export default function MonoCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

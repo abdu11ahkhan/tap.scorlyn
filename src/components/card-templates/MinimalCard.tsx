@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * The quiet default. A restrained business card, not a landing page —
  * centred, on paper, with one precise touch of the owner's colour rather
@@ -84,7 +85,10 @@ export default function MinimalCard({
           >{card.bio}</p>
         )}
 
-        <nav className="mt-9 w-full space-y-2">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-9 w-full space-y-2">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -112,6 +116,7 @@ export default function MinimalCard({
             );
           })}
         </nav>
+        )}
 
 
         <p

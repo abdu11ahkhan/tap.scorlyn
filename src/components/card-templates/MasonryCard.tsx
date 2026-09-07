@@ -10,6 +10,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — the work leads, the person follows.
  *
@@ -113,7 +114,10 @@ export default function MasonryCard({
           >{card.bio}</p>
         )}
 
-        <nav className="mt-6 space-y-2 px-5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-6 space-y-2 px-5">
           {buttons.map((button, index) => (
             <a
               key={`${button.kind}-${index}`}
@@ -128,6 +132,7 @@ export default function MasonryCard({
             </a>
           ))}
         </nav>
+        )}
 
         <div className="mt-5 px-5">
         </div>

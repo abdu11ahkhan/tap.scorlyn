@@ -9,6 +9,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — full-bleed, one piece per screen.
  *
@@ -109,7 +110,10 @@ export default function LookbookCard({
           </div>
         )}
 
-        <nav className="mt-10 space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-10 space-y-2.5">
           {buttons.map((button, index) => (
             <a
               key={`${button.kind}-${index}`}
@@ -124,6 +128,7 @@ export default function LookbookCard({
             </a>
           ))}
         </nav>
+        )}
 
       </main>
     </div>

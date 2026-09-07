@@ -8,6 +8,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — one project, told properly.
  *
@@ -94,7 +95,10 @@ export default function CaseCard({
           </div>
         )}
 
-        <nav className="mt-12 space-y-0.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-12 space-y-0.5">
           {buttons.map((button, index) => (
             <a
               key={`${button.kind}-${index}`}
@@ -109,6 +113,7 @@ export default function CaseCard({
             </a>
           ))}
         </nav>
+        )}
 
       </main>
     </div>

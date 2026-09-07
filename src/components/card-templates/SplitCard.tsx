@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * A living gradient panel carries the identity; a clean panel carries the
  * actions. On desktop the two sit side by side; on a phone they stack.
@@ -114,7 +115,10 @@ export default function SplitCard({
           >{card.bio}</p>
         )}
 
-        <nav className="space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="space-y-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -142,6 +146,7 @@ export default function SplitCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

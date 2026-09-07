@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — app-store shaped. Icon, rating, screenshot, feature list, download.
  * The cover image is used as the product shot.
@@ -60,17 +61,21 @@ export default function AppCard({
           </div>
         </header>
 
-        {primary && (
-          <a
-            href={primary.href}
-            target={primary.external ? "_blank" : undefined}
-            rel={primary.external ? "noopener noreferrer" : undefined}
-            className="card-rise mt-6 flex h-14 items-center justify-center gap-2 rounded-2xl text-[15px] font-black uppercase tracking-tight shadow-lg transition-transform active:scale-[0.98]"
-            style={{ background: accent, color: onAccent, ["--d" as string]: "70ms" }}
-          >
-            {primary.label}
-            <ArrowRight className="h-4 w-4" />
-          </a>
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          primary && (
+            <a
+              href={primary.href}
+              target={primary.external ? "_blank" : undefined}
+              rel={primary.external ? "noopener noreferrer" : undefined}
+              className="card-rise mt-6 flex h-14 items-center justify-center gap-2 rounded-2xl text-[15px] font-black uppercase tracking-tight shadow-lg transition-transform active:scale-[0.98]"
+              style={{ background: accent, color: onAccent, ["--d" as string]: "70ms" }}
+            >
+              {primary.label}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          )
         )}
 
         {/* Product shot */}
@@ -100,7 +105,7 @@ export default function AppCard({
           >{card.bio}</p>
         )}
 
-        {rest.length > 0 && (
+        {!hasButtonOverride(card) && rest.length > 0 && (
           <section className="mt-8">
             <h2 className="text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               what you get

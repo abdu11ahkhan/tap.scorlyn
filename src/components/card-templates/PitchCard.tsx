@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — one promise, one button.
  *
@@ -61,21 +62,25 @@ export default function PitchCard({
             >{card.bio}</p>
           )}
 
-          {primary && (
-            <a
-              href={primary.href}
-              target={primary.external ? "_blank" : undefined}
-              rel={primary.external ? "noopener noreferrer" : undefined}
-              className="card-rise sticker-lg sticker-press mt-8 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full border-2 border-ink text-[18px] font-black uppercase tracking-tight"
-              style={{
-                background: accent,
-                color: onAccent,
-                ["--d" as string]: "190ms",
-              }}
-            >
-              {primary.label}
-              <ArrowRight className="h-5 w-5" />
-            </a>
+          {hasButtonOverride(card) ? (
+            <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          ) : (
+            primary && (
+              <a
+                href={primary.href}
+                target={primary.external ? "_blank" : undefined}
+                rel={primary.external ? "noopener noreferrer" : undefined}
+                className="card-rise sticker-lg sticker-press mt-8 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full border-2 border-ink text-[18px] font-black uppercase tracking-tight"
+                style={{
+                  background: accent,
+                  color: onAccent,
+                  ["--d" as string]: "190ms",
+                }}
+              >
+                {primary.label}
+                <ArrowRight className="h-5 w-5" />
+              </a>
+            )
           )}
 
           {/* Author line with a face — a bare "by name" left the hero floating. */}
@@ -134,7 +139,7 @@ export default function PitchCard({
       </section>
 
       {/* Supporting links, read as proof points */}
-      {rest.length > 0 && (
+      {!hasButtonOverride(card) && rest.length > 0 && (
         <section className="px-6 py-12">
           <p className="mx-auto mb-4 max-w-sm text-[11px] font-black uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
             also here

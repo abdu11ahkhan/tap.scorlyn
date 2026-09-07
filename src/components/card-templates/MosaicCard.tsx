@@ -11,6 +11,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — mixed tile sizes.
  *
@@ -96,7 +97,10 @@ export default function MosaicCard({
           </div>
         )}
 
-        <nav className="mt-8 space-y-0.5 px-1">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-8 space-y-0.5 px-1">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -115,6 +119,7 @@ export default function MosaicCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

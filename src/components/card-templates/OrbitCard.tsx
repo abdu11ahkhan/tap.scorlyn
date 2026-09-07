@@ -3,6 +3,7 @@ import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Icon-only: the links are a row of round buttons under the name.
  *
@@ -86,7 +87,10 @@ export default function OrbitCard({
 
         {/* The links. Wraps to as many rows as it needs — a card with twelve
             links stays one screen instead of twelve stacked bars. */}
-        <nav className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-9 flex flex-wrap items-center justify-center gap-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -116,6 +120,7 @@ export default function OrbitCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

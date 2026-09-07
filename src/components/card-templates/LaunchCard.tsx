@@ -7,6 +7,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — one thing, one button.
  *
@@ -64,24 +65,28 @@ export default function LaunchCard({
           >{card.bio}</p>
         )}
 
-        {primary && (
-          <a
-            href={primary.href}
-            target={primary.external ? "_blank" : undefined}
-            rel={primary.external ? "noopener noreferrer" : undefined}
-            className="card-rise mt-9 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full text-[18px] font-bold"
-            style={{
-              background: accent,
-              color: onAccent,
-              ["--d" as string]: "220ms",
-            }}
-          >
-            {primary.label}
-            <ArrowRight className="h-5 w-5" />
-          </a>
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          primary && (
+            <a
+              href={primary.href}
+              target={primary.external ? "_blank" : undefined}
+              rel={primary.external ? "noopener noreferrer" : undefined}
+              className="card-rise mt-9 inline-flex h-16 w-full items-center justify-center gap-2 rounded-full text-[18px] font-bold"
+              style={{
+                background: accent,
+                color: onAccent,
+                ["--d" as string]: "220ms",
+              }}
+            >
+              {primary.label}
+              <ArrowRight className="h-5 w-5" />
+            </a>
+          )
         )}
 
-        {secondary.length > 0 && (
+        {!hasButtonOverride(card) && secondary.length > 0 && (
           <div className="card-rise mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {secondary.map((button, index) => (
               <a

@@ -3,6 +3,7 @@ import { initialsOf, resolveCardTheme, roleLine, type CardProfile, type Resolved
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — the executive card. Dark, serif, and quiet about it.
  *
@@ -94,7 +95,10 @@ export default function SummitCard({
           </p>
         )}
 
-        <nav className="mt-10 flex flex-col items-center gap-4">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-10 flex flex-col items-center gap-4">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -115,6 +119,7 @@ export default function SummitCard({
             );
           })}
         </nav>
+        )}
       </main>
     </div>
   );

@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Alternating tilts so the stack looks hand-placed rather than laid out.
  * Kept under ~2° — steeper angles make neighbouring strips overlap, and the
@@ -111,7 +112,10 @@ export default function TapeCard({
 
         {/* Generous gap: the tape tab sits above each strip, so tight spacing
             makes it land on the strip before it. */}
-        <nav className="mt-10 space-y-6">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-10 space-y-6">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -141,6 +145,7 @@ export default function TapeCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

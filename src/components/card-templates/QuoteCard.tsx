@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * FORM — asking for a quote.
  *
@@ -85,7 +86,10 @@ export default function QuoteCard({
           </ul>
         </section>
 
-        <nav className="mt-6 space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-6 space-y-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             const lead = index === 0;
@@ -110,6 +114,7 @@ export default function QuoteCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

@@ -44,6 +44,7 @@ export default async function AdminEditCard({
     surface_color: card.surface_color ?? "",
     background_effect: card.background_effect ?? "none",
     intro_style: card.intro_style ?? "rise",
+    button_style: card.button_style ?? "default",
     published: card.published !== false,
     location: card.location ?? "",
     accent_color: card.accent_color ?? "#111111",

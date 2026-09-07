@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — big imagery energy.
  *
@@ -101,6 +102,9 @@ export default function ShowcaseCard({
           >{card.bio}</p>
         )}
 
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
         <div className="mt-9 space-y-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
@@ -144,6 +148,7 @@ export default function ShowcaseCard({
             );
           })}
         </div>
+        )}
 
       </main>
     </div>

@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * SECTIONED — cover photo, services, work, contact. The closest thing here to
  * a small company site, all on one page with jump nav.
@@ -48,7 +49,10 @@ export default function AgencyCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
-      <nav
+      {hasButtonOverride(card) ? (
+        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+      ) : (
+        <nav
         className="sticky top-0 z-30 border-b backdrop-blur-xl"
         style={{ backgroundColor: `${tone}E6`, borderColor: theme.border }}
       >
@@ -65,6 +69,7 @@ export default function AgencyCard({
           ))}
         </div>
       </nav>
+      )}
 
       {/* Hero with cover photo */}
       <section id="top" className="relative scroll-mt-14 overflow-hidden">

@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — a price list.
  *
@@ -108,8 +109,12 @@ export default function MenuCard({
           </section>
         )}
 
-        {rest.length > 0 && (
-          <nav className="mt-9 space-y-2">
+        {hasButtonOverride(card) && buttons.length > 0 && (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        )}
+
+        {!hasButtonOverride(card) && rest.length > 0 && (
+            <nav className="mt-9 space-y-2">
             {rest.map((button, index) => {
               const Icon = iconFor(button.kind);
               return (
@@ -131,8 +136,10 @@ export default function MenuCard({
         )}
 
         {/* The one thing a menu actually needs at the end: how to get the
-            thing. Promoted above Save-to-contacts, not beside it. */}
-        {primary && (
+            thing. Promoted above Save-to-contacts, not beside it. Skipped
+            under a button-style override, which already draws every link
+            (this one included) as part of the one shared list above. */}
+        {primary && !hasButtonOverride(card) && (
           <a
             href={primary.href}
             target={primary.external ? "_blank" : undefined}

@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Neo-brutalist: 2px black outlines, hard offset shadows, no gradients.
  * The house style, turned into a card.
@@ -102,7 +103,10 @@ export default function StickerCard({
           >{card.bio}</p>
         )}
 
-        <nav className="mt-4 space-y-3">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-4 space-y-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -126,6 +130,7 @@ export default function StickerCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

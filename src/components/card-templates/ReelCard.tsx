@@ -11,6 +11,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — edge-to-edge photos, one after another.
  *
@@ -125,7 +126,10 @@ export default function ReelCard({
       </div>
 
       {/* Links */}
-      <nav className="space-y-2.5 px-5 py-8">
+      {hasButtonOverride(card) ? (
+        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+      ) : (
+        <nav className="space-y-2.5 px-5 py-8">
         {buttons.map((button, index) => {
           const Icon = iconFor(button.kind);
           return (
@@ -144,6 +148,7 @@ export default function ReelCard({
           );
         })}
       </nav>
+      )}
     </div>
   );
 }

@@ -16,6 +16,7 @@ export type CardForm = {
   surface_color: string;
   background_effect: string;
   intro_style: string;
+  button_style: string;
   published: boolean;
   location: string;
   accent_color: string;
@@ -38,6 +39,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   surface_color: "",
   background_effect: "none",
   intro_style: "rise",
+  button_style: "default",
   published: true,
   location: "",
   accent_color: "#111111",
@@ -171,6 +173,7 @@ export function draftToCardProfile(
     surface_color: form.surface_color || null,
     background_effect: (form.background_effect as CardProfile["background_effect"]) || "none",
     intro_style: (form.intro_style as CardProfile["intro_style"]) || "rise",
+    button_style: (form.button_style as CardProfile["button_style"]) || "default",
     cover_mode: "cover",
     gallery,
     location: form.location || null,

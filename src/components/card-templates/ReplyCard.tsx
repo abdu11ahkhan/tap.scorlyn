@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * FORM — built to get a reply.
  *
@@ -121,28 +122,32 @@ export default function ReplyCard({
           </form>
         </section>
 
-        {buttons.length > 0 && (
-          <div
-            className="card-rise mt-7 flex flex-wrap justify-center gap-2.5"
-            style={{ ["--d" as string]: "190ms" }}
-          >
-            {buttons.map((button, index) => {
-              const Icon = iconFor(button.kind);
-              return (
-                <a
-                  key={`${button.href}-${index}`}
-                  href={button.href}
-                  target={button.external ? "_blank" : undefined}
-                  rel={button.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-[13px] font-bold text-[#12141A] transition-all hover:-translate-y-0.5 hover:shadow-md"
-                  style={{ borderColor: theme.border }}
-                >
-                  <Icon className="h-4 w-4" style={{ color: ink }} />
-                  {button.label}
-                </a>
-              );
-            })}
-          </div>
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          buttons.length > 0 && (
+            <div
+              className="card-rise mt-7 flex flex-wrap justify-center gap-2.5"
+              style={{ ["--d" as string]: "190ms" }}
+            >
+              {buttons.map((button, index) => {
+                const Icon = iconFor(button.kind);
+                return (
+                  <a
+                    key={`${button.href}-${index}`}
+                    href={button.href}
+                    target={button.external ? "_blank" : undefined}
+                    rel={button.external ? "noopener noreferrer" : undefined}
+                    className="flex items-center gap-2 rounded-full border bg-white px-4 py-2.5 text-[13px] font-bold text-[#12141A] transition-all hover:-translate-y-0.5 hover:shadow-md"
+                    style={{ borderColor: theme.border }}
+                  >
+                    <Icon className="h-4 w-4" style={{ color: ink }} />
+                    {button.label}
+                  </a>
+                );
+              })}
+            </div>
+          )
         )}
 
       </main>

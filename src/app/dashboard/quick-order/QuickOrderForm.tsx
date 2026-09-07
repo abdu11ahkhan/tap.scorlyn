@@ -111,6 +111,7 @@ export default function QuickOrderForm({ plans, customPlanId }: { plans: Plan[];
       surface_color: null,
       background_effect: "none",
       intro_style: "rise",
+      button_style: "default",
       cover_mode: "cover",
       gallery: [],
       location: null,

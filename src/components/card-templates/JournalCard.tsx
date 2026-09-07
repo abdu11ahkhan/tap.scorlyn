@@ -8,6 +8,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * SECTIONED — long-form, like a column.
  *
@@ -74,7 +75,10 @@ export default function JournalCard({
           </div>
         )}
 
-        <nav className="mt-12 border-t pt-7" style={{ borderColor: theme.border }}>
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-12 border-t pt-7" style={{ borderColor: theme.border }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: theme.fgMuted }}>
             elsewhere
           </p>
@@ -94,6 +98,7 @@ export default function JournalCard({
             ))}
           </div>
         </nav>
+        )}
 
       </main>
     </div>

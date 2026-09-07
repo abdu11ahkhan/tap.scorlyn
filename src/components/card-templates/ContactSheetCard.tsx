@@ -9,6 +9,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — a photographer's contact sheet.
  *
@@ -94,7 +95,10 @@ export default function ContactSheetCard({
           </div>
         )}
 
-        <nav className="mt-8 space-y-2">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-8 space-y-2">
           {buttons.map((button, index) => (
             <a
               key={`${button.kind}-${index}`}
@@ -109,6 +113,7 @@ export default function ContactSheetCard({
             </a>
           ))}
         </nav>
+        )}
 
       </main>
     </div>

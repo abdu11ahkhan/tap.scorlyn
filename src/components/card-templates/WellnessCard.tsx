@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — the studio card. Dark, soft-edged, unhurried. Generous space
  * around everything, the opposite instinct to Coach's blocky urgency —
@@ -102,7 +103,10 @@ export default function WellnessCard({
           </p>
         )}
 
-        <nav className="mt-10 w-full space-y-3">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-10 w-full space-y-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             const primary = index === 0;
@@ -125,6 +129,7 @@ export default function WellnessCard({
             );
           })}
         </nav>
+        )}
       </main>
     </div>
   );

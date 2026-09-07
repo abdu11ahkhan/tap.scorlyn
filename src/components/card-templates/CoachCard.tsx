@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — the trainer card. Black, blocky, and loud about one thing: are
  * they taking new clients right now. Same reasoning as Clinic's status pill,
@@ -86,7 +87,10 @@ export default function CoachCard({
           </p>
         )}
 
-        <nav className="mt-9 w-full space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-9 w-full space-y-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -108,6 +112,7 @@ export default function CoachCard({
             );
           })}
         </nav>
+        )}
       </main>
     </div>
   );

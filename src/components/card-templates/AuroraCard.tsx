@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Full-bleed gradient that slowly pans, with frosted glass on top. The accent
  * seeds the whole mesh rather than being a single highlight.
@@ -75,7 +76,10 @@ export default function AuroraCard({
           )}
         </div>
 
-        <nav className="mt-9 space-y-3">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-9 space-y-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -94,6 +98,7 @@ export default function AuroraCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

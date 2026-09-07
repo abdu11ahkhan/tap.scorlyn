@@ -132,6 +132,20 @@ export const INTRO_STYLES = [
 ] as const;
 
 /**
+ * Overrides how the link list itself renders, independent of the template —
+ * every template keeps drawing its own native buttons for 'default', and
+ * swaps in the shared look from card-templates/LinkButtons.tsx for anything
+ * else. Colours for both come from the owner's own accent (hueShift for
+ * 'badge', a gradient toward a shifted hue for 'gradient'), never a fixed
+ * platform palette.
+ */
+export const BUTTON_STYLES = [
+  { id: "default", label: "template default" },
+  { id: "badge", label: "badge" },
+  { id: "gradient", label: "gradient" },
+] as const;
+
+/**
  * Backgrounds a card can sit on, grouped by lightness.
  *
  * Split rather than one list because the templates hardcode their text
@@ -236,6 +250,9 @@ export type CardProfile = {
   /** Which entrance animation the card's elements use on load. Null/'rise'
    *  keeps every template's original default. */
   intro_style: "rise" | "dropdown" | "bubble" | "swipe" | null;
+  /** Overrides the template's own native button rendering. Null/'default'
+   *  keeps every template's original look. */
+  button_style: "default" | "badge" | "gradient" | null;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];
@@ -560,6 +577,46 @@ export function mixHex(from: string, to: string, amount: number): string {
       .padStart(2, "0");
   };
   return `#${channel(0)}${channel(2)}${channel(4)}`;
+}
+
+/**
+ * Rotates a colour around the hue wheel by `degrees`, keeping its own
+ * saturation and lightness. Used to give the "badge" button style a
+ * different colour per link that still visibly comes from the owner's own
+ * accent — never a fixed rainbow — the same "derived from their brand"
+ * rule every other per-card effect in this file already follows.
+ */
+export function hueShift(hex: string, degrees: number): string {
+  const full = normalizeHex(hex);
+  if (!full) return hex;
+  const r = parseInt(full.slice(0, 2), 16) / 255;
+  const g = parseInt(full.slice(2, 4), 16) / 255;
+  const b = parseInt(full.slice(4, 6), 16) / 255;
+  const mx = Math.max(r, g, b);
+  const mn = Math.min(r, g, b);
+  const l = (mx + mn) / 2;
+  const d = mx - mn;
+  let h = 0;
+  let s = 0;
+  if (d !== 0) {
+    s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+    if (mx === r) h = ((g - b) / d + (g < b ? 6 : 0)) * 60;
+    else if (mx === g) h = ((b - r) / d + 2) * 60;
+    else h = ((r - g) / d + 4) * 60;
+  }
+  h = (h + degrees) % 360;
+  if (h < 0) h += 360;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  const [r2, g2, b2] =
+    h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  const toHex = (v: number) =>
+    Math.round((v + m) * 255)
+      .toString(16)
+      .padStart(2, "0");
+  return `#${toHex(r2)}${toHex(g2)}${toHex(b2)}`;
 }
 
 /**

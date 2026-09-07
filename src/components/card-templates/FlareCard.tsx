@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, resolveGallery, type CardProfi
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — the creator card. A big bio, a big link stack, a gradient behind
  * all of it.
@@ -87,7 +88,10 @@ export default function FlareCard({
           )}
         </div>
 
-        <nav className="mt-8 space-y-3">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-8 space-y-3">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -106,6 +110,7 @@ export default function FlareCard({
             );
           })}
         </nav>
+        )}
 
         {gallery.length > 0 && (
           <div className="card-rise mt-9" style={{ ["--d" as string]: `${180 + buttons.length * 55}ms` }}>

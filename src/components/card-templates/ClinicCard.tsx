@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — the healthcare card. Clean, calm, and built around one question
  * a patient actually has: are they taking new people right now.
@@ -85,7 +86,10 @@ export default function ClinicCard({
           </p>
         )}
 
-        <nav className="mt-8 w-full space-y-2.5">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-8 w-full space-y-2.5">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             const primary = index === 0;
@@ -108,6 +112,7 @@ export default function ClinicCard({
             );
           })}
         </nav>
+        )}
       </main>
     </div>
   );

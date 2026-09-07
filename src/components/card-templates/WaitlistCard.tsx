@@ -3,6 +3,7 @@ import { fontStack, resolveCardTheme, type CardProfile, type ResolvedButton } fr
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — "coming soon", with a sign-up as the only real action.
  *
@@ -126,6 +127,9 @@ export default function WaitlistCard({
           find me elsewhere
         </p>
 
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
         <div
           className="card-rise mt-4 flex flex-wrap items-center gap-3"
           style={{ ["--d" as string]: "250ms" }}
@@ -148,6 +152,7 @@ export default function WaitlistCard({
             );
           })}
         </div>
+        )}
 
         <p className="mt-12 text-[11px] font-bold" style={{ color: theme.fgMuted }}>
           {card.full_name}

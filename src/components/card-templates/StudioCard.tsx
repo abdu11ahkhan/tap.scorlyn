@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * SECTIONED — a small studio site on one page.
  *
@@ -123,6 +124,9 @@ export default function StudioCard({
             <h2 className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: theme.fgMuted }}>
               contact
             </h2>
+            {hasButtonOverride(card) ? (
+              <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+            ) : (
             <nav className="mt-4 space-y-2.5">
               {buttons.map((button, index) => {
                 const Icon = iconFor(button.kind);
@@ -147,6 +151,7 @@ export default function StudioCard({
                 );
               })}
             </nav>
+            )}
 
           </section>
         )}

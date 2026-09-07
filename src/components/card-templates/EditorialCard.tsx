@@ -3,6 +3,7 @@ import { initialsOf, resolveCardTheme, type CardProfile, type ResolvedButton } f
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Magazine spread: warm paper, serif, rules and small caps. Ignores the font
  * setting on purpose — the serif *is* the template.
@@ -93,7 +94,10 @@ export default function EditorialCard({
           </p>
         )}
 
-        <nav className="mt-10">
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
+          <nav className="mt-10">
           {buttons.map((button, index) => {
             const Icon = iconFor(button.kind);
             return (
@@ -119,6 +123,7 @@ export default function EditorialCard({
             );
           })}
         </nav>
+        )}
 
       </main>
     </div>

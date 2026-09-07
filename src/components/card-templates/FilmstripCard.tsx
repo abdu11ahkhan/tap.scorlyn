@@ -10,6 +10,7 @@ import {
 } from "@/lib/card";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PORTFOLIO — a title card, then one frame at a time.
  *
@@ -116,7 +117,10 @@ export default function FilmstripCard({
         </div>
       )}
 
-      <nav className="mt-9 space-y-2 px-5">
+      {hasButtonOverride(card) ? (
+        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+      ) : (
+        <nav className="mt-9 space-y-2 px-5">
         {buttons.map((button, index) => (
           <a
             key={`${button.kind}-${index}`}
@@ -131,6 +135,7 @@ export default function FilmstripCard({
           </a>
         ))}
       </nav>
+      )}
 
       <div className="mt-6 px-5">
       </div>

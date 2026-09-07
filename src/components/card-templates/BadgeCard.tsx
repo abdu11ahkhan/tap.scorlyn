@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — an office ID badge, not a landing page.
  *
@@ -106,6 +107,9 @@ export default function BadgeCard({
 
         {/* Detail rows — a form, not a button rack. Each row reads left to
             right like a line on a printed sheet: icon, field, arrow. */}
+        {hasButtonOverride(card) ? (
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        ) : (
         <nav
           className="card-rise sticker mt-4 divide-y overflow-hidden rounded-2xl border"
           style={{ borderColor: theme.border, ["--d" as string]: "130ms" }}
@@ -140,6 +144,7 @@ export default function BadgeCard({
             );
           })}
         </nav>
+        )}
 
         <p
           className="card-rise mt-8 text-center text-[10px] font-bold uppercase tracking-[0.24em]"
