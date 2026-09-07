@@ -74,7 +74,7 @@ export function Navbar() {
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
-            className="ml-1 rounded-full border border-line p-2 text-ink md:hidden"
+            className="ml-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-ink md:hidden"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
