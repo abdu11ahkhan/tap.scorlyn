@@ -17,6 +17,7 @@ export default function TemplateThumb({
   title,
   aspect,
   top = 0,
+  tone = "#0a0a0a",
 }: {
   src: string;
   title: string;
@@ -29,6 +30,11 @@ export default function TemplateThumb({
   /** Visible height as a fraction of width, matched to the phone screen
    *  above so nothing is cut. */
   aspect: number;
+  /** The template's own background, shown while its iframe is still loading
+   *  (a cold cache, a slow connection) — a flat black tile there regardless
+   *  of the template read as broken rather than "still loading", especially
+   *  right after a deploy when every preview route's cache is cold at once. */
+  tone?: string;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
@@ -74,8 +80,8 @@ export default function TemplateThumb({
   return (
     <div
       ref={box}
-      className="relative overflow-hidden rounded-[1.4rem] bg-black"
-      style={{ aspectRatio: `1 / ${aspect}` }}
+      className="relative overflow-hidden rounded-[1.4rem]"
+      style={{ aspectRatio: `1 / ${aspect}`, background: tone }}
     >
       {/* Measured, and close enough to matter. */}
       {scale > 0 && near && (

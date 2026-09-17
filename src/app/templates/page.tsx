@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Camera, LayoutTemplate, Sparkles } from "lucide-react";
 import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
+import { TEMPLATE_TONE } from "@/components/card-templates";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
 import { Navbar } from "@/components/layout/Navbar";
@@ -58,6 +59,7 @@ export default async function PublicTemplatesPage({
       name: o?.name || t.name,
       category: (o?.category as string) || t.category,
       preview: t.preview,
+      tone: TEMPLATE_TONE[t.id] ?? "#ffffff",
       enabled: o?.enabled ?? true,
       sortOrder: o?.sort_order ?? 0,
     };

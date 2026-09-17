@@ -14,6 +14,9 @@ type GalleryTemplate = {
   name: string;
   category: string;
   preview: string;
+  /** The template's own background, so a slow-loading thumbnail shows the
+   *  right colour instead of a flat black box while its iframe loads. */
+  tone: string;
 };
 
 type GalleryCategory = { id: string; name: string; blurb?: string };
@@ -95,6 +98,7 @@ export default function TemplateGallery({
                   title={`${template.name} template preview`}
                   aspect={THUMB_ASPECT}
                   top={thumbTop(template.id)}
+                  tone={template.tone}
                 />
               </div>
 

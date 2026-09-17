@@ -7,6 +7,7 @@ import TemplateSwatch from "./TemplateSwatch";
 import TemplateThumb from "@/app/templates/TemplateThumb";
 import { SRC_H, SRC_W } from "@/app/templates/thumb-geometry";
 import { thumbTop } from "@/app/templates/thumb-frames";
+import { TEMPLATE_TONE } from "@/components/card-templates/template-tone";
 
 const THUMB_ASPECT = SRC_H / SRC_W;
 
@@ -105,9 +106,10 @@ export default function TemplatePicker({
                           onChange(template.id);
                           setOpen(false);
                         }}
-                        className={`overflow-hidden rounded-xl border-2 bg-black text-left transition-all hover:-translate-y-0.5 ${
+                        className={`overflow-hidden rounded-xl border-2 text-left transition-all hover:-translate-y-0.5 ${
                           isActive ? "border-sc-gold" : "border-sc-border hover:border-sc-gold/50"
                         }`}
+                        style={{ background: TEMPLATE_TONE[template.id] }}
                       >
                         {/* The real template, rendered exactly like the public
                             gallery's thumbnails — not the abstract swatch, which
@@ -118,6 +120,7 @@ export default function TemplatePicker({
                           title={`${template.name} template preview`}
                           aspect={THUMB_ASPECT}
                           top={thumbTop(template.id)}
+                          tone={TEMPLATE_TONE[template.id]}
                         />
                         <div
                           className={`flex items-center justify-between gap-1 px-2 py-1.5 ${
