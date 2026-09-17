@@ -22,6 +22,12 @@ function demoAvatar(accent: string): string {
   // object-cover on a square blew the subject up into an unrecognisable blob.
   // The head sits at ~40% height so a centre-square crop (the circular avatars)
   // still frames it properly. SVG stays sharp at every size.
+  //
+  // A bare silhouette-on-gradient used to sit here, which is exactly what a
+  // *missing* avatar looks like on most sites — every template read as if
+  // nobody had gotten around to uploading a photo yet. Drawing a hairline,
+  // eyes and a smile on the same silhouette is the difference between "empty
+  // state" and "here's what a filled-in profile looks like."
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
@@ -41,6 +47,23 @@ function demoAvatar(accent: string): string {
        a narrow connecting neck turns into a lightbulb in the circular ones. -->
   <circle cx="200" cy="215" r="85" fill="url(#sub)"/>
   <path d="M58 520C58 380 122 290 200 290s142 90 142 230z" fill="url(#sub)"/>
+  <!-- Hairline, sitting on top of the head circle rather than replacing it,
+       so the silhouette still reads as a face at avatar size. -->
+  <path
+    d="M118 200a82 82 0 01164 0c0-15-7-28-19-35-9 13-28 20-63 20s-54-7-63-20c-12 7-19 20-19 35z"
+    fill="${accent}"
+    opacity="0.45"
+  />
+  <circle cx="174" cy="208" r="7" fill="${accent}" opacity="0.5" />
+  <circle cx="226" cy="208" r="7" fill="${accent}" opacity="0.5" />
+  <path
+    d="M177 238q23 17 46 0"
+    stroke="${accent}"
+    stroke-width="6"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.45"
+  />
 </svg>`;
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
