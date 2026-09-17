@@ -127,7 +127,7 @@ export default function ReelCard({
 
       {/* Links */}
       {hasButtonOverride(card) ? (
-        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
       ) : (
         <nav className="space-y-2.5 px-5 py-8">
         {buttons.map((button, index) => {

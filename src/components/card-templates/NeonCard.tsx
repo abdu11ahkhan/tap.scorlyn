@@ -116,7 +116,7 @@ export default function NeonCard({
             Minimal's list, and the right shape for a shorter, punchier label
             set (handles, socials, a set time). */}
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav className="mt-8 flex flex-wrap gap-2.5">
           {buttons.map((button, index) => {

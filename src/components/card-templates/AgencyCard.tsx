@@ -50,7 +50,7 @@ export default function AgencyCard({
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
       {hasButtonOverride(card) ? (
-        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+        <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
       ) : (
         <nav
         className="sticky top-0 z-30 border-b backdrop-blur-xl"

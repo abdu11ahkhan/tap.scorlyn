@@ -76,7 +76,7 @@ export default function JournalCard({
         )}
 
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav className="mt-12 border-t pt-7" style={{ borderColor: theme.border }}>
           <p className="text-[11px] font-bold uppercase tracking-[0.3em]" style={{ color: theme.fgMuted }}>

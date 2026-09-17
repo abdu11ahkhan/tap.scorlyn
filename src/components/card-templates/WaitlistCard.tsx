@@ -128,7 +128,7 @@ export default function WaitlistCard({
         </p>
 
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
         <div
           className="card-rise mt-4 flex flex-wrap items-center gap-3"

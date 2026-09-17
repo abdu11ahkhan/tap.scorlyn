@@ -103,7 +103,7 @@ export default function ShowcaseCard({
         )}
 
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
         <div className="mt-9 space-y-3">
           {buttons.map((button, index) => {

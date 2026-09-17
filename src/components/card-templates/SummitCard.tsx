@@ -96,7 +96,7 @@ export default function SummitCard({
         )}
 
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav className="mt-10 flex flex-col items-center gap-4">
           {buttons.map((button, index) => {

@@ -98,7 +98,7 @@ export default function MonoCard({
         )}
 
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav
           className="card-rise mt-8 divide-y overflow-hidden rounded border"

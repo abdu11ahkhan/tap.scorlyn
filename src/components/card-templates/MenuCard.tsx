@@ -110,7 +110,7 @@ export default function MenuCard({
         )}
 
         {hasButtonOverride(card) && buttons.length > 0 && (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         )}
 
         {!hasButtonOverride(card) && rest.length > 0 && (

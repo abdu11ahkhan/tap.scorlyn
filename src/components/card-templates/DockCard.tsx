@@ -89,7 +89,7 @@ export default function DockCard({
         <div className="flex items-center gap-3">
           <div className="relative min-w-0 flex-1">
           {hasButtonOverride(card) ? (
-            <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+            <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
           ) : (
             <nav className="flex items-center gap-3 overflow-x-auto pb-1">
           {buttons.map((button, index) => {

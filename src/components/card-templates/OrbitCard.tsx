@@ -88,7 +88,7 @@ export default function OrbitCard({
         {/* The links. Wraps to as many rows as it needs — a card with twelve
             links stays one screen instead of twelve stacked bars. */}
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav className="mt-9 flex flex-wrap items-center justify-center gap-3">
           {buttons.map((button, index) => {

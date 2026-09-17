@@ -135,14 +135,18 @@ export const INTRO_STYLES = [
  * Overrides how the link list itself renders, independent of the template —
  * every template keeps drawing its own native buttons for 'default', and
  * swaps in the shared look from card-templates/LinkButtons.tsx for anything
- * else. Colours for both come from the owner's own accent (hueShift for
- * 'badge', a gradient toward a shifted hue for 'gradient'), never a fixed
- * platform palette.
+ * else. Colours for all five come from the owner's own accent — hueShift for
+ * 'badge', a gradient toward a shifted hue for 'gradient', the accent flat
+ * for 'solid'/'block', the accent as a border/text colour for 'outline' —
+ * never a fixed platform palette.
  */
 export const BUTTON_STYLES = [
   { id: "default", label: "template default" },
   { id: "badge", label: "badge" },
   { id: "gradient", label: "gradient" },
+  { id: "solid", label: "solid" },
+  { id: "outline", label: "outline" },
+  { id: "block", label: "block" },
 ] as const;
 
 /**
@@ -252,7 +256,7 @@ export type CardProfile = {
   intro_style: "rise" | "dropdown" | "bubble" | "swipe" | null;
   /** Overrides the template's own native button rendering. Null/'default'
    *  keeps every template's original look. */
-  button_style: "default" | "badge" | "gradient" | null;
+  button_style: "default" | "badge" | "gradient" | "solid" | "outline" | "block" | null;
   /** 'cover' fills the hero area; 'tint' sits dimmed behind the whole page. */
   cover_mode: string | null;
   gallery: GalleryItem[];

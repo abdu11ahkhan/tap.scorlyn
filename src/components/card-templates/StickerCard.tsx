@@ -104,7 +104,7 @@ export default function StickerCard({
         )}
 
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav className="mt-4 space-y-3">
           {buttons.map((button, index) => {

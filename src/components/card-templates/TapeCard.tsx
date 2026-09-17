@@ -113,7 +113,7 @@ export default function TapeCard({
         {/* Generous gap: the tape tab sits above each strip, so tight spacing
             makes it land on the strip before it. */}
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
           <nav className="mt-10 space-y-6">
           {buttons.map((button, index) => {

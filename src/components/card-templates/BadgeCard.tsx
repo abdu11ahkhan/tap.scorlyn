@@ -108,7 +108,7 @@ export default function BadgeCard({
         {/* Detail rows — a form, not a button rack. Each row reads left to
             right like a line on a printed sheet: icon, field, arrow. */}
         {hasButtonOverride(card) ? (
-          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient"} />
+          <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
         ) : (
         <nav
           className="card-rise sticker mt-4 divide-y overflow-hidden rounded-2xl border"
