@@ -337,33 +337,6 @@ export default function CardEditorFields({
           </div>
         </div>
 
-        {/* Overrides how the link list itself renders — every template
-            still draws its own native buttons by default, so this is off
-            until someone actually wants a different look than the one the
-            template was designed with. */}
-        <div className="space-y-2 sm:col-span-2">
-          <Label>Button style</Label>
-          <p className="-mt-1 text-xs text-sc-text-dimmer">
-            Overrides how your links look, on top of whichever template you picked.
-          </p>
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {BUTTON_STYLES.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => onFormChange({ button_style: opt.id })}
-                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
-                  (form.button_style || "default") === opt.id
-                    ? "border-sc-gold text-sc-gold-text"
-                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="space-y-2">
           <Label>Font</Label>
           <div className="flex gap-2">
@@ -744,6 +717,34 @@ export default function CardEditorFields({
           <Plus className="w-4 h-4" />
           Add button
         </button>
+
+        {/* Lives here, not under "colour & font" — someone looking for a
+            different look for their buttons checks the buttons section
+            first, not a collapsed style panel three sections up. Overrides
+            how the link list itself renders; every template still draws its
+            own native buttons by default. */}
+        <div className="space-y-2 border-t-2 border-sc-border-soft pt-4">
+          <Label>Button style</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            Overrides how your links look, on top of whichever template you picked.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {BUTTON_STYLES.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => onFormChange({ button_style: opt.id })}
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                  (form.button_style || "default") === opt.id
+                    ? "border-sc-gold text-sc-gold-text"
+                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
       </section>
 
