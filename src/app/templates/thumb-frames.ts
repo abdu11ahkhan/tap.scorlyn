@@ -62,7 +62,7 @@ export const THUMB_TOP: Record<string, number> = {
   grid: 460,
   journal: 497,
   launch: 577,
-  lookbook: 3594,
+  lookbook: 3557,
   masonry: 452,
   menu: 460,
   minimal: 500,
