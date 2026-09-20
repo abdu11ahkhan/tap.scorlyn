@@ -9,6 +9,7 @@ import { TemplateShowcase } from "@/components/sections/TemplateShowcase";
 import { AudienceSplit } from "@/components/sections/AudienceSplit";
 import { Pricing } from "@/components/sections/Pricing";
 import { Contact } from "@/components/sections/Contact";
+import { SEOContent } from "@/components/sections/SEOContent";
 import BrandMark from "@/components/layout/BrandMark";
 import BuildMyCardButton from "@/components/nfc/BuildMyCardButton";
 import { createClient } from "@/lib/supabase/server";
@@ -40,6 +41,8 @@ export default async function Home() {
         whatsapp={content?.support_whatsapp}
         email={content?.support_email}
       />
+
+      <SEOContent />
 
       {/* Closing call to action */}
       <section className="relative overflow-hidden bg-paper py-24 text-ink">
