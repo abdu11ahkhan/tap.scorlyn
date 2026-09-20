@@ -30,26 +30,36 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tap.scorlyn.com";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ScorlynTap — Digital Business Card & NFC Contact Sharing",
+    default: "ScorlynTap — NFC & Digital Business Cards in Pakistan",
     template: "%s — ScorlynTap",
   },
   description:
-    "Build a digital business card in minutes, share it by link, QR, or a physical NFC card, and see who's connecting with you. No app needed.",
+    "Get the best NFC smart business card in Pakistan. Build your digital profile in minutes, share via tap or QR, and never print paper cards again.",
+  keywords: [
+    "NFC business card Pakistan",
+    "digital business card Pakistan",
+    "smart business card Lahore",
+    "NFC business card price in Pakistan",
+    "contactless business card Pakistan",
+    "tap to share contact card",
+    "buy NFC business card Pakistan",
+    "ScorlynTap"
+  ],
   openGraph: {
-    title: "ScorlynTap — Digital Business Card & NFC Contact Sharing",
+    title: "ScorlynTap — NFC & Digital Business Cards in Pakistan",
     description:
-      "Build a digital business card in minutes, share it by link, QR, or a physical NFC card, and see who's connecting with you.",
+      "Get the best NFC smart business card in Pakistan. Build your digital profile in minutes and share via tap or QR.",
     url: SITE_URL,
     siteName: "ScorlynTap",
     images: [`${SITE_URL}/opengraph-image.png`],
-    locale: "en_US",
+    locale: "en_PK",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ScorlynTap — Digital Business Card & NFC Contact Sharing",
+    title: "ScorlynTap — NFC & Digital Business Cards in Pakistan",
     description:
-      "Build a digital business card in minutes, share it by link, QR, or a physical NFC card.",
+      "Get the best NFC smart business card in Pakistan. Build your digital profile in minutes and share via tap or QR.",
     images: [`${SITE_URL}/opengraph-image.png`],
   },
 };
@@ -60,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-PK">
       <head>
         {/*
           Safety net for browsers where our JavaScript never runs.
@@ -83,6 +93,24 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col`}>
         <HydrationFlag />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "ScorlynTap",
+              "url": SITE_URL,
+              "description": "NFC and Digital Business Cards in Pakistan",
+              "areaServed": "PK",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "areaServed": "PK"
+              }
+            })
+          }}
+        />
         {children}
       </body>
     </html>

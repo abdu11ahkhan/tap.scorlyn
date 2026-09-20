@@ -55,11 +55,11 @@ export function Hero({
               title
             ) : (
               <>
-                paper cards
+                the best nfc
                 <br />
-                are{" "}
+                business card in{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-teal">dead</span>
+                  <span className="relative z-10 text-teal">pakistan</span>
                   {/* Hand-drawn-style underline squiggle instead of the old
                       highlighter box — the box read as "text on a dark
                       panel"; a light page wants the accent to sit in the
@@ -80,7 +80,7 @@ export function Hero({
                   </svg>
                 </span>
                 <br />
-                yours isn&apos;t.
+                tap to share.
               </>
             )}
           </motion.h1>
@@ -92,7 +92,7 @@ export function Hero({
             className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-ink-dim"
           >
             {subtitle ||
-              "Build your online profile — every link, every way to reach you, on one page a tap opens instantly. No app. No QR. About two minutes."}
+              "Build your digital business card in minutes. Share your profile via NFC tap or QR code anywhere in Pakistan. No app required."}
           </motion.p>
 
           <motion.div
