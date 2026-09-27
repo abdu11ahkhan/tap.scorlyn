@@ -58,20 +58,22 @@ export default function CopyRow({
       type="button"
       onClick={copy}
       aria-label={`Copy ${label}: ${value}`}
-      className="-mx-2 flex w-[calc(100%+1rem)] items-baseline justify-between gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-black/[0.04] active:bg-black/[0.07]"
+      className="-mx-2 flex w-[calc(100%+1rem)] items-baseline justify-between gap-3 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-current/[0.05] active:bg-current/[0.08]"
     >
-      <span className="shrink-0 text-[11px] font-bold uppercase tracking-widest text-black/35">
+      {/* Opacity off the inherited colour rather than fixed black, so the row
+          reads on dark cards as well as light ones. */}
+      <span className="shrink-0 text-[11px] font-bold uppercase tracking-widest opacity-40">
         {label}
       </span>
 
       <span className="flex min-w-0 items-center gap-1.5">
-        <span className="truncate font-mono text-[13px] font-semibold text-black/80">
+        <span className="truncate font-mono text-[13px] font-semibold opacity-85">
           {value}
         </span>
         {copied ? (
           <Check className="h-3.5 w-3.5 shrink-0" style={{ color: accent }} />
         ) : (
-          <Copy className="h-3.5 w-3.5 shrink-0 text-black/25" />
+          <Copy className="h-3.5 w-3.5 shrink-0 opacity-30" />
         )}
       </span>
     </button>

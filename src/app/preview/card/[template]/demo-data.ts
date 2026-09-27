@@ -1,4 +1,4 @@
-import type { CardButton } from "@/lib/card";
+import type { CardButton, PaymentMethod } from "@/lib/card";
 
 /**
  * A distinct persona per template.
@@ -29,6 +29,8 @@ export type DemoPersona = {
   availabilityNote?: string;
   /** Venues show their built-in logo mark rather than a person's portrait. */
   noAvatar?: boolean;
+  /** Sample accounts, for templates that show payment details in the card. */
+  payments?: PaymentMethod[];
 };
 
 const wa = (n: string) => `92300000${n}`;
@@ -612,10 +614,16 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
     location: "Lahore",
     availabilityNote: "More\nThan Just\nGaming",
     noAvatar: true,
+    payments: [
+      { kind: "easypaisa", label: "EasyPaisa", account_name: "Nexus Gaming", account_number: "0300-0000043" },
+      { kind: "jazzcash", label: "JazzCash", account_name: "Nexus Gaming", account_number: "0301-0000043" },
+      { kind: "bank", label: "Meezan Bank", account_name: "Nexus Gaming Zone", account_number: "0000-0000000043", iban: "PK00MEZN0000000000000043" },
+    ],
     links: [
       ["Make a Payment", "pay", "https://example.pk/pay"],
       ["WhatsApp Us", "whatsapp", wa("0043")],
       ["Google Review", "link", "https://g.page/r/example/review"],
+      ["Google Location", "maps", "https://maps.app.goo.gl/example"],
       ["Instagram", "instagram", "https://instagram.com/example"],
       ["Facebook", "facebook", "https://facebook.com/example"],
       ["TikTok", "tiktok", "https://tiktok.com/@example"],

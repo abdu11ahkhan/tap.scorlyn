@@ -756,6 +756,17 @@ export function resolveCardTheme(
   };
 }
 
+/** Payment accounts with something to pay into — a number or an IBAN. */
+export function paymentMethodsOf(card: Pick<CardProfile, "payment_methods">): PaymentMethod[] {
+  return (Array.isArray(card.payment_methods) ? card.payment_methods : []).filter(
+    (m: PaymentMethod) => m?.account_number?.trim() || m?.iban?.trim()
+  );
+}
+
+/** Templates that show payment accounts inside the card itself, so the
+ *  extras section below must not show them a second time. */
+export const TEMPLATES_WITH_OWN_PAYMENTS = new Set(["arena"]);
+
 /** Drops rows the user hasn't filled in, so templates never map over blanks. */
 export function resolveGallery(gallery: unknown): GalleryItem[] {
   if (!Array.isArray(gallery)) return [];

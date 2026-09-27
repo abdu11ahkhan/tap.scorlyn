@@ -1,13 +1,16 @@
-import { ArrowRight, ChevronRight, MapPin } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronRight, CreditCard, MapPin } from "lucide-react";
 import {
   fontStack,
   hueShift,
   mixHex,
+  paymentMethodsOf,
   resolveCardTheme,
   type ButtonKind,
   type CardProfile,
+  type PaymentMethod,
   type ResolvedButton,
 } from "@/lib/card";
+import CopyRow from "@/components/nfc/CopyRow";
 import { iconFor } from "./button-icons";
 import BackgroundEffect from "./BackgroundEffect";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
@@ -31,7 +34,7 @@ const KIND_HUE: Partial<Record<ButtonKind, string>> = {
   discord: "#6366F1",
   twitch: "#9146FF",
   pay: "#3B82F6",
-  maps: "#EA580C",
+  maps: "#EAB308",
   phone: "#0EA5E9",
   calendar: "#14B8A6",
   menu: "#F59E0B",
@@ -47,7 +50,7 @@ const KIND_COPY: Partial<Record<ButtonKind, [string, string]>> = {
   discord: ["Join the server", "Join"],
   twitch: ["Catch us live", "Watch"],
   pay: ["Pay for your session", "Pay Now"],
-  maps: ["Find your way here", "Directions"],
+  maps: ["Find us on Google Maps", "Directions"],
   phone: ["Call the front desk", "Call"],
   email: ["Drop us a line", "Email"],
   calendar: ["Book a station", "Book"],
@@ -70,6 +73,98 @@ function GoogleG({ className }: { className?: string }) {
   );
 }
 
+const PAY_HUE = "#3B82F6";
+const PAY_KIND_LABEL: Record<PaymentMethod["kind"], string> = {
+  bank: "Bank transfer",
+  easypaisa: "EasyPaisa",
+  jazzcash: "JazzCash",
+  other: "Other",
+};
+
+/**
+ * "Make a Payment" as a tile that opens onto every account. Native <details>,
+ * like the payment block every other template gets: no JavaScript, closed by
+ * default so an account number isn't on screen until someone asks for it, and
+ * it widens to the full row when open so numbers aren't squeezed into half.
+ */
+function PaymentTile({
+  methods,
+  payLink,
+  owner,
+  accent,
+  fgMuted,
+  wide,
+}: {
+  methods: PaymentMethod[];
+  payLink?: ResolvedButton;
+  owner: string;
+  accent: string;
+  fgMuted: string;
+  wide: boolean;
+}) {
+  const light = mixHex(PAY_HUE, "#ffffff", 0.45);
+  const ways = methods.length + (payLink ? 1 : 0);
+  return (
+    <details
+      className={`card-rise group rounded-[24px] border p-4 open:col-span-2 ${wide ? "col-span-2" : ""}`}
+      style={{ background: `${PAY_HUE}14`, borderColor: `${PAY_HUE}80`, ["--d" as string]: "230ms" }}
+    >
+      <summary className="flex min-h-[108px] cursor-pointer list-none flex-col [&::-webkit-details-marker]:hidden">
+        <div className="mb-3 flex items-start justify-between">
+          <span
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border"
+            style={{ background: `${PAY_HUE}26`, borderColor: `${PAY_HUE}40`, color: light }}
+          >
+            <CreditCard className="h-5 w-5" />
+          </span>
+          <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" style={{ color: fgMuted }} />
+        </div>
+        <span className="text-[14px] font-bold leading-tight">Make a Payment</span>
+        <span className="mt-1 text-[11px] font-medium leading-snug" style={{ color: fgMuted }}>
+          {ways === 1 ? "Pay for your session" : `${ways} ways to pay`}
+        </span>
+        <span
+          className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-bold tracking-wide"
+          style={{ borderColor: `${PAY_HUE}80`, background: `${PAY_HUE}1a`, color: light }}
+        >
+          Pay Now
+          <ChevronRight className="h-3 w-3 transition-transform group-open:rotate-90" />
+        </span>
+      </summary>
+
+      <div className="mt-4 space-y-2.5">
+        {payLink && (
+          <a
+            href={payLink.href}
+            target={payLink.external ? "_blank" : undefined}
+            rel={payLink.external ? "noopener noreferrer" : undefined}
+            className="flex items-center justify-between rounded-xl px-3.5 py-3 text-[13px] font-bold"
+            style={{ background: PAY_HUE, color: "#ffffff" }}
+          >
+            Pay online
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        )}
+        {methods.map((m, i) => (
+          <div key={i} className="rounded-xl border p-3" style={{ borderColor: "#ffffff1f", background: "#ffffff08" }}>
+            <p className="text-[13px] font-bold" style={{ color: light }}>
+              {m.label?.trim() || PAY_KIND_LABEL[m.kind] || m.kind}
+            </p>
+            <div className="mt-1.5">
+              {m.account_name && <CopyRow label="Name" value={m.account_name} accent={accent} />}
+              {m.account_number && <CopyRow label="Account" value={m.account_number} accent={accent} />}
+              {m.iban && <CopyRow label="IBAN" value={m.iban} accent={accent} />}
+            </div>
+          </div>
+        ))}
+        <p className="text-[10px] font-medium leading-relaxed" style={{ color: fgMuted }}>
+          Tap any line to copy it. Always confirm these details with {owner} before sending money.
+        </p>
+      </div>
+    </details>
+  );
+}
+
 export default function ArenaCard({
   card,
   buttons,
@@ -82,6 +177,18 @@ export default function ArenaCard({
   const second = hueShift(accent, 60);
   const note = card.available_for_work ? card.availability_note?.trim() : "";
   const socials = buttons.filter((b) => SOCIAL.has(b.kind));
+
+  // Accounts fold into the "Make a Payment" tile, and an online pay link goes
+  // inside it too rather than sitting beside it as a second payment tile.
+  const methods = card.payment_enabled ? paymentMethodsOf(card) : [];
+  const payLink = methods.length ? buttons.find((b) => b.kind === "pay") : undefined;
+  const tiles = payLink ? buttons.filter((b) => b !== payLink) : buttons;
+  const tileCount = tiles.length + (methods.length ? 1 : 0);
+
+  const mapsButton = buttons.find((b) => b.kind === "maps");
+  const mapsHref =
+    mapsButton?.href ??
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${card.full_name} ${card.location ?? ""}`.trim())}`;
 
   return (
     <div
@@ -198,33 +305,58 @@ export default function ArenaCard({
             </p>
           )}
           {card.location && (
-            <p
-              className="card-location card-rise mt-2 flex items-center gap-1.5 text-[11px]"
+            <a
+              href={mapsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="card-location card-rise mt-2 flex w-fit items-center gap-1.5 text-[11px] underline-offset-2 hover:underline"
               style={{ color: theme.fgMuted, ["--d" as string]: "190ms" }}
             >
               <MapPin className="h-3 w-3 shrink-0" />
               {card.location}
-            </p>
+            </a>
           )}
 
           {hasButtonOverride(card) ? (
             <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />
           ) : (
-            <nav className="mt-7 grid grid-cols-2 gap-3">
-              {buttons.map((button, index) => {
+            <nav className="group/grid mt-7 grid grid-cols-2 gap-3">
+              {methods.length > 0 && (
+                <PaymentTile
+                  methods={methods}
+                  payLink={payLink}
+                  owner={card.full_name}
+                  accent={accent}
+                  fgMuted={theme.fgMuted}
+                  wide={tileCount % 2 === 1 && tiles.length === 0}
+                />
+              )}
+              {tiles.map((button, i) => {
+                const index = i + (methods.length > 0 ? 1 : 0);
                 const review = isReview(button);
                 const hue = review ? "#EA580C" : KIND_HUE[button.kind] ?? hueShift(accent, index * 47);
                 const light = mixHex(hue, "#ffffff", 0.45);
                 const [sub, cta] = review ? ["Leave us a review", "Rate Us"] : KIND_COPY[button.kind] ?? ["Tap to open", "Open"];
                 const Icon = iconFor(button.kind);
-                const wide = buttons.length % 2 === 1 && index === buttons.length - 1;
+                const last = index === tileCount - 1;
+                // An open payment drawer takes a whole row, which flips whether
+                // the last tile needs to stretch to keep the grid even.
+                const wide = !last
+                  ? ""
+                  : tileCount % 2 === 1
+                    ? methods.length
+                      ? "col-span-2 group-has-[[open]]/grid:col-span-1"
+                      : "col-span-2"
+                    : methods.length
+                      ? "group-has-[[open]]/grid:col-span-2"
+                      : "";
                 return (
                   <a
                     key={`${button.href}-${index}`}
                     href={button.href}
                     target={button.external ? "_blank" : undefined}
                     rel={button.external ? "noopener noreferrer" : undefined}
-                    className={`card-rise group relative flex min-h-[140px] flex-col rounded-[24px] border p-4 transition-transform active:scale-[0.98] ${wide ? "col-span-2" : ""}`}
+                    className={`card-rise group relative flex min-h-[140px] flex-col rounded-[24px] border p-4 transition-transform active:scale-[0.98] ${wide}`}
                     style={{
                       background: `${hue}14`,
                       borderColor: `${hue}80`,

@@ -1,5 +1,12 @@
 import { Banknote, ChevronDown, Clock, PlayCircle } from "lucide-react";
-import { readableOn, type BusinessHour, type CardProfile, type PaymentMethod } from "@/lib/card";
+import {
+  paymentMethodsOf,
+  readableOn,
+  TEMPLATES_WITH_OWN_PAYMENTS,
+  type BusinessHour,
+  type CardProfile,
+  type PaymentMethod,
+} from "@/lib/card";
 import CopyRow from "./CopyRow";
 
 /**
@@ -65,9 +72,7 @@ export function hasProfileExtras(card: CardProfile): boolean {
   const hours = (Array.isArray(card.business_hours) ? card.business_hours : []).filter(
     (h: BusinessHour) => h?.day?.trim() && h?.hours?.trim()
   );
-  const methods = (Array.isArray(card.payment_methods) ? card.payment_methods : []).filter(
-    (m: PaymentMethod) => m?.account_number?.trim() || m?.iban?.trim()
-  );
+  const methods = TEMPLATES_WITH_OWN_PAYMENTS.has(card.template) ? [] : paymentMethodsOf(card);
   return Boolean(
     hours.length || (card.video_url && embedUrl(card.video_url)) ||
       (card.payment_enabled && methods.length)
@@ -96,9 +101,7 @@ export default function ProfileExtras({
   const hours = (Array.isArray(card.business_hours) ? card.business_hours : []).filter(
     (h: BusinessHour) => h?.day?.trim() && h?.hours?.trim()
   );
-  const methods = (Array.isArray(card.payment_methods) ? card.payment_methods : []).filter(
-    (m: PaymentMethod) => m?.account_number?.trim() || m?.iban?.trim()
-  );
+  const methods = TEMPLATES_WITH_OWN_PAYMENTS.has(card.template) ? [] : paymentMethodsOf(card);
   const video = card.video_url ? embedUrl(card.video_url) : null;
 
   const showPayments = card.payment_enabled && methods.length > 0;
