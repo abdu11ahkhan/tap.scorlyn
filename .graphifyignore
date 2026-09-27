@@ -1,0 +1,14 @@
+.agents/
+.claude/
+.next/
+.vercel/
+node_modules/
+graphify-out/
+public/
+docs/
+supabase/.temp/
+*.png
+*.jpg
+*.svg
+skills-lock.json
+package-lock.json
