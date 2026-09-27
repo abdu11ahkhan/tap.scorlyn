@@ -111,7 +111,7 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     headline: persona.headline,
     company: persona.company,
     bio: persona.bio,
-    avatar_url: demoAvatar(accent),
+    avatar_url: persona.noAvatar ? null : demoAvatar(accent),
     cover_url: demoScene(accent, 0),
     logo_url: null,
     show_qr: true,

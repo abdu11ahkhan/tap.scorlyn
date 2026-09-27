@@ -27,6 +27,8 @@ export type DemoPersona = {
    *  (Clinic, Coach, Wellness) show as a status pill — a physio's "now
    *  booking sessions" reads oddly as "taking new work". */
   availabilityNote?: string;
+  /** Venues show their built-in logo mark rather than a person's portrait. */
+  noAvatar?: boolean;
 };
 
 const wa = (n: string) => `92300000${n}`;
@@ -600,6 +602,24 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
     location: "Islamabad",
     availabilityNote: "Now booking sessions",
     links: [["Book a class", "calendar", "https://example.pk/book"], ["WhatsApp", "whatsapp", wa("0042")], ["Instagram", "instagram", "https://instagram.com/example"]],
+  }),
+
+  // ---------------- Gaming zones ----------------
+  arena: person({
+    n: "0043", username: "nexusgaming", full_name: "Nexus",
+    headline: "Gaming Zone", company: "Play • Compete • Connect",
+    bio: "PC • PS5 • Xbox • VR • Food • Tournaments",
+    location: "Lahore",
+    availabilityNote: "More\nThan Just\nGaming",
+    noAvatar: true,
+    links: [
+      ["Make a Payment", "pay", "https://example.pk/pay"],
+      ["WhatsApp Us", "whatsapp", wa("0043")],
+      ["Google Review", "link", "https://g.page/r/example/review"],
+      ["Instagram", "instagram", "https://instagram.com/example"],
+      ["Facebook", "facebook", "https://facebook.com/example"],
+      ["TikTok", "tiktok", "https://tiktok.com/@example"],
+    ],
   }),
 };
 

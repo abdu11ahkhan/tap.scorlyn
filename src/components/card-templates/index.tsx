@@ -45,6 +45,7 @@ import FlareCard from "./FlareCard";
 import ClinicCard from "./ClinicCard";
 import CoachCard from "./CoachCard";
 import WellnessCard from "./WellnessCard";
+import ArenaCard from "./ArenaCard";
 
 /**
  * Templates that build the cover photo into their own layout. Everything else
@@ -53,6 +54,7 @@ import WellnessCard from "./WellnessCard";
 export const TEMPLATES_WITH_OWN_COVER = new Set([
   "agency",
   "app",
+  "arena",
   "booking",
   "glass",
   "poster",
@@ -119,6 +121,7 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   clinic: ClinicCard,
   coach: CoachCard,
   wellness: WellnessCard,
+  arena: ArenaCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */

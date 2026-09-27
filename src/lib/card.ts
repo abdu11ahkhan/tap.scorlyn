@@ -820,6 +820,11 @@ export const TEMPLATE_CATEGORIES = [
     name: "Form",
     blurb: "Built to get a reply. Contact front and centre.",
   },
+  {
+    id: "gaming",
+    name: "Gaming Zones",
+    blurb: "For gaming cafés and esports lounges. Pay, book and follow in one tap.",
+  },
 ] as const;
 
 export type TemplateCategory = (typeof TEMPLATE_CATEGORIES)[number]["id"];
@@ -1202,6 +1207,14 @@ export const CARD_TEMPLATES = [
     category: 'profile',
     vibe: "calm",
     preview: "#599051",
+  },
+  {
+    id: "arena",
+    name: "Arena",
+    blurb: "Neon glow over your venue photo, and every link as a colour-coded tile.",
+    category: 'gaming',
+    vibe: "gaming",
+    preview: "#3B82F6",
   },
 ] as const;
 

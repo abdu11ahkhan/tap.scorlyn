@@ -42,6 +42,7 @@ const DARK_TEMPLATES = new Set([
   "flare",
   "coach",
   "wellness",
+  "arena",
 ]);
 
 /** Neutral defaults: clean, printable, and unlikely to offend anyone's taste. */

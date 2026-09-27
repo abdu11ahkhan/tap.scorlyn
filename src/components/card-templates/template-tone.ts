@@ -57,4 +57,5 @@ export const TEMPLATE_TONE: Record<string, string> = {
   clinic: "#F5FAF9",
   coach: "#0A0A0A",
   wellness: "#0E1410",
+  arena: "#050508",
 };

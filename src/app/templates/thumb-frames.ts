@@ -45,6 +45,7 @@
 export const THUMB_TOP: Record<string, number> = {
   agency: 245,
   app: 40,
+  arena: 0,
   aurora: 501,
   badge: 507,
   bold: 484,
