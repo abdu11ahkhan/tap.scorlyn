@@ -14,6 +14,7 @@ import {
   Users,
   BarChart3,
   Zap,
+  MessageSquareText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -23,6 +24,7 @@ import AreaSwitch from "@/components/layout/AreaSwitch";
 const sidebarLinks = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "Feedback", href: "/dashboard/feedback", icon: MessageSquareText },
   { name: "My portfolio", href: "/dashboard/card", icon: IdCard },
   { name: "Get a card", href: "/dashboard/nfc", icon: Nfc },
   { name: "Order an NFC card", href: "/dashboard/quick-order", icon: Zap },

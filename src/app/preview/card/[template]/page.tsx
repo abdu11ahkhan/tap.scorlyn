@@ -144,6 +144,7 @@ function demoCard(template: string, accent: string, font: string): CardProfile {
     template,
     font,
     referral_code: null,
+    review_config: persona.review ?? null,
   };
 }
 

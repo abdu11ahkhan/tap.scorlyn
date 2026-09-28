@@ -1,4 +1,4 @@
-import type { CardButton, CardProfile, GalleryItem } from "@/lib/card";
+import type { CardButton, CardProfile, GalleryItem, ReviewConfig } from "@/lib/card";
 import type { ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import { readStorage, removeStorage, writeStorage } from "@/lib/safe-storage";
 
@@ -24,6 +24,8 @@ export type CardForm = {
   font: string;
   /** A card dedicated to one action — see CardProfile.is_single_purpose. */
   is_single_purpose: boolean;
+  /** Review Card settings — only used when template is "review". */
+  review_config: ReviewConfig | null;
 };
 
 export const EMPTY_CARD_FORM: CardForm = {
@@ -46,6 +48,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   template: "minimal",
   font: "sans",
   is_single_purpose: false,
+  review_config: null,
 };
 
 export type CardDraft = {
@@ -194,6 +197,7 @@ export function draftToCardProfile(
     font: form.font,
     referral_code: null,
     is_single_purpose: form.is_single_purpose,
+    review_config: form.review_config ?? null,
   };
 }
 

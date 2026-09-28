@@ -280,7 +280,71 @@ export type CardProfile = {
   /** A card dedicated to one action — a tap opens that action directly,
    *  never this profile page. See resolveButton/cardLinkUrl. */
   is_single_purpose?: boolean;
+  /** Settings for the Review Card template; null everywhere else. */
+  review_config?: ReviewConfig | null;
 };
+
+/**
+ * What a business can change on its Review Card. Every field is optional:
+ * anything left blank falls back to REVIEW_DEFAULTS, so a card works the
+ * moment the template is picked.
+ */
+export type ReviewConfig = {
+  google_url?: string;
+  heading?: string;
+  subheading?: string;
+  thanks_heading?: string;
+  google_prompt?: string;
+  google_cta?: string;
+  feedback_heading?: string;
+  feedback_description?: string;
+  categories?: string[];
+  success_message?: string;
+};
+
+export const REVIEW_CATEGORIES = [
+  "Service",
+  "Staff",
+  "Product",
+  "Food",
+  "Waiting time",
+  "Cleanliness",
+  "Pricing",
+  "Other",
+];
+
+export const REVIEW_DEFAULTS: Required<ReviewConfig> = {
+  google_url: "",
+  heading: "How was your experience?",
+  subheading: "Tap a rating",
+  thanks_heading: "Thank you!",
+  google_prompt: "Would you like to share your experience on Google?",
+  google_cta: "Share your experience on Google",
+  feedback_heading: "Tell us more",
+  feedback_description: "What went well, and what could we improve?",
+  categories: REVIEW_CATEGORIES,
+  success_message: "Thanks — your feedback went straight to the team.",
+};
+
+/** The stored config with blanks filled from the defaults, and an unsafe Google link dropped. */
+export function resolveReviewConfig(config: ReviewConfig | null | undefined): Required<ReviewConfig> {
+  const c = config ?? {};
+  const text = (v: string | undefined, fallback: string) => (v?.trim() ? v.trim() : fallback);
+  const url = c.google_url?.trim() ?? "";
+  const categories = (c.categories ?? []).map((x) => x.trim()).filter(Boolean).slice(0, 12);
+  return {
+    google_url: /^https:\/\/[^\s]+$/i.test(url) ? url : "",
+    heading: text(c.heading, REVIEW_DEFAULTS.heading),
+    subheading: text(c.subheading, REVIEW_DEFAULTS.subheading),
+    thanks_heading: text(c.thanks_heading, REVIEW_DEFAULTS.thanks_heading),
+    google_prompt: text(c.google_prompt, REVIEW_DEFAULTS.google_prompt),
+    google_cta: text(c.google_cta, REVIEW_DEFAULTS.google_cta),
+    feedback_heading: text(c.feedback_heading, REVIEW_DEFAULTS.feedback_heading),
+    feedback_description: text(c.feedback_description, REVIEW_DEFAULTS.feedback_description),
+    categories: categories.length ? categories : REVIEW_DEFAULTS.categories,
+    success_message: text(c.success_message, REVIEW_DEFAULTS.success_message),
+  };
+}
 
 export type ResolvedButton = CardButton & { href: string; external: boolean };
 
@@ -836,6 +900,11 @@ export const TEMPLATE_CATEGORIES = [
     name: "Gaming Zones",
     blurb: "For gaming cafés and esports lounges. Pay, book and follow in one tap.",
   },
+  {
+    id: "reviews",
+    name: "Reviews",
+    blurb: "For review cards on counters and tables. Rate, give feedback, continue to Google.",
+  },
 ] as const;
 
 export type TemplateCategory = (typeof TEMPLATE_CATEGORIES)[number]["id"];
@@ -1226,6 +1295,14 @@ export const CARD_TEMPLATES = [
     category: 'gaming',
     vibe: "gaming",
     preview: "#3B82F6",
+  },
+  {
+    id: "review",
+    name: "Review Card",
+    blurb: "Logo, name, five big stars. Every rating gets feedback and a way on to Google.",
+    category: 'reviews',
+    vibe: "review",
+    preview: "#F59E0B",
   },
 ] as const;
 

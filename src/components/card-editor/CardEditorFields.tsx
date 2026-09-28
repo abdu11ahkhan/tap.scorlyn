@@ -27,6 +27,7 @@ import { detectKind } from "@/lib/detect-link";
 import { TEMPLATE_TONE } from "@/components/card-templates";
 import PaymentFields from "./PaymentFields";
 import EditorSection from "./EditorSection";
+import ReviewFields from "./ReviewFields";
 import PasteLinks from "./PasteLinks";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
 
@@ -167,6 +168,15 @@ export default function CardEditorFields({
         font={form.font}
         onChange={(template) => onFormChange({ template })}
       />
+
+      {form.template === "review" && (
+        <EditorSection title="review card" hint="Google link, wording and feedback topics" defaultOpen>
+          <ReviewFields
+            value={form.review_config}
+            onChange={(review_config) => onFormChange({ review_config })}
+          />
+        </EditorSection>
+      )}
 
       {/* ---------------- Style ---------------- */}
       <EditorSection

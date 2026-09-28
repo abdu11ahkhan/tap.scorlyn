@@ -63,6 +63,8 @@ const SKINS: Record<string, Skin> = {
   wellness: { bg: "#0E1410", ink: "#ffffff", shape: "stack" },
   // gaming
   arena: { bg: "#050508", ink: "#ffffff", shape: "grid" },
+  // reviews
+  review: { bg: "#F6F4F0", ink: "#1a1a1a", shape: "form", paper: true },
 };
 
 /** Same threshold the card templates use to decide their own text colour. */

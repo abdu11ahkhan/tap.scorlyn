@@ -279,7 +279,7 @@ function estimateDelivery(workingDays: number): string {
  * owner had no way to place an order tied to an employee's card at all.
  *
  * The order belongs to the employee (orders.user_id = the employee's own
- * user id, matching how assignNfcCard already sets nfc_cards.user_id to the
+ * user id, matching how the card-assignment trigger sets nfc_cards.user_id to the
  * card's owner, not the assigner) — so the employee's own dashboard and
  * order-detail page show it immediately through the existing "Customers see
  * their own orders" policy, no new RLS needed there. The owner sees it

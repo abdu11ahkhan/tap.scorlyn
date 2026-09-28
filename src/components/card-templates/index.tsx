@@ -46,6 +46,7 @@ import ClinicCard from "./ClinicCard";
 import CoachCard from "./CoachCard";
 import WellnessCard from "./WellnessCard";
 import ArenaCard from "./ArenaCard";
+import ReviewCard from "./ReviewCard";
 
 /**
  * Templates that build the cover photo into their own layout. Everything else
@@ -58,10 +59,19 @@ export const TEMPLATES_WITH_OWN_COVER = new Set([
   "booking",
   "glass",
   "poster",
+  // No cover at all: the stars have to be on screen the moment it opens.
+  "review",
   "showcase",
 ]);
 
 export { TEMPLATE_TONE };
+
+/**
+ * Templates that are a single-purpose page rather than a business card, so
+ * the floating logo and the save-contact/QR dock would only compete with the
+ * one thing the page is for.
+ */
+const TEMPLATES_WITHOUT_DOCK = new Set(["review"]);
 
 /**
  * The colour a card actually ends on — the chosen ground if there is one, else
@@ -122,6 +132,7 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   coach: CoachCard,
   wellness: WellnessCard,
   arena: ArenaCard,
+  review: ReviewCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */
@@ -164,13 +175,17 @@ export function renderCardTemplate(props: CardTemplateProps) {
           collapses `min-h-screen` on `.card-has-extras > :last-child`, and
           appending anything after the template silently re-armed a full
           viewport of dead space above the extras. */}
-      {card.logo_url && <LogoMark src={card.logo_url} tone={surface ?? tone} />}
-      <CardQr
-        card={card}
-        tone={surface ?? tone}
-        accent={card.accent_color || "#111111"}
-        showQr={wantsQr}
-      />
+      {!TEMPLATES_WITHOUT_DOCK.has(card.template) && (
+        <>
+          {card.logo_url && <LogoMark src={card.logo_url} tone={surface ?? tone} />}
+          <CardQr
+            card={card}
+            tone={surface ?? tone}
+            accent={card.accent_color || "#111111"}
+            showQr={wantsQr}
+          />
+        </>
+      )}
       {/* The chosen ground goes behind the template rather than into it, so
           none of the thirty-six needs to know about the feature. The band
           fades into it too, otherwise the seam comes back. */}

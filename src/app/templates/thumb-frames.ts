@@ -76,6 +76,7 @@ export const THUMB_TOP: Record<string, number> = {
   quote: 536,
   reel: 416,
   reply: 468,
+  review: 0,
   showcase: 2590,
   split: 468,
   stack: 560,

@@ -6,34 +6,7 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { mailerConfigured, sendReceipt, sendShipped, sendDelivered } from "@/lib/email";
 import { USERNAME_PATTERN } from "@/lib/card-draft";
-
-/**
- * Every mutation below funnels through this.
- *
- * Server Actions are reachable by direct POST, not just through the UI, so a
- * page-level check is not a security boundary. RLS is the real backstop — the
- * admin policies all require is_admin() — but failing loudly here gives a
- * clear error instead of a silent no-op when a policy blocks the write.
- */
-async function assertAdmin() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error("Not signed in.");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("is_admin")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (!profile?.is_admin) throw new Error("Admins only.");
-
-  return { supabase, user };
-}
+import { assertAdmin } from "@/lib/admin-auth";
 
 type Result<T = undefined> = { ok: boolean; error?: string; data?: T };
 
@@ -103,92 +76,7 @@ export async function setCardPublished(cardId: string, published: boolean): Prom
   }
 }
 
-// ------------------------------------------------------------- nfc stock
-
-/** Short, unambiguous code written to the tag. No l/o/0/1. */
-function makeCardCode(): string {
-  const alphabet = "abcdefghijkmnpqrstuvwxyz23456789";
-  let out = "";
-  for (let i = 0; i < 8; i++) {
-    out += alphabet[Math.floor(Math.random() * alphabet.length)];
-  }
-  return out;
-}
-
-export async function issueNfcCards(count: number, batch: string): Promise<Result> {
-  try {
-    const { supabase } = await assertAdmin();
-
-    const howMany = Math.min(Math.max(1, Math.floor(count) || 1), 100);
-
-    // Unassigned on purpose: stock gets printed before it's sold, and the
-    // owner is attached later.
-    const rows = Array.from({ length: howMany }, () => ({
-      card_url: makeCardCode(),
-      batch: batch?.trim() || null,
-      user_id: null,
-      card_profile_id: null,
-    }));
-
-    const { error } = await supabase.from("nfc_cards").insert(rows);
-    if (error) throw new Error(error.message);
-
-    revalidatePath("/admin/nfc");
-    return { ok: true };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-export async function assignNfcCard(cardId: string, username: string): Promise<Result> {
-  try {
-    const { supabase } = await assertAdmin();
-
-    const handle = username.trim().toLowerCase();
-
-    if (!handle) {
-      // Empty username means "unassign" — put the card back into stock.
-      const { error } = await supabase
-        .from("nfc_cards")
-        .update({ card_profile_id: null, user_id: null })
-        .eq("id", cardId);
-      if (error) throw new Error(error.message);
-      revalidatePath("/admin/nfc");
-      return { ok: true };
-    }
-
-    const { data: profile } = await supabase
-      .from("card_profiles")
-      .select("id, user_id")
-      .eq("username", handle)
-      .maybeSingle();
-
-    if (!profile) throw new Error(`No card profile with the handle "${handle}".`);
-
-    const { error } = await supabase
-      .from("nfc_cards")
-      .update({ card_profile_id: profile.id, user_id: profile.user_id })
-      .eq("id", cardId);
-
-    if (error) throw new Error(error.message);
-    revalidatePath("/admin/nfc");
-    return { ok: true };
-  } catch (e) {
-    return fail(e);
-  }
-}
-
-export async function deleteNfcCard(cardId: string): Promise<Result> {
-  try {
-    const { supabase } = await assertAdmin();
-    const { error } = await supabase.from("nfc_cards").delete().eq("id", cardId);
-    if (error) throw new Error(error.message);
-    revalidatePath("/admin/nfc");
-    return { ok: true };
-  } catch (e) {
-    return fail(e);
-  }
-}
+// Physical card stock lives in ./nfc/actions.ts.
 
 // ------------------------------------------------------------- templates
 

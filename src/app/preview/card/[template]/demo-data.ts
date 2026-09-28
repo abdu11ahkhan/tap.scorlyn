@@ -1,4 +1,4 @@
-import type { CardButton, PaymentMethod } from "@/lib/card";
+import type { CardButton, PaymentMethod, ReviewConfig } from "@/lib/card";
 
 /**
  * A distinct persona per template.
@@ -31,6 +31,8 @@ export type DemoPersona = {
   noAvatar?: boolean;
   /** Sample accounts, for templates that show payment details in the card. */
   payments?: PaymentMethod[];
+  /** Review Card settings for the demo. */
+  review?: ReviewConfig;
 };
 
 const wa = (n: string) => `92300000${n}`;
@@ -628,6 +630,17 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
       ["Facebook", "facebook", "https://facebook.com/example"],
       ["TikTok", "tiktok", "https://tiktok.com/@example"],
     ],
+  }),
+
+  // ---------------- Reviews ----------------
+  review: person({
+    n: "0044", username: "saffronkitchen", full_name: "Saffron Kitchen",
+    headline: "Restaurant · Gulberg", company: "",
+    bio: "Wood-fired karahi and fresh naan, since 2014.",
+    location: "Lahore",
+    noAvatar: true,
+    review: { google_url: "https://g.page/r/example/review" },
+    links: [["Call", "phone", tel("0044")], ["Menu", "link", "https://example.pk/menu"]],
   }),
 };
 

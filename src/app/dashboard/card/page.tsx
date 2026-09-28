@@ -133,6 +133,7 @@ function MyCardEditor() {
             template: data.template ?? "minimal",
             font: data.font ?? "sans",
             is_single_purpose: data.is_single_purpose ?? false,
+            review_config: data.review_config ?? null,
           }
         : null;
 

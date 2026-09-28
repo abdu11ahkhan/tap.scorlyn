@@ -1192,3 +1192,16 @@ textarea.app-input {
 .card-template .card-bio:empty {
   min-height: 0;
 }
+
+/* Review Card: each step eases in, so tapping a star reads as a response
+   rather than a page swap. */
+@keyframes review-step-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.review-step {
+  animation: review-step-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-step { animation: none; }
+}

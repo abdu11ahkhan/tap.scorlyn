@@ -51,6 +51,7 @@ export default async function AdminEditCard({
     template: card.template ?? "minimal",
     font: card.font ?? "sans",
     is_single_purpose: card.is_single_purpose ?? false,
+    review_config: card.review_config ?? null,
   };
 
   const extras: ExtrasState = {

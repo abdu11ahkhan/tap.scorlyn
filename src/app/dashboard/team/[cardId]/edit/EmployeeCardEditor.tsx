@@ -91,6 +91,7 @@ export default function EmployeeCardEditor({
         accent_color: form.accent_color,
         template: form.template,
         font: form.font,
+        review_config: form.review_config,
         buttons: cleanButtons,
         gallery: gallery.filter((g) => g.url?.trim()),
         available_for_work: extras.available_for_work,

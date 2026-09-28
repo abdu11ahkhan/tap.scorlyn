@@ -20,6 +20,11 @@ const EVENT_TYPES = new Set([
   "website_click",
   "social_click",
   "booking_click",
+  // Review Card: the star value rides in `target`.
+  "rating",
+  "review_click",
+  "feedback_open",
+  "feedback_submit",
 ]);
 
 /**

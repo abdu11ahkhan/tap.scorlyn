@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { resolveButton, type CardButton } from '@/lib/card';
+import { clientIp, visitorHash } from '@/lib/referral';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +31,13 @@ export async function GET(
     const { data: rows } = await supabase.rpc('resolve_nfc_card', { code: cardId });
     const card = rows?.[0];
 
+    // A suspended or retired card must stop opening its business, even though
+    // the assignment is still on record. `status` is absent until migration
+    // 061 has run, which reads as "live" — the behaviour before it existed.
+    if (card?.status === 'suspended' || card?.status === 'retired') {
+      return NextResponse.redirect(new URL('/?card=inactive', request.url));
+    }
+
     if (!card?.card_profile_id || !card?.username) {
       // Either an unknown code or blank stock that hasn't been assigned yet.
       // Send them somewhere useful rather than showing a raw error.
@@ -43,7 +51,27 @@ export async function GET(
         value: card.redirect_value ?? '',
         message: card.redirect_message ?? undefined,
       });
-      if (resolved) return NextResponse.redirect(resolved.href);
+      if (resolved) {
+        // A direct card never loads a Scorlyn page, so there is no page to
+        // record the tap from — it's recorded here or not at all. QR and NFC
+        // share this URL and are counted together.
+        const userAgent = request.headers.get('user-agent') ?? '';
+        await supabase
+          .from('card_taps')
+          .insert({
+            card_profile_id: card.card_profile_id,
+            nfc_card_id: card.nfc_card_id,
+            source: 'nfc',
+            event_type: 'view',
+            user_agent: userAgent.slice(0, 500),
+            visitor_hash: visitorHash(clientIp(request.headers), userAgent),
+          })
+          .then(
+            () => undefined,
+            () => undefined
+          );
+        return NextResponse.redirect(resolved.href);
+      }
     }
 
     // src=nfc lets the profile page tell a physical tap from a shared link;
