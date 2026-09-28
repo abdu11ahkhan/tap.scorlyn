@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MessageSquare, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { formatSerial } from "@/lib/card-codes";
+import FeedbackView from "@/components/feedback/FeedbackView";
 
 export const dynamic = "force-dynamic";
 
@@ -25,21 +24,6 @@ type Range = keyof typeof RANGES;
 
 function daysAgo(days: number): string {
   return new Date(Date.now() - days * 86400000).toISOString();
-}
-
-function Stars({ n, size = "h-4 w-4" }: { n: number; size?: string }) {
-  return (
-    <span className="inline-flex gap-0.5" aria-label={`${n} out of 5`}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          className={size}
-          strokeWidth={1.6}
-          style={{ color: i <= n ? "#F5A524" : "var(--color-sc-border, #444)", fill: i <= n ? "#F5A524" : "transparent" }}
-        />
-      ))}
-    </span>
-  );
 }
 
 /**
@@ -128,9 +112,6 @@ export default async function FeedbackPage({
       if (n >= 1 && n <= 5) dist[n]++;
     } else if (e.event_type === "review_click") googleClicks++;
   }
-  const ratings = dist.reduce((a, b) => a + b, 0);
-  const average = ratings ? dist.reduce((sum, count, n) => sum + count * n, 0) / ratings : 0;
-  const peak = Math.max(1, ...dist);
   const rows = (feedback ?? []) as unknown as FeedbackRow[];
   const nameOf = new Map(all.map((c) => [c.id, c.full_name]));
 
@@ -181,91 +162,16 @@ export default async function FeedbackPage({
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-[1.4fr_1fr]">
-        <section className="app-panel app-panel-pad">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">ratings</p>
-              <p className="mt-1 text-3xl font-black">
-                {ratings ? average.toFixed(1) : "—"} <span className="text-base text-sc-text-dim">/ 5</span>
-              </p>
-            </div>
-            <p className="text-sm font-bold text-sc-text-dim">{ratings.toLocaleString()} rating{ratings === 1 ? "" : "s"}</p>
-          </div>
-          <div className="mt-4 space-y-2">
-            {[5, 4, 3, 2, 1].map((n) => (
-              <div key={n} className="flex items-center gap-3">
-                <Stars n={n} size="h-3.5 w-3.5" />
-                <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-sc-surface-2">
-                  <div className="h-full rounded-full" style={{ width: `${(dist[n] / peak) * 100}%`, background: "#F5A524" }} />
-                </div>
-                <span className="w-10 text-right text-sm font-black tabular-nums">{dist[n]}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="grid gap-4">
-          <div className="app-panel app-panel-pad">
-            <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">went on to google</p>
-            <p className="mt-1 text-3xl font-black">{googleClicks.toLocaleString()}</p>
-            <p className="text-xs font-semibold text-sc-text-dimmer">taps on your Google review button</p>
-          </div>
-          <div className="app-panel app-panel-pad">
-            <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">written feedback</p>
-            <p className="mt-1 text-3xl font-black">{rows.length.toLocaleString()}</p>
-            <p className="text-xs font-semibold text-sc-text-dimmer">{rows.length === 200 ? "showing the latest 200" : "in this period"}</p>
-          </div>
-        </section>
-      </div>
-
-      <section className="space-y-3">
-        <h2 className="text-sm font-black uppercase tracking-widest text-sc-text-dimmer">feedback</h2>
-        {rows.length === 0 ? (
-          <div className="app-panel app-panel-pad flex flex-col items-center gap-2 py-10 text-center">
-            <MessageSquare className="h-5 w-5 text-sc-text-dimmer" />
-            <p className="text-sm font-bold">No written feedback in this period.</p>
-          </div>
-        ) : (
-          rows.map((f) => (
-            <article key={f.id} className="app-panel app-panel-pad space-y-2">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <Stars n={f.rating} />
-                <time className="text-xs font-semibold text-sc-text-dimmer" dateTime={f.created_at}>
-                  {new Date(f.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
-                </time>
-              </div>
-              {f.message && <p className="whitespace-pre-line text-[15px] font-medium leading-relaxed">&ldquo;{f.message}&rdquo;</p>}
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-sc-text-dim">
-                {f.category && <span>Topic: {f.category}</span>}
-                {f.nfc_cards && (
-                  <span>
-                    Card: {formatSerial(f.nfc_cards.serial)}
-                    {f.nfc_cards.nickname ? ` · ${f.nfc_cards.nickname}` : ""}
-                    {f.nfc_cards.location ? ` · ${f.nfc_cards.location}` : ""}
-                  </span>
-                )}
-                {all.length > 1 && <span>{nameOf.get(f.card_profile_id)}</span>}
-              </div>
-              {(f.contact_name || f.contact_phone || f.contact_email) && (
-                <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-sc-border-soft pt-2 text-xs font-bold">
-                  {f.contact_name && <span>{f.contact_name}</span>}
-                  {f.contact_phone && (
-                    <a href={`tel:${f.contact_phone}`} className="text-sc-gold-text hover:underline">
-                      {f.contact_phone}
-                    </a>
-                  )}
-                  {f.contact_email && (
-                    <a href={`mailto:${f.contact_email}`} className="text-sc-gold-text hover:underline">
-                      {f.contact_email}
-                    </a>
-                  )}
-                </div>
-              )}
-            </article>
-          ))
-        )}
-      </section>
+      <FeedbackView
+        dist={dist}
+        googleClicks={googleClicks}
+        capped={rows.length === 200}
+        items={rows.map((f) => ({
+          ...f,
+          card: f.nfc_cards,
+          business: all.length > 1 ? nameOf.get(f.card_profile_id) : null,
+        }))}
+      />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { createCustomer } from "../../actions";
 import { ACCENT_PRESETS } from "@/lib/card";
 import { CARD_TEMPLATES } from "@/lib/card";
 
-type Created = { email: string; password: string; username: string };
+type Created = { email: string; password: string; username: string; feedbackToken?: string };
 
 /**
  * Builds an account and a card for someone who is standing in front of you.
@@ -16,7 +16,7 @@ type Created = { email: string; password: string; username: string };
  * signing up, confirming an email and filling a form before anything can go to
  * print — with the seller waiting through all of it.
  */
-export default function NewCustomerForm() {
+export default function NewCustomerForm({ initialTemplate = "minimal" }: { initialTemplate?: string }) {
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -26,9 +26,12 @@ export default function NewCustomerForm() {
     company: "",
     phone: "",
     location: "",
-    template: "minimal",
+    template: initialTemplate,
     accentColor: "#111111",
-    publish: false,
+    publish: initialTemplate === "review",
+    googleReviewUrl: "",
+    notifyEmail: "",
+    notifyWhatsapp: "",
   });
   const [created, setCreated] = useState<Created | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +51,12 @@ export default function NewCustomerForm() {
     const lines = `Card: https://tap.scorlyn.com/u/${created.username}
 Login: https://tap.scorlyn.com/login
 Email: ${created.email}
-Password: ${created.password}`;
+Password: ${created.password}${
+      created.feedbackToken
+        ? `
+Your feedback page (private): https://tap.scorlyn.com/feedback/${created.feedbackToken}`
+        : ""
+    }`;
 
     return (
       <div className="max-w-xl space-y-5">
@@ -218,6 +226,43 @@ Password: ${created.password}`;
           </div>
         </div>
       </section>
+
+      {form.template === "review" && (
+        <section className="space-y-3 rounded-2xl border border-sc-border-soft p-4">
+          <p className={label}>review card</p>
+          <input
+            type="url"
+            inputMode="url"
+            value={form.googleReviewUrl}
+            onChange={(e) => set({ googleReviewUrl: e.target.value })}
+            placeholder="Google review link — https://g.page/r/…/review"
+            className={field}
+          />
+          <p className="text-xs text-sc-text-dimmer">
+            4–5 stars go straight here. From their Google Business Profile → Ask for reviews.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <input
+              type="email"
+              value={form.notifyEmail}
+              onChange={(e) => set({ notifyEmail: e.target.value })}
+              placeholder="Send feedback to (defaults to their login email)"
+              className={field}
+            />
+            <input
+              inputMode="tel"
+              value={form.notifyWhatsapp}
+              onChange={(e) => set({ notifyWhatsapp: e.target.value })}
+              placeholder="WhatsApp number, e.g. 923001234567"
+              className={field}
+            />
+          </div>
+          <p className="text-xs text-sc-text-dimmer">
+            Every new feedback is emailed instantly. The WhatsApp number is saved now and starts receiving
+            alerts once the WhatsApp Business account is connected.
+          </p>
+        </section>
+      )}
 
       <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border-soft p-3.5">
         <input

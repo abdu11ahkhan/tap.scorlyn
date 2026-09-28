@@ -174,6 +174,23 @@ If you didn't create this account, reply to this email and we'll remove it.`;
   tx.close();
 }
 
+/**
+ * A new Review Card feedback, to the address the business chose. The body
+ * carries the customer's own words, which renderCampaign escapes; the link
+ * goes to the business's private feedback page.
+ */
+export async function sendFeedbackAlert(to: string, subject: string, body: string, link: string): Promise<void> {
+  const tx = transport();
+  await tx.sendMail({
+    from: `${FROM_NAME} <${FROM_EMAIL}>`,
+    to,
+    subject: subject.replace(/[\r\n]+/g, " ").slice(0, 150),
+    text: `${body}\n\nSee all feedback: ${link}`,
+    html: renderCampaign(body, link),
+  });
+  tx.close();
+}
+
 /** A plain internal alert — an order landing, and the like. */
 export async function sendNotice(to: string, subject: string, body: string): Promise<void> {
   const tx = transport();

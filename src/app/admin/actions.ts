@@ -1,5 +1,6 @@
 "use server";
 
+import { randomInt } from "crypto";
 import { revalidatePath } from "next/cache";
 import { suggestedFinish } from "@/lib/nfc-finish";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
@@ -958,7 +959,11 @@ export async function createCustomer(input: {
   buttons?: { kind: string; label: string; value: string; enabled?: boolean }[];
   /** Off by default: a card built for someone should be theirs to release. */
   publish?: boolean;
-}): Promise<Result<{ email: string; password: string; username: string }>> {
+  /** Review Card only: where the stars send happy customers, and where feedback goes. */
+  googleReviewUrl?: string;
+  notifyEmail?: string;
+  notifyWhatsapp?: string;
+}): Promise<Result<{ email: string; password: string; username: string; feedbackToken?: string }>> {
   try {
     await assertAdmin();
 
@@ -1015,7 +1020,17 @@ export async function createCustomer(input: {
     const userId = created.user?.id;
     if (!userId) throw new Error("The account was not created.");
 
-    const { error: cardError } = await admin.from("card_profiles").insert({
+    const isReview = input.template === "review";
+    const googleUrl = input.googleReviewUrl?.trim() ?? "";
+    if (isReview && googleUrl && !/^https:\/\/\S+$/i.test(googleUrl)) {
+      throw new Error("The Google review link must start with https://");
+    }
+    const notifyEmail = input.notifyEmail?.trim().toLowerCase() || (isReview ? email : "");
+    if (notifyEmail && !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(notifyEmail)) {
+      throw new Error("The feedback email address doesn't look right.");
+    }
+
+    const { data: card, error: cardError } = await admin.from("card_profiles").insert({
       user_id: userId,
       username,
       full_name: fullName,
@@ -1036,7 +1051,8 @@ export async function createCustomer(input: {
           : []),
       phone: input.phone?.trim() || null,
       email,
-    });
+      review_config: isReview ? { google_url: googleUrl } : null,
+    }).select("id").single();
 
     if (cardError) {
       // Roll the account back rather than leaving one that can sign in to
@@ -1045,20 +1061,43 @@ export async function createCustomer(input: {
       throw new Error(cardError.message);
     }
 
+    let feedbackToken: string | undefined;
+    if (isReview && card) {
+      const { data: settings } = await admin
+        .from("review_settings")
+        .insert({
+          card_profile_id: card.id,
+          notify_email: notifyEmail || null,
+          notify_whatsapp: input.notifyWhatsapp?.trim() || null,
+        })
+        .select("share_token")
+        .single();
+      feedbackToken = settings?.share_token;
+    }
+
     revalidatePath("/admin/users");
     revalidatePath("/admin/cards");
-    return { ok: true, data: { email, password, username } };
+    revalidatePath("/admin/reviews");
+    return { ok: true, data: { email, password, username, feedbackToken } };
   } catch (e) {
     return fail(e);
   }
 }
 
-/** Readable rather than maximally random — this gets read out loud. */
+/**
+ * Readable, because it gets read out loud — but drawn from the CSPRNG and from
+ * a word list large enough that three words and six digits can't be guessed.
+ */
 function generatePassword(): string {
-  const words = ["tap", "card", "link", "sharp", "quick", "bright", "solid", "clear"];
-  const pick = () => words[Math.floor(Math.random() * words.length)];
-  const digits = String(Math.floor(1000 + Math.random() * 9000));
-  return `${pick()}-${pick()}-${digits}`;
+  const words = [
+    "tap", "card", "link", "sharp", "quick", "bright", "solid", "clear", "amber", "cedar",
+    "delta", "ember", "frost", "grove", "harbor", "indigo", "jade", "kite", "lunar", "maple",
+    "noble", "olive", "pearl", "quartz", "river", "sable", "tidal", "umber", "velvet", "willow",
+    "zephyr", "coral",
+  ];
+  const pick = () => words[randomInt(words.length)];
+  const digits = String(randomInt(100000, 1000000));
+  return `${pick()}-${pick()}-${pick()}-${digits}`;
 }
 
 /**

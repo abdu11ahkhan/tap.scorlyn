@@ -18,6 +18,7 @@ import {
   UserX,
   Users,
   Wallet,
+  Star,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -80,6 +81,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: "/admin/users", label: "Customers", icon: Users },
     { href: "/admin/accounts", label: "Suspended", icon: UserX },
     { href: "/admin/nfc", label: "NFC cards", icon: Nfc },
+    { href: "/admin/reviews", label: "Reviews", icon: Star },
     { href: "/admin/invoices", label: "Invoices", icon: Receipt },
     { href: "/admin/audit", label: "Audit trail", icon: ScrollText },
     { href: "/admin/billing", label: "Billing", icon: Wallet },
