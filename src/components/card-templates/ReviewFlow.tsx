@@ -33,11 +33,12 @@ const RATING_WORDS = ["", "Terrible", "Poor", "Okay", "Good", "Excellent"];
 /**
  * The interactive part of the Review Card.
  *
- * Every rating gets the same next step — a thank-you, the option to tell the
- * business more, and the option to continue to Google. Nothing about the
- * rating decides whether Google is offered: steering only happy customers to
- * Google ("review gating") breaks Google's review policies, and it's the
- * customer's review to write, not ours to filter.
+ * 4–5 stars go straight to the business's Google review page, same tab.
+ * 1–3 stars open the private feedback form first — but the Google link stays
+ * on that screen too. Google's policy forbids *selectively soliciting*
+ * positive reviews; routing unhappy customers to feedback first is allowed
+ * only while nobody is blocked from Google, so that link must never be
+ * removed for low ratings.
  *
  * Only records anything on a real card page (/u/...). In the editor preview
  * and the template gallery it runs the same flow but sends nothing.
@@ -55,7 +56,7 @@ export default function ReviewFlow({
 }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
-  const [step, setStep] = useState<"rate" | "next" | "feedback" | "sent">("rate");
+  const [step, setStep] = useState<"rate" | "next" | "feedback" | "sent" | "google">("rate");
   const [category, setCategory] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [contactOpen, setContactOpen] = useState(false);
@@ -83,6 +84,16 @@ export default function ReviewFlow({
     };
   }, []);
 
+  // Back from Google restores this page from the back-forward cache still on
+  // "Taking you to Google…"; show the thank-you screen instead.
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => {
+      if (e.persisted) setStep((s) => (s === "google" ? "next" : s));
+    };
+    window.addEventListener("pageshow", onShow);
+    return () => window.removeEventListener("pageshow", onShow);
+  }, []);
+
   // Moving focus with the step keeps screen readers on the new content.
   useEffect(() => {
     if (step !== "rate") heading.current?.focus();
@@ -103,7 +114,20 @@ export default function ReviewFlow({
     setRating(n);
     track("rating", String(n));
     // A beat to see the stars fill before the view changes.
-    setTimeout(() => setStep("next"), 280);
+    setTimeout(() => {
+      if (n >= 4 && config.google_url) {
+        track("review_click", String(n));
+        setStep("google");
+        // In the editor preview and the gallery this only simulates — leaving
+        // the page there would throw away the owner's unsaved edits.
+        if (context.current.live) window.location.assign(config.google_url);
+      } else if (n <= 3) {
+        track("feedback_open");
+        setStep("feedback");
+      } else {
+        setStep("next");
+      }
+    }, 280);
   };
 
   const openFeedback = () => {
@@ -223,6 +247,19 @@ export default function ReviewFlow({
               style={{ color: n <= rating ? STAR : colors.border, fill: n <= rating ? STAR : "transparent" }}
             />
           ))}
+        </div>
+      )}
+
+      {step === "google" && (
+        <div className="review-step space-y-3 text-center">
+          <h2 ref={heading} tabIndex={-1} className="text-[20px] font-semibold tracking-tight outline-none">
+            {config.thanks_heading}
+          </h2>
+          <p className="flex items-center justify-center gap-2 text-[14px]" style={{ color: colors.fgDim }}>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Taking you to Google…
+          </p>
+          {googleButton}
         </div>
       )}
 

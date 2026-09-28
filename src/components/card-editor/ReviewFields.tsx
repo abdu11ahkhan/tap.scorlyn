@@ -55,7 +55,7 @@ export default function ReviewFields({
         <p className={`text-xs font-semibold ${badUrl ? "text-sc-error" : "text-sc-text-dimmer"}`}>
           {badUrl
             ? "Use the full https:// link."
-            : "Google Business Profile → Ask for reviews → copy the link. Every customer who rates is offered it, whatever they rate — that's what keeps you within Google's review rules."}
+            : "Google Business Profile → Ask for reviews → copy the link. 4–5 stars go straight there; 1–3 stars see your feedback form first, with the Google link still shown so nobody is blocked (Google's rules require that)."}
         </p>
       </div>
 
