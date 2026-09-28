@@ -53,7 +53,7 @@ export default async function AdminUsers({
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="app-h1">People</h1>
+          <h1 className="app-h1">Customers</h1>
           <p className="app-sub mt-1">
             {count ?? 0} {count === 1 ? "account" : "accounts"}. Grant admin access or
             suspend someone here.

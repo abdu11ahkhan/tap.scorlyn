@@ -10,7 +10,7 @@ export default async function AdminContent() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="app-h1">Content</h1>
+        <h1 className="app-h1">Site text</h1>
         <p className="app-sub mt-1">
           Words on the public site. Changes go live immediately — no deploy.
         </p>

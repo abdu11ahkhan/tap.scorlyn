@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Camera, Loader2 } from "lucide-react";
 import { codeFromScan } from "@/lib/card-codes";
@@ -16,6 +16,8 @@ type Detector = { detect: (source: HTMLVideoElement) => Promise<{ rawValue: stri
  */
 export default function ScanCard() {
   const router = useRouter();
+  // From "Assign a card" on the Reviews page: the business to preselect.
+  const forHandle = (useSearchParams().get("for") ?? "").toLowerCase().replace(/[^a-z0-9_-]/g, "");
   const video = useRef<HTMLVideoElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<"idle" | "starting" | "scanning" | "looking" | "error">("idle");
@@ -40,14 +42,14 @@ export default function ScanCard() {
       const r = await findCardByCode(code);
       if (r.ok && r.data) {
         stop();
-        router.push(`/admin/nfc/${r.data.id}`);
+        router.push(`/admin/nfc/${r.data.id}${forHandle ? `?assign=${forHandle}` : ""}`);
         return true;
       }
       setMessage(r.error ?? "Card not found.");
       setState(stream.current ? "scanning" : "idle");
       return false;
     },
-    [router, stop]
+    [router, stop, forHandle]
   );
 
   const start = async () => {
@@ -124,7 +126,16 @@ export default function ScanCard() {
       </Link>
       <div>
         <h1 className="app-h1">Scan card</h1>
-        <p className="app-sub mt-1">Point the camera at a card&apos;s QR to open it — then assign it on the spot.</p>
+        <p className="app-sub mt-1">
+          {forHandle ? (
+            <>
+              Scan the card to give to <span className="font-bold text-sc-text">@{forHandle}</span> — it opens with them
+              already selected.
+            </>
+          ) : (
+            "Point the camera at a card's QR to open it — then assign it on the spot."
+          )}
+        </p>
       </div>
 
       <div className="app-panel app-panel-pad space-y-4">

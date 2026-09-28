@@ -74,24 +74,51 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .select("id", { count: "exact", head: true })
     .is("admin_seen_at", null);
 
-  const nav = [
-    { href: "/admin", label: "Overview", icon: LayoutDashboard },
-    { href: "/admin/orders", label: "Orders", icon: ShoppingBag, badge: unseenOrders ?? 0 },
-    { href: "/admin/cards", label: "Cards", icon: CreditCard },
-    { href: "/admin/users", label: "Customers", icon: Users },
-    { href: "/admin/accounts", label: "Suspended", icon: UserX },
-    { href: "/admin/nfc", label: "NFC cards", icon: Nfc },
-    { href: "/admin/reviews", label: "Reviews", icon: Star },
-    { href: "/admin/invoices", label: "Invoices", icon: Receipt },
-    { href: "/admin/audit", label: "Audit trail", icon: ScrollText },
-    { href: "/admin/billing", label: "Billing", icon: Wallet },
-    { href: "/admin/content", label: "Content", icon: FileText },
-    { href: "/admin/email", label: "Email", icon: Mail },
-    { href: "/admin/templates", label: "Templates", icon: LayoutTemplate },
-    { href: "/admin/scan-test", label: "Scan test", icon: Camera },
-    { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
-    { href: "/admin/settings", label: "Settings", icon: Settings },
+  // Grouped by what you came to do, each with one line saying what's inside —
+  // the bare labels ("Cards" next to "NFC cards", "Content", "Scan test")
+  // didn't tell anyone new which one they wanted.
+  const groups: {
+    title: string;
+    items: { href: string; label: string; hint: string; icon: typeof Star; badge?: number }[];
+  }[] = [
+    {
+      title: "Sales",
+      items: [
+        { href: "/admin", label: "Overview", hint: "Sales, sign-ups and taps at a glance", icon: LayoutDashboard },
+        { href: "/admin/orders", label: "Orders", hint: "Card orders to print, ship and track", icon: ShoppingBag, badge: unseenOrders ?? 0 },
+        { href: "/admin/invoices", label: "Invoices", hint: "Create and share invoices", icon: Receipt },
+        { href: "/admin/billing", label: "Payments", hint: "Where customers pay you, and what came in", icon: Wallet },
+      ],
+    },
+    {
+      title: "Customers & cards",
+      items: [
+        { href: "/admin/users", label: "Customers", hint: "Accounts · set someone up in person", icon: Users },
+        { href: "/admin/cards", label: "Customer pages", hint: "Every digital card customers made — edit any", icon: CreditCard },
+        { href: "/admin/nfc", label: "Physical cards", hint: "Make QR/NFC codes in bulk, assign later", icon: Nfc },
+        { href: "/admin/reviews", label: "Review cards", hint: "Google reviews, feedback links & alerts", icon: Star },
+        { href: "/admin/accounts", label: "Suspended", hint: "Blocked and deleted accounts", icon: UserX },
+      ],
+    },
+    {
+      title: "Website",
+      items: [
+        { href: "/admin/templates", label: "Templates", hint: "Which designs customers can pick", icon: LayoutTemplate },
+        { href: "/admin/content", label: "Site text", hint: "Edit words on the public website", icon: FileText },
+        { href: "/admin/faq", label: "FAQ", hint: "Questions shown on the FAQ page", icon: HelpCircle },
+        { href: "/admin/email", label: "Email customers", hint: "Send an announcement or offer", icon: Mail },
+      ],
+    },
+    {
+      title: "Tools",
+      items: [
+        { href: "/admin/scan-test", label: "Card scanner test", hint: "Photo of a paper card → digital card", icon: Camera },
+        { href: "/admin/audit", label: "Activity log", hint: "Every change an admin made", icon: ScrollText },
+        { href: "/admin/settings", label: "Settings", hint: "Site-wide switches", icon: Settings },
+      ],
+    },
   ];
+  const nav = groups.flatMap((g) => g.items);
 
   return (
     <div className="admin-shell min-h-screen">
@@ -114,25 +141,33 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Sidebar. Hidden on small screens, where it becomes a scrolling
             strip under the header instead — a 200px rail on a phone leaves
             nothing for the tables it exists to navigate. */}
-        <aside className="hidden w-[220px] shrink-0 border-r border-sc-border-soft bg-sc-surface px-3 py-4 lg:block">
-          <nav className="space-y-0.5">
-            {nav.map(({ href, label, icon: Icon, badge }) => (
-              <Link
-                key={href}
-                href={href}
-                className="admin-nav-item"
-              >
-                <Icon className="h-4 w-4 shrink-0 opacity-70" />
-                <span className="min-w-0 flex-1 truncate">{label}</span>
-                {Boolean(badge) && (
-                  <span
-                    className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sc-error px-1 text-[11px] font-black text-sc-text"
-                    title={`${badge} order${badge === 1 ? "" : "s"} you haven't opened`}
-                  >
-                    {badge}
-                  </span>
-                )}
-              </Link>
+        <aside className="hidden w-[260px] shrink-0 border-r border-sc-border-soft bg-sc-surface px-3 py-4 lg:block">
+          <nav className="space-y-4">
+            {groups.map((group) => (
+              <div key={group.title}>
+                <p className="mb-1 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-sc-text-dimmer">
+                  {group.title}
+                </p>
+                <div className="space-y-0.5">
+                  {group.items.map(({ href, label, hint, icon: Icon, badge }) => (
+                    <Link key={href} href={href} className="admin-nav-item items-start" title={hint}>
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0 opacity-70" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate">{label}</span>
+                        <span className="block text-[11px] font-normal leading-snug text-sc-text-dimmer">{hint}</span>
+                      </span>
+                      {Boolean(badge) && (
+                        <span
+                          className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sc-error px-1 text-[11px] font-black text-sc-text"
+                          title={`${badge} order${badge === 1 ? "" : "s"} you haven't opened`}
+                        >
+                          {badge}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
         </aside>
@@ -140,10 +175,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         {/* Mobile nav */}
         <div className="min-w-0 flex-1">
           <div className="flex gap-1 overflow-x-auto border-b border-sc-border-soft px-3 py-2 lg:hidden">
-            {nav.map(({ href, label, badge }) => (
+            {nav.map(({ href, label, hint, badge }) => (
               <Link
                 key={href}
                 href={href}
+                title={hint}
                 className="admin-nav-item shrink-0 whitespace-nowrap"
               >
                 {label}

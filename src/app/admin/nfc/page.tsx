@@ -80,7 +80,7 @@ export default async function AdminCards({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="app-h1">NFC cards</h1>
+        <h1 className="app-h1">Physical cards</h1>
         <p className="app-sub mt-1 max-w-2xl">
           Physical NFC + QR cards. Generate stock, print it, and assign each card to a business
           when it sells — the code on the card never changes, only what it opens.

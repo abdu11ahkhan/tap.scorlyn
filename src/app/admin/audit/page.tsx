@@ -40,7 +40,7 @@ export default async function AdminAudit() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="app-h1">Audit trail</h1>
+        <h1 className="app-h1">Activity log</h1>
         <p className="app-sub mt-1">
           Every change an admin made to a customer&apos;s card. Customers
           editing their own cards are not listed.

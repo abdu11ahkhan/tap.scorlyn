@@ -78,7 +78,7 @@ export default async function AdminCards({
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="app-h1">Cards</h1>
+          <h1 className="app-h1">Customer pages</h1>
           <p className="app-sub mt-1">
             {total} {total === 1 ? "card" : "cards"} across all accounts.
           </p>

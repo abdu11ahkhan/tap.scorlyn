@@ -299,7 +299,7 @@ export default function AdminScanTest() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="app-h1">Scan test</h1>
+        <h1 className="app-h1">Card scanner test</h1>
         <p className="app-sub mt-1 max-w-2xl">
           Runs both engines a signup can hit — Claude Haiku (
           <code className="text-acid">/api/scan-card</code>) and the tesseract.js

@@ -23,7 +23,7 @@ export default async function AdminEmail() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="app-h1">Email</h1>
+        <h1 className="app-h1">Email customers</h1>
         <p className="app-sub mt-1">
           Send an announcement or offer to customers, now or at a set time.
         </p>

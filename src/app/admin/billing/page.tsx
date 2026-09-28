@@ -27,7 +27,7 @@ export default async function AdminBilling() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="app-h1">Billing</h1>
+        <h1 className="app-h1">Payments</h1>
         <p className="app-sub mt-1">
           Where customers send money, and what has come in.
         </p>

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { Check, Copy, ExternalLink, Loader2, RefreshCw } from "lucide-react";
+import { Check, Copy, ExternalLink, Loader2, RefreshCw, ScanLine } from "lucide-react";
+import { formatSerial } from "@/lib/card-codes";
 import { resetFeedbackLink, saveReviewSettings } from "./actions";
 
 const FIELD =
@@ -24,6 +25,8 @@ export type ReviewRowData = {
   average: number;
   googleClicks: number;
   feedback: number;
+  /** Physical NFC/QR cards currently pointing at this review card. */
+  cards: { id: string; serial: number; nickname: string | null; status: string }[];
 };
 
 export default function ReviewRow({ row, origin }: { row: ReviewRowData; origin: string }) {
@@ -146,6 +149,33 @@ export default function ReviewRow({ row, origin }: { row: ReviewRowData; origin:
         ) : (
           <p className="text-xs font-semibold text-sc-text-dimmer">Press save once to create the link.</p>
         )}
+      </div>
+
+      <div className="rounded-xl border-2 border-sc-border-soft p-3">
+        <p className={LABEL}>physical cards given to this business</p>
+        {row.cards.length ? (
+          <div className="flex flex-wrap gap-2">
+            {row.cards.map((c) => (
+              <Link
+                key={c.id}
+                href={`/admin/nfc/${c.id}`}
+                className="inline-flex min-h-9 items-center gap-1.5 rounded-full border-2 border-sc-border px-3 text-xs font-bold hover:border-acid hover:text-acid"
+              >
+                <span className="font-mono">{formatSerial(c.serial)}</span>
+                {c.nickname && <span className="text-sc-text-dimmer">· {c.nickname}</span>}
+                {c.status !== "active" && <span className="text-hotpink">· {c.status.replace("_", " ")}</span>}
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs font-semibold text-sc-text-dimmer">None yet. Scan a printed card to link it here.</p>
+        )}
+        <Link
+          href={`/admin/nfc/scan?for=${row.username}`}
+          className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-ink bg-acid px-5 text-xs font-black uppercase tracking-tight text-ink"
+        >
+          <ScanLine className="h-4 w-4" /> assign a card
+        </Link>
       </div>
 
       <div className="flex flex-wrap gap-2">

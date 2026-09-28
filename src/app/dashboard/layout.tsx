@@ -21,19 +21,21 @@ import { createClient } from "@/lib/supabase/client";
 import BrandMark from "@/components/layout/BrandMark";
 import AreaSwitch from "@/components/layout/AreaSwitch";
 
+// Plain names plus one line each on what's behind them — "Get a card" next
+// to "Order an NFC card" didn't say which one you wanted.
 const sidebarLinks = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Feedback", href: "/dashboard/feedback", icon: MessageSquareText },
-  { name: "My portfolio", href: "/dashboard/card", icon: IdCard },
-  { name: "Get a card", href: "/dashboard/nfc", icon: Nfc },
-  { name: "Order an NFC card", href: "/dashboard/quick-order", icon: Zap },
-  { name: "Orders", href: "/dashboard/orders", icon: Package },
-  { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Home", hint: "Your card at a glance", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Edit my card", hint: "Details, links, photos and design", href: "/dashboard/card", icon: IdCard },
+  { name: "Taps & visits", hint: "Who opened your card, what they tapped", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "Review feedback", hint: "Ratings and messages from review cards", href: "/dashboard/feedback", icon: MessageSquareText },
+  { name: "Order a printed card", hint: "An NFC card that opens your page", href: "/dashboard/nfc", icon: Nfc },
+  { name: "One-link NFC card", hint: "A card that opens one link, e.g. WhatsApp", href: "/dashboard/quick-order", icon: Zap },
+  { name: "My orders", hint: "Track what you've ordered", href: "/dashboard/orders", icon: Package },
+  { name: "Billing", hint: "Payments and receipts", href: "/dashboard/billing", icon: CreditCard },
+  { name: "Settings", hint: "Account, email and password", href: "/dashboard/settings", icon: Settings },
 ];
 
-const teamLink = { name: "Team", href: "/dashboard/team", icon: Users };
+const teamLink = { name: "Team", hint: "Your employees' cards", href: "/dashboard/team", icon: Users };
 
 type Account = { type: "individual" | "corporate"; companyName: string | null };
 
@@ -118,8 +120,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={link.name}
                 href={link.href}
+                title={link.hint}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors",
+                  "flex items-start gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors",
                   isActive
                     ? "bg-sc-cta/15 text-sc-text"
                     : "text-sc-text-dim hover:bg-sc-surface hover:text-sc-text"
@@ -130,8 +133,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     for graphical objects. It needs to be a fill (the row's
                     tinted background above), with light text/icon on top,
                     same as everywhere else Olive is used. */}
-                <Icon className={cn("h-[17px] w-[17px]", isActive ? "text-sc-text" : "")} />
-                {link.name}
+                <Icon className={cn("mt-0.5 h-[17px] w-[17px] shrink-0", isActive ? "text-sc-text" : "")} />
+                <span className="min-w-0">
+                  <span className="block">{link.name}</span>
+                  <span className="block text-[11.5px] font-normal leading-snug text-sc-text-dimmer">{link.hint}</span>
+                </span>
               </Link>
             );
           })}
@@ -206,6 +212,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
         </nav>
+        {(() => {
+          const here = links.find((l) => l.href === pathname);
+          return here ? (
+            <p className="relative z-10 shrink-0 border-b border-sc-border-soft px-6 py-2 text-xs text-sc-text-dimmer md:hidden">
+              {here.hint}
+            </p>
+          ) : null;
+        })()}
 
         <div className="relative z-10 flex-1 overflow-y-auto px-6 pb-14 pt-7 md:px-8">
           {children}

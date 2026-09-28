@@ -26,7 +26,7 @@ export default async function AdminReviews() {
   const list = cards ?? [];
   const ids = list.map((c) => c.id);
 
-  const [{ data: settings }, { data: events }, { data: feedback }] = ids.length
+  const [{ data: settings }, { data: events }, { data: feedback }, { data: physical }] = ids.length
     ? await Promise.all([
         supabase.from("review_settings").select("card_profile_id, share_token, notify_email, notify_whatsapp").in("card_profile_id", ids),
         supabase
@@ -36,8 +36,13 @@ export default async function AdminReviews() {
           .in("event_type", ["rating", "review_click"])
           .limit(50000),
         supabase.from("review_feedback").select("card_profile_id").in("card_profile_id", ids).limit(50000),
+        supabase
+          .from("nfc_cards")
+          .select("id, serial, nickname, status, card_profile_id")
+          .in("card_profile_id", ids)
+          .order("serial"),
       ])
-    : [{ data: [] }, { data: [] }, { data: [] }];
+    : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }];
 
   const settingsBy = new Map((settings ?? []).map((s) => [s.card_profile_id, s]));
   const stats = new Map<string, { sum: number; n: number; google: number; feedback: number }>();
@@ -73,6 +78,9 @@ export default async function AdminReviews() {
       average: s?.n ? s.sum / s.n : 0,
       googleClicks: s?.google ?? 0,
       feedback: s?.feedback ?? 0,
+      cards: (physical ?? [])
+        .filter((p) => p.card_profile_id === c.id)
+        .map((p) => ({ id: p.id, serial: p.serial, nickname: p.nickname, status: p.status })),
     };
   });
 
@@ -80,7 +88,7 @@ export default async function AdminReviews() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="app-h1">Reviews</h1>
+          <h1 className="app-h1">Review cards</h1>
           <p className="app-sub mt-1 max-w-2xl">
             Review Cards: 4–5 stars go straight to the business&apos;s Google page, 1–3 stars leave private feedback
             first. Feedback is emailed to the business and shown on its private link.

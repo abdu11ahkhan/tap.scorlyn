@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { resolveButton, type CardButton } from "@/lib/card";
+import { CARD_TEMPLATES, resolveButton, type CardButton } from "@/lib/card";
 import { cardUrl, formatSerial } from "@/lib/card-codes";
 import QrTools from "../QrTools";
 import StatusBadge from "../StatusBadge";
@@ -67,10 +67,10 @@ export default async function AdminCardDetail({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ created?: string }>;
+  searchParams: Promise<{ created?: string; assign?: string }>;
 }) {
   const { id } = await params;
-  const { created } = await searchParams;
+  const { created, assign } = await searchParams;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
 
   const supabase = await createClient();
@@ -107,7 +107,11 @@ export default async function AdminCardDetail({
       .eq("nfc_card_id", id)
       .order("created_at", { ascending: false })
       .limit(50),
-    supabase.from("card_profiles").select("username, full_name").order("created_at", { ascending: false }).limit(500),
+    supabase
+      .from("card_profiles")
+      .select("username, full_name, template, is_single_purpose, user_id, published")
+      .order("created_at", { ascending: false })
+      .limit(1000),
     card.batch_id
       ? supabase.from("nfc_card_batches").select("name, product_type").eq("id", card.batch_id).maybeSingle()
       : Promise.resolve({ data: null }),
@@ -117,6 +121,25 @@ export default async function AdminCardDetail({
   const serial = formatSerial(card.serial);
   const url = cardUrl(origin, card.card_url);
   const profile = card.card_profiles;
+
+  // Who owns each card profile, so the picker can say "Saffron Kitchen ·
+  // Review Card · owner@…" rather than a bare handle.
+  const ownerIds = [...new Set((profiles ?? []).map((p) => p.user_id).filter(Boolean))];
+  const { data: owners } = ownerIds.length
+    ? await supabase.from("profiles").select("id, email").in("id", ownerIds)
+    : { data: [] as { id: string; email: string | null }[] };
+  const emailOf = new Map((owners ?? []).map((o) => [o.id, o.email]));
+  const options = (profiles ?? []).map((p) => ({
+    username: p.username,
+    fullName: p.full_name,
+    experience: p.is_single_purpose
+      ? "Direct link"
+      : CARD_TEMPLATES.find((t) => t.id === p.template)?.name ?? p.template,
+    owner: emailOf.get(p.user_id) ?? null,
+    published: p.published !== false,
+  }));
+  const preselect =
+    assign && options.some((o) => o.username === assign.toLowerCase()) ? assign.toLowerCase() : null;
 
   const destination = profile
     ? profile.is_single_purpose
@@ -232,7 +255,8 @@ export default async function AdminCardDetail({
             <AssignForm
               cardId={card.id}
               current={{ username: profile?.username ?? null, nickname: card.nickname, location: card.location }}
-              profiles={profiles ?? []}
+              options={options}
+              preselect={preselect}
               disabled={card.status === "retired"}
             />
             {card.status === "retired" && (
