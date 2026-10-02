@@ -159,7 +159,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 </p>
                 <div className="space-y-0.5">
                   {group.items.map(({ href, label, hint, icon: Icon, badge }) => (
-                    <Link key={href} href={href} className="admin-nav-item items-start" title={hint}>
+                    <Link key={href} href={href} prefetch={false} className="admin-nav-item items-start" title={hint}>
                       <Icon className="mt-0.5 h-4 w-4 shrink-0 opacity-70" />
                       <span className="min-w-0 flex-1">
                         <span className="block truncate">{label}</span>
@@ -188,6 +188,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Link
                 key={href}
                 href={href}
+                prefetch={false}
                 title={hint}
                 className="admin-nav-item shrink-0 whitespace-nowrap"
               >

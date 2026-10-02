@@ -93,7 +93,7 @@ export default function OrderForEmployeeModal({
                 }
               >
                 <p className="text-xs font-black uppercase tracking-tight text-sc-text-dim">{p.id}</p>
-                <p className="mt-0.5 text-sm font-black text-sc-text">Rs.{p.price_pkr.toLocaleString()}</p>
+                <p className="mt-0.5 text-sm font-black text-sc-text">Rs.{p.price_pkr.toLocaleString("en-US")}</p>
               </button>
             ))}
           </div>
@@ -146,7 +146,7 @@ export default function OrderForEmployeeModal({
             className="app-btn app-btn-primary w-full disabled:opacity-60"
           >
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {plan ? `Order — Rs.${(plan.price_pkr * quantity).toLocaleString()}` : "Order"}
+            {plan ? `Order — Rs.${(plan.price_pkr * quantity).toLocaleString("en-US")}` : "Order"}
           </button>
         </form>
       </div>

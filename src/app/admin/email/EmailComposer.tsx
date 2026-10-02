@@ -212,8 +212,8 @@ export default function EmailComposer({
                   <p className="truncate text-sm font-semibold text-sc-text">{c.subject}</p>
                   <p className="mt-0.5 text-xs text-sc-text-dimmer">
                     {c.status}
-                    {c.sent_at && ` · ${new Date(c.sent_at).toLocaleString()} · ${c.recipient_count} sent`}
-                    {c.scheduled_for && !c.sent_at && ` · ${new Date(c.scheduled_for).toLocaleString()}`}
+                    {c.sent_at && ` · ${new Date(c.sent_at).toLocaleString("en-GB", { timeZone: "Asia/Karachi", dateStyle: "medium", timeStyle: "short" })} · ${c.recipient_count} sent`}
+                    {c.scheduled_for && !c.sent_at && ` · ${new Date(c.scheduled_for).toLocaleString("en-GB", { timeZone: "Asia/Karachi", dateStyle: "medium", timeStyle: "short" })}`}
                   </p>
                   {c.last_error && (
                     <p className="mt-1 truncate text-xs text-sc-error/80">{c.last_error}</p>

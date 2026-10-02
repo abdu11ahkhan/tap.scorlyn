@@ -161,7 +161,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                     )}
                   </div>
                   <p className="text-xs font-semibold text-sc-text-dimmer">
-                    {new Date(o.created_at).toLocaleDateString("en-GB")}
+                    {new Date(o.created_at).toLocaleDateString("en-GB", { timeZone: "Asia/Karachi" })}
                   </p>
                   {o.internal_note && (
                     <p className="mt-1 max-w-[200px] text-[11px] font-semibold text-acid">
@@ -201,7 +201,7 @@ export default function OrdersTable({ orders }: { orders: AdminOrder[] }) {
                   )}
                 </td>
                 <td data-label="Amount" className="px-4 py-4 text-sm font-black tabular-nums text-sc-text">
-                  Rs.{o.amount_pkr.toLocaleString()}
+                  Rs.{o.amount_pkr.toLocaleString("en-US")}
                 </td>
                 <td data-label="Status" className="px-4 py-4">
                   <select

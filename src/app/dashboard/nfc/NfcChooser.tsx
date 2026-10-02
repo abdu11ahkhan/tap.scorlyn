@@ -39,7 +39,7 @@ export default function NfcChooser({
 }) {
   const [finish, setFinish] = useState<CardFinish>("minimal");
 
-  const money = (n: number) => `Rs.${n.toLocaleString()}`;
+  const money = (n: number) => `Rs.${n.toLocaleString("en-US")}`;
 
   const panel = "app-panel flex flex-col p-5 sm:p-6";
 

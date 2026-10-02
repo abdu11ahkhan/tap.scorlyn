@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  */
 export default function PickPurposePage() {
   return (
-    <div className="relative min-h-screen bg-paper text-ink">
+    <div className="relative min-h-screen overflow-x-clip bg-paper text-ink">
       <Navbar />
       <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-teal/8 blur-[150px]" />
 

@@ -28,24 +28,53 @@ export default async function AdminOrders({
   // the exact gap Phase 11 made visible to the customer ("Delivered — we're
   // linking it to your digital card") but that, until now, had no operator
   // surface at all: nothing here ever pointed an admin back at it.
-  const { data: deliveredRows } = await supabase
-    .from("orders")
-    .select("id, card_profile_id")
-    .eq("status", "delivered")
-    .not("card_profile_id", "is", null);
-  const deliveredProfileIds = [...new Set((deliveredRows ?? []).map((o) => o.card_profile_id as string))];
+  const unassignedPromise = (async () => {
+    const { data: deliveredRows } = await supabase
+      .from("orders")
+      .select("id, card_profile_id")
+      .eq("status", "delivered")
+      .not("card_profile_id", "is", null);
+    const deliveredProfileIds = [...new Set((deliveredRows ?? []).map((o) => o.card_profile_id as string))];
 
-  let assignedProfileIds = new Set<string>();
-  if (deliveredProfileIds.length > 0) {
-    const { data: nfcRows } = await supabase
-      .from("nfc_cards")
-      .select("card_profile_id")
-      .in("card_profile_id", deliveredProfileIds);
-    assignedProfileIds = new Set((nfcRows ?? []).map((r) => r.card_profile_id as string));
-  }
-  const unassignedOrderIds = (deliveredRows ?? [])
-    .filter((o) => o.card_profile_id && !assignedProfileIds.has(o.card_profile_id))
-    .map((o) => o.id);
+    let assignedProfileIds = new Set<string>();
+    if (deliveredProfileIds.length > 0) {
+      const { data: nfcRows } = await supabase
+        .from("nfc_cards")
+        .select("card_profile_id")
+        .in("card_profile_id", deliveredProfileIds);
+      assignedProfileIds = new Set((nfcRows ?? []).map((r) => r.card_profile_id as string));
+    }
+    return (deliveredRows ?? [])
+      .filter((o) => o.card_profile_id && !assignedProfileIds.has(o.card_profile_id))
+      .map((o) => o.id);
+  })();
+
+  // Independent of the filters, so they start now instead of after them —
+  // run one after another these made Orders the slowest admin page.
+  // Counted across every order, not just this filtered page — the badge in the
+  // nav counts the same way, so clearing it here has to mean the same thing.
+  const unseenPromise = supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .is("admin_seen_at", null);
+
+  // Money figures come from every row, not just this page. A bare .select()
+  // truncates silently at Postgrest's 1000-row cap — fetchAll pages past it so
+  // "revenue all time" is not quietly wrong the day order #1001 ships.
+  const allPromise = fetchAll<{
+    amount_pkr: number;
+    status: string;
+    plan_id: string | null;
+    created_at: string;
+    is_quick_order: boolean;
+  }>((from, to) =>
+    supabase
+      .from("orders")
+      .select("amount_pkr, status, plan_id, created_at, is_quick_order")
+      .range(from, to)
+  );
+
+  const unassignedOrderIds = await unassignedPromise;
 
   let query = supabase
     .from("orders")
@@ -65,31 +94,8 @@ export default async function AdminOrders({
     );
   }
 
-  const { data, count, error } = await query;
+  const [{ data, count, error }, { count: unseen }, all] = await Promise.all([query, unseenPromise, allPromise]);
   const orders = (data ?? []) as AdminOrder[];
-
-  // Counted across every order, not just this filtered page — the badge in the
-  // nav counts the same way, so clearing it here has to mean the same thing.
-  const { count: unseen } = await supabase
-    .from("orders")
-    .select("id", { count: "exact", head: true })
-    .is("admin_seen_at", null);
-
-  // Money figures come from every row, not just this page. A bare .select()
-  // truncates silently at Postgrest's 1000-row cap — fetchAll pages past it so
-  // "revenue all time" is not quietly wrong the day order #1001 ships.
-  const all = await fetchAll<{
-    amount_pkr: number;
-    status: string;
-    plan_id: string | null;
-    created_at: string;
-    is_quick_order: boolean;
-  }>((from, to) =>
-    supabase
-      .from("orders")
-      .select("amount_pkr, status, plan_id, created_at, is_quick_order")
-      .range(from, to)
-  );
   const paidStatuses = ["paid", "printing", "shipped", "delivered"];
   const revenueAll = all
     .filter((o) => paidStatuses.includes(o.status))

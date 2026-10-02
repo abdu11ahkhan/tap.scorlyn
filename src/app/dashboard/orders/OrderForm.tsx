@@ -220,7 +220,7 @@ export default function OrderForm({
               >
                 <p className="text-lg font-black lowercase">{p.name}</p>
                 <p className={`mt-1 text-2xl font-black tracking-tighter ${active ? "text-sc-gold-text" : ""}`}>
-                  {p.price_pkr === 0 ? "Free" : `Rs.${p.price_pkr.toLocaleString()}`}
+                  {p.price_pkr === 0 ? "Free" : `Rs.${p.price_pkr.toLocaleString("en-US")}`}
                 </p>
                 {p.blurb && (
                   <p className={`mt-2 text-xs font-semibold ${active ? "text-sc-text-dim" : "text-sc-text-dimmer"}`}>
@@ -322,7 +322,7 @@ export default function OrderForm({
         <div>
           <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">total</p>
           <p className="text-3xl font-black tracking-tighter text-sc-text">
-            {total === 0 ? "Free" : `Rs.${total.toLocaleString()}`}
+            {total === 0 ? "Free" : `Rs.${total.toLocaleString("en-US")}`}
           </p>
           <p className="mt-1 text-xs font-bold text-sc-text-dimmer">
             {quantity} × {plan?.name}

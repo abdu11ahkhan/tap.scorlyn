@@ -121,6 +121,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={link.name}
                 href={link.href}
+                prefetch={false}
                 title={link.hint}
                 className={cn(
                   "flex items-start gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors",
@@ -201,6 +202,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={link.name}
                 href={link.href}
+                prefetch={false}
                 className={cn(
                   "shrink-0 rounded-full border-2 px-4 py-2 text-xs font-black lowercase transition-colors",
                   isActive

@@ -166,7 +166,7 @@ export default function ReferralBanner({
                 </span>
                 {cardPrice ? (
                   <span className="text-[10px] font-bold text-sc-gold-ink/70">
-                    from Rs.{cardPrice.toLocaleString()}
+                    from Rs.{cardPrice.toLocaleString("en-US")}
                   </span>
                 ) : (
                   <span className="text-[10px] font-bold text-sc-gold-ink/70">

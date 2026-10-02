@@ -30,7 +30,7 @@ export type InvoiceRow = {
 };
 
 const date = (value: string | null) =>
-  value ? new Date(value).toLocaleDateString("en-GB") : null;
+  value ? new Date(value).toLocaleDateString("en-GB", { timeZone: "Asia/Karachi" }) : null;
 
 /**
  * The invoice as it goes on paper.

@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { clientIp, visitorHash } from "@/lib/referral";
 
 export const dynamic = "force-dynamic";
 
@@ -176,6 +179,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, error: "Card scanning isn't configured." }, { status: 503 });
   }
 
+  const limited = await overLimit(request);
+  if (limited) {
+    return NextResponse.json({ ok: false, error: limited }, { status: 429 });
+  }
+
   const body = await request.json().catch(() => null);
   const images = Array.isArray(body?.images) ? (body.images as unknown[]) : [];
   if (images.length === 0) {
@@ -228,5 +236,43 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("scan-card:", err);
     return NextResponse.json({ ok: false, error: "Card reading failed." }, { status: 502 });
+  }
+}
+
+const PER_VISITOR_PER_HOUR = 8;
+const SITE_WIDE_PER_DAY = 150;
+
+/**
+ * Every call here is a paid model request and the endpoint is public (the
+ * signup scanner needs it), so it is rate limited per visitor and capped
+ * site-wide per day — the cap is what bounds the bill if someone scripts it.
+ * Admins (the scan-test page) are exempt. Fails open if the limiter itself
+ * is unavailable, so a database hiccup never breaks signups.
+ */
+async function overLimit(request: NextRequest): Promise<string | null> {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) return null;
+  try {
+    const supabase = await createServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data: me } = await supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle();
+      if (me?.is_admin) return null;
+    }
+
+    const admin = createServiceClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serviceKey, { auth: { persistSession: false } });
+    const visitor = visitorHash(clientIp(request.headers), request.headers.get("user-agent") ?? "");
+    const [perVisitor, siteWide] = await Promise.all([
+      admin.rpc("hit_rate_limit", { p_key: `scan:${visitor}`, p_window_seconds: 3600, p_max: PER_VISITOR_PER_HOUR }),
+      admin.rpc("hit_rate_limit", { p_key: "scan:all", p_window_seconds: 86400, p_max: SITE_WIDE_PER_DAY }),
+    ]);
+    if (perVisitor.error || siteWide.error) return null;
+    if (perVisitor.data === false) return "You've scanned a lot of cards just now — wait a bit, or fill the form in by hand.";
+    if (siteWide.data === false) return "Card scanning is busy right now — please fill the form in by hand.";
+    return null;
+  } catch {
+    return null;
   }
 }
