@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import { Check, Copy, Download } from "lucide-react";
+import { Check, Copy, Download, Wallet } from "lucide-react";
 import { useClientValue } from "@/lib/use-client-value";
 
 /**
@@ -15,7 +15,7 @@ import { useClientValue } from "@/lib/use-client-value";
  */
 const EXPORT_SIZE = 1024;
 
-export default function QrPanel({ username }: { username: string }) {
+export default function QrPanel({ username, wallet = false }: { username: string; wallet?: boolean }) {
   const holder = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -89,7 +89,24 @@ export default function QrPanel({ username }: { username: string }) {
               <Download className="h-3.5 w-3.5" />
               Download QR
             </button>
+            {/* A plain anchor: the route mints a signed token and redirects
+                to Google, which client-side navigation can't follow. */}
+            {wallet && (
+              <a
+                href="/api/wallet/google"
+                className="app-btn inline-flex items-center gap-1.5 rounded-full bg-black px-4 text-white hover:bg-neutral-800"
+              >
+                <Wallet className="h-3.5 w-3.5" />
+                Add to Google Wallet
+              </a>
+            )}
           </div>
+          {wallet && (
+            <p className="mt-2 text-[12px] text-sc-text-dim">
+              Keeps this QR in your phone&apos;s wallet — open it and let people scan it when you don&apos;t have the
+              card with you.
+            </p>
+          )}
 
           {failed && (
             <p className="mt-2 text-[12px] font-semibold text-sc-error">

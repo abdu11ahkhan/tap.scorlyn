@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import SettingsPanels from "./SettingsPanels";
 import QrPanel from "./QrPanel";
+import { googleWalletEnabled } from "@/lib/google-wallet";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,7 @@ export default async function SettingsPage() {
         <p className="app-sub mt-1">Your account, handle and notifications.</p>
       </header>
 
-      {card?.username && <QrPanel username={card.username} />}
+      {card?.username && <QrPanel username={card.username} wallet={googleWalletEnabled()} />}
 
       <SettingsPanels
         email={user.email ?? ""}
