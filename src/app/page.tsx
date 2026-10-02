@@ -1,5 +1,4 @@
 import Link from "next/link";
-import {  } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
@@ -12,14 +11,23 @@ import { Contact } from "@/components/sections/Contact";
 import { SEOContent } from "@/components/sections/SEOContent";
 import BrandMark from "@/components/layout/BrandMark";
 import BuildMyCardButton from "@/components/nfc/BuildMyCardButton";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
-export const dynamic = "force-dynamic";
+// Cached at the edge rather than rendered per visit: the only data here is
+// public site copy, and every save in the admin content/settings pages
+// already calls revalidatePath("/", "layout"), so edits still show at once.
+// Per-visit rendering meant the first visitor after each deploy waited out a
+// cold start (~9s measured).
+export const revalidate = 300;
 
 export default async function Home() {
   // Copy the admin can change without a deploy. NULL means "use the default",
   // so an emptied field can never ship a blank headline.
-  const supabase = await createClient();
+  // Cookieless on purpose — reading the session would force per-request
+  // rendering, and nothing here depends on who is looking.
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    auth: { persistSession: false },
+  });
   const { data: content } = await supabase
     .from("app_settings")
     .select("hero_title, hero_subtitle, pricing_note, support_whatsapp, support_email")

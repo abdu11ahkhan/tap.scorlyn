@@ -21,13 +21,15 @@ export const dynamic = "force-dynamic";
 
 async function getCard(username: string): Promise<CardProfile | null> {
   const supabase = await createClient();
+  // The public view, not the table: it carries only what a card page shows
+  // (no approval, payment-proof or owner fields) and already filters to
+  // published, non-suspended cards.
   const { data } = await supabase
-    .from("card_profiles")
+    .from("public_card_profiles")
     .select("*")
     .eq("username", username.toLowerCase())
-    .eq("published", true)
     .maybeSingle();
-  return data;
+  return data as CardProfile | null;
 }
 
 export async function generateMetadata({

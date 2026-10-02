@@ -19,10 +19,9 @@ export async function GET(
 
   const supabase = await createClient();
   const { data: card } = await supabase
-    .from("card_profiles")
+    .from("public_card_profiles")
     .select("*")
     .eq("username", username.toLowerCase())
-    .eq("published", true)
     .maybeSingle();
 
   if (!card) {

@@ -13,18 +13,47 @@ import type { NextConfig } from "next";
  * or the file itself is small enough to re-request once.
  */
 const A_YEAR = 60 * 60 * 24 * 365;
+
+/**
+ * Content-Security-Policy, production only (the dev server needs eval).
+ *
+ * Scripts and styles still allow 'unsafe-inline' — the App Router's bootstrap
+ * and the templates' inline styles need it without a nonce pipeline — so the
+ * value here is in what it shuts: scripts, frames and connections from any
+ * origin not listed, plugins, <base> hijacking, and framing by other sites.
+ *
+ * Every origin is here for a reason:
+ *   *.supabase.co        data, auth and uploaded images/files
+ *   cdn.jsdelivr.net     tesseract.js worker + core (offline card scanner)
+ *   tessdata.projectnaptha.com  tesseract's language data
+ *   youtube/vimeo/tiktok profile video embeds (ProfileExtras)
+ *   mailto:              the Waitlist template's form
+ */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "media-src 'self' data: blob: https:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://tessdata.projectnaptha.com",
+  "worker-src 'self' blob: https://cdn.jsdelivr.net",
+  "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://www.tiktok.com",
+  "frame-ancestors 'self'",
+  "form-action 'self' mailto:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
 const A_WEEK = 60 * 60 * 24 * 7;
 
 const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Applied everywhere. Deliberately not a full Content-Security-
-        // Policy — this app embeds YouTube/Vimeo/TikTok iframes
-        // (ProfileExtras), uses Google OAuth, and talks to Supabase, and
-        // getting a CSP's allowlist wrong silently breaks one of those
-        // rather than failing loudly. These four are safe regardless of
-        // any third-party asset this app ever adds:
+        // Applied everywhere. The CSP (see CSP above) is production-only and
+        // its allowlist must grow with any new third-party asset; the rest
+        // are safe regardless:
         source: "/:path*",
         headers: [
           // Stops a browser from guessing a response's type and executing
@@ -39,11 +68,10 @@ const nextConfig: NextConfig = {
           // — enough for the app's own analytics `referrer` column to stay
           // useful without leaking a visitor's full path to outbound links.
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          // Nothing in this app calls camera/microphone/geolocation APIs
-          // (the card scanner uses a plain file input, not getUserMedia) —
-          // disabling them closes off a class of attack against embedded
-          // third-party content this app doesn't otherwise use itself.
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          // Camera allowed for this site only: the admin "Scan card" page
+          // reads printed QR codes with it. Third-party frames still get none.
+          { key: "Permissions-Policy", value: "camera=(self), microphone=(), geolocation=()" },
+          ...(process.env.NODE_ENV === "production" ? [{ key: "Content-Security-Policy", value: CSP }] : []),
         ],
       },
       {

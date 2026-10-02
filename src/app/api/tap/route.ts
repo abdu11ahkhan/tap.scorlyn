@@ -56,11 +56,10 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient();
 
     const { data: profile } = await supabase
-      .from("card_profiles")
+      .from("public_card_profiles")
       .select("id")
       .eq("username", username)
-      .eq("published", true)
-      .single();
+      .maybeSingle();
 
     if (!profile) {
       return NextResponse.json({ error: "card not found" }, { status: 404 });

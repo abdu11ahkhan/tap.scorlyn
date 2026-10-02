@@ -24,13 +24,8 @@ export async function POST(request: NextRequest) {
 
     // Resolved through card_profiles, not profiles: `profiles` is only readable
     // by its own owner, and the visitor firing this event is anonymous.
-    const { data: referrer } = await supabase
-      .from("card_profiles")
-      .select("user_id")
-      .eq("referral_code", refCode)
-      .eq("published", true)
-      .limit(1)
-      .maybeSingle();
+    const { data: referrerId } = await supabase.rpc("referrer_for_code", { p_code: refCode });
+    const referrer = referrerId ? { user_id: referrerId as string } : null;
 
     if (!referrer) {
       // Unknown code — silently accept so we don't leak which codes are real.
