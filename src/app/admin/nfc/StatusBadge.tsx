@@ -3,6 +3,7 @@ import { CARD_STATUS_LABEL, type CardStatus } from "@/lib/card-codes";
 const TONE: Record<CardStatus, string> = {
   active: "border-acid/60 bg-acid/10 text-acid",
   in_stock: "border-sc-border text-sc-text-dim",
+  claimed: "border-sc-gold/60 bg-sc-gold/10 text-sc-gold-text",
   suspended: "border-hotpink/60 bg-hotpink/10 text-hotpink",
   retired: "border-sc-border-soft text-sc-text-dimmer line-through",
 };

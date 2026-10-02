@@ -28,6 +28,7 @@ const sidebarLinks = [
   { name: "Edit my card", hint: "Details, links, photos and design", href: "/dashboard/card", icon: IdCard },
   { name: "Taps & visits", hint: "Who opened your card, what they tapped", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Review feedback", hint: "Ratings and messages from review cards", href: "/dashboard/feedback", icon: MessageSquareText },
+  { name: "My cards", hint: "Your physical cards and what they open", href: "/dashboard/cards", icon: CreditCard },
   { name: "Order a printed card", hint: "An NFC card that opens your page", href: "/dashboard/nfc", icon: Nfc },
   { name: "One-link NFC card", hint: "A card that opens one link, e.g. WhatsApp", href: "/dashboard/quick-order", icon: Zap },
   { name: "My orders", hint: "Track what you've ordered", href: "/dashboard/orders", icon: Package },

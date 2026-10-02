@@ -237,3 +237,32 @@ export async function findCardByCode(code: string): Promise<Result<{ id: string 
     return fail(e);
   }
 }
+
+/**
+ * "Ready to sell": only released stock can be activated by a customer who
+ * scans it. Applies to cards still in stock; anything already owned is
+ * left alone.
+ */
+export async function setCardsClaimable(cardIds: string[], claimable: boolean): Promise<Result<{ count: number }>> {
+  try {
+    const { supabase } = await assertAdmin();
+    const ids = cardIds.filter((id) => /^[0-9a-f-]{36}$/.test(id)).slice(0, 5000);
+    if (!ids.length) throw new Error("No cards selected.");
+    let count = 0;
+    for (let i = 0; i < ids.length; i += 500) {
+      const { data, error } = await supabase
+        .from("nfc_cards")
+        .update({ claimable })
+        .in("id", ids.slice(i, i + 500))
+        .eq("status", "in_stock")
+        .select("id");
+      if (error) throw new Error(error.message);
+      count += data?.length ?? 0;
+    }
+    refresh();
+    for (const id of ids.slice(0, 1)) revalidatePath(`/admin/nfc/${id}`);
+    return { ok: true, data: { count } };
+  } catch (e) {
+    return fail(e);
+  }
+}

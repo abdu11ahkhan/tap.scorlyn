@@ -19,6 +19,7 @@ import {
   Users,
   Wallet,
   Star,
+  BadgeCheck,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
@@ -74,6 +75,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     .select("id", { count: "exact", head: true })
     .is("admin_seen_at", null);
 
+  // Customers waiting for a card to be activated — they can't use it until
+  // someone here says yes, so it carries a badge like new orders do.
+  const { count: pendingClaims } = await supabase
+    .from("card_claims")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+
   // Grouped by what you came to do, each with one line saying what's inside —
   // the bare labels ("Cards" next to "NFC cards", "Content", "Scan test")
   // didn't tell anyone new which one they wanted.
@@ -96,6 +104,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         { href: "/admin/users", label: "Customers", hint: "Accounts · set someone up in person", icon: Users },
         { href: "/admin/cards", label: "Customer pages", hint: "Every digital card customers made — edit any", icon: CreditCard },
         { href: "/admin/nfc", label: "Physical cards", hint: "Make QR/NFC codes in bulk, assign later", icon: Nfc },
+        { href: "/admin/requests", label: "Card requests", hint: "Customers asking to activate a card", icon: BadgeCheck, badge: pendingClaims ?? 0 },
         { href: "/admin/reviews", label: "Review cards", hint: "Google reviews, feedback links & alerts", icon: Star },
         { href: "/admin/accounts", label: "Suspended", hint: "Blocked and deleted accounts", icon: UserX },
       ],
@@ -159,7 +168,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                       {Boolean(badge) && (
                         <span
                           className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-sc-error px-1 text-[11px] font-black text-sc-text"
-                          title={`${badge} order${badge === 1 ? "" : "s"} you haven't opened`}
+                          title={`${badge} waiting for you`}
                         >
                           {badge}
                         </span>

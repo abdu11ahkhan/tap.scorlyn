@@ -6,11 +6,12 @@
  * next to it ("SC-000001"), for finding a card in a box, not for security.
  */
 
-export const CARD_STATUSES = ["in_stock", "active", "suspended", "retired"] as const;
+export const CARD_STATUSES = ["in_stock", "claimed", "active", "suspended", "retired"] as const;
 export type CardStatus = (typeof CARD_STATUSES)[number];
 
 export const CARD_STATUS_LABEL: Record<CardStatus, string> = {
   in_stock: "In stock",
+  claimed: "Claimed — not set up",
   active: "Active",
   suspended: "Suspended",
   retired: "Retired",
@@ -47,4 +48,10 @@ export function codeFromScan(scanned: string): string | null {
   const match = text.match(/\/api\/nfc\/([a-z2-9]{6,16})(?:[/?#]|$)/i);
   if (match) return match[1].toLowerCase();
   return isCardCode(text.toLowerCase()) ? text.toLowerCase() : null;
+}
+
+/** "K7P4QX2M" → "K7P4-QX2M", the way it's printed on packaging. */
+export function formatActivationCode(code: string | null | undefined): string {
+  const c = (code ?? "").toUpperCase();
+  return c.length === 8 ? `${c.slice(0, 4)}-${c.slice(4)}` : c;
 }

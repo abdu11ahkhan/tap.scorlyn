@@ -4,12 +4,13 @@ import { headers } from "next/headers";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { CARD_TEMPLATES, resolveButton, type CardButton } from "@/lib/card";
-import { cardUrl, formatSerial } from "@/lib/card-codes";
+import { cardUrl, formatActivationCode, formatSerial } from "@/lib/card-codes";
 import QrTools from "../QrTools";
 import StatusBadge from "../StatusBadge";
 import { experienceOf, type InventoryCard } from "../load-cards";
 import AssignForm from "./AssignForm";
 import CardActions from "./CardActions";
+import ReleaseToggle from "../ReleaseToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -80,13 +81,14 @@ export default async function AdminCardDetail({
   const { data: row } = await supabase
     .from("nfc_cards")
     .select(
-      "id, serial, card_url, status, nickname, location, batch, batch_id, created_at, assigned_at, card_profile_id, card_profiles(username, full_name, template, is_single_purpose, buttons, published)"
+      "id, serial, card_url, status, claimable, activation_code, user_id, nickname, location, batch, batch_id, created_at, assigned_at, card_profile_id, card_profiles(username, full_name, template, is_single_purpose, buttons, published)"
     )
     .eq("id", id)
     .maybeSingle();
 
   if (!row) notFound();
   const card = row as unknown as Omit<InventoryCard, "taps" | "first_tap" | "last_tap"> & {
+    user_id: string | null;
     card_profiles: (InventoryCard["card_profiles"] & { published: boolean }) | null;
   };
 
@@ -121,6 +123,10 @@ export default async function AdminCardDetail({
   const serial = formatSerial(card.serial);
   const url = cardUrl(origin, card.card_url);
   const profile = card.card_profiles;
+  const claimedBy =
+    card.status === "claimed" && card.user_id
+      ? (await supabase.from("profiles").select("email, full_name").eq("id", card.user_id).maybeSingle()).data
+      : null;
 
   // Who owns each card profile, so the picker can say "Saffron Kitchen ·
   // Review Card · owner@…" rather than a bare handle.
@@ -191,6 +197,22 @@ export default async function AdminCardDetail({
               Same URL for the QR and the NFC chip. It never changes, even when the card is reassigned.
             </p>
           </div>
+          <div className="rounded-xl border-2 border-sc-border-soft p-3">
+            <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">activation code</p>
+            <p className="mt-1 font-mono text-xl font-black tracking-widest">{formatActivationCode(card.activation_code)}</p>
+            <p className="mt-1 text-xs font-medium text-sc-text-dimmer">
+              Print it on the packaging. Whoever scans the card and enters it activates the card instantly — no
+              approval needed. Keep it off the card itself.
+            </p>
+            {card.status === "in_stock" && (
+              <div className="mt-3">
+                <ReleaseToggle cardIds={[card.id]} released={card.claimable} />
+                <p className="mt-1 text-xs font-medium text-sc-text-dimmer">
+                  On: a customer who scans it can activate it. Off: it shows “not set up yet”.
+                </p>
+              </div>
+            )}
+          </div>
         </section>
 
         <div className="space-y-5">
@@ -207,6 +229,11 @@ export default async function AdminCardDetail({
                         <span className="ml-2 text-xs font-bold text-hotpink">(unpublished — taps won&apos;t open it)</span>
                       )}
                     </>
+                  ) : claimedBy ? (
+                    <span>
+                      Claimed by {claimedBy.full_name || claimedBy.email}{" "}
+                      <span className="font-semibold text-sc-text-dimmer">— hasn&apos;t chosen what it opens yet</span>
+                    </span>
                   ) : (
                     <span className="text-sc-text-dimmer">Unassigned</span>
                   )}

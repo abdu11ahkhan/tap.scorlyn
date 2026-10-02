@@ -2,10 +2,11 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { cardUrl, formatSerial } from "@/lib/card-codes";
+import { cardUrl, formatActivationCode, formatSerial } from "@/lib/card-codes";
 import CreateControls from "./CreateControls";
 import BulkDownloads, { type ExportCard } from "./BulkDownloads";
 import StatusBadge from "./StatusBadge";
+import ReleaseToggle from "./ReleaseToggle";
 import { SORTS, STATUS_FILTERS, experienceOf, loadCards } from "./load-cards";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +62,9 @@ export default async function AdminCards({
     batchId: c.batch_id,
     batch: c.batch,
     status: c.status,
+    activation: formatActivationCode(c.activation_code),
   }));
+  const inStockIds = cards.filter((c) => c.status === "in_stock").map((c) => c.id);
 
   const link = (patch: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -184,6 +187,7 @@ export default async function AdminCards({
             </p>
           </div>
           <BulkDownloads cards={exportCards} label={batchRow.name} />
+          <ReleaseToggle cardIds={inStockIds} label={`mark ${inStockIds.length} in-stock cards ready to sell`} />
         </div>
       )}
 
@@ -193,6 +197,9 @@ export default async function AdminCards({
             download qr codes for these cards
           </p>
           <BulkDownloads cards={exportCards} label={`cards-${status}`} />
+          {inStockIds.length > 0 && (
+            <ReleaseToggle cardIds={inStockIds} label={`mark ${inStockIds.length} in-stock cards ready to sell`} />
+          )}
         </div>
       )}
 
@@ -242,6 +249,9 @@ export default async function AdminCards({
                     </td>
                     <td data-label="Status">
                       <StatusBadge status={c.status} />
+                      {c.status === "in_stock" && c.claimable && (
+                        <span className="mt-1 block text-[10px] font-black uppercase tracking-widest text-acid">ready to sell</span>
+                      )}
                     </td>
                     <td data-label="Business">
                       {c.card_profiles ? (

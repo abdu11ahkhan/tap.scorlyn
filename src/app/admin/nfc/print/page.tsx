@@ -2,7 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { cardUrl, formatSerial } from "@/lib/card-codes";
+import { cardUrl, formatActivationCode, formatSerial } from "@/lib/card-codes";
 import { STATUS_FILTERS, loadCards } from "../load-cards";
 import PrintSheet from "./PrintSheet";
 
@@ -44,6 +44,7 @@ export default async function PrintCenter({
             serial: formatSerial(c.serial),
             url: cardUrl(origin, c.card_url),
             nickname: c.nickname,
+            activation: formatActivationCode(c.activation_code),
           }))}
         />
       )}

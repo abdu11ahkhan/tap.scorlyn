@@ -8,6 +8,8 @@ export type InventoryCard = {
   serial: number;
   card_url: string;
   status: string;
+  claimable: boolean;
+  activation_code: string;
   nickname: string | null;
   location: string | null;
   batch: string | null;
@@ -30,6 +32,8 @@ export type InventoryCard = {
 export const STATUS_FILTERS = [
   { id: "all", label: "All" },
   { id: "in_stock", label: "In stock" },
+  { id: "for_sale", label: "Ready to sell" },
+  { id: "claimed", label: "Claimed" },
   { id: "assigned", label: "Assigned" },
   { id: "active", label: "Active" },
   { id: "suspended", label: "Suspended" },
@@ -47,9 +51,9 @@ export const SORTS = [
 export type CardFilters = { status?: string; q?: string; batch?: string; sort?: string; ids?: string[] };
 
 const SELECT =
-  "id, serial, card_url, status, nickname, location, batch, batch_id, created_at, assigned_at, card_profile_id, card_profiles(username, full_name, template, is_single_purpose, buttons)";
+  "id, serial, card_url, status, claimable, activation_code, nickname, location, batch, batch_id, created_at, assigned_at, card_profile_id, card_profiles(username, full_name, template, is_single_purpose, buttons)";
 
-const STATUS_ORDER: Record<string, number> = { active: 0, suspended: 1, in_stock: 2, retired: 3 };
+const STATUS_ORDER: Record<string, number> = { active: 0, claimed: 1, suspended: 2, in_stock: 3, retired: 4 };
 
 /** What the card opens, in words: the template name, or the one link a direct card jumps to. */
 export function experienceOf(card: Pick<InventoryCard, "card_profiles">): string | null {
@@ -92,6 +96,7 @@ export async function loadCards(supabase: Supabase, filters: CardFilters): Promi
 
     const status = filters.status ?? "all";
     if (status === "assigned") query = query.not("card_profile_id", "is", null);
+    else if (status === "for_sale") query = query.eq("status", "in_stock").eq("claimable", true);
     else if (status !== "all") query = query.eq("status", status);
     if (filters.batch) query = query.eq("batch_id", filters.batch);
     if (filters.ids?.length) query = query.in("id", filters.ids);

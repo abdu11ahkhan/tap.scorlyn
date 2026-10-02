@@ -11,6 +11,8 @@ export type ExportCard = {
   batchId: string | null;
   batch: string | null;
   status: string;
+  /** Printed on the packaging; lets the buyer activate without waiting for approval. */
+  activation: string;
 };
 
 const BTN =
@@ -65,8 +67,8 @@ export default function BulkDownloads({ cards, label }: { cards: ExportCard[]; l
 
   const csv = () => {
     const rows = [
-      ["Card ID", "Permanent URL", "Token", "Batch ID", "Batch", "Status"],
-      ...cards.map((c) => [c.serial, c.url, c.code, c.batchId, c.batch, c.status]),
+      ["Card ID", "Permanent URL", "Token", "Activation code", "Batch ID", "Batch", "Status"],
+      ...cards.map((c) => [c.serial, c.url, c.code, c.activation, c.batchId, c.batch, c.status]),
     ];
     const text = rows.map((r) => r.map((v) => csvCell(v)).join(",")).join("\n");
     saveBlob(new Blob([`﻿${text}`], { type: "text/csv;charset=utf-8" }), `${slug}.csv`);

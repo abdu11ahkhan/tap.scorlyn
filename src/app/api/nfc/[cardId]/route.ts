@@ -38,6 +38,12 @@ export async function GET(
       return NextResponse.redirect(new URL('/?card=inactive', request.url));
     }
 
+    // Stock released for sale, or a card its new owner hasn't set up yet:
+    // the activate page handles sign-in, claiming and choosing what it opens.
+    if (card && !card.card_profile_id && (card.status === 'claimed' || (card.status === 'in_stock' && card.claimable))) {
+      return NextResponse.redirect(new URL(`/activate/${encodeURIComponent(cardId)}`, request.url));
+    }
+
     if (!card?.card_profile_id || !card?.username) {
       // Either an unknown code or blank stock that hasn't been assigned yet.
       // Send them somewhere useful rather than showing a raw error.

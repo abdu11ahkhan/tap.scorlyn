@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Loader2, Printer } from "lucide-react";
 import { qrSvg } from "@/lib/qr";
 
-export type PrintCard = { id: string; serial: string; url: string; nickname: string | null };
+export type PrintCard = { id: string; serial: string; url: string; nickname: string | null; activation: string };
 
 const PAPER = {
   a4: { label: "A4", css: "A4", width: 210 },
@@ -37,6 +37,7 @@ export default function PrintSheet({ cards }: { cards: PrintCard[] }) {
   const [paper, setPaper] = useState<keyof typeof PAPER>("a4");
   const [content, setContent] = useState<(typeof CONTENT)[number]["id"]>("qr-id");
   const [size, setSize] = useState(30);
+  const [withCode, setWithCode] = useState(false);
   const [svgs, setSvgs] = useState<Record<string, string>>({});
 
   const chosen = useMemo(() => cards.filter((c) => selected.has(c.id)), [cards, selected]);
@@ -94,6 +95,9 @@ export default function PrintSheet({ cards }: { cards: PrintCard[] }) {
               {s}mm
             </button>
           ))}
+          <button type="button" onClick={() => setWithCode((v) => !v)} className={`${CHIP} ${withCode ? on : off}`}>
+            {withCode ? "activation code — shown" : "add activation code"}
+          </button>
           <span className="text-xs font-semibold text-sc-text-dimmer">
             {columns} per row · keep QR at 20mm or more for reliable scanning
           </span>
@@ -172,6 +176,11 @@ export default function PrintSheet({ cards }: { cards: PrintCard[] }) {
               {showId && (
                 <div style={{ fontFamily: "ui-monospace, monospace", fontWeight: 800, fontSize: `${Math.max(7, size / 4.5)}pt`, marginTop: "1mm" }}>
                   {c.serial}
+                </div>
+              )}
+              {withCode && (
+                <div style={{ fontFamily: "ui-monospace, monospace", fontWeight: 700, fontSize: `${Math.max(6, size / 6)}pt`, marginTop: "0.8mm", letterSpacing: "0.08em" }}>
+                  CODE {c.activation}
                 </div>
               )}
               {showUrl && (
