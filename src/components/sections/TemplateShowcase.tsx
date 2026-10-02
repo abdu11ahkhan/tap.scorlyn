@@ -1,92 +1,135 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
-import { RippleField } from "./RippleField";
+import PosterTitle from "./PosterTitle";
+
+const CARD_TONES = ["bg-sun", "bg-sea text-white", "bg-white", "bg-sun-soft", "bg-cream"];
+const POPULAR = ["glass", "arena", "review", "bold"];
 
 /**
  * Real templates, real names, real accents — CARD_TEMPLATES.preview is the
- * same colour the /templates gallery itself demos each one with, so this
- * isn't a second, invented palette. Grouped by the product's own five
- * categories (TEMPLATE_CATEGORIES), not a marketing taxonomy layered on top.
+ * same colour the /templates gallery demos each one with. Categories come
+ * from the product's own TEMPLATE_CATEGORIES, shown as a numbered carousel;
+ * a few popular designs follow as product-style cards.
  */
 export function TemplateShowcase() {
+  const rail = useRef<HTMLDivElement>(null);
+  const scroll = (dir: 1 | -1) => rail.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+  const popular = POPULAR.map((id) => CARD_TEMPLATES.find((t) => t.id === id)).filter(Boolean) as (typeof CARD_TEMPLATES)[number][];
+
   return (
-    <section id="designs" className="relative overflow-hidden bg-paper py-28">
-      <RippleField origin={{ x: 0.9, y: 0.9 }} />
-      <div className="relative mx-auto max-w-6xl px-6">
+    <section id="designs" className="relative scroll-mt-20 border-b-[3px] border-char bg-cream py-24">
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-14 flex flex-wrap items-end justify-between gap-6"
+          className="mb-12"
         >
-          <div className="max-w-xl">
-            <h2 className="text-[clamp(2.6rem,7vw,5rem)] font-black leading-[0.9] tracking-[-0.05em] text-ink">
-              explore <span className="text-teal">42 designs.</span>
-            </h2>
-            <p className="mt-5 text-lg font-medium text-ink-dim">
-              Five kinds of page, forty-two looks. Whatever you lead with —
-              a single link-in-bio card or a whole portfolio — there&apos;s a
-              starting point already built.
-            </p>
-          </div>
-          <Link
-            href="/templates"
-            className="sticker sticker-press inline-flex h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-mist px-7 text-base font-black uppercase tracking-tight text-ink"
-          >
-            see all templates
-          </Link>
+          <PosterTitle
+            lead="Explore"
+            accent={`${CARD_TEMPLATES.length} designs`}
+            align="center"
+            sub="Whatever you lead with — one link, a full profile, a review card — there's a starting point already built."
+          />
         </motion.div>
 
-        <div className="space-y-12">
-          {TEMPLATE_CATEGORIES.map((cat) => {
-            const templates = CARD_TEMPLATES.filter((t) => t.category === cat.id);
-            if (templates.length === 0) return null;
-            return (
-              <div key={cat.id}>
-                <div className="mb-4 flex items-baseline gap-3">
-                  <h3 className="text-sm font-black uppercase tracking-[0.2em] text-ink">
-                    {cat.name}
-                  </h3>
-                  <span className="text-sm font-medium text-ink/35">{cat.blurb}</span>
-                </div>
+        {/* Category carousel */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => scroll(-1)}
+            aria-label="Previous categories"
+            className="brut-sm brut-press absolute -left-2 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-char sm:flex"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <div
+            ref={rail}
+            className="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 pt-3 [scrollbar-width:none] sm:mx-8 sm:px-1"
+          >
+            {TEMPLATE_CATEGORIES.map((cat, i) => {
+              const inCat = CARD_TEMPLATES.filter((t) => t.category === cat.id);
+              if (!inCat.length) return null;
+              return (
+                <Link
+                  key={cat.id}
+                  href="/templates"
+                  className={`brut brut-press relative flex h-[250px] w-[200px] shrink-0 snap-start flex-col rounded-[1.6rem] p-4 ${CARD_TONES[i % CARD_TONES.length]}`}
+                >
+                  <span className="brut-sm absolute -right-2 -top-2 flex h-9 w-9 items-center justify-center rounded-full bg-white text-sm font-black text-char">
+                    {i + 1}
+                  </span>
+                  <div className="flex h-[140px] items-end justify-center gap-1.5 rounded-2xl border-[3px] border-char bg-white/70 p-3">
+                    {inCat.slice(0, 3).map((t, k) => (
+                      <span
+                        key={t.id}
+                        className="w-12 rounded-lg border-2 border-char"
+                        style={{ background: t.preview, height: `${70 + k * 18}px` }}
+                      />
+                    ))}
+                  </div>
+                  <span className="display mt-auto text-center text-[30px]">{cat.name}</span>
+                  <span className="text-center text-[11px] font-black uppercase tracking-widest opacity-70">
+                    {inCat.length} design{inCat.length === 1 ? "" : "s"}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={() => scroll(1)}
+            aria-label="Next categories"
+            className="brut-sm brut-press absolute -right-2 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-char sm:flex"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </div>
 
-                {/* Horizontally scrollable on mobile — 36 tiles in fixed
-                    columns would either be tiny or force a huge page; a
-                    native scroll snap keeps each tile a real, tappable size
-                    on a phone. */}
-                <div className="flex gap-3 overflow-x-auto pb-2 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] sm:flex-wrap sm:overflow-visible">
-                  {templates.map((t) => (
-                    <Link
-                      key={t.id}
-                      href={`/templates/${t.id}/edit`}
-                      className="group sticker relative h-32 w-40 shrink-0 overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
-                      style={{ background: t.preview }}
-                    >
-                      <div className="absolute inset-0 flex flex-col justify-between p-4">
-                        <span className="text-xs font-black uppercase tracking-tight text-ink/50">
-                          {t.vibe}
-                        </span>
-                        <span className="text-lg font-black leading-tight text-ink">
-                          {t.name}
-                        </span>
-                      </div>
-                      <div className="absolute inset-0 flex items-center justify-center bg-ink/80 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                        <span className="inline-flex items-center gap-1.5 text-sm font-black uppercase tracking-tight text-white">
-                          use this design
-                          <ArrowUpRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+        {/* Popular designs */}
+        <div className="mt-20 flex flex-wrap items-end justify-between gap-5">
+          <PosterTitle lead="Popular" accent="designs" variant="outline" />
+          <Link
+            href="/templates"
+            className="brut-sm brut-press inline-flex h-12 items-center gap-2 rounded-full bg-sun px-6 text-sm font-black uppercase tracking-tight text-char"
+          >
+            view all <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {popular.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.45, delay: i * 0.06 }}
+              className="brut flex flex-col overflow-hidden rounded-[1.6rem] bg-white"
+            >
+              <div className="relative h-40 border-b-[3px] border-char" style={{ background: t.preview }}>
+                <span className="absolute left-3 top-3 rounded-full border-2 border-char bg-hotpink px-2.5 py-0.5 text-[11px] font-black uppercase text-white">
+                  popular
+                </span>
+                <span className="display absolute bottom-3 left-4 text-[22px] text-char/70">{t.vibe}</span>
               </div>
-            );
-          })}
+              <div className="flex flex-1 flex-col p-4">
+                <h3 className="display text-[30px] text-char">{t.name}</h3>
+                <p className="mt-1 line-clamp-2 text-sm font-semibold text-char/70">{t.blurb}</p>
+                <Link
+                  href={`/templates/${t.id}/edit`}
+                  className="brut-sm brut-press mt-auto inline-flex h-11 w-full items-center justify-center rounded-full bg-sun text-sm font-black uppercase tracking-tight text-char [margin-top:1rem]"
+                >
+                  use this design
+                </Link>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

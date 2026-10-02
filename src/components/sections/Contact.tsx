@@ -1,6 +1,6 @@
 import { MessageCircle, Mail, Package, Palette, Truck, Clock } from "lucide-react";
 import { normalizeWhatsapp } from "@/lib/referral";
-import { RippleField } from "./RippleField";
+import PosterTitle from "./PosterTitle";
 
 /**
  * How to reach a human — for questions, and for bulk orders.
@@ -20,21 +20,21 @@ const POINTS = [
     icon: Palette,
     title: "your design",
     body: "Send us your artwork and we print it on the card. No artwork? We'll set it up from your logo.",
-    chip: "bg-acid text-ink",
+    chip: "bg-sun text-char",
     tilt: "-1.5deg",
   },
   {
     icon: Package,
     title: "volume pricing",
     body: "Ordering ten or more? The rate drops. Tell us the quantity and we'll quote you the same day.",
-    chip: "bg-teal text-white",
+    chip: "bg-sea text-white",
     tilt: "2deg",
   },
   {
     icon: Truck,
     title: "delivered to you",
     body: "Anywhere in Pakistan, cash on delivery. Every card arrives programmed and ready to tap.",
-    chip: "bg-ink text-white",
+    chip: "bg-char text-white",
     tilt: "-2deg",
   },
 ];
@@ -64,28 +64,19 @@ export function Contact({
     "Hi ScorlynTap, I'd like a quote for a bulk order of NFC cards."
   );
 
-  // The same button shape the rest of the page uses: h-14, full radius,
-  // uppercase, soft sticker shadow. Anything else reads as bolted on.
+  // The page's one button shape: pill, charcoal outline, hard shadow.
   const cta =
-    "sticker sticker-press flex h-14 items-center justify-center gap-2.5 rounded-full px-6 text-base font-black uppercase tracking-tight";
+    "brut-sm brut-press flex h-14 items-center justify-center gap-2.5 rounded-full px-6 text-base font-black uppercase tracking-tight";
 
   return (
-    <section id="contact" className="relative overflow-hidden bg-paper py-28 text-ink">
-      <RippleField origin={{ x: 0.85, y: 0.3 }} />
-      <div className="relative mx-auto max-w-6xl px-6">
-        <div className="mb-14 max-w-3xl">
-          <p className="text-[12px] font-black uppercase tracking-[0.25em] text-ink/40">
-            talk to us
-          </p>
-          <h2 className="mt-4 text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em]">
-            questions?
-            <br />
-            <span className="text-teal">bulk order?</span>
-          </h2>
-          <p className="mt-6 max-w-lg text-lg font-medium text-ink-dim">
-            Message us directly — a real person answers. For teams, clubs and
-            offices we do custom artwork and volume pricing.
-          </p>
+    <section id="contact" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-white py-24 text-char">
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
+        <div className="mb-14">
+          <PosterTitle
+            lead="Questions?"
+            accent="Bulk order"
+            sub="Message us directly — a real person answers. For teams, clubs and offices we do custom artwork and volume pricing."
+          />
         </div>
 
         <div className="grid gap-5 sm:grid-cols-3">
@@ -95,23 +86,23 @@ export function Contact({
               <article
                 key={point.title}
                 style={{ rotate: point.tilt }}
-                className="sticker-lg rounded-[1.75rem] bg-mist p-7 text-ink transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1"
+                className="brut brut-press rounded-[1.75rem] bg-cream p-7 text-char hover:!rotate-0"
               >
-                <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${point.chip}`}>
+                <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-char ${point.chip}`}>
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="mb-2.5 text-2xl font-black tracking-tight">{point.title}</h3>
-                <p className="text-[15px] font-medium leading-relaxed text-ink-dim">{point.body}</p>
+                <h3 className="display mb-2 text-[34px]">{point.title}</h3>
+                <p className="text-[15px] font-semibold leading-relaxed text-char/75">{point.body}</p>
               </article>
             );
           })}
         </div>
 
-        <div className="mt-14 rounded-[1.75rem] bg-mist p-7 sm:p-9">
+        <div className="brut mt-14 rounded-[1.75rem] bg-sun p-7 sm:p-9">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-sm">
-              <h3 className="text-2xl font-black tracking-tight">Start a conversation</h3>
-              <p className="mt-2 flex items-center gap-2 text-[15px] font-semibold text-ink-dim">
+              <h3 className="display text-[40px]">Start a conversation</h3>
+              <p className="mt-2 flex items-center gap-2 text-[15px] font-bold text-char/75">
                 <Clock className="h-4 w-4 shrink-0" />
                 We usually reply within a few hours.
               </p>
@@ -123,7 +114,7 @@ export function Contact({
                   href={`https://wa.me/${wa}?text=${waText}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${cta} bg-acid text-ink`}
+                  className={`${cta} bg-sea text-white`}
                 >
                   <MessageCircle className="h-5 w-5 shrink-0" />
                   whatsapp
@@ -135,7 +126,7 @@ export function Contact({
                   href={compose(mail, subject)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${cta} bg-white text-ink`}
+                  className={`${cta} bg-white text-char`}
                 >
                   <Mail className="h-5 w-5 shrink-0" />
                   email
@@ -150,7 +141,7 @@ export function Contact({
                 }
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${cta} bg-teal text-white sm:col-span-2`}
+                className={`${cta} bg-char text-sun sm:col-span-2`}
               >
                 <Package className="h-5 w-5 shrink-0" />
                 get a bulk quote

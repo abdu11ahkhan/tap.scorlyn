@@ -2,79 +2,74 @@
 
 import { motion } from "framer-motion";
 import { Layers, Zap, Smartphone, BarChart3, Palette, Link2 } from "lucide-react";
-import { RippleField } from "./RippleField";
+import PosterTitle from "./PosterTitle";
 
 const CARDS = [
   {
+    tag: "no app",
     title: "tap. done.",
-    body: "Hold the card to any phone and it opens. No app, no QR code, no awkward 'let me find you on LinkedIn'.",
+    body: "Hold the card to any phone and it opens. No app, no QR hunting, no awkward 'let me find you on LinkedIn'.",
     icon: Smartphone,
-    chip: "bg-acid text-ink",
+    chip: "bg-sun",
     span: "sm:col-span-2",
-    tilt: "-1.5deg",
   },
   {
+    tag: "44 designs",
     title: "looks unreal",
-    body: "42 templates that actually slap. Pick your colour, pick your font, done.",
+    body: "Templates that actually slap. Pick your colour, pick your font, done.",
     icon: Palette,
-    chip: "bg-teal text-white",
+    chip: "bg-sea text-white",
     span: "",
-    tilt: "2deg",
   },
   {
+    tag: "any link",
     title: "every link, one place",
-    body: "WhatsApp, Instagram, your portfolio, your Calendly. Drag them into whatever order you want.",
+    body: "WhatsApp, Instagram, your portfolio, your Calendly — in whatever order you want.",
     icon: Link2,
-    chip: "bg-ink text-white",
+    chip: "bg-char text-white",
     span: "",
-    tilt: "-2deg",
   },
   {
+    tag: "live stats",
     title: "see who tapped",
-    body: "Real numbers on how many people opened your card, and how many of them got one too.",
+    body: "Real numbers on how many people opened your card, and what they tapped next.",
     icon: BarChart3,
-    chip: "bg-teal/10 text-teal",
+    chip: "bg-sun-soft",
     span: "sm:col-span-2",
-    tilt: "1.5deg",
   },
   {
+    tag: "edit anytime",
     title: "change it anytime",
     body: "New job? New number? Edit once. Every card you've ever handed out updates itself.",
     icon: Zap,
-    chip: "bg-sand text-ink",
+    chip: "bg-sun",
     span: "sm:col-span-2",
-    tilt: "-1deg",
   },
   {
+    tag: "no code",
     title: "zero code",
     body: "If you can fill in a form, you can build this.",
     icon: Layers,
-    chip: "bg-acid/15 text-acid",
+    chip: "bg-sea text-white",
     span: "",
-    tilt: "2.5deg",
   },
 ];
 
 export function Features() {
   return (
-    <section id="features" className="relative overflow-hidden bg-paper py-28">
-      <RippleField origin={{ x: 0.1, y: 0.85 }} />
-      <div className="relative mx-auto max-w-6xl px-6">
+    <section id="features" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-white py-24">
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-16 max-w-3xl"
+          className="mb-14"
         >
-          <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-ink">
-            why you&apos;ll
-            <br />
-            <span className="text-teal">actually use it</span>
-          </h2>
+          <PosterTitle lead="Why you'll" accent="actually use it" variant="outline" />
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-3">
           {CARDS.map((card, index) => {
             const Icon = card.icon;
             return (
@@ -84,14 +79,16 @@ export function Features() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: index * 0.06 }}
-                style={{ rotate: card.tilt }}
-                className={`sticker-lg rounded-[1.75rem] bg-mist p-7 text-ink transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${card.span}`}
+                className={`brut brut-press relative rounded-[1.75rem] bg-cream p-7 text-char ${card.span}`}
               >
-                <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${card.chip}`}>
+                <span className="absolute left-5 top-5 rounded-full border-2 border-char bg-hotpink px-2.5 py-0.5 text-[11px] font-black uppercase text-white">
+                  {card.tag}
+                </span>
+                <div className={`mb-5 ml-auto flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-char ${card.chip}`}>
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="mb-2.5 text-2xl font-black tracking-tight">{card.title}</h3>
-                <p className="text-[15px] font-medium leading-relaxed text-ink-dim">{card.body}</p>
+                <h3 className="display mb-2 text-[34px]">{card.title}</h3>
+                <p className="text-[15px] font-semibold leading-relaxed text-char/75">{card.body}</p>
               </motion.article>
             );
           })}

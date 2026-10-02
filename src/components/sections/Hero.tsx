@@ -2,14 +2,20 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, PlayCircle, Star, Zap } from "lucide-react";
+import { ArrowRight, PlayCircle, Sparkles, Zap } from "lucide-react";
 import BrandMark from "@/components/layout/BrandMark";
-import { RippleField } from "./RippleField";
+
+const fade = (delay: number) => ({
+  initial: { opacity: 0, y: 22 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.55, delay, ease: [0.16, 1, 0.3, 1] as const },
+});
 
 /**
- * No photography, no pinned scroll sequence. The old hero loaded a full-bleed
- * JPEG and then pinned the page for 3000px of GSAP scrubbing before you could
- * reach anything — this one says what it is and gets out of the way.
+ * Poster hero: sea-teal field with a dot grid, a three-line condensed
+ * headline with the key line in sun-orange inside a charcoal frame, and a
+ * sticker collage of the product (phone page + NFC card) on the right.
+ * Pure CSS/SVG — no photography to load on a phone connection.
  */
 export function Hero({
   title,
@@ -20,171 +26,97 @@ export function Hero({
   subtitle?: string | null;
 } = {}) {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-paper pt-32 pb-20">
-      {/* One soft wash instead of three saturated glows — plays the
-          reference's brushstroke-behind-the-mockup role without reading as
-          a dark-theme glow effect on a white page. */}
-      <div
-        className="float-orb pointer-events-none absolute -right-24 top-24 h-[620px] w-[620px] rounded-full bg-teal/10 blur-[140px]"
-      />
-      <RippleField origin={{ x: 0.14, y: 0.22 }} />
-
-      <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-[1.15fr_1fr]">
+    <section className="dot-grid-light relative overflow-hidden border-b-[3px] border-char bg-sea pb-20 pt-[calc(72px+3.5rem)] sm:pb-24">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
         {/* ---------------- Copy ---------------- */}
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 text-[13px] font-black uppercase tracking-tight text-teal shadow-sm"
+          <motion.span
+            {...fade(0)}
+            className="brut-sm inline-flex -rotate-2 items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[13px] font-black uppercase tracking-tight text-char"
           >
-            <CheckCircle2 className="h-4 w-4" />
+            <Sparkles className="h-4 w-4 text-sun" />
             one tap. whole vibe.
-          </motion.div>
+          </motion.span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 26 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.07 }}
-            className="mt-7 text-[clamp(2.8rem,9vw,7rem)] font-black leading-[1.18] tracking-[-0.045em] text-ink sm:leading-[0.92]"
-          >
+          <motion.h1 {...fade(0.06)} className="mt-6">
             {title ? (
-              // A custom headline is plain text: the default's highlight and
-              // gradient are typeset around specific words and can't be
-              // applied to arbitrary copy without looking accidental.
-              title
+              <span className="display block text-[clamp(3.2rem,11vw,6.8rem)] text-white">{title}</span>
             ) : (
-              <>
-                the best nfc
-                <br />
-                business card in{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10 text-teal">pakistan</span>
-                  {/* Hand-drawn-style underline squiggle instead of the old
-                      highlighter box — the box read as "text on a dark
-                      panel"; a light page wants the accent to sit in the
-                      text itself. */}
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 120 14"
-                    className="absolute -bottom-2 left-0 h-3 w-full text-teal"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M2 9 C 20 2, 40 12, 60 6 S 100 2, 118 8"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+              <span className="inline-block border-b-[6px] border-r-[6px] border-char pb-2 pr-4">
+                <span className="display block text-[clamp(3.2rem,11vw,6.8rem)] text-white">The best NFC</span>
+                <span className="display block text-[clamp(3.2rem,11vw,6.8rem)] text-sun [text-shadow:4px_4px_0_#25272a]">
+                  business card
                 </span>
-                <br />
-                tap to share.
-              </>
+                <span className="display block text-[clamp(3.2rem,11vw,6.8rem)] text-white">in Pakistan</span>
+              </span>
             )}
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.14 }}
-            className="mt-8 max-w-lg text-lg font-medium leading-relaxed text-ink-dim"
-          >
+          <motion.p {...fade(0.12)} className="mt-7 max-w-md text-lg font-bold leading-snug text-white sm:text-xl">
             {subtitle ||
-              "Build your digital business card in minutes. Share your profile via NFC tap or QR code anywhere in Pakistan. No app required."}
+              "Build your digital business card in minutes. Share it with a tap or a QR code anywhere in Pakistan. No app required."}
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
-          >
-            {/* This is the profile page, not a physical product — the copy
-                used to say "create your card," which read as ordering
-                something, when what actually happens on the other side of
-                this button is building an online profile. */}
+          <motion.div {...fade(0.18)} className="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+            {/* The profile page, not a physical product — what actually
+                happens behind this button is building an online page. */}
             <Link
               href="/templates"
-              className="sticker-lg group inline-flex h-16 items-center justify-center gap-2 rounded-full bg-teal px-10 text-lg font-black uppercase tracking-tight text-white transition-transform hover:-translate-y-0.5"
+              className="brut brut-press group inline-flex h-16 items-center justify-center gap-2 rounded-full bg-sun px-8 text-lg font-black uppercase tracking-tight text-char"
             >
-              build your online profile
+              build your profile
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
-
-            {/* The other path: skip the profile entirely and go straight to
-                a physical card that does one thing on a tap. */}
+            {/* The other path: a physical card that does one thing on a tap. */}
             <Link
               href="/dashboard/quick-order"
-              className="sticker group inline-flex h-16 items-center justify-center gap-2 rounded-full border-2 border-ink bg-white px-8 text-lg font-black uppercase tracking-tight text-ink transition-transform hover:-translate-y-0.5"
+              className="brut brut-press inline-flex h-16 items-center justify-center gap-2 rounded-full bg-white px-8 text-lg font-black uppercase tracking-tight text-char"
             >
               <Zap className="h-5 w-5" />
               order an nfc card
             </Link>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-          >
-            {/* Points at the new step-by-step demonstration section — a
-                stronger second path than the pricing anchor this used to
-                point to, now that the page actually has something to show
-                rather than only tell. */}
+          <motion.div {...fade(0.24)} className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
             <Link
               href="#how-it-works"
-              className="group mt-3 inline-flex h-11 items-center gap-2 text-[15px] font-bold text-ink-dim transition-colors hover:text-teal"
+              className="inline-flex h-11 items-center gap-2 text-[15px] font-black uppercase tracking-tight text-white underline-offset-4 hover:underline"
             >
-              <PlayCircle className="h-5 w-5 transition-colors" />
+              <PlayCircle className="h-5 w-5" />
               see how it works
             </Link>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            // whitespace-nowrap on each item: without it the three phrases
-            // each break onto two lines on a narrow phone.
-            className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-bold text-ink-dim"
-          >
-            <span className="whitespace-nowrap">no app needed</span>
-            <span className="h-1 w-1 rounded-full bg-line" />
-            <span className="whitespace-nowrap">works on any phone</span>
-            <span className="h-1 w-1 rounded-full bg-line" />
-            <span className="whitespace-nowrap">free to start</span>
+            <span className="text-sm font-bold text-white/85">no app · any phone · free to start</span>
           </motion.div>
         </div>
 
-        {/* ---------------- Card + phone, pure CSS ---------------- */}
+        {/* ---------------- Sticker collage ---------------- */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mx-auto h-[560px] w-full max-w-[420px]"
+          transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className="relative mx-auto h-[520px] w-full max-w-[460px] sm:h-[560px]"
+          aria-hidden="true"
         >
-          {/* Phone */}
-          <div className="absolute right-0 top-6 h-[480px] w-[240px] rounded-[38px] border-[7px] border-ink bg-ink p-1.5 shadow-[0_30px_70px_rgba(5,24,33,0.35)]">
-            <div className="relative h-full w-full overflow-hidden rounded-[30px] bg-white">
-              <div className="absolute left-1/2 top-2 z-20 h-4 w-16 -translate-x-1/2 rounded-full bg-ink" />
+          {/* Soft disc + sun blob behind everything, like the reference's plate. */}
+          <div className="absolute left-1/2 top-1/2 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10" />
+          <div className="absolute bottom-10 left-6 h-[300px] w-[300px] rounded-[48%_52%_44%_56%] border-[3px] border-char bg-sun" />
 
-              {/* A card profile, roughly as it really renders */}
-              <div className="flex h-full flex-col items-center bg-gradient-to-b from-teal/10 to-white px-5 pt-12">
-                <div className="h-16 w-16 rounded-full border-4 border-white bg-teal shadow-sm" />
-                <p className="mt-3 text-lg font-black tracking-tight text-ink">
-                  ayesha s.
-                </p>
-                <p className="text-[11px] font-bold uppercase tracking-widest text-ink/50">
-                  real estate
-                </p>
-                <div className="mt-5 w-full space-y-2">
-                  {["whatsapp", "instagram", "listings", "email"].map((label) => (
-                    <div
-                      key={label}
-                      className="rounded-xl border border-line bg-white px-3 py-2.5 text-xs font-black text-ink shadow-sm"
-                    >
+          {/* Phone showing a card page */}
+          <div className="absolute right-3 top-4 h-[440px] w-[226px] rotate-3 rounded-[36px] border-[3px] border-char bg-char p-1.5 shadow-[8px_8px_0_0_#25272a]">
+            <div className="relative h-full w-full overflow-hidden rounded-[29px] bg-cream">
+              <div className="absolute left-1/2 top-2 z-20 h-4 w-14 -translate-x-1/2 rounded-full bg-char" />
+              <div className="flex h-full flex-col items-center px-4 pt-11">
+                <div className="h-16 w-16 rounded-full border-[3px] border-char bg-sea" />
+                <p className="display mt-3 text-[26px] text-char">Ayesha S.</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-char/60">real estate · lahore</p>
+                <div className="mt-4 w-full space-y-2">
+                  {[
+                    ["whatsapp", "bg-sun"],
+                    ["instagram", "bg-white"],
+                    ["listings", "bg-white"],
+                    ["save contact", "bg-sea text-white"],
+                  ].map(([label, tone]) => (
+                    <div key={label} className={`brut-sm rounded-xl px-3 py-2 text-[11px] font-black uppercase ${tone}`}>
                       {label}
                     </div>
                   ))}
@@ -193,60 +125,49 @@ export function Hero({
             </div>
           </div>
 
-          {/* NFC card, tilted like a sticker */}
+          {/* The physical card */}
           <div
-            // Sits clear of the phone's link stack rather than covering it.
-            className="wobble sticker-lg absolute bottom-2 -left-4 h-[180px] w-[280px] rounded-3xl bg-ink p-5"
-            style={{ ["--tilt" as string]: "-7deg" }}
+            className="bob absolute bottom-6 left-0 h-[170px] w-[268px] rounded-3xl border-[3px] border-char bg-char p-5 shadow-[8px_8px_0_0_#f5ac53]"
+            style={{ ["--r" as string]: "-8deg" }}
           >
             <div className="flex h-full flex-col justify-between">
               <div className="flex items-start justify-between">
-                <span className="text-2xl font-black tracking-tight text-white">
-                  ScorlynTap
-                </span>
-                <BrandMark size={36} />
+                <span className="display text-[30px] text-white">ScorlynTap</span>
+                <BrandMark size={34} />
               </div>
               <div>
-                <div className="mb-2 h-1.5 w-20 rounded-full bg-teal" />
+                <div className="mb-2 h-1.5 w-20 rounded-full bg-sun" />
                 <div className="h-1.5 w-12 rounded-full bg-white/30" />
               </div>
             </div>
           </div>
 
-          {/* Tap ping, in the gap between card and phone */}
-          <div className="absolute bottom-[120px] left-[268px] h-14 w-14">
-            <span className="pulse-ring absolute inset-0 rounded-full border-2 border-teal" />
-            <span
-              className="pulse-ring absolute inset-0 rounded-full border-2 border-teal"
-              style={{ ["--d" as string]: "900ms" }}
-            />
-          </div>
+          {/* Spinning circular badge */}
+          <svg viewBox="0 0 120 120" className="spin-slow absolute -top-2 left-4 h-28 w-28">
+            <defs>
+              <path id="hero-badge-circle" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
+            </defs>
+            <circle cx="60" cy="60" r="58" fill="#ffc878" stroke="#25272a" strokeWidth="3" strokeDasharray="5 4" />
+            <text className="display" fontSize="15" letterSpacing="3" fill="#25272a">
+              <textPath href="#hero-badge-circle">TAP · SHARE · CONNECT · TAP · SHARE ·</textPath>
+            </text>
+          </svg>
 
-          {/* Floating rating card — reference-style social proof, kept
-              honest (no fabricated review count on-screen elsewhere, this
-              is decorative alongside the badge above, not a claimed metric). */}
-          <div className="sticker-lg absolute -bottom-6 -right-4 z-20 w-[168px] rounded-2xl bg-white p-3.5">
-            <p className="text-2xl font-black tracking-tight text-ink">4.9</p>
-            <div className="mt-1.5 flex items-center">
-              <div className="flex -space-x-2">
-                {["#F58800", "#266867", "#051821", "#F8BC24"].map((color, i) => (
-                  <span
-                    key={color}
-                    className="h-6 w-6 rounded-full border-2 border-white"
-                    style={{ background: color, zIndex: 4 - i }}
-                  />
-                ))}
-              </div>
-              <span className="ml-1.5 rounded-full bg-acid px-1.5 py-0.5 text-[10px] font-black text-ink">
-                5k
-              </span>
-            </div>
-            <div className="mt-1.5 flex gap-0.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-acid text-acid" />
-              ))}
-            </div>
-          </div>
+          {/* Tag stickers */}
+          <span className="brut-sm absolute left-[22%] top-[24%] -rotate-6 rounded-full bg-hotpink px-4 py-1.5 text-sm font-black uppercase text-white">
+            no app!
+          </span>
+          <span className="brut-sm absolute -bottom-1 right-6 rotate-3 rounded-full bg-white px-4 py-2 text-sm font-black uppercase text-char">
+            free to start
+          </span>
+          <span className="brut-sm absolute -right-3 top-[76%] rounded-2xl bg-sun px-3 py-2">
+            <span className="block text-[10px] font-black uppercase text-char/70">one tap</span>
+            <span className="display block text-xl text-char">opens your page</span>
+          </span>
+
+          {/* Sparkles */}
+          <Sparkles className="absolute left-[44%] top-0 h-9 w-9 text-white" />
+          <Sparkles className="absolute -right-2 bottom-24 h-8 w-8 text-sun" />
         </motion.div>
       </div>
     </section>

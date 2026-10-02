@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
@@ -9,7 +8,7 @@ import { AudienceSplit } from "@/components/sections/AudienceSplit";
 import { Pricing } from "@/components/sections/Pricing";
 import { Contact } from "@/components/sections/Contact";
 import { SEOContent } from "@/components/sections/SEOContent";
-import BrandMark from "@/components/layout/BrandMark";
+import SiteFooter from "@/components/layout/SiteFooter";
 import BuildMyCardButton from "@/components/nfc/BuildMyCardButton";
 import { createClient } from "@supabase/supabase-js";
 
@@ -34,14 +33,14 @@ export default async function Home() {
     .maybeSingle();
 
   return (
-    <main className="flex-1 bg-paper">
+    <main className="flex-1 bg-cream">
       <Navbar />
       <Hero title={content?.hero_title} subtitle={content?.hero_subtitle} />
 
-      <Marquee className="bg-acid text-ink" />
+      <Marquee className="bg-sun text-char" />
       <HowItWorks />
       <Features />
-      <Marquee reverse className="bg-teal text-white" />
+      <Marquee reverse className="bg-char text-sun" />
       <TemplateShowcase />
       <AudienceSplit />
       <Pricing note={content?.pricing_note} />
@@ -53,52 +52,19 @@ export default async function Home() {
       <SEOContent />
 
       {/* Closing call to action */}
-      <section className="relative overflow-hidden bg-paper py-24 text-ink">
-        <div className="relative mx-auto max-w-4xl px-6 text-center">
-          <h2 className="text-[clamp(2.6rem,8vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-ink">
-            go make <span className="text-teal">one.</span>
+      <section className="dot-grid-light relative overflow-hidden border-b-[3px] border-char bg-sea py-24">
+        <div className="relative mx-auto max-w-4xl px-5 text-center sm:px-6">
+          <h2 className="display text-[clamp(3rem,10vw,6.5rem)] text-white">
+            Go make{" "}
+            <span className="brut inline-block -rotate-2 bg-white px-3 pt-1 text-sun">one</span>
             <br />
             takes 2 minutes.
           </h2>
-          <BuildMyCardButton className="sticker-lg sticker-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-teal px-12 text-lg font-black uppercase tracking-tight text-white" />
+          <BuildMyCardButton className="brut brut-press mt-10 inline-flex h-16 items-center justify-center rounded-full bg-sun px-12 text-lg font-black uppercase tracking-tight text-char" />
         </div>
       </section>
 
-      <footer className="border-t border-line bg-mist py-14">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-6 sm:flex-row sm:justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <BrandMark size={36} />
-            <span className="text-xl font-black tracking-tighter text-ink">ScorlynTap</span>
-          </Link>
-
-          {/* inline-flex + min-h-11 so each link is a thumb-sized target, not
-              just a 20px line of text. */}
-          <div className="flex items-center gap-4 text-sm font-bold text-ink-dim sm:gap-7">
-            <Link
-              href="/templates"
-              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-teal"
-            >
-              templates
-            </Link>
-            <Link
-              href="/#pricing"
-              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-teal"
-            >
-              pricing
-            </Link>
-            <Link
-              href="/#contact"
-              className="inline-flex min-h-11 items-center px-1 transition-colors hover:text-teal"
-            >
-              contact
-            </Link>
-          </div>
-
-          <p className="text-xs font-bold uppercase tracking-widest text-ink-dim">
-            © {new Date().getFullYear()} ScorlynTap
-          </p>
-        </div>
-      </footer>
+      <SiteFooter whatsapp={content?.support_whatsapp} email={content?.support_email} />
     </main>
   );
 }

@@ -1,3 +1,4 @@
+import PosterTitle from "./PosterTitle";
 import React from "react";
 
 const FAQ_DATA = [
@@ -38,25 +39,23 @@ export function SEOContent() {
   };
 
   return (
-    <section className="bg-paper py-24 text-ink border-t border-line">
+    <section className="relative border-b-[3px] border-char bg-cream py-24 text-char">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <div className="mx-auto max-w-4xl px-6">
         <div className="mb-16 text-center">
-          <h2 className="text-[clamp(2.4rem,6vw,4rem)] font-black leading-[0.95] tracking-[-0.04em] text-ink">
-            frequently asked <span className="text-teal">questions.</span>
-          </h2>
+          <PosterTitle lead="Frequently asked" accent="questions" variant="outline" align="center" />
         </div>
         
-        <dl className="grid gap-10 md:grid-cols-2">
+        <dl className="grid gap-6 md:grid-cols-2">
           {FAQ_DATA.map((faq, index) => (
-            <div key={index} className="space-y-3">
-              <dt className="text-lg font-black uppercase tracking-tight text-ink">
+            <div key={index} className="brut-sm space-y-2 rounded-3xl bg-white p-6">
+              <dt className="display text-[26px] text-char">
                 {faq.question}
               </dt>
-              <dd className="text-[15px] font-medium leading-relaxed text-ink-dim">
+              <dd className="text-[15px] font-semibold leading-relaxed text-char/75">
                 {faq.answer}
               </dd>
             </div>

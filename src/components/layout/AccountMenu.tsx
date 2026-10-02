@@ -93,7 +93,7 @@ export default function AccountMenu() {
     return (
       <Link
         href="/login"
-        className="hidden rounded-full px-4 py-2 text-[15px] font-bold text-ink/70 transition-colors hover:text-ink sm:block"
+        className="hidden rounded-full px-3 py-2 text-[15px] font-black uppercase tracking-tight text-white transition-colors hover:text-sun sm:block"
       >
         log in
       </Link>
@@ -112,7 +112,7 @@ export default function AccountMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Account"
-        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-ink bg-acid text-[15px] font-black text-ink"
+        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-[3px] border-char bg-sun text-[15px] font-black text-char"
       >
         {account.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element

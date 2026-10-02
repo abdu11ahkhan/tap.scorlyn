@@ -20,7 +20,7 @@ const REPEATS = 3;
 
 export function Marquee({
   reverse = false,
-  className = "bg-acid text-ink",
+  className = "bg-sun text-char",
 }: {
   reverse?: boolean;
   className?: string;
@@ -30,7 +30,7 @@ export function Marquee({
 
   return (
     <div
-      className={`relative overflow-hidden py-4 ${className}`}
+      className={`relative overflow-hidden border-y-[3px] border-char py-3 ${className}`}
       aria-hidden="true"
     >
       <div
@@ -40,7 +40,7 @@ export function Marquee({
         {strip.map((item, index) => (
           <span
             key={index}
-            className="flex shrink-0 items-center gap-6 px-6 text-xl font-black uppercase tracking-tight sm:text-2xl"
+            className="display flex shrink-0 items-center gap-6 px-6 text-[28px] sm:text-[34px]"
           >
             {item}
             <span className="text-2xl leading-none opacity-60">✦</span>

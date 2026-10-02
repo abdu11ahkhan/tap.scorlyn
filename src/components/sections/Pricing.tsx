@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
-import { RippleField } from "./RippleField";
+import PosterTitle from "./PosterTitle";
 
 /**
  * Kept in step with the `plans` table by hand.
@@ -21,8 +21,8 @@ const PLANS = [
     perks: ["your own card page", "every template", "unlimited links", "tap counter"],
     cta: "start free",
     href: "/templates",
-    className: "bg-white text-ink",
-    button: "bg-ink text-white",
+    className: "bg-white text-char",
+    button: "bg-char text-white",
     tilt: "-1.5deg",
   },
   {
@@ -37,8 +37,8 @@ const PLANS = [
     ],
     cta: "get my card",
     href: "/templates",
-    className: "bg-acid text-ink",
-    button: "bg-ink text-acid",
+    className: "bg-sun text-char",
+    button: "bg-char text-sun",
     featured: true,
     tilt: "1deg",
   },
@@ -54,16 +54,15 @@ const PLANS = [
     ],
     cta: "order yours",
     href: "/templates",
-    className: "bg-white text-ink",
-    button: "bg-ink text-white",
+    className: "bg-white text-char",
+    button: "bg-char text-white",
     tilt: "-1deg",
   },
 ];
 
 export function Pricing({ note }: { note?: string | null } = {}) {
   return (
-    <section id="pricing" className="relative overflow-hidden bg-mist py-28">
-      <RippleField origin={{ x: 0.5, y: 0.05 }} />
+    <section id="pricing" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-cream py-24">
       <div className="relative mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -72,13 +71,12 @@ export function Pricing({ note }: { note?: string | null } = {}) {
           transition={{ duration: 0.6 }}
           className="mb-16"
         >
-          <h2 className="text-[clamp(2.8rem,7vw,5.5rem)] font-black leading-[0.88] tracking-[-0.05em] text-ink">
-            cheap. <span className="text-teal">obviously.</span>
-          </h2>
-          <p className="mt-5 max-w-lg text-lg font-medium text-ink-dim">
-            The card page is free forever. You only pay when you want the
-            physical card in your pocket.
-          </p>
+          <PosterTitle
+            lead="Cheap."
+            accent="Obviously"
+            align="center"
+            sub="The card page is free forever. You only pay when you want the physical card in your pocket."
+          />
         </motion.div>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -90,18 +88,18 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
               style={{ rotate: plan.tilt }}
-              className={`sticker-lg relative rounded-[2rem] p-8 transition-transform duration-300 hover:!rotate-0 hover:-translate-y-1 ${plan.className}`}
+              className={`brut brut-press relative rounded-[2rem] p-8 hover:!rotate-0 ${plan.className}`}
             >
               {plan.featured && (
-                <span className="sticker absolute -top-4 right-7 rounded-full bg-teal px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
+                <span className="brut-sm absolute -top-4 right-7 rotate-3 rounded-full bg-hotpink px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">
                   most popular
                 </span>
               )}
 
-              <h3 className="text-xl font-black uppercase tracking-tight">{plan.name}</h3>
+              <h3 className="display text-[30px]">{plan.name}</h3>
 
               <div className="mb-7 mt-3 flex items-baseline gap-2">
-                <span className="text-5xl font-black tracking-tighter">{plan.price}</span>
+                <span className="display text-[64px]">{plan.price}</span>
                 <span className="text-sm font-bold uppercase tracking-widest opacity-50">
                   {plan.note}
                 </span>
@@ -110,7 +108,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               <ul className="mb-9 space-y-3.5">
                 {plan.perks.map((perk) => (
                   <li key={perk} className="flex items-start gap-3 text-[15px] font-semibold">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current/30">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-current">
                       <Check className="h-3 w-3" strokeWidth={3.5} />
                     </span>
                     {perk}
@@ -120,7 +118,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
 
               <Link
                 href={plan.href}
-                className={`sticker sticker-press flex h-14 items-center justify-center rounded-full text-base font-black uppercase tracking-tight ${plan.button}`}
+                className={`brut-sm brut-press flex h-14 items-center justify-center rounded-full text-base font-black uppercase tracking-tight ${plan.button}`}
               >
                 {plan.cta}
               </Link>
@@ -128,7 +126,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
           ))}
         </div>
 
-        <p className="mt-10 text-center text-sm font-semibold text-ink-dim">
+        <p className="mt-10 text-center text-sm font-bold text-char/70">
           {note || "Prices in PKR. Bulk orders for teams — just ask."}
         </p>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import BrandMark from "@/components/layout/BrandMark";
@@ -15,44 +15,41 @@ const LINKS = [
   { label: "contact", href: "/#contact" },
 ];
 
+/**
+ * Poster-style top bar: full-width sea teal with a thick charcoal rule under
+ * it, headline-font links, and a sun-orange call to action with a hard
+ * shadow. Fixed, so every marketing page reserves its 72px at the top.
+ */
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [chooserOpen, setChooserOpen] = useState(false);
-  const { scrollY } = useScroll();
-
-  useMotionValueEvent(scrollY, "change", (latest) => setScrolled(latest > 40));
 
   return (
     <motion.header
       initial={{ y: -80 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-x-0 top-0 z-50 px-4 py-4"
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed inset-x-0 top-0 z-50 border-b-[3px] border-char bg-sea pt-[env(safe-area-inset-top)]"
     >
-      <nav
-        className={`mx-auto flex max-w-6xl items-center justify-between rounded-full border border-line px-4 py-2.5 transition-all duration-300 sm:px-5 ${
-          scrolled ? "sticker bg-white/95 backdrop-blur-xl" : "bg-white"
-        }`}
-      >
-        {/* min-h keeps the home link a comfortable touch target on a phone;
-            the mark itself is only 32px tall. */}
-        <Link
-          href="/"
-          className="group flex min-h-[44px] min-w-0 items-center gap-2.5"
-        >
-          <BrandMark size={32} className="transition-transform group-hover:rotate-12 sm:h-9 sm:w-9" />
-          <span className="truncate text-lg font-black tracking-tighter text-ink sm:text-xl">
-            ScorlynTap
+      <nav className="mx-auto flex h-[72px] max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+        <Link href="/" className="group flex min-h-[44px] min-w-0 items-center gap-2.5">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-[3px] border-char bg-sun">
+            <BrandMark size={28} className="transition-transform group-hover:rotate-12" />
+          </span>
+          <span className="min-w-0 leading-none">
+            <span className="display block truncate text-[26px] text-white">ScorlynTap</span>
+            <span className="mt-0.5 hidden text-[9px] font-black uppercase tracking-[0.2em] text-sun sm:block">
+              NFC cards · Pakistan
+            </span>
           </span>
         </Link>
 
-        <div className="hidden items-center gap-7 md:flex">
+        <div className="hidden items-center gap-8 md:flex">
           {LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-[15px] font-bold text-ink/70 transition-colors hover:text-ink"
+              className="display text-[22px] text-white transition-colors hover:text-sun"
             >
               {link.label}
             </Link>
@@ -61,12 +58,12 @@ export function Navbar() {
 
         <div className="flex shrink-0 items-center gap-2">
           <AccountMenu />
-          {/* Hidden on the smallest screens: at 360px it wrapped onto two
-              lines and overlapped the wordmark. The menu button carries it. */}
+          {/* Hidden on the smallest screens: at 360px it wrapped and crowded
+              the wordmark. The menu button carries it there. */}
           <button
             type="button"
             onClick={() => setChooserOpen(true)}
-            className="sticker sticker-press hidden shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-teal px-4 py-2 text-[14px] font-black uppercase tracking-tight text-white sm:inline-flex sm:px-5 sm:py-2.5 sm:text-[15px]"
+            className="brut-sm brut-press hidden h-11 items-center justify-center whitespace-nowrap rounded-full bg-sun px-5 text-[15px] font-black uppercase tracking-tight text-char sm:inline-flex"
           >
             get started
           </button>
@@ -74,36 +71,39 @@ export function Navbar() {
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label="Menu"
-            className="ml-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-ink md:hidden"
+            aria-expanded={open}
+            className="brut-sm ml-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-char md:hidden"
           >
-            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </nav>
 
       {open && (
-        <div className="sticker mx-auto mt-3 max-w-6xl rounded-3xl border border-line bg-white p-4 md:hidden">
-          <button
-            type="button"
-            onClick={() => {
-              setOpen(false);
-              setChooserOpen(true);
-            }}
-            className="block w-full rounded-xl bg-teal px-4 py-3 text-left text-lg font-black uppercase tracking-tight text-white"
-          >
-            get started
-          </button>
-          {LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className="block rounded-xl px-4 py-3 text-lg font-black text-ink hover:bg-mist"
+        <div className="px-4 pb-4 md:hidden">
+          <div className="brut rounded-3xl bg-cream p-3">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setChooserOpen(true);
+              }}
+              className="brut-sm brut-press block w-full rounded-2xl bg-sun px-4 py-3 text-left text-lg font-black uppercase tracking-tight text-char"
             >
-              {link.label}
-            </Link>
-          ))}
-          <MobileAccountLinks onNavigate={() => setOpen(false)} />
+              get started
+            </button>
+            {LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="display block rounded-xl px-4 py-3 text-[26px] text-char hover:bg-sun/30"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <MobileAccountLinks onNavigate={() => setOpen(false)} />
+          </div>
         </div>
       )}
 

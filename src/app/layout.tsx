@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import HydrationFlag from "@/components/layout/HydrationFlag";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+// Marketing headlines only — tall, condensed, all caps.
+const bebas = Bebas_Neue({ subsets: ["latin"], weight: "400", variable: "--font-bebas", display: "swap" });
 
 export const viewport: Viewport = {
   // Android Chrome tints its toolbar with this; without it the browser
@@ -91,7 +93,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} ${bebas.variable} font-sans antialiased bg-background text-foreground min-h-screen flex flex-col`}>
         <HydrationFlag />
         <script
           type="application/ld+json"
