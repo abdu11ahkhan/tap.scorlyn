@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Camera, LayoutTemplate, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowRight, Camera, LayoutTemplate, Sparkles } from "lucide-react";
 import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
 import { TEMPLATE_TONE } from "@/components/card-templates";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
 import { Navbar } from "@/components/layout/Navbar";
+import SiteFooter from "@/components/layout/SiteFooter";
 import TemplateGallery from "./TemplateGallery";
 
 export const dynamic = "force-dynamic";
@@ -37,13 +38,15 @@ export default async function PublicTemplatesPage({
   // Independent of each other, so they go together rather than one after the
   // other — the session is only read to decide what the footer says, and the
   // overrides don't depend on who is asking.
-  const [{ data: userData }, { data: overrideRows }] = await Promise.all([
+  const [{ data: userData }, { data: overrideRows }, { data: settings }] = await Promise.all([
     supabase.auth.getUser(),
     // Admin overrides from template_settings. Readable by anyone (the gallery
     // is public), and absent rows just fall back to the compiled-in definition.
     supabase
       .from("template_settings")
       .select("template_id, enabled, name, category, sort_order"),
+    // Footer contact details — same source the homepage footer reads.
+    supabase.from("app_settings").select("support_whatsapp, support_email").maybeSingle(),
   ]);
 
   const isLoggedIn = Boolean(userData.user);
@@ -68,93 +71,104 @@ export default async function PublicTemplatesPage({
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-paper text-ink">
+    <div className="relative min-h-screen overflow-x-clip bg-cream text-char">
       <Navbar />
-      <div className="float-orb pointer-events-none absolute -top-32 left-1/4 h-[600px] w-[700px] rounded-full bg-teal/8 blur-[150px]" />
 
-      {/* pt-32 clears the fixed Navbar — same offset Hero uses on the
-          homepage, so the gap above the headline reads the same everywhere. */}
-      <div
-        className="relative mx-auto w-full px-4 pt-28 pb-10 text-center sm:px-6 sm:pt-36 sm:pb-14"
-        style={{ maxWidth: `${PAGE_W}px` }}
+      {/* Poster hero — same sea dot-grid band the homepage opens with, so
+          this reads as the next page of the same site. pt clears the fixed
+          72px Navbar. */}
+      <section className="dot-grid-light relative overflow-hidden border-b-[3px] border-char bg-sea pb-14 pt-[calc(72px+3rem)] sm:pb-20 sm:pt-[calc(72px+4.5rem)]">
+        <svg aria-hidden viewBox="0 0 24 24" className="pointer-events-none absolute right-[8%] top-[34%] hidden h-10 w-10 text-sun sm:block">
+          <path fill="currentColor" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z" />
+        </svg>
+        <svg aria-hidden viewBox="0 0 24 24" className="pointer-events-none absolute left-[6%] top-[62%] hidden h-7 w-7 text-white sm:block">
+          <path fill="currentColor" d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z" />
+        </svg>
+        <div className="relative mx-auto w-full px-5 text-center sm:px-6" style={{ maxWidth: `${PAGE_W}px` }}>
+          {purpose ? (
+            <p className="brut-sm mx-auto inline-flex min-h-10 -rotate-1 items-center gap-2 rounded-full bg-sun px-4 text-[13px] font-black uppercase tracking-tight text-char">
+              <Sparkles className="h-4 w-4" />
+              building a {purpose.label} card — pick any design
+            </p>
+          ) : (
+            <p className="brut-sm mx-auto inline-flex min-h-10 -rotate-1 items-center gap-2 rounded-full bg-white px-4 text-[13px] font-black uppercase tracking-tight text-char">
+              <LayoutTemplate className="h-4 w-4" />
+              {templatesAll.length} designs · {TEMPLATE_CATEGORIES.length} kinds of card
+            </p>
+          )}
+
+          <h1 className="display mt-7 text-[clamp(3.2rem,11vw,7rem)] text-white">
+            Pick a{" "}
+            <span className="brut inline-block -rotate-2 bg-white px-4 pt-1 text-sun">design</span>
+            <br />
+            make it yours
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-xl text-lg font-bold leading-snug text-white/90">
+            Tap any design to preview it. Editing is free — you only need an account to publish.
+          </p>
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a
+              href="#gallery"
+              className="brut brut-press inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-sun px-8 text-base font-black uppercase tracking-tight text-char sm:w-auto"
+            >
+              browse designs
+              <ArrowDown className="h-4 w-4" />
+            </a>
+            {/* Most people who want a digital card already have a physical
+                one with the details laid out on it — reading it beats
+                retyping it. */}
+            <Link
+              href="/templates/scan"
+              className="brut brut-press inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-white px-8 text-base font-black uppercase tracking-tight text-char sm:w-auto"
+            >
+              <Camera className="h-4 w-4 shrink-0" />
+              scan your old card
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Marquee className="bg-sun text-char" />
+
+      <section
+        id="gallery"
+        className="dot-grid relative scroll-mt-20 border-b-[3px] border-char"
       >
-        {purpose ? (
-          <p className="card-rise mx-auto inline-flex min-h-11 items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 text-sm font-black lowercase text-teal">
-            building a {purpose.label} card — pick any template below
-          </p>
-        ) : (
-          // Same eyebrow-badge shape the homepage Hero opens with — a border,
-          // an icon, uppercase tracked text — so this reads as the next page
-          // of the same site instead of a bolted-on gallery.
-          <p className="card-rise mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 text-[13px] font-black uppercase tracking-tight text-teal shadow-sm">
-            <LayoutTemplate className="h-4 w-4" />
-            {templatesAll.length} templates, {TEMPLATE_CATEGORIES.length} kinds of card
-          </p>
-        )}
-
-        <h1 className="card-rise mx-auto mt-7 max-w-2xl text-[clamp(2.4rem,8vw,4.5rem)] font-black leading-[0.94] tracking-[-0.04em] sm:leading-[0.92]">
-          A template for every card you need to hand over.
-        </h1>
-
-        <p
-          className="card-rise mx-auto mt-5 max-w-xl text-base font-medium text-ink-dim sm:text-lg"
-          style={{ ["--d" as string]: "80ms" }}
-        >
-          Editing is free; you only need an account to publish.
-        </p>
-
         <div
-          className="card-rise mt-6 flex flex-wrap items-center justify-center gap-2"
-          style={{ ["--d" as string]: "120ms" }}
+          className="relative mx-auto w-full px-5 pb-20 pt-14 sm:px-6 sm:pt-20"
+          style={{ maxWidth: `${PAGE_W}px` }}
         >
-          {/* Most people who want a digital card already have a physical
-              one with the details laid out on it — reading it beats
-              retyping it. */}
-          <Link
-            href="/templates/scan"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-teal/40 bg-teal/10 px-4 text-sm font-black lowercase text-teal transition-colors hover:border-teal hover:bg-teal/20"
-          >
-            <Camera className="h-4 w-4 shrink-0" />
-            <span>got a business card already? scan it instead</span>
-          </Link>
-        </div>
-      </div>
-
-      <Marquee className="bg-acid text-ink" />
-
-      <section
-        className="relative mx-auto w-full px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"
-        style={{ maxWidth: `${PAGE_W}px` }}
-      >
-        <TemplateGallery
-          templates={templatesAll}
-          categories={TEMPLATE_CATEGORIES}
-          purposeId={purpose?.id ?? null}
-        />
-      </section>
-
-      <section
-        className="relative mx-auto w-full px-4 pb-20 pt-4 text-center sm:px-6 sm:pb-24"
-        style={{ maxWidth: `${PAGE_W}px` }}
-      >
-        <div className="sticker-lg rounded-[2rem] bg-acid p-7 text-ink sm:p-10">
-          <Sparkles className="mx-auto h-7 w-7" />
-          <h2 className="mt-4 text-[28px] font-black leading-tight tracking-tighter sm:text-4xl">
-            can&apos;t decide? just start.
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-[15px] font-semibold opacity-70">
-            You can switch template any time — your details carry across every one
-            of them.
-            {!isLoggedIn && " Editing is free; sign in only when you publish."}
-          </p>
-          <Link
-            href={`/templates/sticker/edit${purposeQuery}`}
-            className="sticker sticker-press mt-7 inline-flex h-14 w-full items-center justify-center rounded-full bg-ink px-10 text-base font-black uppercase tracking-tight text-acid sm:w-auto"
-          >
-            start with sticker
-          </Link>
+          <TemplateGallery
+            templates={templatesAll}
+            categories={TEMPLATE_CATEGORIES}
+            purposeId={purpose?.id ?? null}
+          />
         </div>
       </section>
+
+      <section className="dot-grid-light relative border-b-[3px] border-char bg-sea px-5 py-20 text-center sm:px-6 sm:py-24">
+        <h2 className="display text-[clamp(2.8rem,9vw,5.5rem)] text-white">
+          Can&apos;t{" "}
+          <span className="brut inline-block -rotate-2 bg-white px-3 pt-1 text-sun">decide?</span>
+          <br />
+          just start.
+        </h2>
+        <p className="mx-auto mt-5 max-w-md text-lg font-bold leading-snug text-white/90">
+          You can switch design any time — your details carry across every one of them.
+          {!isLoggedIn && " Sign in only when you publish."}
+        </p>
+        <Link
+          href={`/templates/sticker/edit${purposeQuery}`}
+          className="brut brut-press mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-sun px-10 text-base font-black uppercase tracking-tight text-char sm:w-auto"
+        >
+          start with sticker
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      <SiteFooter whatsapp={settings?.support_whatsapp} email={settings?.support_email} />
     </div>
   );
 }
