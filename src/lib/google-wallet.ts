@@ -15,14 +15,30 @@ import { createSign } from "node:crypto";
  * Server-only: reads the private key from the environment.
  */
 
-const ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID?.trim();
-const SA_EMAIL = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL?.trim();
+/** Tolerates the usual paste slips: surrounding quotes, a trailing comma, stray spaces. */
+const clean = (value: string | undefined) =>
+  value?.trim().replace(/,$/, "").replace(/^["']|["']$/g, "").trim() || undefined;
+
+const ISSUER_ID = clean(process.env.GOOGLE_WALLET_ISSUER_ID);
+const SA_EMAIL = clean(process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL);
 // Vercel stores multi-line values fine, but a key pasted as one line keeps
 // literal "\n" sequences — accept both.
-const SA_KEY = process.env.GOOGLE_WALLET_PRIVATE_KEY?.replace(/\\n/g, "\n").trim();
+const SA_KEY = clean(process.env.GOOGLE_WALLET_PRIVATE_KEY)?.replace(/\\n/g, "\n").replace(/\r/g, "");
+
+/** Which variables are missing or unusable, by name only — never values. */
+export function googleWalletProblem(): string | null {
+  const missing = [
+    !ISSUER_ID && "GOOGLE_WALLET_ISSUER_ID",
+    !SA_EMAIL && "GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL",
+    !SA_KEY && "GOOGLE_WALLET_PRIVATE_KEY",
+  ].filter(Boolean);
+  if (missing.length) return `missing ${missing.join(", ")}`;
+  if (!SA_KEY!.includes("BEGIN PRIVATE KEY")) return "GOOGLE_WALLET_PRIVATE_KEY doesn't look like a PEM key";
+  return null;
+}
 
 export function googleWalletEnabled(): boolean {
-  return Boolean(ISSUER_ID && SA_EMAIL && SA_KEY);
+  return googleWalletProblem() === null;
 }
 
 export type WalletCard = {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { googleWalletSaveUrl } from "@/lib/google-wallet";
+import { googleWalletProblem, googleWalletSaveUrl } from "@/lib/google-wallet";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +24,19 @@ export async function GET(request: Request) {
     .maybeSingle();
   if (!card?.username) return NextResponse.redirect(`${origin}/dashboard`);
 
-  const url = googleWalletSaveUrl(card, origin);
+  const problem = googleWalletProblem();
+  if (problem) return NextResponse.json({ error: `Google Wallet isn't set up: ${problem}` }, { status: 503 });
+
+  let url: string | null;
+  try {
+    url = googleWalletSaveUrl(card, origin);
+  } catch (err) {
+    console.error("google wallet signing failed", err);
+    return NextResponse.json(
+      { error: "Google Wallet isn't set up: GOOGLE_WALLET_PRIVATE_KEY couldn't be read" },
+      { status: 503 }
+    );
+  }
   if (!url) return NextResponse.json({ error: "Google Wallet isn't set up yet" }, { status: 503 });
   return NextResponse.redirect(url);
 }
