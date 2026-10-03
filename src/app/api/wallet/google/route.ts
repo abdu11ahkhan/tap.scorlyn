@@ -33,7 +33,7 @@ export async function GET(request: Request) {
 
   let url: string | null;
   try {
-    url = googleWalletSaveUrl(card, origin);
+    url = await googleWalletSaveUrl(card, origin);
   } catch (err) {
     console.error("google wallet signing failed", err);
     return NextResponse.json(

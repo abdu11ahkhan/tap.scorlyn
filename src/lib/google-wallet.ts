@@ -65,23 +65,29 @@ const httpsUrl = (value: string | null | undefined) =>
 const hexColor = (value: string | null | undefined) =>
   value && /^#[0-9a-f]{6}$/i.test(value) ? value : "#169496";
 
-/** Returns the pay.google.com save link, or null when Wallet isn't configured. */
-export function googleWalletSaveUrl(card: WalletCard, origin: string): string | null {
-  if (!ISSUER_ID || !SA_EMAIL || !SA_KEY) return null;
+/**
+ * Bumped when every pass needs to be issued afresh. v2: passes saved while
+ * the issuer account was in Google's demo mode carry a permanent "test"
+ * label; new ids get passes issued in live mode.
+ */
+const PASS_VERSION = "v2";
+const API = "https://walletobjects.googleapis.com/walletobjects/v1";
 
+function classIdFor(): string {
+  return `${ISSUER_ID}.scorlyntap_card_${PASS_VERSION}`;
+}
+
+function buildPassObject(card: WalletCard, origin: string) {
   const cardUrl = `${origin}/u/${card.username}`;
-  const classId = `${ISSUER_ID}.scorlyntap_card`;
-  // Username in the id: a renamed handle gets a fresh pass with the new QR
-  // instead of silently reusing the old object (the JWT flow never updates
-  // an existing one).
-  const objectId = `${ISSUER_ID}.${safeId(`card_${card.username}`)}`;
+  // Username in the id: a renamed handle gets a fresh pass with the new QR.
+  const id = `${ISSUER_ID}.${safeId(`card_${PASS_VERSION}_${card.username}`)}`;
   const logo = httpsUrl(card.avatar_url) ?? `${origin}/logo-mark.png`;
   const name = card.full_name?.trim() || card.username;
   const subtitle = [card.headline, card.company].filter((v) => v?.trim()).join(" · ");
 
-  const genericObject = {
-    id: objectId,
-    classId,
+  return {
+    id,
+    classId: classIdFor(),
     state: "ACTIVE",
     cardTitle: text("ScorlynTap"),
     header: text(name),
@@ -100,20 +106,78 @@ export function googleWalletSaveUrl(card: WalletCard, origin: string): string | 
       uris: [{ uri: cardUrl, description: "Open my card", id: "card" }],
     },
   };
+}
 
-  const claims = {
+function signJwt(claims: object): string {
+  const unsigned = `${b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }))}.${b64url(JSON.stringify(claims))}`;
+  const signature = createSign("RSA-SHA256").update(unsigned).sign(SA_KEY!);
+  return `${unsigned}.${b64url(signature)}`;
+}
+
+/** OAuth token for the Wallet REST API, reused while it's still fresh. */
+let token: { value: string; expires: number } | null = null;
+async function accessToken(): Promise<string> {
+  if (token && token.expires > Date.now() + 60_000) return token.value;
+  const now = Math.floor(Date.now() / 1000);
+  const assertion = signJwt({
+    iss: SA_EMAIL,
+    scope: "https://www.googleapis.com/auth/wallet_object.issuer",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+  });
+  const res = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${assertion}`,
+  });
+  const json = (await res.json()) as { access_token?: string; expires_in?: number };
+  if (!json.access_token) throw new Error("Google Wallet token request failed");
+  token = { value: json.access_token, expires: Date.now() + (json.expires_in ?? 3600) * 1000 };
+  return token.value;
+}
+
+/** Insert, or overwrite if it already exists — so the pass always shows the card as it is now. */
+async function upsert(kind: "genericClass" | "genericObject", body: { id: string }, auth: string) {
+  const headers = { authorization: `Bearer ${auth}`, "content-type": "application/json" };
+  const put = await fetch(`${API}/${kind}/${encodeURIComponent(body.id)}`, { method: "PUT", headers, body: JSON.stringify(body) });
+  if (put.ok) return;
+  if (put.status !== 404) throw new Error(`Wallet ${kind} update failed (${put.status})`);
+  const post = await fetch(`${API}/${kind}`, { method: "POST", headers, body: JSON.stringify(body) });
+  if (!post.ok && post.status !== 409) throw new Error(`Wallet ${kind} insert failed (${post.status})`);
+}
+
+/**
+ * Returns the pay.google.com save link, or null when Wallet isn't configured.
+ *
+ * The pass is written to Google first (class + object, via the REST API),
+ * so a pass someone already saved updates on their phone when their card
+ * changes — the save link alone can only insert, never update. If that call
+ * fails, the link carries the whole pass instead, which still saves fine.
+ */
+export async function googleWalletSaveUrl(card: WalletCard, origin: string): Promise<string | null> {
+  if (!ISSUER_ID || !SA_EMAIL || !SA_KEY) return null;
+
+  const object = buildPassObject(card, origin);
+  let synced = false;
+  try {
+    const auth = await accessToken();
+    await upsert("genericClass", { id: object.classId }, auth);
+    await upsert("genericObject", object, auth);
+    synced = true;
+  } catch (err) {
+    console.error("google wallet sync failed, falling back to inline pass", err);
+  }
+
+  const jwt = signJwt({
     iss: SA_EMAIL,
     aud: "google",
     typ: "savetowallet",
     iat: Math.floor(Date.now() / 1000),
     origins: [origin],
-    payload: {
-      genericClasses: [{ id: classId }],
-      genericObjects: [genericObject],
-    },
-  };
-
-  const unsigned = `${b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }))}.${b64url(JSON.stringify(claims))}`;
-  const signature = createSign("RSA-SHA256").update(unsigned).sign(SA_KEY);
-  return `https://pay.google.com/gp/v/save/${unsigned}.${b64url(signature)}`;
+    payload: synced
+      ? { genericObjects: [{ id: object.id, classId: object.classId }] }
+      : { genericClasses: [{ id: object.classId }], genericObjects: [object] },
+  });
+  return `https://pay.google.com/gp/v/save/${jwt}`;
 }
