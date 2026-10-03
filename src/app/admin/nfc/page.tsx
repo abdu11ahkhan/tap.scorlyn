@@ -7,6 +7,7 @@ import CreateControls from "./CreateControls";
 import BulkDownloads, { type ExportCard } from "./BulkDownloads";
 import StatusBadge from "./StatusBadge";
 import ReleaseToggle from "./ReleaseToggle";
+import CopyCode from "./CopyCode";
 import { SORTS, STATUS_FILTERS, experienceOf, loadCards } from "./load-cards";
 
 export const dynamic = "force-dynamic";
@@ -250,8 +251,13 @@ export default async function AdminCards({
                     </td>
                     <td data-label="Status">
                       <StatusBadge status={c.status} />
-                      {c.status === "in_stock" && c.claimable && (
-                        <span className="mt-1 block text-[10px] font-black uppercase tracking-widest text-acid">ready to sell</span>
+                      {c.status === "in_stock" && (
+                        <span className="mt-1.5 block">
+                          <CopyCode code={formatActivationCode(c.activation_code)} compact />
+                        </span>
+                      )}
+                      {c.status === "in_stock" && !c.claimable && (
+                        <span className="mt-1 block text-[10px] font-black uppercase tracking-widest text-sc-warning">held back</span>
                       )}
                     </td>
                     <td data-label="Business">

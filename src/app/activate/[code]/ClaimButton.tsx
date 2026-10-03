@@ -9,7 +9,7 @@ import { requestActivation } from "../actions";
  * One tap sends the activation request; ScorlynTap approves it from
  * Admin → Card requests and the customer gets an email.
  */
-export default function ClaimButton({ code }: { code: string }) {
+export default function ClaimButton({ code, secondary = false }: { code: string; secondary?: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +28,7 @@ export default function ClaimButton({ code }: { code: string }) {
             else router.refresh();
           });
         }}
-        className="app-btn app-btn-primary min-h-14 w-full justify-center text-base"
+        className={`app-btn ${secondary ? "app-btn-ghost min-h-12" : "app-btn-primary min-h-14 text-base"} w-full justify-center`}
       >
         {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
         Request activation

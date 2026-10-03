@@ -58,7 +58,7 @@ export default function RequestForm({ code, codeOnly = false }: { code: string; 
               className="h-12 w-full rounded-xl border-2 border-sc-border-soft bg-sc-surface-2 pl-11 pr-4 font-mono text-base font-bold tracking-widest text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-gold"
             />
           </div>
-          <span className="mt-1.5 block text-xs font-medium text-sc-text-dimmer">Printed on the card&apos;s packaging.</span>
+          <span className="mt-1.5 block text-xs font-medium text-sc-text-dimmer">From your card&apos;s packaging, or sent to you by ScorlynTap.</span>
         </label>
 
         {error && <p className="rounded-xl bg-sc-error/10 px-4 py-3 text-sm font-semibold text-sc-error">{error}</p>}

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { CARD_TEMPLATES, resolveButton, type CardButton } from "@/lib/card";
 import { cardUrl, formatActivationCode, formatSerial } from "@/lib/card-codes";
 import QrTools from "../QrTools";
+import CopyCode from "../CopyCode";
 import StatusBadge from "../StatusBadge";
 import { experienceOf, type InventoryCard } from "../load-cards";
 import AssignForm from "./AssignForm";
@@ -206,10 +207,17 @@ export default async function AdminCardDetail({
           <div className="rounded-xl border-2 border-sc-border-soft p-3">
             <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">activation code</p>
             <p className="mt-1 font-mono text-xl font-black tracking-widest">{formatActivationCode(card.activation_code)}</p>
-            <p className="mt-1 text-xs font-medium text-sc-text-dimmer">
-              Print it on the packaging. Whoever scans the card and enters it activates the card instantly — no
-              approval needed. Keep it off the card itself.
-            </p>
+            {card.status === "in_stock" ? (
+              <>
+                <p className="mt-1 text-xs font-medium text-sc-text-dimmer">
+                  Give it to the customer (packaging, WhatsApp, in person). Whoever scans the card and enters it
+                  activates it instantly — no request to approve. Keep it off the card itself.
+                </p>
+                <CopyCode code={formatActivationCode(card.activation_code)} link={url} />
+              </>
+            ) : (
+              <p className="mt-1 text-xs font-medium text-sc-text-dimmer">Already used — this card has an owner.</p>
+            )}
             {card.status === "in_stock" && (
               <div className="mt-3">
                 <ReleaseToggle cardIds={[card.id]} released={card.claimable} />

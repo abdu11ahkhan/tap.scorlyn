@@ -122,7 +122,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
             <h1 className="mt-1 text-3xl font-black leading-tight">Activate your Scorlyn card</h1>
           </div>
           <ol className="space-y-2.5">
-            {["Sign in or create a free account — just your email", "Send an activation request — we approve it quickly", "Choose what the card opens"].map(
+            {["Sign in or create a free account — just your email", "Enter your activation code (or request activation)", "Choose what the card opens"].map(
               (step, i) => (
                 <li key={step} className="flex items-center gap-3 text-[14px] font-semibold">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sc-gold text-[13px] font-black text-sc-gold-ink">
@@ -195,20 +195,19 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
           <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">step 2 of 3</p>
           <h1 className="mt-1 text-2xl font-black leading-tight">Activate this card</h1>
           <p className="mt-1 text-sm font-medium text-sc-text-dim">
-            Send a request and we&apos;ll link it to <b>{user.email}</b>. We&apos;ll email you once it&apos;s approved —
-            then scan the card again to choose what it opens.
+            It will be linked to <b>{user.email}</b>.
           </p>
         </div>
-        <ClaimButton code={code} />
-        {/* Still accepted if the packaging has one, but never required. */}
-        <details className="rounded-xl border-2 border-sc-border-soft">
-          <summary className="flex min-h-12 cursor-pointer list-none items-center px-4 text-sm font-bold text-sc-text-dim [&::-webkit-details-marker]:hidden">
-            Have an activation code? Skip the wait
-          </summary>
-          <div className="border-t-2 border-sc-border-soft p-4">
-            <RequestForm code={code} codeOnly />
-          </div>
-        </details>
+        {/* Code first: with it the card is theirs instantly. */}
+        <RequestForm code={code} codeOnly />
+        <div className="space-y-2 border-t-2 border-sc-border-soft pt-4">
+          <p className="text-sm font-bold text-sc-text">No activation code?</p>
+          <p className="text-sm font-medium text-sc-text-dim">
+            Send a request instead. We&apos;ll approve it and email you — then scan the card again to choose what it
+            opens.
+          </p>
+          <ClaimButton code={code} secondary />
+        </div>
       </div>
     </Shell>
   );
