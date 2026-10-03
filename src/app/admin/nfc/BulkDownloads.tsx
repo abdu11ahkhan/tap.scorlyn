@@ -6,7 +6,10 @@ import { saveBlob } from "./QrTools";
 
 export type ExportCard = {
   serial: string;
+  /** Encoded in the printed QR (?src=qr). */
   url: string;
+  /** Written to the NFC chip (?src=nfc). */
+  nfcUrl: string;
   code: string;
   batchId: string | null;
   batch: string | null;
@@ -67,8 +70,8 @@ export default function BulkDownloads({ cards, label }: { cards: ExportCard[]; l
 
   const csv = () => {
     const rows = [
-      ["Card ID", "Permanent URL", "Token", "Activation code", "Batch ID", "Batch", "Status"],
-      ...cards.map((c) => [c.serial, c.url, c.code, c.activation, c.batchId, c.batch, c.status]),
+      ["Card ID", "QR code URL", "NFC chip URL", "Token", "Activation code", "Batch ID", "Batch", "Status"],
+      ...cards.map((c) => [c.serial, c.url, c.nfcUrl, c.code, c.activation, c.batchId, c.batch, c.status]),
     ];
     const text = rows.map((r) => r.map((v) => csvCell(v)).join(",")).join("\n");
     saveBlob(new Blob([`﻿${text}`], { type: "text/csv;charset=utf-8" }), `${slug}.csv`);

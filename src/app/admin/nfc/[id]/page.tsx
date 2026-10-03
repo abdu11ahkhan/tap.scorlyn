@@ -121,7 +121,10 @@ export default async function AdminCardDetail({
 
   const stat = (stats ?? [])[0] as { taps: number; first_tap: string; last_tap: string } | undefined;
   const serial = formatSerial(card.serial);
-  const url = cardUrl(origin, card.card_url);
+  // Two tagged links to the same card: the printed QR and the chip, so
+  // scans and taps can be counted apart.
+  const url = cardUrl(origin, card.card_url, "qr");
+  const nfcUrl = cardUrl(origin, card.card_url, "nfc");
   const profile = card.card_profiles;
   const claimedBy =
     card.status === "claimed" && card.user_id
@@ -191,10 +194,13 @@ export default async function AdminCardDetail({
         <section className="app-panel app-panel-pad space-y-4">
           <QrTools url={url} serial={serial} />
           <div className="rounded-xl border-2 border-sc-border-soft p-3">
-            <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">permanent url</p>
-            <p className="mt-1 break-all font-mono text-sm font-bold text-acid">{url}</p>
+            <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">write this to the nfc chip</p>
+            <p className="mt-1 break-all font-mono text-sm font-bold text-acid">{nfcUrl}</p>
+            <p className="mt-3 text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">printed qr (above)</p>
+            <p className="mt-1 break-all font-mono text-xs font-bold text-sc-text-dim">{url}</p>
             <p className="mt-2 text-xs font-medium text-sc-text-dimmer">
-              Same URL for the QR and the NFC chip. It never changes, even when the card is reassigned.
+              Both open the same card and never change, even when it&apos;s reassigned. The ?src= tag only tells the
+              stats whether it was a tap or a scan; older cards without it still work.
             </p>
           </div>
           <div className="rounded-xl border-2 border-sc-border-soft p-3">

@@ -22,6 +22,10 @@ export async function GET(
   try {
     const { cardId } = await params;
     const supabase = await createClient();
+    // Which channel the visit came through: tagged chips and QRs say so;
+    // older cards carry no tag and are recorded as 'card' (NFC or QR).
+    const via = new URL(request.url).searchParams.get('src');
+    const source = via === 'nfc' || via === 'qr' ? via : 'card';
 
     // Not a plain table select: nfc_cards has no public SELECT policy (only
     // its owner or an admin can read it directly), and a physical tap is
@@ -63,15 +67,14 @@ export async function GET(
       });
       if (resolved) {
         // A direct card never loads a Scorlyn page, so there is no page to
-        // record the tap from — it's recorded here or not at all. QR and NFC
-        // share this URL and are counted together.
+        // record the tap from — it's recorded here or not at all.
         const userAgent = request.headers.get('user-agent') ?? '';
         await supabase
           .from('card_taps')
           .insert({
             card_profile_id: card.card_profile_id,
             nfc_card_id: card.nfc_card_id,
-            source: 'nfc',
+            source,
             event_type: 'view',
             user_agent: userAgent.slice(0, 500),
             visitor_hash: visitorHash(clientIp(request.headers), userAgent),
@@ -84,12 +87,12 @@ export async function GET(
       }
     }
 
-    // src=nfc lets the profile page tell a physical tap from a shared link;
+    // src lets the profile page tell a physical tap or scan from a shared link;
     // nfc={cardId} is the same public code already printed on the tag, now
     // forwarded so the page can attribute whatever it does next (the view
     // itself, and any outbound click) back to this specific physical card.
     return NextResponse.redirect(
-      new URL(`/u/${card.username}?src=nfc&nfc=${encodeURIComponent(cardId)}`, request.url)
+      new URL(`/u/${card.username}?src=${source}&nfc=${encodeURIComponent(cardId)}`, request.url)
     );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'unknown error';

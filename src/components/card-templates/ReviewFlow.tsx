@@ -79,7 +79,7 @@ export default function ReviewFlow({
     const src = params.get("src");
     context.current = {
       live,
-      source: src === "nfc" || src === "qr" ? src : "link",
+      source: src === "nfc" || src === "qr" || src === "card" ? src : "link",
       nfcCode: params.get("nfc"),
     };
   }, []);

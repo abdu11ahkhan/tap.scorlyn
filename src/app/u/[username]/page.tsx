@@ -102,9 +102,11 @@ export default async function CardProfilePage({
   // distinguishable from someone who was sent the link. `nfc` carries the
   // same public code printed on the tag — /api/tap resolves and validates it
   // server-side before ever attributing an event to a specific physical card.
-  const source: "nfc" | "qr" | "link" =
-    src === "nfc" ? "nfc" : src === "qr" ? "qr" : "link";
-  const nfcCode = source === "nfc" && nfc ? nfc : null;
+  const source: "nfc" | "qr" | "card" | "link" =
+    src === "nfc" || src === "qr" || src === "card" ? src : "link";
+  // Any physical-card visit (chip, printed QR, or an older untagged card)
+  // carries the card's code so the view is attributed to that card.
+  const nfcCode = source !== "link" && nfc ? nfc : null;
 
   const buttons = resolveButtons(card.buttons);
 

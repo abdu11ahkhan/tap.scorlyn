@@ -56,7 +56,8 @@ export default async function AdminOverview() {
     .limit(8);
 
   const tapRows: Tap[] = taps.data ?? [];
-  const nfcTaps = tapRows.filter((t) => t.source === "nfc").length;
+  // Chip taps, QR scans, and older untagged cards — all physical.
+  const nfcTaps = tapRows.filter((t) => t.source === "nfc" || t.source === "qr" || t.source === "card").length;
   const series = dailySeries(tapRows);
   const peak = Math.max(1, ...series.map((d) => d.count));
 

@@ -15,7 +15,7 @@ export default function TapTracker({
   nfcCode,
 }: {
   username: string;
-  source: "nfc" | "qr" | "link";
+  source: "nfc" | "qr" | "card" | "link";
   /** The physical card's public code, from /api/nfc/[cardId]'s redirect — null for a shared link or a plain QR scan of the page URL. */
   nfcCode?: string | null;
 }) {

@@ -6,7 +6,7 @@ import { mailerConfigured, sendFirstTap } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
-const SOURCES = new Set(["nfc", "qr", "link"]);
+const SOURCES = new Set(["nfc", "qr", "card", "link"]);
 
 /** Kept in one place so card_taps' CHECK constraint and this route can never drift apart. */
 const EVENT_TYPES = new Set([

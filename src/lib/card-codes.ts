@@ -37,9 +37,14 @@ export function formatSerial(serial: number | string | null | undefined): string
   return `SC-${String(serial).padStart(6, "0")}`;
 }
 
-/** The permanent URL written to the tag and encoded in the QR. */
-export function cardUrl(origin: string, code: string): string {
-  return `${origin.replace(/\/$/, "")}/api/nfc/${code}`;
+/**
+ * The permanent URL for a card. `via` tags which channel it's for — the
+ * chip gets ?src=nfc, the printed QR ?src=qr — so taps and scans can be
+ * counted apart. Untagged links (every card printed before this) still
+ * work; they're just counted as "card, channel unknown".
+ */
+export function cardUrl(origin: string, code: string, via?: "nfc" | "qr"): string {
+  return `${origin.replace(/\/$/, "")}/api/nfc/${code}${via ? `?src=${via}` : ""}`;
 }
 
 /** Pulls the card code back out of a scanned QR (any host, with or without a trailing slash or query). */

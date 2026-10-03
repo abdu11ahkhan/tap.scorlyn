@@ -107,6 +107,21 @@ export default async function AnalyticsPage({
 
   const hasAnyActivity = rows.length > 0;
 
+  // Where visits came from. 'card' is a physical card whose channel can't be
+  // told apart (anything before chips and QRs were tagged) — shown as such,
+  // never guessed into NFC or QR.
+  const SOURCE_ROWS = [
+    { key: "nfc", label: "NFC taps", hint: "Card tapped on a phone" },
+    { key: "qr", label: "QR scans", hint: "Printed QR scanned" },
+    { key: "card", label: "Physical card", hint: "NFC or QR — older cards can't tell which" },
+    { key: "link", label: "Shared link", hint: "Link, Google Wallet, bio, message" },
+  ] as const;
+  const viewRows = rows.filter((r) => r.event_type === "view");
+  const bySource = SOURCE_ROWS.map((s) => ({ ...s, count: viewRows.filter((r) => r.source === s.key).length })).filter(
+    (s) => s.count > 0
+  );
+  const sourceMax = Math.max(1, ...bySource.map((s) => s.count));
+
   return (
     <div className="max-w-4xl space-y-5 pb-16">
       <PageHeader isCorporateOwner={isCorporateOwner} />
@@ -127,7 +142,7 @@ export default async function AnalyticsPage({
             <Stat icon={Share2} label="Shares" value={summary.shares} />
             <Stat
               icon={SmartphoneNfc}
-              label="NFC activity"
+              label="Physical card activity"
               value={summary.nfcActivity}
               hint={hasNfc ? undefined : "No NFC card linked yet"}
             />
@@ -151,6 +166,27 @@ export default async function AnalyticsPage({
               </div>
             </div>
           </div>
+
+          {/* Sources */}
+          {bySource.length > 0 && (
+            <div className="app-panel app-panel-pad">
+              <h2 className="app-h2 mb-4">Where visits came from</h2>
+              <div className="space-y-3">
+                {bySource.map((src) => (
+                  <div key={src.key} className="flex items-center gap-3">
+                    <span className="w-32 shrink-0 sm:w-44">
+                      <span className="block truncate text-[13px] font-semibold text-sc-text">{src.label}</span>
+                      <span className="block truncate text-[11px] text-sc-text-dimmer">{src.hint}</span>
+                    </span>
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-sc-surface-2">
+                      <div className="h-full rounded-full bg-sc-gold" style={{ width: `${Math.max(4, (src.count / sourceMax) * 100)}%` }} />
+                    </div>
+                    <span className="w-10 shrink-0 text-right text-[13px] font-bold tabular-nums text-sc-text">{src.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Trends */}
           <div className="app-panel app-panel-pad">

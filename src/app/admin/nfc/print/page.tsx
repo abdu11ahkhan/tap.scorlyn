@@ -42,7 +42,7 @@ export default async function PrintCenter({
           cards={cards.map((c) => ({
             id: c.id,
             serial: formatSerial(c.serial),
-            url: cardUrl(origin, c.card_url),
+            url: cardUrl(origin, c.card_url, "qr"),
             nickname: c.nickname,
             activation: formatActivationCode(c.activation_code),
           }))}

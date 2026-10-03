@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     const email = text(body?.email, 200);
-    const source = ["nfc", "qr", "link"].includes(body?.source) ? body.source : "link";
+    const source = ["nfc", "qr", "card", "link"].includes(body?.source) ? body.source : "link";
     const userAgent = request.headers.get("user-agent") ?? "";
 
     const supabase = await createClient();

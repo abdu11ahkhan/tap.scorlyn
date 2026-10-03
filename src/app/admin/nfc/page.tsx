@@ -57,7 +57,8 @@ export default async function AdminCards({
 
   const exportCards: ExportCard[] = cards.map((c) => ({
     serial: formatSerial(c.serial),
-    url: cardUrl(origin, c.card_url),
+    url: cardUrl(origin, c.card_url, "qr"),
+    nfcUrl: cardUrl(origin, c.card_url, "nfc"),
     code: c.card_url,
     batchId: c.batch_id,
     batch: c.batch,
