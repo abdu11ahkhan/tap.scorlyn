@@ -7,6 +7,7 @@ import { CARD_TEMPLATES } from "@/lib/card";
 import { formatSerial, isCardCode } from "@/lib/card-codes";
 import BrandMark from "@/components/layout/BrandMark";
 import RequestForm from "./RequestForm";
+import ClaimButton from "./ClaimButton";
 import CardPicker, { type MyPage } from "./CardPicker";
 
 export const dynamic = "force-dynamic";
@@ -121,7 +122,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
             <h1 className="mt-1 text-3xl font-black leading-tight">Activate your Scorlyn card</h1>
           </div>
           <ol className="space-y-2.5">
-            {["Sign in or create a free account", "Enter the activation code from the packaging", "Choose what the card opens"].map(
+            {["Sign in or create a free account — just your email", "Send an activation request — we approve it quickly", "Choose what the card opens"].map(
               (step, i) => (
                 <li key={step} className="flex items-center gap-3 text-[14px] font-semibold">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sc-gold text-[13px] font-black text-sc-gold-ink">
@@ -192,12 +193,22 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
       <div className="app-panel app-panel-pad space-y-4">
         <div>
           <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">step 2 of 3</p>
-          <h1 className="mt-1 text-2xl font-black leading-tight">Enter your activation code</h1>
+          <h1 className="mt-1 text-2xl font-black leading-tight">Activate this card</h1>
           <p className="mt-1 text-sm font-medium text-sc-text-dim">
-            Signed in as <b>{user.email}</b>.
+            Send a request and we&apos;ll link it to <b>{user.email}</b>. We&apos;ll email you once it&apos;s approved —
+            then scan the card again to choose what it opens.
           </p>
         </div>
-        <RequestForm code={code} />
+        <ClaimButton code={code} />
+        {/* Still accepted if the packaging has one, but never required. */}
+        <details className="rounded-xl border-2 border-sc-border-soft">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center px-4 text-sm font-bold text-sc-text-dim [&::-webkit-details-marker]:hidden">
+            Have an activation code? Skip the wait
+          </summary>
+          <div className="border-t-2 border-sc-border-soft p-4">
+            <RequestForm code={code} codeOnly />
+          </div>
+        </details>
       </div>
     </Shell>
   );
