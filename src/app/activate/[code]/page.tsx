@@ -107,7 +107,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
   if (!s.claimable) {
     return (
       <Shell serial={s.serial}>
-        <Message icon={Lock} title="This card isn't ready yet" body="It hasn't been released for sale. Contact ScorlynTap if you have it in your hands." />
+        <Message icon={Lock} title="This card isn't ready yet" body="It hasn't been set up for activation. If it's in your hands, message ScorlynTap and we'll switch it on." />
       </Shell>
     );
   }
@@ -119,11 +119,19 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
           <div>
             <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">new card</p>
             <h1 className="mt-1 text-3xl font-black leading-tight">Activate your Scorlyn card</h1>
-            <p className="mt-2 text-sm font-medium leading-relaxed text-sc-text-dim">
-              Sign in or create a free account, then choose what this card opens — your WhatsApp, Instagram, a full
-              digital profile or a Google review card. You can change it any time.
-            </p>
           </div>
+          <ol className="space-y-2.5">
+            {["Sign in or create a free account", "Enter the activation code from the packaging", "Choose what the card opens"].map(
+              (step, i) => (
+                <li key={step} className="flex items-center gap-3 text-[14px] font-semibold">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sc-gold text-[13px] font-black text-sc-gold-ink">
+                    {i + 1}
+                  </span>
+                  {step}
+                </li>
+              )
+            )}
+          </ol>
           <div className="grid gap-2 sm:grid-cols-2">
             <Link href={`/signup?next=${next}`} className="app-btn app-btn-primary min-h-12 justify-center">
               Create account
@@ -183,7 +191,8 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
       )}
       <div className="app-panel app-panel-pad space-y-4">
         <div>
-          <h1 className="text-2xl font-black leading-tight">Activate this card</h1>
+          <p className="text-[11px] font-black uppercase tracking-widest text-sc-text-dimmer">step 2 of 3</p>
+          <h1 className="mt-1 text-2xl font-black leading-tight">Enter your activation code</h1>
           <p className="mt-1 text-sm font-medium text-sc-text-dim">
             Signed in as <b>{user.email}</b>.
           </p>

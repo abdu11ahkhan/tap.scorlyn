@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import SettingsPanels from "./SettingsPanels";
-import QrPanel from "./QrPanel";
-import { googleWalletEnabled } from "@/lib/google-wallet";
+import Link from "next/link";
+import { QrCode } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -36,11 +36,23 @@ export default async function SettingsPage() {
   return (
     <div className="max-w-2xl space-y-4 pb-16">
       <header className="mb-6">
-        <h1 className="app-h1">Settings</h1>
-        <p className="app-sub mt-1">Your account, handle and notifications.</p>
+        <h1 className="app-h1">Account settings</h1>
+        <p className="app-sub mt-1">Your account, username, password and notifications.</p>
       </header>
 
-      {card?.username && <QrPanel username={card.username} wallet={googleWalletEnabled()} />}
+      {/* Sharing moved to My card — this is just a signpost for anyone who
+          remembers it being here. */}
+      {card?.username && (
+        <Link
+          href="/dashboard/my-card"
+          className="app-panel app-panel-pad flex items-center gap-3 transition-colors hover:border-sc-gold"
+        >
+          <QrCode className="h-5 w-5 shrink-0 text-sc-gold-text" />
+          <span className="min-w-0 flex-1 text-sm font-semibold">
+            Looking for your QR code, card link or Google Wallet? They&apos;re on <b>My card</b>.
+          </span>
+        </Link>
+      )}
 
       <SettingsPanels
         email={user.email ?? ""}

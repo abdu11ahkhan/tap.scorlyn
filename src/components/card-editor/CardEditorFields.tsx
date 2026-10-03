@@ -178,197 +178,7 @@ export default function CardEditorFields({
         </EditorSection>
       )}
 
-      {/* ---------------- Style ---------------- */}
-      <EditorSection
-        title="colour & font"
-        hint="The accent used across your card"
-        badge={form.font}
-      >
-      <section className="grid sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="accent_color">Accent colour</Label>
-          <div className="flex gap-2">
-            <input
-              id="accent_color"
-              type="color"
-              value={form.accent_color}
-              onChange={(e) => onFormChange({ accent_color: e.target.value })}
-              className="h-10 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-sc-surface-2"
-            />
-            <Input
-              value={form.accent_color}
-              onChange={(e) => onFormChange({ accent_color: e.target.value })}
-              className={FIELD}
-            />
-          </div>
-
-          {/* Presets: a colour picker is a poor way to land on something that
-              actually works, and these are all tested against readableOn(). */}
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {ACCENT_PRESETS.map((preset) => (
-              <button
-                key={preset.value}
-                type="button"
-                title={preset.name}
-                aria-label={preset.name}
-                onClick={() => onFormChange({ accent_color: preset.value })}
-                className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
-                  form.accent_color.toLowerCase() === preset.value.toLowerCase()
-                    ? "border-sc-gold"
-                    : "border-sc-border"
-                }`}
-                style={{ background: preset.value }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Background. Offered only in the template's own lightness family:
-            every template hardcodes its text as white-on-dark or
-            black-on-light, so crossing over would make text unreadable in
-            places nobody would think to check. */}
-        <div className="space-y-2">
-          <Label>Background</Label>
-          <p className="-mt-1 text-xs text-sc-text-dimmer">
-            {surfaceFamily === "dark"
-              ? "This template is a dark one, so these are the shades that keep its text readable."
-              : "This template is a light one, so these are the shades that keep its text readable."}
-          </p>
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            <button
-              type="button"
-              onClick={() => onFormChange({ surface_color: "" })}
-              className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3 text-[11px] font-black lowercase transition-colors sm:h-7 ${
-                !form.surface_color
-                  ? "border-sc-gold text-sc-gold-text"
-                  : "border-sc-border text-sc-text-dim hover:text-sc-text"
-              }`}
-            >
-              as designed
-            </button>
-            {SURFACE_PRESETS[surfaceFamily].map((preset) => (
-              <button
-                key={preset.value}
-                type="button"
-                title={preset.name}
-                aria-label={preset.name}
-                onClick={() => onFormChange({ surface_color: preset.value })}
-                className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
-                  form.surface_color.toLowerCase() === preset.value.toLowerCase()
-                    ? "border-sc-gold"
-                    : "border-sc-border"
-                }`}
-                style={{ background: preset.value }}
-              />
-            ))}
-          </div>
-
-          {/* Any colour, not just the safe ones — but the template's text is
-              hardcoded light or dark, so a free pick can make it unreadable.
-              Rather than forbidding it, say what the contrast actually is. */}
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <input
-              type="color"
-              aria-label="Pick any background colour"
-              value={form.surface_color || (surfaceFamily === "dark" ? "#0A0A0A" : "#FFFFFF")}
-              onChange={(e) => onFormChange({ surface_color: e.target.value })}
-              className="h-11 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-transparent p-1 sm:h-9 sm:w-12"
-            />
-            <input
-              value={form.surface_color}
-              onChange={(e) => onFormChange({ surface_color: e.target.value })}
-              placeholder="any hex, e.g. #123456"
-              className="h-11 w-40 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:outline-none sm:h-9"
-            />
-            {form.surface_color && (() => {
-              const check = surfaceReadability(form.surface_color, surfaceFamily);
-              return (
-                <span
-                  className={`text-xs font-bold ${check.ok ? "text-sc-success" : "text-sc-warning"}`}
-                >
-                  {check.ok
-                    ? `text contrast ${check.ratio}:1 — readable`
-                    : `text contrast ${check.ratio}:1 — too low, your text will be hard to read`}
-                </span>
-              );
-            })()}
-          </div>
-        </div>
-
-        {/* Optional, built from the accent colour above rather than a fixed
-            hue — off by default so every template still opens on its own
-            designed look, but there for anyone who wants their card to
-            feel a little less flat. */}
-        <div className="space-y-2 sm:col-span-2">
-          <Label>Background effect</Label>
-          <p className="-mt-1 text-xs text-sc-text-dimmer">
-            An optional touch of motion or texture, in your own accent colour.
-          </p>
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {BACKGROUND_EFFECTS.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => onFormChange({ background_effect: opt.id })}
-                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
-                  (form.background_effect || "none") === opt.id
-                    ? "border-sc-gold text-sc-gold-text"
-                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* How your own name/buttons/avatar animate in — same stagger
-            every template already has, just a different shape of motion. */}
-        <div className="space-y-2 sm:col-span-2">
-          <Label>How it opens</Label>
-          <p className="-mt-1 text-xs text-sc-text-dimmer">
-            The animation your name, photo and buttons use when the card loads.
-          </p>
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {INTRO_STYLES.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => onFormChange({ intro_style: opt.id })}
-                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
-                  (form.intro_style || "rise") === opt.id
-                    ? "border-sc-gold text-sc-gold-text"
-                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Font</Label>
-          <div className="flex gap-2">
-            {FONTS.map((font) => (
-              <button
-                key={font.id}
-                type="button"
-                onClick={() => onFormChange({ font: font.id })}
-                className={`h-10 flex-1 rounded-lg border-2 text-sm font-black lowercase transition-colors ${
-                  form.font === font.id
-                    ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
-                    : "border-sc-border bg-sc-surface-2 text-sc-text-dim hover:text-sc-text"
-                }`}
-              >
-                {font.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      </EditorSection>
+      <p className="px-1 pt-3 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">The essentials</p>
 
       {/* ---------------- Identity ---------------- */}
       {showIdentity && (
@@ -576,7 +386,7 @@ export default function CardEditorFields({
       <>
       <EditorSection
         title="links"
-        hint="WhatsApp, email, socials, anything"
+        hint="Phone, WhatsApp, email, Instagram, website…"
         badge={buttons.length ? `${buttons.length}` : undefined}
         defaultOpen
       >
@@ -759,6 +569,208 @@ export default function CardEditorFields({
       </section>
 
       </EditorSection>
+
+      </>
+      )}
+
+      <p className="px-1 pt-3 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">Look &amp; feel</p>
+
+      {/* ---------------- Style ---------------- */}
+      <EditorSection
+        title="colour & font"
+        hint="The accent used across your card"
+        badge={form.font}
+      >
+      <section className="grid sm:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="accent_color">Accent colour</Label>
+          <div className="flex gap-2">
+            <input
+              id="accent_color"
+              type="color"
+              value={form.accent_color}
+              onChange={(e) => onFormChange({ accent_color: e.target.value })}
+              className="h-10 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-sc-surface-2"
+            />
+            <Input
+              value={form.accent_color}
+              onChange={(e) => onFormChange({ accent_color: e.target.value })}
+              className={FIELD}
+            />
+          </div>
+
+          {/* Presets: a colour picker is a poor way to land on something that
+              actually works, and these are all tested against readableOn(). */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {ACCENT_PRESETS.map((preset) => (
+              <button
+                key={preset.value}
+                type="button"
+                title={preset.name}
+                aria-label={preset.name}
+                onClick={() => onFormChange({ accent_color: preset.value })}
+                className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
+                  form.accent_color.toLowerCase() === preset.value.toLowerCase()
+                    ? "border-sc-gold"
+                    : "border-sc-border"
+                }`}
+                style={{ background: preset.value }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Background. Offered only in the template's own lightness family:
+            every template hardcodes its text as white-on-dark or
+            black-on-light, so crossing over would make text unreadable in
+            places nobody would think to check. */}
+        <div className="space-y-2">
+          <Label>Background</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            {surfaceFamily === "dark"
+              ? "This template is a dark one, so these are the shades that keep its text readable."
+              : "This template is a light one, so these are the shades that keep its text readable."}
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <button
+              type="button"
+              onClick={() => onFormChange({ surface_color: "" })}
+              className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3 text-[11px] font-black lowercase transition-colors sm:h-7 ${
+                !form.surface_color
+                  ? "border-sc-gold text-sc-gold-text"
+                  : "border-sc-border text-sc-text-dim hover:text-sc-text"
+              }`}
+            >
+              as designed
+            </button>
+            {SURFACE_PRESETS[surfaceFamily].map((preset) => (
+              <button
+                key={preset.value}
+                type="button"
+                title={preset.name}
+                aria-label={preset.name}
+                onClick={() => onFormChange({ surface_color: preset.value })}
+                className={`h-11 w-11 rounded-full border-2 transition-transform hover:scale-110 sm:h-7 sm:w-7 ${
+                  form.surface_color.toLowerCase() === preset.value.toLowerCase()
+                    ? "border-sc-gold"
+                    : "border-sc-border"
+                }`}
+                style={{ background: preset.value }}
+              />
+            ))}
+          </div>
+
+          {/* Any colour, not just the safe ones — but the template's text is
+              hardcoded light or dark, so a free pick can make it unreadable.
+              Rather than forbidding it, say what the contrast actually is. */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <input
+              type="color"
+              aria-label="Pick any background colour"
+              value={form.surface_color || (surfaceFamily === "dark" ? "#0A0A0A" : "#FFFFFF")}
+              onChange={(e) => onFormChange({ surface_color: e.target.value })}
+              className="h-11 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-transparent p-1 sm:h-9 sm:w-12"
+            />
+            <input
+              value={form.surface_color}
+              onChange={(e) => onFormChange({ surface_color: e.target.value })}
+              placeholder="any hex, e.g. #123456"
+              className="h-11 w-40 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:outline-none sm:h-9"
+            />
+            {form.surface_color && (() => {
+              const check = surfaceReadability(form.surface_color, surfaceFamily);
+              return (
+                <span
+                  className={`text-xs font-bold ${check.ok ? "text-sc-success" : "text-sc-warning"}`}
+                >
+                  {check.ok
+                    ? `text contrast ${check.ratio}:1 — readable`
+                    : `text contrast ${check.ratio}:1 — too low, your text will be hard to read`}
+                </span>
+              );
+            })()}
+          </div>
+        </div>
+
+        {/* Optional, built from the accent colour above rather than a fixed
+            hue — off by default so every template still opens on its own
+            designed look, but there for anyone who wants their card to
+            feel a little less flat. */}
+        <div className="space-y-2 sm:col-span-2">
+          <Label>Background effect</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            An optional touch of motion or texture, in your own accent colour.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {BACKGROUND_EFFECTS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => onFormChange({ background_effect: opt.id })}
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                  (form.background_effect || "none") === opt.id
+                    ? "border-sc-gold text-sc-gold-text"
+                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* How your own name/buttons/avatar animate in — same stagger
+            every template already has, just a different shape of motion. */}
+        <div className="space-y-2 sm:col-span-2">
+          <Label>How it opens</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            The animation your name, photo and buttons use when the card loads.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {INTRO_STYLES.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => onFormChange({ intro_style: opt.id })}
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                  (form.intro_style || "rise") === opt.id
+                    ? "border-sc-gold text-sc-gold-text"
+                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Font</Label>
+          <div className="flex gap-2">
+            {FONTS.map((font) => (
+              <button
+                key={font.id}
+                type="button"
+                onClick={() => onFormChange({ font: font.id })}
+                className={`h-10 flex-1 rounded-lg border-2 text-sm font-black lowercase transition-colors ${
+                  form.font === font.id
+                    ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
+                    : "border-sc-border bg-sc-surface-2 text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {font.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      </EditorSection>
+
+
+      {showLinks && (
+      <>
+      <p className="px-1 pt-3 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">Add to your card</p>
 
       {/* Its own section, not a rule inside links. Bank details are their own
           decision — worth opening deliberately, and worth being able to skip. */}

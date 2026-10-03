@@ -42,6 +42,7 @@ export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   const exempt =
     path.startsWith('/u/') ||
+    path.startsWith('/card/') ||
     path.startsWith('/api/') ||
     path.startsWith('/maintenance') ||
     path.startsWith('/login') ||

@@ -33,6 +33,7 @@ import DevicePreview from "@/components/card-editor/DevicePreview";
 import { uploadPendingImages } from "@/lib/upload-drafts";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import DeleteCardButton from "@/components/card-editor/DeleteCardButton";
+import PublishedSheet from "@/components/dashboard/PublishedSheet";
 import { renderCardTemplate } from "@/components/card-templates";
 
 const EMPTY_EXTRAS: ExtrasState = {
@@ -82,8 +83,6 @@ function MyCardEditor() {
    *  NFC-design ask until this is dismissed, so the two don't compete for
    *  attention at once. */
   const [justPublished, setJustPublished] = useState<{ url: string; username: string } | null>(null);
-  const [linkCopied, setLinkCopied] = useState(false);
-  const [pendingNfcAsk, setPendingNfcAsk] = useState<string | null>(null);
   /** Approval state for this card. Extra cards are paid for before going live. */
   const [approval, setApproval] = useState<{
     status: string;
@@ -322,11 +321,9 @@ function MyCardEditor() {
       // immediately on a later save (no publish panel in the way), and only
       // if it's still unanswered — never once they have chosen.
       if (data.published !== false && !data.nfc_finish) {
-        if (isFirstPublish) {
-          setPendingNfcAsk(data.id);
-        } else {
-          setAskNfcFor(data.id);
-        }
+        // On a first publish the PublishedSheet already offers the physical
+        // card, so the print-design question waits for a later save.
+        if (!isFirstPublish) setAskNfcFor(data.id);
       }
     }
 
@@ -362,62 +359,16 @@ function MyCardEditor() {
         </Link>
       )}
 
+      {/* The one clean "your card is live" moment: link, QR, share, and the
+          physical card as the natural next step. "Maybe later" skips the
+          print-design ask too — they've just said not now. */}
       {justPublished && (
-        <div className="mt-6 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
-          <p className="font-black text-sc-text">Your card is live.</p>
-          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
-            Share it now, or tap it any time from your dashboard.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-2.5">
-            <button
-              type="button"
-              onClick={async () => {
-                if (typeof navigator !== "undefined" && navigator.share) {
-                  try {
-                    await navigator.share({ title: "My digital card", url: justPublished.url });
-                    return;
-                  } catch {
-                    // Cancelled or unsupported — fall through to copy.
-                  }
-                }
-                try {
-                  await navigator.clipboard.writeText(justPublished.url);
-                  setLinkCopied(true);
-                  setTimeout(() => setLinkCopied(false), 1800);
-                } catch {
-                  // Clipboard needs a secure context; nothing useful to do beyond this.
-                }
-              }}
-              className="app-btn app-btn-primary rounded-full px-5"
-            >
-              {linkCopied ? <Check className="h-4 w-4" strokeWidth={3} /> : <ArrowRight className="h-4 w-4" />}
-              {linkCopied ? "Link copied" : "Share your card"}
-            </button>
-            <Link
-              href={`/u/${justPublished.username}`}
-              target="_blank"
-              className="app-btn app-btn-ghost rounded-full"
-            >
-              <ExternalLink className="h-4 w-4" />
-              View it live
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setJustPublished(null);
-                // Held back until now — see the comment where pendingNfcAsk
-                // is set, in handleSave.
-                if (pendingNfcAsk) {
-                  setAskNfcFor(pendingNfcAsk);
-                  setPendingNfcAsk(null);
-                }
-              }}
-              className="ml-auto text-xs font-bold uppercase tracking-widest text-sc-text-dimmer hover:text-sc-text-dim"
-            >
-              Dismiss
-            </button>
-          </div>
-        </div>
+        <PublishedSheet
+          url={justPublished.url}
+          onClose={() => {
+            setJustPublished(null);
+          }}
+        />
       )}
 
       {draftApplied && (

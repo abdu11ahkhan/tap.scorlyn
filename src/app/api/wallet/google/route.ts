@@ -15,13 +15,17 @@ export async function GET(request: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return NextResponse.redirect(`${origin}/login?next=/dashboard/settings`);
+  if (!user) return NextResponse.redirect(`${origin}/login?next=/dashboard/my-card`);
 
-  const { data: card } = await supabase
+  // ?id= picks one of their cards; RLS plus the user_id filter keep it to
+  // their own. Without it, their first card.
+  const id = new URL(request.url).searchParams.get("id");
+  let query = supabase
     .from("card_profiles")
     .select("username, full_name, headline, company, avatar_url, accent_color")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    .eq("user_id", user.id);
+  query = id ? query.eq("id", id) : query.order("created_at", { ascending: true }).limit(1);
+  const { data: card } = await query.maybeSingle();
   if (!card?.username) return NextResponse.redirect(`${origin}/dashboard`);
 
   const problem = googleWalletProblem();

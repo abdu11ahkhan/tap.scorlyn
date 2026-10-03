@@ -35,7 +35,9 @@ export async function GET(
     // the assignment is still on record. `status` is absent until migration
     // 061 has run, which reads as "live" — the behaviour before it existed.
     if (card?.status === 'suspended' || card?.status === 'retired') {
-      return NextResponse.redirect(new URL('/?card=inactive', request.url));
+      // A dedicated page, not the homepage: whoever tapped is usually not the
+      // owner, and needs to be told what's going on.
+      return NextResponse.redirect(new URL('/card/inactive', request.url));
     }
 
     // Stock released for sale, or a card its new owner hasn't set up yet:
@@ -46,8 +48,10 @@ export async function GET(
 
     if (!card?.card_profile_id || !card?.username) {
       // Either an unknown code or blank stock that hasn't been assigned yet.
-      // Send them somewhere useful rather than showing a raw error.
-      return NextResponse.redirect(new URL('/?card=unassigned', request.url));
+      // The code is passed on only when it's a real card, so the owner's
+      // "Activate my card" button can go straight to it.
+      const target = card ? `/card/not-set-up?c=${encodeURIComponent(cardId)}` : '/card/not-set-up';
+      return NextResponse.redirect(new URL(target, request.url));
     }
 
     if (card.is_single_purpose) {
