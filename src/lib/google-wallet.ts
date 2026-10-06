@@ -66,11 +66,24 @@ const hexColor = (value: string | null | undefined) =>
   value && /^#[0-9a-f]{6}$/i.test(value) ? value : "#169496";
 
 /**
- * Bumped when every pass needs to be issued afresh. v2: passes saved while
- * the issuer account was in Google's demo mode carry a permanent "test"
- * label; new ids get passes issued in live mode.
+ * Whether Google has granted publishing access. In demo mode only the
+ * console's test users can save a pass, and every pass carries Google's
+ * "test" label — so until this is set the button is shown to admins only,
+ * and customers never hit Google's error. Set GOOGLE_WALLET_PUBLISHED=true
+ * in Vercel once the console no longer says "demo mode".
  */
-const PASS_VERSION = "v2";
+const PUBLISHED = process.env.GOOGLE_WALLET_PUBLISHED?.trim().toLowerCase() === "true";
+
+export function googleWalletPublished(): boolean {
+  return PUBLISHED;
+}
+
+/**
+ * Pass ids are versioned: a pass created in demo mode keeps the "test"
+ * label forever, so going live switches to fresh ids (v3) and every pass
+ * saved from then on is a clean live one.
+ */
+const PASS_VERSION = PUBLISHED ? "v3" : "v2";
 const API = "https://walletobjects.googleapis.com/walletobjects/v1";
 
 function classIdFor(): string {

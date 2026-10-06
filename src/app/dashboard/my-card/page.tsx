@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { Camera, ExternalLink, LayoutTemplate, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { CARD_TEMPLATES } from "@/lib/card";
-import { googleWalletEnabled } from "@/lib/google-wallet";
+import { googleWalletEnabled, googleWalletPublished } from "@/lib/google-wallet";
 import CardList, { type CardSummary } from "@/components/dashboard/CardList";
 import QrPanel from "../settings/QrPanel";
 
@@ -53,6 +53,13 @@ export default async function MyCardHub({ searchParams }: { searchParams: Promis
   }
 
   const card = cards.find((c) => c.id === id) ?? cards[0];
+  // Customers only see Google Wallet once Google has approved publishing;
+  // until then admins can still test it (they're test users in the console).
+  let walletOn = googleWalletEnabled() && googleWalletPublished();
+  if (googleWalletEnabled() && !walletOn) {
+    const { data: me } = await supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle();
+    walletOn = Boolean(me?.is_admin);
+  }
   const design = card.is_single_purpose
     ? "One-link card"
     : CARD_TEMPLATES.find((t) => t.id === card.template)?.name ?? card.template;
@@ -113,7 +120,7 @@ export default async function MyCardHub({ searchParams }: { searchParams: Promis
         </div>
       </section>
 
-      {live && !placeholder && <QrPanel username={card.username} cardId={card.id} wallet={googleWalletEnabled()} />}
+      {live && !placeholder && <QrPanel username={card.username} cardId={card.id} wallet={walletOn} />}
 
       {/* Which card the panels above are about — only when there's a choice. */}
       {cards.length > 1 && (

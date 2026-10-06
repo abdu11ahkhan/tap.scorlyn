@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { googleWalletProblem, googleWalletSaveUrl } from "@/lib/google-wallet";
+import { googleWalletProblem, googleWalletPublished, googleWalletSaveUrl } from "@/lib/google-wallet";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +27,13 @@ export async function GET(request: Request) {
   query = id ? query.eq("id", id) : query.order("created_at", { ascending: true }).limit(1);
   const { data: card } = await query.maybeSingle();
   if (!card?.username) return NextResponse.redirect(`${origin}/dashboard`);
+
+  // Demo mode: Google would refuse anyone who isn't a console test user,
+  // so only admins get through until publishing is approved.
+  if (!googleWalletPublished()) {
+    const { data: me } = await supabase.from("profiles").select("is_admin").eq("id", user.id).maybeSingle();
+    if (!me?.is_admin) return NextResponse.redirect(`${origin}/dashboard/my-card`);
+  }
 
   const problem = googleWalletProblem();
   if (problem) return NextResponse.json({ error: `Google Wallet isn't set up: ${problem}` }, { status: 503 });
