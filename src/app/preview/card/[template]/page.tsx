@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { renderCardTemplate, extrasTone } from "@/components/card-templates";
 import ProfileExtras from "@/components/nfc/ProfileExtras";
-import { resolveButtons, TEMPLATE_IDS, type CardProfile } from "@/lib/card";
+import { resolveButtons, TEMPLATE_IDS, type CardProfile, groupNumberButtons } from "@/lib/card";
 import { DEMO_PERSONAS, FALLBACK_PERSONA } from "./demo-data";
 import PreviewChrome from "./PreviewChrome";
 
@@ -167,7 +167,7 @@ export default async function CardTemplatePreview({
   const safeFont = ["sans", "serif", "mono"].includes(font ?? "") ? font! : "sans";
 
   const card = demoCard(template, safeAccent, safeFont);
-  const rendered = renderCardTemplate({ card, buttons: resolveButtons(card.buttons) });
+  const rendered = renderCardTemplate({ card, buttons: groupNumberButtons(resolveButtons(card.buttons)) });
 
   // raw=1 is what the chrome's iframe (and the gallery thumbnails) load: just
   // the card, no toolbar, no nesting.

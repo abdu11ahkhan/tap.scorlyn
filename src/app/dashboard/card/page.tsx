@@ -12,6 +12,7 @@ import {
   resolveGallery,
   type CardButton,
   type GalleryItem,
+  groupNumberButtons,
 } from "@/lib/card";
 import {
   EMPTY_CARD_FORM,
@@ -30,6 +31,7 @@ import NfcFormatPrompt from "@/components/card-design/NfcFormatPrompt";
 import CardFeePanel from "@/components/dashboard/CardFeePanel";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import NumberPicker from "@/components/card-templates/NumberPicker";
 import { uploadPendingImages } from "@/lib/upload-drafts";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import DeleteCardButton from "@/components/card-editor/DeleteCardButton";
@@ -211,7 +213,7 @@ function MyCardEditor() {
     () => draftToCardProfile(form, buttons, resolveGallery(gallery), extras),
     [form, buttons, gallery, extras]
   );
-  const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+  const previewButtons = useMemo(() => groupNumberButtons(resolveButtonsForPreview(buttons)), [buttons]);
 
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   const profileUrl = cardLinkUrl(previewCard, origin);
@@ -543,7 +545,10 @@ function MyCardEditor() {
             />
           }
         >
-          {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
+          <>
+            {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
+            <NumberPicker buttons={previewButtons} />
+          </>
         </DevicePreview>
       </div>
 

@@ -14,6 +14,7 @@ import {
   type CardButton,
   type CardPurpose,
   type GalleryItem,
+  groupNumberButtons,
 } from "@/lib/card";
 import {
   EMPTY_CARD_FORM,
@@ -26,6 +27,7 @@ import { renderCardTemplate } from "@/components/card-templates";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import NumberPicker from "@/components/card-templates/NumberPicker";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import RefCatcher from "@/components/nfc/RefCatcher";
 import PurposeDestinationFields from "@/components/card-editor/PurposeDestinationFields";
@@ -138,7 +140,7 @@ function PublicCardEditorInner({
     () => draftToCardProfile(form, buttons, resolveGallery(gallery), extras),
     [form, buttons, gallery, extras]
   );
-  const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+  const previewButtons = useMemo(() => groupNumberButtons(resolveButtonsForPreview(buttons)), [buttons]);
 
   // Whatever host this is served from, so the QR works in dev and production.
   const origin = typeof window === "undefined" ? "" : window.location.origin;
@@ -329,7 +331,10 @@ function PublicCardEditorInner({
             }
           >
             {/* The real template component, re-rendering as they type. */}
+            <>
             {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
+            <NumberPicker buttons={previewButtons} />
+          </>
           </DevicePreview>
         </div>
       </div>

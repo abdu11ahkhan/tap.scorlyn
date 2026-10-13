@@ -346,7 +346,62 @@ export function resolveReviewConfig(config: ReviewConfig | null | undefined): Re
   };
 }
 
-export type ResolvedButton = CardButton & { href: string; external: boolean };
+export type ResolvedButton = CardButton & {
+  href: string;
+  external: boolean;
+  /** Set on a grouped Call/WhatsApp button: the numbers a visitor picks between. */
+  choices?: NumberChoice[];
+};
+
+/** One number inside a grouped Call / WhatsApp button. */
+export type NumberChoice = { label: string; number: string; href: string; external: boolean };
+
+/** Kinds whose several numbers collapse into one button with a picker. */
+const GROUPED_KINDS: ButtonKind[] = ["phone", "whatsapp"];
+
+/** The href a grouped button carries; NumberPicker opens on clicks to it. */
+export const NUMBER_PICKER_HREF = "#scorlyn-pick-";
+
+/**
+ * Two or more phone (or WhatsApp) buttons become one "Call" / "WhatsApp"
+ * button that opens a small picker — "Pakistan +92…", "Spain +34…" — instead
+ * of a stack of identical-looking buttons. Each choice keeps the label the
+ * owner typed, so visitors can tell the numbers apart. A single number is
+ * left exactly as it was.
+ *
+ * Applied on top of resolveButtons() where cards are shown, rather than
+ * inside it, so the vCard and anything else reading every number still sees
+ * them all.
+ */
+export function groupNumberButtons(buttons: ResolvedButton[]): ResolvedButton[] {
+  const out: ResolvedButton[] = [];
+  const seen = new Set<string>();
+  for (const b of buttons) {
+    const live = b.href && b.href !== "#";
+    const same = live && GROUPED_KINDS.includes(b.kind) ? buttons.filter((x) => x.kind === b.kind && x.href && x.href !== "#") : [];
+    if (same.length < 2) {
+      out.push(b);
+      continue;
+    }
+    if (seen.has(b.kind)) continue;
+    seen.add(b.kind);
+    const generic = defaultLabel(b.kind);
+    out.push({
+      ...b,
+      label: generic,
+      href: `${NUMBER_PICKER_HREF}${b.kind}`,
+      external: false,
+      choices: same.map((x) => ({
+        // A label left as the default ("Call") says nothing; show the number.
+        label: x.label && x.label !== generic ? x.label : x.value,
+        number: x.value,
+        href: x.href,
+        external: x.external,
+      })),
+    });
+  }
+  return out;
+}
 
 /** Turns a stored button into something an <a> can use. */
 export function resolveButton(button: CardButton | null | undefined): ResolvedButton | null {

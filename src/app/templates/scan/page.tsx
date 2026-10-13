@@ -9,6 +9,7 @@ import {
   resolveButtonsForPreview,
   resolveGallery,
   type CardButton,
+  groupNumberButtons,
 } from "@/lib/card";
 import { EMPTY_CARD_FORM, draftToCardProfile, saveDraft, type CardForm } from "@/lib/card-draft";
 import { downscale, toDataUrl } from "@/components/card-editor/ImagePicker";
@@ -249,7 +250,7 @@ export default function ScanCardPage() {
     () => draftToCardProfile(form, buttons, resolveGallery([])),
     [form, buttons]
   );
-  const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+  const previewButtons = useMemo(() => groupNumberButtons(resolveButtonsForPreview(buttons)), [buttons]);
 
   const useThisCard = () => {
     saveDraft({ form, buttons, gallery: [], extras: {} });

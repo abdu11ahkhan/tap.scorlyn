@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { resolveButton, resolveButtons, type CardProfile } from "@/lib/card";
+import { resolveButton, resolveButtons, type CardProfile, groupNumberButtons } from "@/lib/card";
 import { renderCardTemplate } from "@/components/card-templates";
 import TapTracker from "@/components/nfc/TapTracker";
 import OutboundClickTracker from "@/components/nfc/OutboundClickTracker";
+import NumberPicker from "@/components/card-templates/NumberPicker";
 import ReferralBanner from "@/components/nfc/ReferralBanner";
 import ReferenceNote from "@/components/nfc/ReferenceNote";
 import ProfileExtras, { hasProfileExtras } from "@/components/nfc/ProfileExtras";
@@ -108,7 +109,8 @@ export default async function CardProfilePage({
   // carries the card's code so the view is attributed to that card.
   const nfcCode = source !== "link" && nfc ? nfc : null;
 
-  const buttons = resolveButtons(card.buttons);
+  // Two+ phone or WhatsApp numbers become one button with a "which number?" picker.
+  const buttons = groupNumberButtons(resolveButtons(card.buttons));
 
   const supabase = await createClient();
 
@@ -132,6 +134,7 @@ export default async function CardProfilePage({
     <>
       <TapTracker username={card.username} source={source} nfcCode={nfcCode} />
       <OutboundClickTracker username={card.username} nfcCode={nfcCode} />
+      <NumberPicker buttons={buttons} />
 
       <ShareButton
         url={shareUrl}

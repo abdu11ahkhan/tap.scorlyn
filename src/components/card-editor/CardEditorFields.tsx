@@ -484,7 +484,20 @@ export default function CardEditorFields({
                   <Input
                     value={button.label}
                     onChange={(e) => updateButton(index, { label: e.target.value })}
-                    placeholder={KIND_LABELS[button.kind]}
+                    // Two+ phone or WhatsApp numbers share one button with a
+                    // picker; this label is how visitors tell them apart.
+                    placeholder={
+                      (button.kind === "phone" || button.kind === "whatsapp") &&
+                      buttons.filter((b) => b.kind === button.kind).length > 1
+                        ? "e.g. Pakistan"
+                        : KIND_LABELS[button.kind]
+                    }
+                    title={
+                      (button.kind === "phone" || button.kind === "whatsapp") &&
+                      buttons.filter((b) => b.kind === button.kind).length > 1
+                        ? "Visitors pick a number by this name"
+                        : undefined
+                    }
                     className={`${FIELD} @min-[420px]:max-w-[140px]`}
                   />
 

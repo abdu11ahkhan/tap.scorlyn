@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import { draftToCardProfile, type CardForm } from "@/lib/card-draft";
-import { cardLinkUrl, resolveButtonsForPreview, resolveGallery, type CardButton, type GalleryItem } from "@/lib/card";
+import { cardLinkUrl, resolveButtonsForPreview, resolveGallery, type CardButton, type GalleryItem, groupNumberButtons } from "@/lib/card";
 import { renderCardTemplate } from "@/components/card-templates";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import DevicePreview from "@/components/card-editor/DevicePreview";
@@ -60,7 +60,7 @@ export default function EmployeeCardEditor({
     () => draftToCardProfile(form, buttons, resolveGallery(gallery), extras),
     [form, buttons, gallery, extras]
   );
-  const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+  const previewButtons = useMemo(() => groupNumberButtons(resolveButtonsForPreview(buttons)), [buttons]);
   const origin = typeof window === "undefined" ? "" : window.location.origin;
   const profileUrl = cardLinkUrl(previewCard, origin);
 

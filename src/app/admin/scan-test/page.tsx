@@ -27,7 +27,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, Check, Copy, ExternalLink, Loader2, UserPlus, X } from "lucide-react";
-import { KIND_LABELS, resolveButtonsForPreview, resolveGallery, type CardButton } from "@/lib/card";
+import { KIND_LABELS, resolveButtonsForPreview, resolveGallery, type CardButton, groupNumberButtons } from "@/lib/card";
 import { EMPTY_CARD_FORM, draftToCardProfile, saveDraft, type CardForm } from "@/lib/card-draft";
 import { downscale, toDataUrl } from "@/components/card-editor/ImagePicker";
 import { extractPalette, suggestTemplate, type CardVibe } from "@/lib/card-scan-color";
@@ -262,7 +262,7 @@ export default function AdminScanTest() {
   );
 
   const previewCard = useMemo(() => draftToCardProfile(form, buttons, resolveGallery([])), [form, buttons]);
-  const previewButtons = useMemo(() => resolveButtonsForPreview(buttons), [buttons]);
+  const previewButtons = useMemo(() => groupNumberButtons(resolveButtonsForPreview(buttons)), [buttons]);
 
   const openInEditor = () => {
     saveDraft({ form, buttons, gallery: [], extras: {} });
