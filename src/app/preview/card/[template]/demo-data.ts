@@ -31,6 +31,9 @@ export type DemoPersona = {
   noAvatar?: boolean;
   /** Sample accounts, for templates that show payment details in the card. */
   payments?: PaymentMethod[];
+  /** Preview without a cover photo — for templates where the cover replaces
+   *  the design itself (Pop uses it as the wallpaper). */
+  noCover?: boolean;
   /** Review Card settings for the demo. */
   review?: ReviewConfig;
 };
@@ -606,6 +609,43 @@ export const DEMO_PERSONAS: Record<string, DemoPersona> = {
     location: "Islamabad",
     availabilityNote: "Now booking sessions",
     links: [["Book a class", "calendar", "https://example.pk/book"], ["WhatsApp", "whatsapp", wa("0042")], ["Instagram", "instagram", "https://instagram.com/example"]],
+  }),
+
+  // ---------------- Link-in-bio styles ----------------
+  strips: person({
+    n: "0045", username: "rachelwanders", full_name: "Rachel Williams",
+    headline: "Traveller • Lifestyle blogger", company: "",
+    bio: "",
+    location: "Karachi",
+    captions: ["About me", "Blog", "Merch", "Collabs", "Itinerary"],
+    links: [["About me", "link", "https://example.pk/about"], ["Blog", "link", "https://example.pk/blog"], ["Merch", "shop", "https://example.pk/shop"], ["Collabs", "link", "https://example.pk/collabs"], ["Itinerary", "link", "https://example.pk/trips"], ["Instagram", "instagram", "https://instagram.com/example"], ["Facebook", "facebook", "https://facebook.com/example"], ["X", "x", "https://x.com/example"]],
+  }),
+
+  pop: person({
+    n: "0046", username: "zoeunlimited", full_name: "Zoe Unlimited",
+    noCover: true,
+    headline: "Creator · fitness & fun", company: "",
+    bio: "",
+    location: "Lahore",
+    links: [["Newest YT video! 🎥", "youtube", "https://youtube.com/@example"], ["Instagram 🍭", "instagram", "https://instagram.com/example"], ["TikTok 😈", "tiktok", "https://tiktok.com/@example"], ["Hair care 💇", "shop", "https://example.pk/hair"], ["Resistance bands 💪", "shop", "https://example.pk/bands"], ["WhatsApp me 💬", "whatsapp", wa("0046")]],
+  }),
+
+  zest: person({
+    n: "0047", username: "yellowzest", full_name: "Yellow Zest",
+    headline: "Branding studio", company: "",
+    bio: "A creative studio designing compelling brands for small businesses. No fuss, just zest.",
+    location: "Islamabad",
+    noAvatar: true,
+    links: [["Download free planner", "link", "https://example.pk/planner"], ["Visit the website", "link", "https://example.pk"], ["Book a free discovery call", "calendar", "https://example.pk/call"], ["View web design services", "link", "https://example.pk/services"], ["Instagram", "instagram", "https://instagram.com/example"], ["LinkedIn", "linkedin", "https://linkedin.com/company/example"]],
+  }),
+
+  grove: person({
+    n: "0048", username: "hydrajuice", full_name: "Hydra Juice",
+    headline: "Your daily dose of vitamin C", company: "",
+    bio: "",
+    location: "Lahore",
+    noAvatar: true,
+    links: [["Our drinks", "menu", "https://example.pk/menu"], ["Find us", "maps", "https://maps.app.goo.gl/example"], ["Wellbeing", "link", "https://example.pk/wellbeing"], ["Our latest podcast", "spotify", "https://open.spotify.com/show/example"], ["TikTok", "tiktok", "https://tiktok.com/@example"], ["YouTube", "youtube", "https://youtube.com/@example"], ["X", "x", "https://x.com/example"], ["Instagram", "instagram", "https://instagram.com/example"]],
   }),
 
   // ---------------- Gaming zones ----------------

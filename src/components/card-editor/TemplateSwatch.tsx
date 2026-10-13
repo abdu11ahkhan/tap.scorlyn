@@ -63,6 +63,10 @@ const SKINS: Record<string, Skin> = {
   wellness: { bg: "#0E1410", ink: "#ffffff", shape: "stack" },
   // gaming
   arena: { bg: "#050508", ink: "#ffffff", shape: "grid" },
+  strips: { bg: "#F4EEE6", ink: "#3b3128", shape: "rows", paper: true },
+  pop: { bg: "#C9A7F2", ink: "#ffffff", shape: "stack" },
+  zest: { bg: "#FFD43B", ink: "#15130F", shape: "hero" },
+  grove: { bg: "#6E7B63", ink: "#E4E6DC", shape: "stack" },
   // reviews
   review: { bg: "#F6F4F0", ink: "#1a1a1a", shape: "form", paper: true },
 };

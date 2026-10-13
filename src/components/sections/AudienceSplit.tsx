@@ -1,5 +1,7 @@
 "use client";
 
+import { CARD_TEMPLATES } from "@/lib/card";
+
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, User, Building2, Check } from "lucide-react";
@@ -12,7 +14,7 @@ import PosterTitle from "./PosterTitle";
  */
 const INDIVIDUAL = [
   "Your own page, live in minutes",
-  "44 templates to start from",
+  `${CARD_TEMPLATES.length} templates to start from`,
   "Every link in one tap — phone, email, WhatsApp, socials",
   "A physical NFC card, whenever you're ready",
   "Real analytics on who's opening it",

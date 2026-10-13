@@ -47,6 +47,10 @@ import CoachCard from "./CoachCard";
 import WellnessCard from "./WellnessCard";
 import ArenaCard from "./ArenaCard";
 import ReviewCard from "./ReviewCard";
+import StripsCard from "./StripsCard";
+import PopCard from "./PopCard";
+import ZestCard from "./ZestCard";
+import GroveCard from "./GroveCard";
 
 /**
  * Templates that build the cover photo into their own layout. Everything else
@@ -58,10 +62,16 @@ export const TEMPLATES_WITH_OWN_COVER = new Set([
   "arena",
   "booking",
   "glass",
+  // Cover is the wallpaper (pop), the top photo (zest), the foot photo
+  // (grove) or a strip photo (strips).
+  "grove",
+  "pop",
   "poster",
   // No cover at all: the stars have to be on screen the moment it opens.
   "review",
   "showcase",
+  "strips",
+  "zest",
 ]);
 
 export { TEMPLATE_TONE };
@@ -133,6 +143,10 @@ const TEMPLATES: Record<string, React.ComponentType<CardTemplateProps>> = {
   wellness: WellnessCard,
   arena: ArenaCard,
   review: ReviewCard,
+  strips: StripsCard,
+  pop: PopCard,
+  zest: ZestCard,
+  grove: GroveCard,
 };
 
 /** Falls back to Minimal so an unknown template id never blanks a card. */

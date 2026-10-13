@@ -40,7 +40,7 @@ export default async function MyCardHub({ searchParams }: { searchParams: Promis
           <Link href="/templates" className="app-panel app-panel-pad flex min-h-28 flex-col gap-2 transition-colors hover:border-sc-gold">
             <LayoutTemplate className="h-6 w-6 text-sc-gold-text" />
             <span className="text-[15px] font-black">Choose a design</span>
-            <span className="app-sub text-[13px]">Pick from 44 designs, then add your details.</span>
+            <span className="app-sub text-[13px]">Pick from {CARD_TEMPLATES.length} designs, then add your details.</span>
           </Link>
           <Link href="/templates/scan" className="app-panel app-panel-pad flex min-h-28 flex-col gap-2 transition-colors hover:border-sc-gold">
             <Camera className="h-6 w-6 text-sc-gold-text" />

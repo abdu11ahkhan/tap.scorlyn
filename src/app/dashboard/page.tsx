@@ -1,5 +1,7 @@
 "use client";
 
+import { CARD_TEMPLATES } from "@/lib/card";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -247,7 +249,7 @@ export default function DashboardPage() {
             href="/templates"
             icon={LayoutTemplate}
             title="Start with a design"
-            body="Pick one of 44 designs, then add your details."
+            body={`Pick one of ${CARD_TEMPLATES.length} designs, then add your details.`}
             primary
           />
           <StartTile href="/templates/scan" icon={Camera} title="Use my business card" body="Take a photo — we fill in your details for you." />

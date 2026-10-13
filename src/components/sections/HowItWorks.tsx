@@ -1,5 +1,7 @@
 "use client";
 
+import { CARD_TEMPLATES } from "@/lib/card";
+
 import { motion } from "framer-motion";
 import { LayoutTemplate, IdCard, Smartphone, Share2, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +15,7 @@ const STEPS = [
   {
     n: 1,
     title: "create your card",
-    body: "Pick from 44 templates, drop in your links. Free, and it takes about two minutes.",
+    body: `Pick from ${CARD_TEMPLATES.length} templates, drop in your links. Free, and it takes about two minutes.`,
     icon: LayoutTemplate,
     card: "bg-sun text-char",
   },

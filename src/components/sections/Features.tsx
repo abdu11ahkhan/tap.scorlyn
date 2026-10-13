@@ -1,5 +1,7 @@
 "use client";
 
+import { CARD_TEMPLATES } from "@/lib/card";
+
 import { motion } from "framer-motion";
 import { Layers, Zap, Smartphone, BarChart3, Palette, Link2 } from "lucide-react";
 import PosterTitle from "./PosterTitle";
@@ -14,7 +16,7 @@ const CARDS = [
     span: "sm:col-span-2",
   },
   {
-    tag: "44 designs",
+    tag: `${CARD_TEMPLATES.length} designs`,
     title: "looks unreal",
     body: "Templates that actually slap. Pick your colour, pick your font, done.",
     icon: Palette,

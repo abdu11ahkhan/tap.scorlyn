@@ -1,5 +1,7 @@
 "use client";
 
+import { CARD_TEMPLATES } from "@/lib/card";
+
 import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Camera, LayoutGrid, Nfc, X, Zap } from "lucide-react";
@@ -9,7 +11,7 @@ const OPTIONS = [
     href: "/templates",
     icon: LayoutGrid,
     title: "Start with a design",
-    blurb: "Pick one of 44 designs, then add your details. You can switch design any time.",
+    blurb: `Pick one of ${CARD_TEMPLATES.length} designs, then add your details. You can switch design any time.`,
   },
   {
     href: "/templates/scan",
