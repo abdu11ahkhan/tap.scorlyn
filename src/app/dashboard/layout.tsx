@@ -128,7 +128,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const inMain = main.some((m) => isIn(pathname, m));
   const here = main.find((m) => isIn(pathname, m)) ?? moreLinks.find((l) => isIn(pathname, l)) ?? (isIn(pathname, MORE) ? MORE : null);
 
-  const isEditor = pathname.includes("/editor");
+  // The card editor is a focused, full-screen workspace with its own compact
+  // top bar and sticky save action — wrapping it in the sidebar/header/bottom
+  // tab bar here too would mean two competing sticky bars on a phone, and the
+  // desktop editor's own two-column layout fighting the sidebar for width.
+  const isEditor = pathname.includes("/editor") || pathname.startsWith("/dashboard/card");
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

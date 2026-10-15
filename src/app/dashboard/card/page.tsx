@@ -4,7 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Loader2, ExternalLink, Check, Nfc, ArrowRight } from "lucide-react";
+import { Loader2, ExternalLink, Check, Nfc, ArrowRight, ArrowLeft, Eye } from "lucide-react";
 import {
   TEMPLATE_IDS,
   cardLinkUrl,
@@ -36,6 +36,7 @@ import { uploadPendingImages } from "@/lib/upload-drafts";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import DeleteCardButton from "@/components/card-editor/DeleteCardButton";
 import PublishedSheet from "@/components/dashboard/PublishedSheet";
+import MobilePreviewSheet from "@/components/card-editor/MobilePreviewSheet";
 import { renderCardTemplate } from "@/components/card-templates";
 
 const EMPTY_EXTRAS: ExtrasState = {
@@ -85,6 +86,9 @@ function MyCardEditor() {
    *  NFC-design ask until this is dismissed, so the two don't compete for
    *  attention at once. */
   const [justPublished, setJustPublished] = useState<{ url: string; username: string } | null>(null);
+  /** Full-screen preview overlay, phones only — the side-by-side layout on
+   *  desktop/tablet already shows the preview without this. */
+  const [previewOpen, setPreviewOpen] = useState(false);
   /** Approval state for this card. Extra cards are paid for before going live. */
   const [approval, setApproval] = useState<{
     status: string;
@@ -335,223 +339,267 @@ function MyCardEditor() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-32">
+      <div className="flex min-h-screen items-center justify-center bg-sc-bg">
         <Loader2 className="h-6 w-6 animate-spin text-sc-gold-text" />
       </div>
     );
   }
 
+  const saveLabel = saving ? (
+    <Loader2 className="h-5 w-5 animate-spin" />
+  ) : saved ? (
+    <>
+      <Check className="h-5 w-5" strokeWidth={3.5} />
+      saved
+    </>
+  ) : cardId ? (
+    "save changes"
+  ) : form.published ? (
+    "publish my card"
+  ) : (
+    "save as draft"
+  );
+
+  const preview = (
+    <DevicePreview
+      cardView={
+        <CardDesigner card={previewCard} profileUrl={profileUrl} width={340} compact />
+      }
+    >
+      <>
+        {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
+        <NumberPicker buttons={previewButtons} />
+      </>
+    </DevicePreview>
+  );
+
   return (
-    <div className="grid max-w-6xl gap-10 pb-20 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start">
-      <div className="min-w-0">
-      <h1 className="app-h1 text-4xl">
-        my <span className="text-sc-gold-text">card.</span>
-      </h1>
-      <p className="app-sub mt-2">
-        This is what opens when someone taps your NFC card.
-      </p>
-
-      {cardId && form.username && (
+    <div className="flex min-h-screen flex-col bg-sc-bg text-sc-text">
+      {/* Compact top bar — replaces the old page heading plus the
+          dashboard's own sidebar/header for this one focused screen (see
+          dashboard/layout.tsx's isEditor check). Back goes to the card
+          summary, not browser history, since a draft or an unsaved edit can
+          land here from several different places. */}
+      <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b border-sc-border-soft bg-sc-surface px-3 pt-[env(safe-area-inset-top)]">
         <Link
-          href={`/u/${form.username}`}
-          target="_blank"
-          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-sc-gold px-4 py-2 text-sm font-black text-sc-gold-text transition-colors hover:bg-sc-gold hover:text-sc-gold-ink"
+          href="/dashboard/my-card"
+          aria-label="Back to my card"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sc-text-dim hover:bg-sc-surface-2 hover:text-sc-text"
         >
-          <ExternalLink className="h-4 w-4" />
-          /u/{form.username}
+          <ArrowLeft className="h-5 w-5" />
         </Link>
-      )}
 
-      {/* The one clean "your card is live" moment: link, QR, share, and the
-          physical card as the natural next step. "Maybe later" skips the
-          print-design ask too — they've just said not now. */}
-      {justPublished && (
-        <PublishedSheet
-          url={justPublished.url}
-          onClose={() => {
-            setJustPublished(null);
-          }}
-        />
-      )}
-
-      {draftApplied && (
-        <div className="mt-6 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
-          <p className="font-black text-sc-text">We picked up where you left off.</p>
-          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
-            Choose a username below, then publish to put your card live.
+        <div className="min-w-0 flex-1 text-center">
+          <p className="truncate text-[15px] font-bold leading-tight text-sc-text">
+            {form.full_name.trim() || "My card"}
+          </p>
+          <p className="text-[11px] font-semibold leading-tight text-sc-text-dim">
+            {saving ? "saving…" : saved ? "saved" : cardId && !saved ? "unsaved changes" : "editing"}
           </p>
         </div>
-      )}
 
-      {localEditsRestored && (
-        <div className="mt-6 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
-          <p className="font-black text-sc-text">We restored your unsaved changes.</p>
-          <p className="mt-1 text-sm font-semibold text-sc-text-dim">
-            You had edits that never made it to &quot;save changes&quot; last time —
-            they&apos;re back below.
-          </p>
-        </div>
-      )}
-
-      {error && (
-        <div className="mt-6 rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
-          {error}
-        </div>
-      )}
-
-      {cardId && approval.status !== "approved" && (
-        <div className="mt-6">
-          <CardFeePanel
-            cardId={cardId}
-            status={approval.status}
-            fee={approval.fee}
-            note={approval.note}
-            onSubmitted={() =>
-              setApproval((prev) => ({ ...prev, status: "awaiting_review" }))
-            }
-          />
-        </div>
-      )}
-
-      <form onSubmit={handleSave} className="mt-8 space-y-8">
-        <CardEditorFields
-          form={form}
-          onFormChange={updateForm}
-          buttons={buttons}
-          onButtonsChange={(next) => {
-            setButtons(next);
-            setSaved(false);
-          }}
-          gallery={gallery}
-          onGalleryChange={(next) => {
-            setGallery(next);
-            setSaved(false);
-          }}
-          extras={extras}
-          onExtrasChange={(patch) => {
-            setExtras((prev) => ({ ...prev, ...patch }));
-            setSaved(false);
-          }}
-          showUsername
-          // Locked once saved — except for a card the "new card" quick-add
-          // button just created, which starts with an auto-generated
-          // "new-card-xxxxxx" placeholder nobody actually chose. Matches
-          // the same carve-out in the lock_username() DB trigger
-          // (056_allow_first_username_after_quick_create.sql) — the UI and
-          // the trigger need to agree on this, or unlocking the field here
-          // alone would just mean the save fails with the trigger's error
-          // instead.
-          lockUsername={Boolean(cardId) && !/^new-card-[a-z0-9]{1,8}$/.test(form.username)}
-        />
-
-        <button
-          type="submit"
-          disabled={saving}
-          className="app-btn app-btn-primary h-14 w-full text-base"
-        >
-          {saving ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : saved ? (
-            <>
-              <Check className="mr-2 h-5 w-5" strokeWidth={3.5} />
-              saved
-            </>
-          ) : cardId ? (
-            "save changes"
-          ) : form.published ? (
-            "publish my card"
-          ) : (
-            "save as draft"
-          )}
-        </button>
-
-        {/* Draft vs live. The column and the RLS policy already enforce this —
-            an unpublished card is not readable by anyone but its owner — there
-            was simply no way to set it. */}
-        {/* The moment the page exists is the moment the card makes sense.
-            Before this, nothing in the dashboard showed the physical product
-            at all, so the free page was the whole of what people saw. */}
-        {cardId && form.published !== false && (
+        {cardId && form.username && (
           <Link
-            href="/dashboard/nfc"
-            className="mt-4 flex items-center gap-3 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-4 transition-colors hover:border-sc-gold"
+            href={`/u/${form.username}`}
+            target="_blank"
+            aria-label={`View your public card at /u/${form.username}`}
+            title={`/u/${form.username}`}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sc-text-dim hover:bg-sc-surface-2 hover:text-sc-text"
           >
-            <Nfc className="h-6 w-6 shrink-0 text-sc-gold-text" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-black uppercase tracking-tight text-sc-text">
-                put this on a real card
-              </span>
-              <span className="mt-0.5 block text-xs font-bold text-sc-text-dim">
-                Blank from Rs.1,600, your design from Rs.2,200 — see both
-              </span>
-            </span>
-            <ArrowRight className="h-5 w-5 shrink-0 text-sc-gold-text" />
+            <ExternalLink className="h-5 w-5" />
           </Link>
         )}
 
-        {cardId && !saved && (
-          <p className="mt-3 rounded-xl border-2 border-sc-warning/30 bg-sc-warning/5 px-4 py-3 text-center text-[13px] font-black uppercase tracking-widest text-sc-warning">
+        <button
+          type="button"
+          onClick={() => setPreviewOpen(true)}
+          aria-label="Preview your card"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sc-text-dim hover:bg-sc-surface-2 hover:text-sc-text lg:hidden"
+        >
+          <Eye className="h-5 w-5" />
+        </button>
+      </header>
+
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-28 pt-5 sm:px-6 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:pb-14">
+          <div className="min-w-0 space-y-5">
+            {/* The one clean "your card is live" moment: link, QR, share, and
+                the physical card as the natural next step. "Maybe later"
+                skips the print-design ask too — they've just said not now. */}
+            {justPublished && (
+              <PublishedSheet
+                url={justPublished.url}
+                onClose={() => {
+                  setJustPublished(null);
+                }}
+              />
+            )}
+
+            {draftApplied && (
+              <div className="rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
+                <p className="font-black text-sc-text">We picked up where you left off.</p>
+                <p className="mt-1 text-sm font-semibold text-sc-text-dim">
+                  Choose a username below, then publish to put your card live.
+                </p>
+              </div>
+            )}
+
+            {localEditsRestored && (
+              <div className="rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-5">
+                <p className="font-black text-sc-text">We restored your unsaved changes.</p>
+                <p className="mt-1 text-sm font-semibold text-sc-text-dim">
+                  You had edits that never made it to &quot;save changes&quot; last time —
+                  they&apos;re back below.
+                </p>
+              </div>
+            )}
+
+            {error && (
+              <div className="rounded-xl border-2 border-sc-error/40 bg-sc-error/10 px-4 py-3 text-sm font-bold text-sc-error">
+                {error}
+              </div>
+            )}
+
+            {cardId && approval.status !== "approved" && (
+              <CardFeePanel
+                cardId={cardId}
+                status={approval.status}
+                fee={approval.fee}
+                note={approval.note}
+                onSubmitted={() =>
+                  setApproval((prev) => ({ ...prev, status: "awaiting_review" }))
+                }
+              />
+            )}
+
+            <form id="card-editor-form" onSubmit={handleSave} className="mt-5">
+              <CardEditorFields
+                form={form}
+                onFormChange={updateForm}
+                buttons={buttons}
+                onButtonsChange={(next) => {
+                  setButtons(next);
+                  setSaved(false);
+                }}
+                gallery={gallery}
+                onGalleryChange={(next) => {
+                  setGallery(next);
+                  setSaved(false);
+                }}
+                extras={extras}
+                onExtrasChange={(patch) => {
+                  setExtras((prev) => ({ ...prev, ...patch }));
+                  setSaved(false);
+                }}
+                showUsername
+                // Locked once saved — except for a card the "new card" quick-add
+                // button just created, which starts with an auto-generated
+                // "new-card-xxxxxx" placeholder nobody actually chose. Matches
+                // the same carve-out in the lock_username() DB trigger
+                // (056_allow_first_username_after_quick_create.sql) — the UI and
+                // the trigger need to agree on this, or unlocking the field here
+                // alone would just mean the save fails with the trigger's error
+                // instead.
+                lockUsername={Boolean(cardId) && !/^new-card-[a-z0-9]{1,8}$/.test(form.username)}
+                settingsExtra={
+                  <>
+                    {/* The moment the page exists is the moment the card makes
+                        sense. Before this, nothing in the dashboard showed the
+                        physical product at all, so the free page was the whole
+                        of what people saw. */}
+                    {cardId && form.published !== false && (
+                      <Link
+                        href="/dashboard/nfc"
+                        className="flex items-center gap-3 rounded-2xl border-2 border-sc-gold/40 bg-sc-gold/5 p-4 transition-colors hover:border-sc-gold"
+                      >
+                        <Nfc className="h-6 w-6 shrink-0 text-sc-gold-text" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-sm font-black uppercase tracking-tight text-sc-text">
+                            put this on a real card
+                          </span>
+                          <span className="mt-0.5 block text-xs font-bold text-sc-text-dim">
+                            Blank from Rs.1,600, your design from Rs.2,200 — see both
+                          </span>
+                        </span>
+                        <ArrowRight className="h-5 w-5 shrink-0 text-sc-gold-text" />
+                      </Link>
+                    )}
+
+                    {/* Draft vs live. The column and the RLS policy already
+                        enforce this — an unpublished card is not readable by
+                        anyone but its owner — there was simply no way to set
+                        it. */}
+                    <div className="app-panel app-panel-pad">
+                      <label className="flex cursor-pointer items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={form.published !== false}
+                          onChange={(e) => updateForm({ published: e.target.checked })}
+                          className="mt-0.5 h-4 w-4 accent-sc-gold"
+                        />
+                        <span className="min-w-0">
+                          <span className="block text-sm font-black text-sc-text">
+                            {form.published !== false ? "Live" : "Draft"}
+                          </span>
+                          <span className="mt-0.5 block text-xs font-semibold text-sc-text-dim">
+                            {form.published !== false
+                              ? "Anyone with your link or your card can open it."
+                              : "Only you can see it. Your link and NFC card will not open for anyone else until you publish."}
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+
+                    {cardId && (
+                      <DeleteCardButton
+                        cardId={cardId}
+                        username={form.username}
+                        onDeleted={() => {
+                          setCardId(null);
+                          setForm(EMPTY_CARD_FORM);
+                          setSaved(false);
+                        }}
+                      />
+                    )}
+                  </>
+                }
+              />
+            </form>
+          </div>
+
+          {/* Sticky beside the fields on desktop/tablet. On a phone this is
+              replaced by the Preview button in the top bar and the overlay
+              below — an always-rendered device mockup here used to add a
+              second full page of scrolling under the whole form. */}
+          <div className="hidden min-w-0 lg:sticky lg:top-20 lg:block">{preview}</div>
+        </div>
+      </div>
+
+      {/* Persistent primary action, phones only — desktop/tablet keeps it
+          inline at the end of the form where a mouse-driven editor expects
+          it, rather than adding a second place to look for the same button. */}
+      <div
+        className="sticky bottom-0 z-20 border-t border-sc-border-soft bg-sc-surface px-4 py-3 lg:hidden"
+        style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+      >
+        {cardId && !saved && !saving && (
+          <p className="mb-2 text-center text-[11px] font-black uppercase tracking-widest text-sc-warning">
             unsaved changes
           </p>
         )}
-
-        <div className="mt-3 app-panel app-panel-pad">
-          <label className="flex cursor-pointer items-start gap-3">
-            <input
-              type="checkbox"
-              checked={form.published !== false}
-              onChange={(e) => updateForm({ published: e.target.checked })}
-              className="mt-0.5 h-4 w-4 accent-sc-gold"
-            />
-            <span className="min-w-0">
-              <span className="block text-sm font-black text-sc-text">
-                {form.published !== false ? "Live" : "Draft"}
-              </span>
-              <span className="mt-0.5 block text-xs font-semibold text-sc-text-dim">
-                {form.published !== false
-                  ? "Anyone with your link or your card can open it."
-                  : "Only you can see it. Your link and NFC card will not open for anyone else until you publish."}
-              </span>
-            </span>
-          </label>
-        </div>
-
-        {cardId && (
-          <div className="mt-3">
-            <DeleteCardButton
-              cardId={cardId}
-              username={form.username}
-              onDeleted={() => {
-                setCardId(null);
-                setForm(EMPTY_CARD_FORM);
-                setSaved(false);
-              }}
-            />
-          </div>
-        )}
-      </form>
-      </div>
-
-      {/* Sticky beside the fields on desktop, stacked underneath on mobile —
-          the card designer and its settings live in here, so hiding it on
-          small screens meant phones couldn't configure the card at all. */}
-      <div className="min-w-0 lg:sticky lg:top-6">
-        <DevicePreview
-          cardView={
-            <CardDesigner
-              card={previewCard}
-              profileUrl={profileUrl}
-              width={340}
-              compact
-            />
-          }
+        <button
+          type="submit"
+          form="card-editor-form"
+          disabled={saving}
+          className="app-btn app-btn-primary h-12 w-full text-base"
         >
-          <>
-            {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
-            <NumberPicker buttons={previewButtons} />
-          </>
-        </DevicePreview>
+          {saveLabel}
+        </button>
       </div>
+
+      <MobilePreviewSheet open={previewOpen} onClose={() => setPreviewOpen(false)}>
+        {preview}
+      </MobilePreviewSheet>
 
       {askNfcFor && (
         <NfcFormatPrompt
@@ -569,7 +617,7 @@ export default function MyCardPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center py-32">
+        <div className="flex min-h-screen items-center justify-center bg-sc-bg">
           <Loader2 className="h-6 w-6 animate-spin text-sc-gold-text" />
         </div>
       }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, GripVertical, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, GripVertical, Eye, EyeOff, FileText, Palette, Settings2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -43,6 +43,48 @@ const FONTS = [
 const FIELD =
   "border-2 border-sc-border bg-sc-surface-2 font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:ring-0";
 
+export type EditorTab = "content" | "design" | "settings";
+
+const TABS: { id: EditorTab; label: string; icon: typeof FileText }[] = [
+  { id: "content", label: "content", icon: FileText },
+  { id: "design", label: "design", icon: Palette },
+  { id: "settings", label: "settings", icon: Settings2 },
+];
+
+/**
+ * What you're adding (names, links, photos), how it looks (template, colour,
+ * font) and the handful of on/off switches around the card used to all sit
+ * in one long column of accordions — every one of the ~15 sections passed
+ * before you reached whichever one you actually opened the editor for. Three
+ * tabs split that by the kind of decision being made, so only the handful of
+ * sections for the one you're on are ever on screen at once.
+ */
+function EditorTabs({ tab, onChange }: { tab: EditorTab; onChange: (tab: EditorTab) => void }) {
+  return (
+    <div
+      role="tablist"
+      aria-label="Edit sections"
+      className="flex gap-1 rounded-full border-2 border-sc-border bg-sc-surface-2 p-1"
+    >
+      {TABS.map(({ id, label, icon: Icon }) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={tab === id}
+          onClick={() => onChange(id)}
+          className={`flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full text-[13px] font-black lowercase transition-colors ${
+            tab === id ? "bg-sc-gold text-sc-gold-ink" : "text-sc-text-dim hover:text-sc-text"
+          }`}
+        >
+          <Icon className="h-3.5 w-3.5 shrink-0" />
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /**
  * Every field of a card, shared by the public editor and the dashboard editor
  * so the two can never drift apart.
@@ -61,6 +103,8 @@ export default function CardEditorFields({
   ownHandle,
   showIdentity = true,
   showLinks = true,
+  settingsExtra,
+  initialTab = "content",
 }: {
   form: CardForm;
   onFormChange: (patch: Partial<CardForm>) => void;
@@ -78,7 +122,13 @@ export default function CardEditorFields({
   /** Off for a single-purpose card — its one action lives in its own panel,
    *  not the generic links list, and it has no payment/extras either. */
   showLinks?: boolean;
+  /** Page-level settings (e.g. live/draft, delete) that belong in the
+   *  Settings tab but live outside this shared component, since they differ
+   *  per editor (the public, pre-signup editor has neither). */
+  settingsExtra?: React.ReactNode;
+  initialTab?: EditorTab;
 }) {
+  const [tab, setTab] = useState<EditorTab>(initialTab);
   // Shown on the collapsed section headers so it's obvious what's already
   // filled in without opening each one.
   const photoCount =
@@ -162,14 +212,10 @@ export default function CardEditorFields({
 
   return (
     <div className="min-w-0 space-y-3">
-      <TemplatePicker
-        value={form.template}
-        accent={form.accent_color}
-        surface={form.surface_color}
-        font={form.font}
-        onChange={(template) => onFormChange({ template })}
-      />
+      <EditorTabs tab={tab} onChange={setTab} />
 
+      {tab === "content" && (
+      <div className="space-y-3">
       {form.template === "review" && (
         <EditorSection title="review card" hint="Google link, wording and feedback topics" defaultOpen>
           <ReviewFields
@@ -178,8 +224,6 @@ export default function CardEditorFields({
           />
         </EditorSection>
       )}
-
-      <p className="px-1 pt-3 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">The essentials</p>
 
       {/* ---------------- Identity ---------------- */}
       {showIdentity && (
@@ -281,23 +325,6 @@ export default function CardEditorFields({
           </p>
         </div>
 
-        {/* QR code */}
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border p-3.5">
-          <input
-            type="checkbox"
-            checked={form.show_qr !== false}
-            onChange={(e) => onFormChange({ show_qr: e.target.checked })}
-            className="mt-0.5 h-4 w-4 accent-sc-gold"
-          />
-          <span className="min-w-0">
-            <span className="block text-sm font-semibold text-sc-text">Show QR code</span>
-            <span className="mt-0.5 block text-xs text-sc-text-dimmer">
-              Adds a QR button to your card, so someone can scan it when tapping
-              isn&apos;t an option. Opens their contacts too.
-            </span>
-          </span>
-        </label>
-
         <div className="grid gap-5 sm:grid-cols-2">
           <ImagePicker
             kind="avatar"
@@ -309,6 +336,7 @@ export default function CardEditorFields({
           <ImagePicker
             kind="cover"
             label="Cover / background"
+            // The pattern that shows instead of this is in the Design tab.
             hint="Sits behind the top of your card. Works on every template."
             value={form.cover_url}
             onChange={(url) => onFormChange({ cover_url: url })}
@@ -320,34 +348,6 @@ export default function CardEditorFields({
             value={form.logo_url}
             onChange={(url) => onFormChange({ logo_url: url })}
           />
-        </div>
-
-        {/* A few templates (Minimal, Pop and others with their own built-in
-            look) ignore this entirely — it only fills in the templates that
-            otherwise show a flat page colour until a cover photo is set, and
-            a cover photo always takes over from it when one is uploaded. */}
-        <div className="space-y-2">
-          <Label>Background pattern</Label>
-          <p className="-mt-1 text-xs text-sc-text-dimmer">
-            A subtle default look for templates with no cover photo set. Pick
-            one, or &quot;plain&quot; for the old flat background.
-          </p>
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {BACKGROUND_PATTERNS.map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => onFormChange({ background_style: opt.id })}
-                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
-                  (form.background_style || "accent") === opt.id
-                    ? "border-sc-gold text-sc-gold-text"
-                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* Gallery */}
@@ -615,7 +615,46 @@ export default function CardEditorFields({
       </>
       )}
 
-      <p className="px-1 pt-3 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">Look &amp; feel</p>
+      {showLinks && (
+      <>
+      {/* Its own section, not a rule inside links. Bank details are their own
+          decision — worth opening deliberately, and worth being able to skip. */}
+      <EditorSection
+        title="payment details"
+        hint="Bank, EasyPaisa or JazzCash for getting paid"
+        badge={
+          extras.payment_enabled && (extras.payment_methods?.length ?? 0) > 0
+            ? `${extras.payment_methods.length}`
+            : undefined
+        }
+      >
+        <PaymentFields
+          enabled={extras.payment_enabled}
+          methods={extras.payment_methods ?? []}
+          onChange={onExtrasChange}
+        />
+      </EditorSection>
+
+      <EditorSection
+        title="extras"
+        hint="Availability, business hours, video"
+      >
+        <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
+      </EditorSection>
+      </>
+      )}
+      </div>
+      )}
+
+      {tab === "design" && (
+      <div className="space-y-3">
+      <TemplatePicker
+        value={form.template}
+        accent={form.accent_color}
+        surface={form.surface_color}
+        font={form.font}
+        onChange={(template) => onFormChange({ template })}
+      />
 
       {/* ---------------- Style ---------------- */}
       <EditorSection
@@ -809,36 +848,54 @@ export default function CardEditorFields({
 
       </EditorSection>
 
+      {/* A few templates (Minimal, Pop and others with their own built-in
+          look) ignore this entirely — it only fills in the templates that
+          otherwise show a flat page colour until a cover photo is set (set
+          on the Content tab), and a cover photo always takes over from it
+          once uploaded. */}
+      <EditorSection title="background pattern" hint="A subtle default look when there's no cover photo">
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {BACKGROUND_PATTERNS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onFormChange({ background_style: opt.id })}
+              className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                (form.background_style || "accent") === opt.id
+                  ? "border-sc-gold text-sc-gold-text"
+                  : "border-sc-border text-sc-text-dim hover:text-sc-text"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </EditorSection>
+      </div>
+      )}
 
-      {showLinks && (
-      <>
-      <p className="px-1 pt-3 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">Add to your card</p>
-
-      {/* Its own section, not a rule inside links. Bank details are their own
-          decision — worth opening deliberately, and worth being able to skip. */}
-      <EditorSection
-        title="payment details"
-        hint="Bank, EasyPaisa or JazzCash for getting paid"
-        badge={
-          extras.payment_enabled && (extras.payment_methods?.length ?? 0) > 0
-            ? `${extras.payment_methods.length}`
-            : undefined
-        }
-      >
-        <PaymentFields
-          enabled={extras.payment_enabled}
-          methods={extras.payment_methods ?? []}
-          onChange={onExtrasChange}
-        />
+      {tab === "settings" && (
+      <div className="space-y-3">
+      <EditorSection title="visibility" hint="QR code on your card" defaultOpen>
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border p-3.5">
+          <input
+            type="checkbox"
+            checked={form.show_qr !== false}
+            onChange={(e) => onFormChange({ show_qr: e.target.checked })}
+            className="mt-0.5 h-4 w-4 accent-sc-gold"
+          />
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-sc-text">Show QR code</span>
+            <span className="mt-0.5 block text-xs text-sc-text-dimmer">
+              Adds a QR button to your card, so someone can scan it when tapping
+              isn&apos;t an option. Opens their contacts too.
+            </span>
+          </span>
+        </label>
       </EditorSection>
 
-      <EditorSection
-        title="extras"
-        hint="Availability, business hours, video"
-      >
-        <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
-      </EditorSection>
-      </>
+      {settingsExtra}
+      </div>
       )}
     </div>
   );

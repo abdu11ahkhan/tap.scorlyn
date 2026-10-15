@@ -3,7 +3,7 @@
 import { Suspense, use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Loader2, Lock, Upload, Eye, Pencil } from "lucide-react";
+import { ArrowLeft, Loader2, Lock, Upload, Eye } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   CARD_PURPOSES,
@@ -27,6 +27,7 @@ import { renderCardTemplate } from "@/components/card-templates";
 import CardEditorFields from "@/components/card-editor/CardEditorFields";
 import { type ExtrasState } from "@/components/card-editor/ProfileExtrasFields";
 import DevicePreview from "@/components/card-editor/DevicePreview";
+import MobilePreviewSheet from "@/components/card-editor/MobilePreviewSheet";
 import NumberPicker from "@/components/card-templates/NumberPicker";
 import CardDesigner from "@/components/card-design/CardDesigner";
 import RefCatcher from "@/components/nfc/RefCatcher";
@@ -94,7 +95,8 @@ function PublicCardEditorInner({
   const [extras, setExtras] = useState<ExtrasState>(EMPTY_EXTRAS);
   const [ready, setReady] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
+  /** Full-screen preview overlay, phones only — desktop keeps the side-by-side layout. */
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const isKnownTemplate = TEMPLATE_IDS.includes(template as (typeof TEMPLATE_IDS)[number]);
 
@@ -229,43 +231,35 @@ function PublicCardEditorInner({
             editing freely — no account needed until you publish
           </p>
 
-          <button
-            onClick={handlePublish}
-            disabled={publishing || destinationMissing}
-            title={destinationMissing ? "Add the destination below first" : undefined}
-            className="sticker sticker-press flex shrink-0 items-center gap-2 rounded-full bg-acid px-6 py-3 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
-          >
-            {publishing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Upload className="h-4 w-4" />
-            )}
-            publish
-          </button>
-        </div>
-
-        {/* Mobile edit/preview toggle */}
-        <div className="flex border-t border-line lg:hidden">
-          {(["edit", "preview"] as const).map((tab) => (
+          <div className="flex shrink-0 items-center gap-2">
             <button
-              key={tab}
-              onClick={() => setMobileTab(tab)}
-              className={`flex flex-1 items-center justify-center gap-2 py-3 text-sm font-black lowercase transition-colors ${
-                mobileTab === tab
-                  ? "border-b-[3px] border-teal text-teal"
-                  : "text-ink-dim"
-              }`}
+              onClick={() => setPreviewOpen(true)}
+              aria-label="Preview your card"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink-dim transition-colors hover:border-teal hover:text-teal lg:hidden"
             >
-              {tab === "edit" ? <Pencil className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              {tab}
+              <Eye className="h-4 w-4" />
             </button>
-          ))}
+
+            <button
+              onClick={handlePublish}
+              disabled={publishing || destinationMissing}
+              title={destinationMissing ? "Add the destination below first" : undefined}
+              className="sticker sticker-press flex items-center gap-2 rounded-full bg-acid px-6 py-3 text-sm font-black uppercase tracking-tight text-ink disabled:opacity-60"
+            >
+              {publishing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4" />
+              )}
+              publish
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="relative mx-auto grid max-w-7xl items-start gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         {/* Fields */}
-        <div className={`min-w-0 ${mobileTab === "edit" ? "" : "hidden lg:block"}`}>
+        <div className="min-w-0">
           <h1 className="mb-6 text-3xl font-black tracking-tighter sm:text-4xl">
             {purpose ? (
               <>
@@ -318,8 +312,9 @@ function PublicCardEditorInner({
           </div>
         </div>
 
-        {/* Live preview */}
-        <div className={`min-w-0 lg:sticky lg:top-28 ${mobileTab === "preview" ? "" : "hidden lg:block"}`}>
+        {/* Live preview — desktop/tablet only; a phone uses the Preview
+            button above and the overlay below instead of a second column. */}
+        <div className="hidden min-w-0 lg:sticky lg:top-28 lg:block">
           <DevicePreview
             cardView={
               <CardDesigner
@@ -338,6 +333,19 @@ function PublicCardEditorInner({
           </DevicePreview>
         </div>
       </div>
+
+      <MobilePreviewSheet open={previewOpen} onClose={() => setPreviewOpen(false)}>
+        <DevicePreview
+          cardView={
+            <CardDesigner card={previewCard} profileUrl={profileUrl} width={340} compact />
+          }
+        >
+          <>
+            {renderCardTemplate({ card: previewCard, buttons: previewButtons })}
+            <NumberPicker buttons={previewButtons} />
+          </>
+        </DevicePreview>
+      </MobilePreviewSheet>
     </div>
   );
 }
