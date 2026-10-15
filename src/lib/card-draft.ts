@@ -15,6 +15,7 @@ export type CardForm = {
   show_qr: boolean;
   surface_color: string;
   background_effect: string;
+  background_style: string;
   intro_style: string;
   button_style: string;
   published: boolean;
@@ -40,6 +41,7 @@ export const EMPTY_CARD_FORM: CardForm = {
   show_qr: true,
   surface_color: "",
   background_effect: "none",
+  background_style: "accent",
   intro_style: "rise",
   button_style: "default",
   published: true,
@@ -188,7 +190,7 @@ export function draftToCardProfile(
     availability_note: extras?.availability_note || null,
     business_hours: extras?.business_hours ?? [],
     video_url: extras?.video_url || null,
-    background_style: "accent",
+    background_style: form.background_style || "accent",
     payment_enabled: extras?.payment_enabled ?? false,
     payment_methods: extras?.payment_methods ?? [],
     view_count: 0,

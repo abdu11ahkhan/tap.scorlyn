@@ -3,6 +3,7 @@ import { roleLine, fontStack, initialsOf, resolveCardTheme, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * Icon-only, as a grid of square tiles.
@@ -26,6 +27,7 @@ export default function TilesCard({
   // literal #F4F4F2/neutral-900 pair used to produce exactly.
   const theme = resolveCardTheme(card, "#F4F4F2");
   const { accent, accentText: ink, onAccent } = theme;
+  const pattern = resolvePattern(card.background_style, "dots");
 
   return (
     <div
@@ -34,6 +36,7 @@ export default function TilesCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!card.cover_url && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       <main className="mx-auto w-full max-w-sm px-5 pb-28 pt-16">
         <header className="card-rise flex items-center gap-4">
           <div

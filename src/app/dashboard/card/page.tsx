@@ -126,6 +126,7 @@ function MyCardEditor() {
             show_qr: data.show_qr !== false,
             surface_color: data.surface_color ?? "",
             background_effect: data.background_effect ?? "none",
+            background_style: data.background_style ?? "accent",
             intro_style: data.intro_style ?? "rise",
             button_style: data.button_style ?? "default",
             published: data.published !== false,

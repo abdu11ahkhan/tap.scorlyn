@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — a price list.
@@ -34,6 +35,7 @@ export default function MenuCard({
   const role = roleLine(card);
   const gallery = resolveGallery(card.gallery);
   const [primary, ...rest] = buttons;
+  const pattern = resolvePattern(card.background_style, "dots");
 
   // "Item — Rs.800" reads as two columns; anything else stays one.
   const items = gallery.map((g) => {
@@ -50,6 +52,7 @@ export default function MenuCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!card.cover_url && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         <header className="card-rise text-center">
           <h1 className="card-name text-[2.6rem] font-bold leading-none tracking-tight">{card.full_name}</h1>

@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * FORM — built to get a reply.
@@ -29,6 +30,7 @@ export default function ReplyCard({
   const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
   const email = card.email?.trim();
+  const pattern = resolvePattern(card.background_style, "dots");
 
   return (
     <div
@@ -37,6 +39,7 @@ export default function ReplyCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!card.cover_url && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <header
           className="card-rise flex items-center gap-4"

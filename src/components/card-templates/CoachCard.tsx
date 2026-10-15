@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, roleLine, type CardProfile, ty
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * PROFILE — the trainer card. Black, blocky, and loud about one thing: are
@@ -20,6 +21,7 @@ export default function CoachCard({
   const theme = resolveCardTheme(card, "#0A0A0A");
   const { accent, accentText: ink, onAccent } = theme;
   const role = roleLine(card);
+  const pattern = resolvePattern(card.background_style, "doodle");
 
   return (
     <div
@@ -28,6 +30,7 @@ export default function CoachCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!card.cover_url && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       {/* One diagonal bar of colour — the whole "energy" of the template,
           rather than a gradient wash that would fight the block type. Clear
           of the top edge (a negative offset gets clipped invisible by this

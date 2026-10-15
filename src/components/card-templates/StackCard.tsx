@@ -3,6 +3,7 @@ import { fontStack, initialsOf, resolveCardTheme, type CardProfile, type Resolve
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * SECTIONED — a whole small site on one page.
@@ -23,6 +24,7 @@ export default function StackCard({
   // literal white/#101010 pair used to produce exactly.
   const theme = resolveCardTheme(card, "#FFFFFF");
   const { accent, accentText: ink } = theme;
+  const pattern = resolvePattern(card.background_style, "dots");
 
   const sections = [
     { id: "top", label: "home" },
@@ -38,6 +40,7 @@ export default function StackCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!card.cover_url && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       {/* Jump nav */}
       {hasButtonOverride(card) ? (
         <LinkButtons card={card} buttons={buttons} style={card.button_style as "badge" | "gradient" | "solid" | "outline" | "block"} />

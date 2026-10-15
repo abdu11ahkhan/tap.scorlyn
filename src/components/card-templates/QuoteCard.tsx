@@ -9,6 +9,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * FORM — asking for a quote.
@@ -27,6 +28,7 @@ export default function QuoteCard({
   const theme = resolveCardTheme(card, "#F7F8F8");
   const { accent, onAccent } = theme;
   const role = roleLine(card);
+  const pattern = resolvePattern(card.background_style, "waves");
 
   const asks = [
     "What you need",
@@ -42,6 +44,7 @@ export default function QuoteCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!card.cover_url && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-16">
         <span
           className="card-rise inline-flex h-12 w-12 items-center justify-center rounded-2xl"

@@ -10,6 +10,7 @@ import {
 import { iconFor } from "./button-icons";
 
 import BackgroundEffect from "./BackgroundEffect";
+import BackgroundPattern, { resolvePattern } from "./BackgroundPattern";
 import LinkButtons, { hasButtonOverride } from "./LinkButtons";
 /**
  * LANDING — app-store shaped. Icon, rating, screenshot, feature list, download.
@@ -27,6 +28,7 @@ export default function AppCard({
   const role = roleLine(card);
   const [primary, ...rest] = buttons;
   const shot = card.cover_url;
+  const pattern = resolvePattern(card.background_style, "dots");
 
   return (
     <div
@@ -35,6 +37,7 @@ export default function AppCard({
       data-intro={card.intro_style || "rise"}
     >
       <BackgroundEffect effect={card.background_effect} accent={accent} />
+      {!shot && <BackgroundPattern pattern={pattern} accent={accent} surface={theme.surface} />}
       <main className="mx-auto w-full max-w-md px-6 pb-24 pt-14">
         {/* App header row */}
         <header className="card-rise flex items-center gap-4" style={{ ["--d" as string]: "0ms" }}>

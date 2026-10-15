@@ -122,6 +122,23 @@ export const BACKGROUND_EFFECTS = [
   { id: "gradient", label: "gradient" },
 ] as const;
 
+/**
+ * The default decorative background some templates draw when there's no
+ * cover photo (see src/components/card-templates/BackgroundPattern.tsx).
+ * Stored in the existing `background_style` column — "accent" (its
+ * long-standing default) means "use this template's own pick", a real id
+ * is an explicit override, and "none" opts out to a flat page colour.
+ * Templates this doesn't apply to (ones with their own built-in look, or
+ * that use the cover photo as their hero) ignore this column entirely.
+ */
+export const BACKGROUND_PATTERNS = [
+  { id: "accent", label: "match template" },
+  { id: "dots", label: "dots" },
+  { id: "doodle", label: "doodle" },
+  { id: "waves", label: "waves" },
+  { id: "none", label: "plain" },
+] as const;
+
 /** How the card's own elements animate in on load — see globals.css's
  *  [data-intro="..."] .card-rise overrides for how each one renders. */
 export const INTRO_STYLES = [

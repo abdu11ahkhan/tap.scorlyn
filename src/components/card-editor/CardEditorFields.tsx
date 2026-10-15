@@ -8,6 +8,7 @@ import {
   ACCENT_PRESETS,
   SURFACE_PRESETS,
   BACKGROUND_EFFECTS,
+  BACKGROUND_PATTERNS,
   BUTTON_STYLES,
   INTRO_STYLES,
   surfaceReadability,
@@ -319,6 +320,34 @@ export default function CardEditorFields({
             value={form.logo_url}
             onChange={(url) => onFormChange({ logo_url: url })}
           />
+        </div>
+
+        {/* A few templates (Minimal, Pop and others with their own built-in
+            look) ignore this entirely — it only fills in the templates that
+            otherwise show a flat page colour until a cover photo is set, and
+            a cover photo always takes over from it when one is uploaded. */}
+        <div className="space-y-2">
+          <Label>Background pattern</Label>
+          <p className="-mt-1 text-xs text-sc-text-dimmer">
+            A subtle default look for templates with no cover photo set. Pick
+            one, or &quot;plain&quot; for the old flat background.
+          </p>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {BACKGROUND_PATTERNS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => onFormChange({ background_style: opt.id })}
+                className={`h-11 shrink-0 whitespace-nowrap rounded-full border-2 px-3.5 text-[11px] font-black lowercase transition-colors sm:h-8 ${
+                  (form.background_style || "accent") === opt.id
+                    ? "border-sc-gold text-sc-gold-text"
+                    : "border-sc-border text-sc-text-dim hover:text-sc-text"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Gallery */}
