@@ -1,7 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, GripVertical, Eye, EyeOff, FileText, Palette, Settings2 } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  GripVertical,
+  Eye,
+  EyeOff,
+  FileText,
+  Palette,
+  Settings2,
+  User,
+  Image as ImageIcon,
+  Link2,
+  Banknote,
+  Sparkles,
+  MessageSquare,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -28,7 +43,9 @@ import UsernameField from "./UsernameField";
 import { detectKind } from "@/lib/detect-link";
 import { TEMPLATE_TONE } from "@/components/card-templates";
 import PaymentFields from "./PaymentFields";
-import EditorSection from "./EditorSection";
+import EditorCard from "./EditorCard";
+import EditorRow from "./EditorRow";
+import EditorSheet from "./EditorSheet";
 import ReviewFields from "./ReviewFields";
 import PasteLinks from "./PasteLinks";
 import ProfileExtrasFields, { type ExtrasState } from "./ProfileExtrasFields";
@@ -130,8 +147,12 @@ export default function CardEditorFields({
   initialTab?: EditorTab;
 }) {
   const [tab, setTab] = useState<EditorTab>(initialTab);
-  // Shown on the collapsed section headers so it's obvious what's already
-  // filled in without opening each one.
+  /** Which Content-tab section is open as a full-screen sheet right now. */
+  const [openSection, setOpenSection] = useState<
+    null | "review" | "details" | "photos" | "links" | "payment" | "extras"
+  >(null);
+  // Shown on each row so it's obvious what's already filled in without
+  // opening it.
   const photoCount =
     (form.avatar_url ? 1 : 0) +
     (form.cover_url ? 1 : 0) +
@@ -217,19 +238,10 @@ export default function CardEditorFields({
 
       {tab === "content" && (
       <div className="space-y-3">
-      {form.template === "review" && (
-        <EditorSection title="review card" hint="Google link, wording and feedback topics" defaultOpen>
-          <ReviewFields
-            value={form.review_config}
-            onChange={(review_config) => onFormChange({ review_config })}
-          />
-        </EditorSection>
-      )}
-
-      {/* At-a-glance summary of who the card actually is right now, before
-          the fields below it — on a long, multi-tab editor it's easy to lose
-          track of which card you're even looking at. Reads from the same
-          form state as "your details" below; not a separate field. */}
+      {/* At-a-glance summary of who the card actually is right now — on a
+          long, multi-tab editor it's easy to lose track of which card you're
+          even looking at. Reads from the same form state as "Profile
+          details" below; not a separate field. */}
       {showIdentity && (
         <div className="flex items-center gap-3 rounded-2xl border-2 border-sc-border-soft bg-sc-surface p-3.5">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-sc-border bg-sc-surface-2 text-sm font-black text-sc-text-dim">
@@ -251,12 +263,91 @@ export default function CardEditorFields({
         </div>
       )}
 
-      {/* ---------------- Identity ---------------- */}
-      {showIdentity && (
-      <EditorSection
-        title="your details"
+      {/* Each row opens its fields as a full-screen sheet (see the
+          EditorSheet block below, rendered once per row) rather than
+          expanding in place — so there is only ever one section's worth of
+          fields on screen at a time, on any width. */}
+      <p className="px-1 text-[11px] font-black uppercase tracking-[0.14em] text-sc-text-dimmer">Profile content</p>
+      <div className="space-y-2.5">
+        {form.template === "review" && (
+          <EditorRow
+            icon={MessageSquare}
+            title="Review card"
+            hint="Google link, wording and feedback topics"
+            onClick={() => setOpenSection("review")}
+          />
+        )}
+
+        {showIdentity && (
+          <EditorRow
+            icon={User}
+            title="Profile details"
+            hint="Name, role, company, bio"
+            onClick={() => setOpenSection("details")}
+          />
+        )}
+
+        <EditorRow
+          icon={ImageIcon}
+          title="Photos"
+          hint="Profile picture, cover image, gallery"
+          badge={photoCount ? `${photoCount}` : undefined}
+          onClick={() => setOpenSection("photos")}
+        />
+
+        {showLinks && (
+          <EditorRow
+            icon={Link2}
+            title="Links"
+            hint="Phone, WhatsApp, email, Instagram, website…"
+            badge={buttons.length ? `${buttons.length}` : undefined}
+            onClick={() => setOpenSection("links")}
+          />
+        )}
+
+        {showLinks && (
+          <EditorRow
+            icon={Banknote}
+            title="Payment details"
+            hint="Bank, EasyPaisa or JazzCash for getting paid"
+            badge={
+              extras.payment_enabled && (extras.payment_methods?.length ?? 0) > 0
+                ? `${extras.payment_methods.length}`
+                : undefined
+            }
+            onClick={() => setOpenSection("payment")}
+          />
+        )}
+
+        {showLinks && (
+          <EditorRow
+            icon={Sparkles}
+            title="Extras"
+            hint="Availability, business hours, video"
+            onClick={() => setOpenSection("extras")}
+          />
+        )}
+      </div>
+      </div>
+      )}
+
+      <EditorSheet
+        open={openSection === "review"}
+        onClose={() => setOpenSection(null)}
+        title="Review card"
+        hint="Google link, wording and feedback topics"
+      >
+        <ReviewFields
+          value={form.review_config}
+          onChange={(review_config) => onFormChange({ review_config })}
+        />
+      </EditorSheet>
+
+      <EditorSheet
+        open={openSection === "details"}
+        onClose={() => setOpenSection(null)}
+        title="Profile details"
         hint="Name, role, company, bio"
-        defaultOpen
       >
       <section className="space-y-5">
         {showUsername && (
@@ -331,15 +422,13 @@ export default function CardEditorFields({
           />
         </div>
       </section>
+      </EditorSheet>
 
-      </EditorSection>
-      )}
-
-      {/* ---------------- Photos ---------------- */}
-      <EditorSection
-        title="photos"
+      <EditorSheet
+        open={openSection === "photos"}
+        onClose={() => setOpenSection(null)}
+        title="Photos"
         hint="Profile picture, cover image, gallery"
-        badge={photoCount ? `${photoCount}` : undefined}
       >
       <section className="space-y-5">
         <div>
@@ -433,17 +522,13 @@ export default function CardEditorFields({
           </button>
         </div>
       </section>
+      </EditorSheet>
 
-      </EditorSection>
-
-      {/* ---------------- Buttons ---------------- */}
-      {showLinks && (
-      <>
-      <EditorSection
-        title="links"
+      <EditorSheet
+        open={openSection === "links"}
+        onClose={() => setOpenSection(null)}
+        title="Links"
         hint="Phone, WhatsApp, email, Instagram, website…"
-        badge={buttons.length ? `${buttons.length}` : undefined}
-        defaultOpen
       >
       <section className="space-y-3">
         {/* Before the list, not after: someone with links to add should see
@@ -633,44 +718,30 @@ export default function CardEditorFields({
             ))}
           </div>
         </div>
-
       </section>
+      </EditorSheet>
 
-      </EditorSection>
-
-      </>
-      )}
-
-      {showLinks && (
-      <>
-      {/* Its own section, not a rule inside links. Bank details are their own
-          decision — worth opening deliberately, and worth being able to skip. */}
-      <EditorSection
-        title="payment details"
+      <EditorSheet
+        open={openSection === "payment"}
+        onClose={() => setOpenSection(null)}
+        title="Payment details"
         hint="Bank, EasyPaisa or JazzCash for getting paid"
-        badge={
-          extras.payment_enabled && (extras.payment_methods?.length ?? 0) > 0
-            ? `${extras.payment_methods.length}`
-            : undefined
-        }
       >
         <PaymentFields
           enabled={extras.payment_enabled}
           methods={extras.payment_methods ?? []}
           onChange={onExtrasChange}
         />
-      </EditorSection>
+      </EditorSheet>
 
-      <EditorSection
-        title="extras"
+      <EditorSheet
+        open={openSection === "extras"}
+        onClose={() => setOpenSection(null)}
+        title="Extras"
         hint="Availability, business hours, video"
       >
         <ProfileExtrasFields value={extras} onChange={onExtrasChange} />
-      </EditorSection>
-      </>
-      )}
-      </div>
-      )}
+      </EditorSheet>
 
       {tab === "design" && (
       <div className="space-y-3">
@@ -683,11 +754,7 @@ export default function CardEditorFields({
       />
 
       {/* ---------------- Style ---------------- */}
-      <EditorSection
-        title="colour & font"
-        hint="The accent used across your card"
-        badge={form.font}
-      >
+      <EditorCard title="colour & font" hint="The accent, background and animation used across your card">
       <section className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="accent_color">Accent colour</Label>
@@ -872,14 +939,14 @@ export default function CardEditorFields({
         </div>
       </section>
 
-      </EditorSection>
+      </EditorCard>
 
       {/* A few templates (Minimal, Pop and others with their own built-in
           look) ignore this entirely — it only fills in the templates that
           otherwise show a flat page colour until a cover photo is set (set
           on the Content tab), and a cover photo always takes over from it
           once uploaded. */}
-      <EditorSection title="background pattern" hint="A subtle default look when there's no cover photo">
+      <EditorCard title="background pattern" hint="A subtle default look when there's no cover photo">
         <div className="flex flex-wrap gap-1.5 pt-1">
           {BACKGROUND_PATTERNS.map((opt) => (
             <button
@@ -896,13 +963,13 @@ export default function CardEditorFields({
             </button>
           ))}
         </div>
-      </EditorSection>
+      </EditorCard>
       </div>
       )}
 
       {tab === "settings" && (
       <div className="space-y-3">
-      <EditorSection title="visibility" hint="QR code on your card" defaultOpen>
+      <EditorCard title="visibility" hint="QR code on your card">
         <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sc-border p-3.5">
           <input
             type="checkbox"
@@ -921,7 +988,7 @@ export default function CardEditorFields({
         <p className="mt-2 px-1 text-xs text-sc-text-dimmer">
           Open Preview to see and test the actual QR code on your card.
         </p>
-      </EditorSection>
+      </EditorCard>
 
       {settingsExtra}
       </div>
