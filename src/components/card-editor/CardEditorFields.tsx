@@ -15,6 +15,7 @@ import {
   BUTTON_KIND_GROUPS,
   KIND_LABELS,
   KIND_PLACEHOLDERS,
+  initialsOf,
   type ButtonKind,
   type CardButton,
   type GalleryItem,
@@ -223,6 +224,31 @@ export default function CardEditorFields({
             onChange={(review_config) => onFormChange({ review_config })}
           />
         </EditorSection>
+      )}
+
+      {/* At-a-glance summary of who the card actually is right now, before
+          the fields below it — on a long, multi-tab editor it's easy to lose
+          track of which card you're even looking at. Reads from the same
+          form state as "your details" below; not a separate field. */}
+      {showIdentity && (
+        <div className="flex items-center gap-3 rounded-2xl border-2 border-sc-border-soft bg-sc-surface p-3.5">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-sc-border bg-sc-surface-2 text-sm font-black text-sc-text-dim">
+            {form.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={form.avatar_url} alt="" className="h-full w-full object-cover" />
+            ) : (
+              initialsOf(form.full_name || "Your Name")
+            )}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[15px] font-black text-sc-text">
+              {form.full_name.trim() || "Your name"}
+            </span>
+            <span className="block truncate text-xs font-semibold text-sc-text-dim">
+              {form.headline.trim() || form.company.trim() || "Add a headline or company below"}
+            </span>
+          </span>
+        </div>
       )}
 
       {/* ---------------- Identity ---------------- */}
@@ -892,6 +918,9 @@ export default function CardEditorFields({
             </span>
           </span>
         </label>
+        <p className="mt-2 px-1 text-xs text-sc-text-dimmer">
+          Open Preview to see and test the actual QR code on your card.
+        </p>
       </EditorSection>
 
       {settingsExtra}
