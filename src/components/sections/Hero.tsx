@@ -26,8 +26,8 @@ export function Hero({
   subtitle?: string | null;
 } = {}) {
   return (
-    <section className="dot-grid-light relative overflow-hidden border-b-[3px] border-char bg-sea pb-20 pt-[calc(72px+3.5rem)] sm:pb-24">
-      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
+    <section className="dot-grid-light relative overflow-hidden border-b-[3px] border-char bg-sea pb-14 pt-[calc(72px+2.5rem)] sm:pb-24 sm:pt-[calc(72px+3.5rem)]">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-5 sm:px-6 sm:gap-14 lg:grid-cols-[1.1fr_1fr]">
         {/* ---------------- Copy ---------------- */}
         <div>
           <motion.span
@@ -52,17 +52,17 @@ export function Hero({
             )}
           </motion.h1>
 
-          <motion.p {...fade(0.12)} className="mt-7 max-w-md text-lg font-bold leading-snug text-white sm:text-xl">
+          <motion.p {...fade(0.12)} className="mt-5 max-w-md text-lg font-bold leading-snug text-white sm:mt-7 sm:text-xl">
             {subtitle ||
               "Build your digital business card in minutes. Share it with a tap or a QR code anywhere in Pakistan. No app required."}
           </motion.p>
 
-          <motion.div {...fade(0.18)} className="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+          <motion.div {...fade(0.18)} className="mt-6 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             {/* The profile page, not a physical product — what actually
                 happens behind this button is building an online page. */}
             <Link
               href="/templates"
-              className="brut brut-press group inline-flex h-16 items-center justify-center gap-2 rounded-full bg-sun px-8 text-lg font-black uppercase tracking-tight text-char"
+              className="brut brut-press group inline-flex h-14 items-center justify-center gap-2 rounded-full bg-sun px-8 text-lg font-black uppercase tracking-tight text-char sm:h-16"
             >
               build your profile
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -70,14 +70,14 @@ export function Hero({
             {/* The other path: a physical card that does one thing on a tap. */}
             <Link
               href="/dashboard/quick-order"
-              className="brut brut-press inline-flex h-16 items-center justify-center gap-2 rounded-full bg-white px-8 text-lg font-black uppercase tracking-tight text-char"
+              className="brut brut-press inline-flex h-14 items-center justify-center gap-2 rounded-full bg-white px-8 text-lg font-black uppercase tracking-tight text-char sm:h-16"
             >
               <Zap className="h-5 w-5" />
               order an nfc card
             </Link>
           </motion.div>
 
-          <motion.div {...fade(0.24)} className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <motion.div {...fade(0.24)} className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 sm:mt-6">
             <Link
               href="#how-it-works"
               className="inline-flex h-11 items-center gap-2 text-[15px] font-black uppercase tracking-tight text-white underline-offset-4 hover:underline"
@@ -89,12 +89,23 @@ export function Hero({
           </motion.div>
         </div>
 
-        {/* ---------------- Sticker collage ---------------- */}
+        {/* ---------------- Sticker collage ----------------
+            The collage itself (every child below) keeps its original 520px
+            layout untouched — positions are hand-placed in pixels, so
+            resizing the box directly would clip or misalign them. Instead
+            this outer wrapper reserves a shorter box on mobile and scales
+            the untouched collage down to fit it, the same way a photo is
+            scaled rather than cropped. framer-motion drives its own
+            transform on the inner element for the entrance animation, so the
+            static CSS scale lives on this separate outer wrapper instead of
+            fighting over the same `transform` property. */}
+        <div className="mx-auto h-[450px] w-full max-w-[460px] overflow-hidden sm:h-[560px] sm:overflow-visible">
+        <div className="origin-top scale-[0.865] sm:scale-100">
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-          className="relative mx-auto h-[520px] w-full max-w-[460px] sm:h-[560px]"
+          className="relative mx-auto h-[520px] w-full max-w-[460px]"
           aria-hidden="true"
         >
           {/* Soft disc + sun blob behind everything, like the reference's plate. */}
@@ -169,6 +180,8 @@ export function Hero({
           <Sparkles className="absolute left-[44%] top-0 h-9 w-9 text-white" />
           <Sparkles className="absolute -right-2 bottom-24 h-8 w-8 text-sun" />
         </motion.div>
+        </div>
+        </div>
       </div>
     </section>
   );

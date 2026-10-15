@@ -9,19 +9,11 @@ import BrandMark from "@/components/layout/BrandMark";
 import RequestForm from "./RequestForm";
 import ClaimButton from "./ClaimButton";
 import CardPicker, { type MyPage } from "./CardPicker";
+import { activationStep, type ClaimStatus } from "@/lib/activation";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Activate your card", robots: { index: false, follow: false } };
 
-type Status = {
-  exists: boolean;
-  serial?: number;
-  status?: string;
-  claimable?: boolean;
-  pending_other?: boolean;
-  my_claim?: string | null;
-  is_owner?: boolean;
-};
 
 function Shell({ serial, children }: { serial?: number; children: React.ReactNode }) {
   return (
@@ -69,12 +61,14 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
     data: { user },
   } = await supabase.auth.getUser();
   const { data } = await supabase.rpc("card_claim_status", { p_code: code });
-  const s = (data ?? { exists: false }) as Status;
-  if (!s.exists) notFound();
+  const s = (data ?? { exists: false }) as ClaimStatus;
+  // Which screen to show is decided by activationStep() (unit-tested).
+  const step = activationStep(s, Boolean(user));
+  if (step === "not-found") notFound();
 
   const next = encodeURIComponent(`/activate/${code}`);
 
-  if (s.is_owner) {
+  if (step === "owner") {
     const { data: pages } = await supabase
       .from("card_profiles")
       .select("id, username, full_name, template, is_single_purpose")
@@ -93,7 +87,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
     );
   }
 
-  if (s.status !== "in_stock") {
+  if (step === "in-use") {
     return (
       <Shell serial={s.serial}>
         <Message
@@ -105,7 +99,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
     );
   }
 
-  if (!s.claimable) {
+  if (step === "not-ready") {
     return (
       <Shell serial={s.serial}>
         <Message icon={Lock} title="This card isn't ready yet" body="It hasn't been set up for activation. If it's in your hands, message ScorlynTap and we'll switch it on." />
@@ -113,7 +107,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
     );
   }
 
-  if (!user) {
+  if (step === "sign-in" || !user) {
     return (
       <Shell serial={s.serial}>
         <div className="app-panel app-panel-pad space-y-5">
@@ -146,7 +140,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
     );
   }
 
-  if (s.my_claim === "pending") {
+  if (step === "pending") {
     return (
       <Shell serial={s.serial}>
         <Message
@@ -168,7 +162,7 @@ export default async function ActivateCard({ params }: { params: Promise<{ code:
     );
   }
 
-  if (s.pending_other) {
+  if (step === "pending-other") {
     return (
       <Shell serial={s.serial}>
         <Message

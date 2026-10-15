@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, Camera, LayoutTemplate, Sparkles } from "lucide-react";
-import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_CATEGORIES } from "@/lib/card";
+import { CARD_PURPOSES, CARD_TEMPLATES, TEMPLATE_AUDIENCES, TEMPLATE_CATEGORIES, audiencesFor } from "@/lib/card";
 import { TEMPLATE_TONE } from "@/components/card-templates";
 import { createClient } from "@/lib/supabase/server";
 import { Marquee } from "@/components/sections/Marquee";
@@ -61,6 +61,10 @@ export default async function PublicTemplatesPage({
       id: t.id,
       name: o?.name || t.name,
       category: (o?.category as string) || t.category,
+      // Which real-world use cases this design fits — see TEMPLATE_AUDIENCES.
+      // An admin-renamed category doesn't change this: audience tags key off
+      // the template's own id, not its (possibly overridden) structural one.
+      audiences: audiencesFor(t.id),
       preview: t.preview,
       tone: TEMPLATE_TONE[t.id] ?? "#ffffff",
       enabled: o?.enabled ?? true,
@@ -142,6 +146,7 @@ export default async function PublicTemplatesPage({
         >
           <TemplateGallery
             templates={templatesAll}
+            audiences={TEMPLATE_AUDIENCES}
             categories={TEMPLATE_CATEGORIES}
             purposeId={purpose?.id ?? null}
           />

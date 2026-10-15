@@ -11,6 +11,11 @@ import ReferenceNote from "@/components/nfc/ReferenceNote";
 import ProfileExtras, { hasProfileExtras } from "@/components/nfc/ProfileExtras";
 import { extrasTone } from "@/components/card-templates";
 import ShareButton from "@/components/nfc/ShareButton";
+import PoweredBy from "@/components/nfc/PoweredBy";
+
+/** Templates with their own inline "Powered by ScorlynTap" mark already —
+ *  showing the shared one too would print it twice. */
+const HAS_OWN_BRANDING = new Set(["arena", "review"]);
 import { headers } from "next/headers";
 
 /** Matches src/lib/email.ts's SITE_URL — kept separate here rather than
@@ -141,6 +146,7 @@ export default async function CardProfilePage({
         name={card.full_name}
         accent={card.accent_color || "#111111"}
         username={card.username}
+        tone={extrasTone(card)}
       />
 
       {/* Every template is min-h-screen, which reserves a full viewport below
@@ -151,6 +157,8 @@ export default async function CardProfilePage({
       </div>
 
       <ProfileExtras card={card} tone={extrasTone(card)} />
+
+      {!HAS_OWN_BRANDING.has(card.template) && <PoweredBy />}
 
       <ReferenceNote username={card.username} />
 

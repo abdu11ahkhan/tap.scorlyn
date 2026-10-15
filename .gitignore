@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 check.tmp.js
 graphify-out/
+
+# Smoke-test screenshots that failed comparison (baselines are committed)
+tests/smoke/output/

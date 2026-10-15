@@ -283,8 +283,13 @@ function SignupForm() {
             </button>
 
             <button
+              type="button"
               onClick={() => router.push(`/login?next=${encodeURIComponent(next)}`)}
-              className="mt-3 text-[13px] font-black uppercase tracking-widest text-ink/45"
+              // min-h-11 (44px) plus the padding/negative margin keep the
+              // same visual spacing and text size as before while giving it
+              // a real touch target; the ring is only the native focus
+              // outline made visible and on-brand, not a new style language.
+              className="-mx-2 mt-3 inline-flex min-h-11 items-center rounded-lg px-2 text-[13px] font-black uppercase tracking-widest text-ink/45 outline-none transition-colors hover:text-ink/70 focus-visible:ring-2 focus-visible:ring-acid focus-visible:ring-offset-2"
             >
               back to login
             </button>

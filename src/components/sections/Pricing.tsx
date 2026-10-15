@@ -62,14 +62,14 @@ const PLANS = [
 
 export function Pricing({ note }: { note?: string | null } = {}) {
   return (
-    <section id="pricing" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-cream py-24">
+    <section id="pricing" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-cream py-14 sm:py-24">
       <div className="relative mx-auto max-w-5xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-16"
+          className="mb-10 sm:mb-16"
         >
           <PosterTitle
             lead="Cheap."
@@ -79,7 +79,9 @@ export function Pricing({ note }: { note?: string | null } = {}) {
           />
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        {/* Horizontal scroll on mobile — same three plans, one row instead of
+            a three-tall stack. */}
+        <div className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0">
           {PLANS.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -88,7 +90,7 @@ export function Pricing({ note }: { note?: string | null } = {}) {
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
               style={{ rotate: plan.tilt }}
-              className={`brut brut-press relative rounded-[2rem] p-8 hover:!rotate-0 ${plan.className}`}
+              className={`brut brut-press relative w-[260px] shrink-0 snap-start rounded-[2rem] p-6 hover:!rotate-0 sm:p-8 md:w-auto md:shrink ${plan.className}`}
             >
               {plan.featured && (
                 <span className="brut-sm absolute -top-4 right-7 rotate-3 rounded-full bg-hotpink px-4 py-1.5 text-xs font-black uppercase tracking-widest text-white">

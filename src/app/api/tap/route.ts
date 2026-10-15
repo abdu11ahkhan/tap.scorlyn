@@ -3,10 +3,16 @@ import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { clientIp, visitorHash } from "@/lib/referral";
 import { mailerConfigured, sendFirstTap } from "@/lib/email";
+import { LIMITS, checkLimits, limitIdentity, readJsonBody, serviceClient, tooManyRequests } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 const SOURCES = new Set(["nfc", "qr", "card", "link"]);
+
+/** Same shape card_profiles enforces (3–30 chars), with room for older handles. */
+const USERNAME = /^[a-z0-9][a-z0-9_-]{1,39}$/;
+/** Card codes are short URL-safe tokens; this only rejects junk, not old formats. */
+const NFC_CODE = /^[A-Za-z0-9_-]{1,64}$/;
 
 /** Kept in one place so card_taps' CHECK constraint and this route can never drift apart. */
 const EVENT_TYPES = new Set([
@@ -38,15 +44,27 @@ const EVENT_TYPES = new Set([
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json().catch(() => null);
-    const username = typeof body?.username === "string" ? body.username : null;
+    const { body: raw, tooLarge } = await readJsonBody(request, 4096);
+    if (tooLarge) return NextResponse.json({ error: "request too large" }, { status: 413 });
+    const body = raw as Record<string, unknown> | null;
+    const username = typeof body?.username === "string" ? body.username.trim().toLowerCase() : null;
 
-    if (!username) {
+    if (!username || !USERNAME.test(username)) {
       return NextResponse.json({ error: "username required" }, { status: 400 });
     }
 
-    const source = SOURCES.has(body?.source) ? body.source : "link";
-    const eventType = EVENT_TYPES.has(body?.eventType) ? body.eventType : "view";
+    // Before any database read: broadest key first, so a flood from one
+    // address is turned away after a single counter update. No per-card cap
+    // (see LIMITS): it would let a few addresses lock out a card's real visitors.
+    const who = limitIdentity(request.headers);
+    const limit = await checkLimits([
+      { key: `tap:ip:${who.ip}`, windowSeconds: 60, max: LIMITS.tap.ipPerMinute },
+      { key: `tap:v:${who.visitor}`, windowSeconds: 60, max: LIMITS.tap.visitorPerMinute },
+    ]);
+    if (!limit.allowed) return tooManyRequests(60);
+
+    const source = typeof body?.source === "string" && SOURCES.has(body.source) ? body.source : "link";
+    const eventType = typeof body?.eventType === "string" && EVENT_TYPES.has(body.eventType) ? body.eventType : "view";
     // A free-text sub-classification (e.g. a button's kind), not an id — never
     // trusted for anything beyond display, so no validation needed beyond a
     // sane length.
@@ -74,7 +92,7 @@ export async function POST(request: NextRequest) {
     // would silently return nothing for this anonymous request.
     let nfcCardId: string | null = null;
     const nfcCode = typeof body?.nfcCode === "string" ? body.nfcCode.trim() : "";
-    if (nfcCode) {
+    if (nfcCode && NFC_CODE.test(nfcCode)) {
       const { data: rows } = await supabase.rpc("resolve_nfc_card", { code: nfcCode });
       const nfcCard = rows?.[0];
       if (nfcCard?.card_profile_id === profile.id) {
@@ -84,32 +102,40 @@ export async function POST(request: NextRequest) {
 
     const userAgent = request.headers.get("user-agent") ?? "";
 
-    // Checked before the insert below creates one: this is the only way to
-    // know "was that the first tap this card ever recorded" after the row
-    // exists — derived from the same card_taps.nfc_card_id attribution
-    // Phase 7/11 already rely on, not a new signal.
+    // Writes go through the service role: migration 070 removes the
+    // anonymous insert policy, so this route (with its limits) is the only
+    // way in. Without the key (local dev) the anon client still works for as
+    // long as that policy exists.
+    const admin = serviceClient();
+    const writer = admin ?? supabase;
+
+    // Checked before the insert below creates one: "was that the first tap
+    // this card ever recorded". Counted with the service role: card_taps is
+    // only readable by the card's owner, so an anonymous count always came
+    // back 0 and the "first tap" email went out on every tap.
     let isFirstTap = false;
-    if (nfcCardId) {
-      const { count } = await supabase
+    if (nfcCardId && admin) {
+      const { count, error: countError } = await admin
         .from("card_taps")
         .select("id", { count: "exact", head: true })
         .eq("nfc_card_id", nfcCardId);
-      isFirstTap = (count ?? 0) === 0;
+      isFirstTap = !countError && count === 0;
     }
 
-    const { error } = await supabase.from("card_taps").insert({
+    const { error } = await writer.from("card_taps").insert({
       card_profile_id: profile.id,
       nfc_card_id: nfcCardId,
       source,
       event_type: eventType,
       target,
-      referrer: request.headers.get("referer"),
+      referrer: request.headers.get("referer")?.slice(0, 500) ?? null,
       user_agent: userAgent.slice(0, 500),
       visitor_hash: visitorHash(clientIp(request.headers), userAgent),
     });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      // Never echo database detail to an anonymous caller.
+      return NextResponse.json({ error: "could not record" }, { status: 500 });
     }
 
     // Deliberately after the insert succeeds, and deliberately swallowed on
@@ -123,9 +149,8 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "could not record" }, { status: 500 });
   }
 }
 

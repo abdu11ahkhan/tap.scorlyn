@@ -165,7 +165,10 @@ export default function UsernameField({
           spellCheck={false}
           aria-invalid={state.kind === "taken" || state.kind === "invalid"}
           aria-describedby="username-status"
-          className={`${className ?? ""} ${border} pr-10`}
+          // h-11 (44px) and 16px text on mobile so the field is easy to tap
+          // and iOS Safari doesn't zoom the page on focus; both relax on
+          // sm: screens, matching the shared <Input> component's own sizing.
+          className={`h-11 w-full min-w-0 rounded-lg px-3 text-base outline-none sm:h-9 sm:text-sm ${className ?? ""} ${border} pr-10`}
         />
         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
           {state.kind === "checking" && (

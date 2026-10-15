@@ -1394,3 +1394,72 @@ export const CARD_TEMPLATES = [
 ] as const;
 
 export const TEMPLATE_IDS = CARD_TEMPLATES.map((t) => t.id);
+
+/**
+ * "What are you making this for?" — a second, additive lens over the same 48
+ * templates, for the public gallery's discovery UI. `TEMPLATE_CATEGORIES`
+ * above is a structural grouping (what shape the page is: a profile, a
+ * landing page, a form…) and stays exactly as it was — the homepage carousel,
+ * the admin template list and the editor's own picker all key off it, and
+ * none of that changes here.
+ *
+ * This is a different question: which real-world use case does someone
+ * arrive already knowing? A template can fit more than one — Badge is both
+ * a safe professional pick and a small-business one — so this is a
+ * templateIds list per group, not a single field on each template the way
+ * `category` is. Every template appears in at least one group; none are
+ * renamed, hidden or redefined — this only tags the existing 48 ids.
+ *
+ * Assignments come from each template's own `blurb`/`vibe`/`category` above,
+ * not invented capabilities: Booking and Reply are tagged for lead capture
+ * because they already are contact/appointment forms, not because a
+ * "lead capture" feature was added to them.
+ */
+export const TEMPLATE_AUDIENCES = [
+  {
+    id: "professional",
+    name: "Professional & executive",
+    blurb: "Straightforward and credible. For when the title does the talking.",
+    templateIds: ["minimal", "bold", "split", "mono", "badge", "summit", "clinic"],
+  },
+  {
+    id: "freelancer",
+    name: "Freelancer & personal brand",
+    blurb: "Built around one person — their work, their voice, their links.",
+    templateIds: [
+      "flare", "strips", "pop", "aurora", "sticker", "coach", "wellness",
+      "tape", "editorial", "neon", "orbit", "tiles", "dock", "glass", "journal",
+    ],
+  },
+  {
+    id: "creator",
+    name: "Creator, photographer & portfolio",
+    blurb: "Lead with the work. Grids, galleries and full-bleed imagery.",
+    templateIds: ["grid", "showcase", "reel", "masonry", "filmstrip", "lookbook", "contactsheet", "case", "frames", "mosaic"],
+  },
+  {
+    id: "business",
+    name: "Business & local services",
+    blurb: "For a shop, café, clinic or venue people need to find and trust.",
+    templateIds: ["zest", "grove", "agency", "arena", "review", "stack", "studio"],
+  },
+  {
+    id: "leadgen",
+    name: "Booking, menu & lead capture",
+    blurb: "A real next step: book a slot, see a menu, send a message.",
+    templateIds: ["booking", "menu", "reply", "quote", "review"],
+  },
+  {
+    id: "campaign",
+    name: "Event, launch & campaign pages",
+    blurb: "One moment, one message. Built to convert, not to linger.",
+    templateIds: ["poster", "launch", "waitlist", "pitch", "app"],
+  },
+] as const;
+
+export type TemplateAudience = (typeof TEMPLATE_AUDIENCES)[number]["id"];
+
+/** Every audience group a template belongs to, in TEMPLATE_AUDIENCES order. */
+export function audiencesFor(templateId: string): TemplateAudience[] {
+  return TEMPLATE_AUDIENCES.filter((g) => (g.templateIds as readonly string[]).includes(templateId)).map((g) => g.id);
+}

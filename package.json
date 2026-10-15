@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:unit": "node --import ./tests/register.mjs --experimental-test-module-mocks --test \"tests/unit/**/*.test.ts\"",
+    "test:smoke": "node tests/smoke/smoke.mjs",
+    "test:smoke:update": "node tests/smoke/smoke.mjs --update",
+    "test": "npm run test:unit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.117.1",

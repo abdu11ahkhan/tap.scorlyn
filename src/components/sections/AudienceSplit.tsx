@@ -30,34 +30,34 @@ const CORPORATE = [
 
 export function AudienceSplit() {
   return (
-    <section className="dot-grid-light relative border-b-[3px] border-char bg-sea py-24">
+    <section className="dot-grid-light relative border-b-[3px] border-char bg-sea py-14 sm:py-24">
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-14"
+          className="mb-10 sm:mb-14"
         >
           <PosterTitle lead="Built for one," accent="or a team" light />
         </motion.div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-5 sm:gap-8 md:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: 34 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5 }}
-            className="brut rounded-[1.75rem] bg-sun p-8 text-char"
+            className="brut rounded-[1.75rem] bg-sun p-6 text-char sm:p-8"
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-char bg-white">
               <User className="h-6 w-6" />
             </div>
-            <h3 className="display mt-5 text-[44px]">for you</h3>
+            <h3 className="display mt-4 text-[32px] sm:mt-5 sm:text-[44px]">for you</h3>
             <p className="text-sm font-black uppercase tracking-wide text-char/60">professionals, freelancers, creators</p>
-            <ul className="mt-6 space-y-3">
+            <ul className="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
               {INDIVIDUAL.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-[15px] font-bold leading-snug">
+                <li key={item} className="flex items-start gap-2.5 text-[14px] font-bold leading-snug sm:text-[15px]">
                   <Check className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={3.5} />
                   {item}
                 </li>
@@ -65,7 +65,7 @@ export function AudienceSplit() {
             </ul>
             <Link
               href="/templates"
-              className="brut-sm brut-press mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-black uppercase tracking-tight text-char"
+              className="brut-sm brut-press mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-black uppercase tracking-tight text-char sm:mt-8 sm:h-14"
             >
               create your card
               <ArrowRight className="h-4 w-4" />
@@ -77,16 +77,16 @@ export function AudienceSplit() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: 0.08 }}
-            className="brut rounded-[1.75rem] bg-char p-8 text-white"
+            className="brut rounded-[1.75rem] bg-char p-6 text-white sm:p-8"
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-white/80 bg-sea">
               <Building2 className="h-6 w-6" />
             </div>
-            <h3 className="display mt-5 text-[44px] text-sun">for your team</h3>
+            <h3 className="display mt-4 text-[32px] text-sun sm:mt-5 sm:text-[44px]">for your team</h3>
             <p className="text-sm font-black uppercase tracking-wide text-white/60">companies, offices, agencies</p>
-            <ul className="mt-6 space-y-3">
+            <ul className="mt-4 space-y-2 sm:mt-6 sm:space-y-3">
               {CORPORATE.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-[15px] font-bold leading-snug text-white/90">
+                <li key={item} className="flex items-start gap-2.5 text-[14px] font-bold leading-snug text-white/90 sm:text-[15px]">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-sun" strokeWidth={3.5} />
                   {item}
                 </li>
@@ -94,7 +94,7 @@ export function AudienceSplit() {
             </ul>
             <Link
               href="#contact"
-              className="mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full border-[3px] border-white bg-sun px-6 text-base font-black uppercase tracking-tight text-char shadow-[5px_5px_0_0_#ffffff] transition-transform active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+              className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border-[3px] border-white bg-sun px-6 text-base font-black uppercase tracking-tight text-char shadow-[5px_5px_0_0_#ffffff] transition-transform active:translate-x-[3px] active:translate-y-[3px] active:shadow-none sm:mt-8 sm:h-14"
             >
               talk to us
               <ArrowRight className="h-4 w-4" />

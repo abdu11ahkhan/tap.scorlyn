@@ -3,8 +3,7 @@
 import { CARD_TEMPLATES } from "@/lib/card";
 
 import { motion } from "framer-motion";
-import { LayoutTemplate, IdCard, Smartphone, Share2, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LayoutTemplate, IdCard, Smartphone, Share2 } from "lucide-react";
 import PosterTitle from "./PosterTitle";
 
 /**
@@ -44,14 +43,14 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-cream py-24">
+    <section id="how-it-works" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-cream py-14 sm:py-24">
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-14"
+          className="mb-10 sm:mb-14"
         >
           <PosterTitle
             lead="One card."
@@ -61,7 +60,7 @@ export function HowItWorks() {
           />
         </motion.div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
           {STEPS.map((step, i) => {
             const Icon = step.icon;
             return (
@@ -71,42 +70,20 @@ export function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className={`brut brut-press relative flex h-full flex-col rounded-[1.75rem] p-6 ${step.card}`}
+                className={`brut brut-press relative flex h-full flex-col rounded-[1.5rem] p-4 sm:rounded-[1.75rem] sm:p-6 ${step.card}`}
               >
-                <span className="brut-sm absolute -right-3 -top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm font-black text-char">
+                <span className="brut-sm absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-black text-char sm:-right-3 sm:-top-3 sm:h-10 sm:w-10 sm:text-sm">
                   {step.n}
                 </span>
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-char bg-cream text-char">
-                  <Icon className="h-6 w-6" />
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-char bg-cream text-char sm:h-14 sm:w-14 sm:rounded-2xl sm:border-[3px]">
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </span>
-                <h3 className="display mt-6 text-[32px]">{step.title}</h3>
-                <p className="mt-2 text-[15px] font-semibold leading-relaxed opacity-85">{step.body}</p>
+                <h3 className="display mt-4 text-[22px] sm:mt-6 sm:text-[32px]">{step.title}</h3>
+                <p className="mt-1.5 text-[13px] font-semibold leading-snug opacity-85 sm:mt-2 sm:text-[15px] sm:leading-relaxed">{step.body}</p>
               </motion.div>
             );
           })}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
-        >
-          <Link
-            href="/templates"
-            className="brut brut-press inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-sun px-8 text-base font-black uppercase tracking-tight text-char sm:w-auto"
-          >
-            create your card
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/dashboard/nfc"
-            className="brut brut-press inline-flex h-14 w-full items-center justify-center rounded-full bg-white px-8 text-base font-black uppercase tracking-tight text-char sm:w-auto"
-          >
-            get your nfc card
-          </Link>
-        </motion.div>
       </div>
     </section>
   );

@@ -79,7 +79,7 @@ export default function ReferenceNote({ username }: { username: string }) {
           onChange={(e) => update(e.target.value)}
           placeholder="e.g. car shop owner, met at the expo"
           maxLength={300}
-          className="mt-2.5 h-11 w-full rounded-xl border-2 border-sc-border bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-gold"
+          className="mt-2.5 h-11 w-full rounded-xl border-2 border-sc-border bg-sc-surface-2 px-3 text-base font-semibold text-sc-text outline-none placeholder:text-sc-text-dimmer focus:border-sc-gold"
         />
       </div>
     </div>

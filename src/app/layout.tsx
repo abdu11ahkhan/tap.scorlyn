@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import HydrationFlag from "@/components/layout/HydrationFlag";
+import MotionProvider from "@/components/layout/MotionProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 // Marketing headlines only — tall, condensed, all caps.
@@ -113,7 +114,7 @@ export default function RootLayout({
             })
           }}
         />
-        {children}
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

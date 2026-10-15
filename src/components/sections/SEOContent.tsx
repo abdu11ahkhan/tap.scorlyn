@@ -1,5 +1,6 @@
+import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import PosterTitle from "./PosterTitle";
-import React from "react";
 
 const FAQ_DATA = [
   {
@@ -39,28 +40,41 @@ export function SEOContent() {
   };
 
   return (
-    <section className="relative border-b-[3px] border-char bg-cream py-24 text-char">
+    <section className="relative border-b-[3px] border-char bg-cream py-14 text-char sm:py-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <div className="mx-auto max-w-4xl px-6">
-        <div className="mb-16 text-center">
+        <div className="mb-10 text-center sm:mb-16">
           <PosterTitle lead="Frequently asked" accent="questions" variant="outline" align="center" />
         </div>
-        
-        <dl className="grid gap-6 md:grid-cols-2">
+
+        {/* Collapsed by default: all five answers were previously shown open
+            at once, adding well over a thousand px to every visit even
+            though most visitors only want one or two of them. Native
+            <details>, so the full text stays in the page (and in the
+            FAQPage schema above) and works without JavaScript — same pattern
+            as the payment drawer on a public card page. */}
+        <div className="grid gap-4 md:grid-cols-2">
           {FAQ_DATA.map((faq, index) => (
-            <div key={index} className="brut-sm space-y-2 rounded-3xl bg-white p-6">
-              <dt className="display text-[26px] text-char">
+            <details key={index} className="brut-sm group rounded-3xl bg-white p-5 sm:p-6">
+              <summary className="display flex cursor-pointer list-none items-center justify-between gap-3 text-[19px] text-char sm:text-[26px] [&::-webkit-details-marker]:hidden">
                 {faq.question}
-              </dt>
-              <dd className="text-[15px] font-semibold leading-relaxed text-char/75">
+                <ChevronDown className="h-5 w-5 shrink-0 text-char/50 transition-transform group-open:rotate-180" />
+              </summary>
+              <p className="mt-2 text-[14px] font-semibold leading-relaxed text-char/75 sm:text-[15px]">
                 {faq.answer}
-              </dd>
-            </div>
+              </p>
+            </details>
           ))}
-        </dl>
+        </div>
+
+        <p className="mt-8 text-center text-sm font-bold text-char/60">
+          <Link href="/faq" className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">
+            See all questions
+          </Link>
+        </p>
       </div>
     </section>
   );

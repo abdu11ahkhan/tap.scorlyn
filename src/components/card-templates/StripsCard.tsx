@@ -56,7 +56,7 @@ export default function StripsCard({ card, buttons }: { card: CardProfile; butto
                     target={s.external ? "_blank" : undefined}
                     rel={s.external ? "noopener noreferrer" : undefined}
                     aria-label={s.label}
-                    className="flex h-9 w-9 items-center justify-center rounded-full transition-opacity hover:opacity-70"
+                    className="flex h-11 w-11 items-center justify-center rounded-full transition-opacity hover:opacity-70"
                     style={{ color: theme.fgDim }}
                   >
                     <Icon className="h-4 w-4" />
@@ -111,7 +111,7 @@ export default function StripsCard({ card, buttons }: { card: CardProfile; butto
           </nav>
         )}
 
-        <p className="mt-8 text-center text-[10px] uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>
+        <p className="mt-8 text-center text-[11px] uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>
           @{card.username}
         </p>
       </main>

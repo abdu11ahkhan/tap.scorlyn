@@ -163,7 +163,16 @@ export function buildVCard(card: VCardSource, origin: string, visitorNote?: stri
       continue;
     }
 
-    if (button.kind === "whatsapp") continue; // already a TEL above
+    // The first WhatsApp number is already the item0 TEL above (card.whatsapp
+    // mirrors it). Any further ones — a second country's number, say — used
+    // to be skipped here entirely, so they never reached the visitor's phone.
+    if (button.kind === "whatsapp") {
+      const number = normalizeWhatsapp(value);
+      if (!number || seen.has(number)) continue;
+      seen.add(number);
+      labelled("TEL;TYPE=CELL,VOICE", `+${number}`, label === KIND_LABELS.whatsapp ? "WhatsApp" : `WhatsApp ${label}`);
+      continue;
+    }
 
     if (button.external && button.href.startsWith("http")) {
       labelled("URL", escapeVCard(button.href), label);

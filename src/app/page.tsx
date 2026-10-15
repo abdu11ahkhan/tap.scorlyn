@@ -40,7 +40,6 @@ export default async function Home() {
       <Marquee className="bg-sun text-char" />
       <HowItWorks />
       <Features />
-      <Marquee reverse className="bg-char text-sun" />
       <TemplateShowcase />
       <AudienceSplit />
       <Pricing note={content?.pricing_note} />

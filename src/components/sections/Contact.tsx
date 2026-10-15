@@ -69,9 +69,9 @@ export function Contact({
     "brut-sm brut-press flex h-14 items-center justify-center gap-2.5 rounded-full px-6 text-base font-black uppercase tracking-tight";
 
   return (
-    <section id="contact" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-white py-24 text-char">
+    <section id="contact" className="dot-grid relative scroll-mt-20 border-b-[3px] border-char bg-white py-14 text-char sm:py-24">
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
-        <div className="mb-14">
+        <div className="mb-10 sm:mb-14">
           <PosterTitle
             lead="Questions?"
             accent="Bulk order"
@@ -79,27 +79,27 @@ export function Contact({
           />
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
           {POINTS.map((point) => {
             const Icon = point.icon;
             return (
               <article
                 key={point.title}
                 style={{ rotate: point.tilt }}
-                className="brut brut-press rounded-[1.75rem] bg-cream p-7 text-char hover:!rotate-0"
+                className="brut brut-press rounded-[1.5rem] bg-cream p-4 text-char hover:!rotate-0 sm:rounded-[1.75rem] sm:p-7"
               >
-                <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border-[3px] border-char ${point.chip}`}>
-                  <Icon className="h-6 w-6" />
+                <div className={`mb-3 flex h-11 w-11 items-center justify-center rounded-xl border-2 border-char sm:mb-5 sm:h-14 sm:w-14 sm:rounded-2xl sm:border-[3px] ${point.chip}`}>
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
-                <h3 className="display mb-2 text-[34px]">{point.title}</h3>
-                <p className="text-[15px] font-semibold leading-relaxed text-char/75">{point.body}</p>
+                <h3 className="display mb-1 text-[20px] sm:mb-2 sm:text-[34px]">{point.title}</h3>
+                <p className="text-[13px] font-semibold leading-snug text-char/75 sm:text-[15px] sm:leading-relaxed">{point.body}</p>
               </article>
             );
           })}
         </div>
 
-        <div className="brut mt-14 rounded-[1.75rem] bg-sun p-7 sm:p-9">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+        <div className="brut mt-8 rounded-[1.75rem] bg-sun p-5 sm:mt-14 sm:p-9">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-sm">
               <h3 className="display text-[40px]">Start a conversation</h3>
               <p className="mt-2 flex items-center gap-2 text-[15px] font-bold text-char/75">

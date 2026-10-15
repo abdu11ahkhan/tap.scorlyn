@@ -22,14 +22,14 @@ export function TemplateShowcase() {
   const popular = POPULAR.map((id) => CARD_TEMPLATES.find((t) => t.id === id)).filter(Boolean) as (typeof CARD_TEMPLATES)[number][];
 
   return (
-    <section id="designs" className="relative scroll-mt-20 border-b-[3px] border-char bg-cream py-24">
+    <section id="designs" className="relative scroll-mt-20 border-b-[3px] border-char bg-cream py-14 sm:py-24">
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-12"
+          className="mb-8 sm:mb-12"
         >
           <PosterTitle
             lead="Explore"
@@ -93,7 +93,7 @@ export function TemplateShowcase() {
         </div>
 
         {/* Popular designs */}
-        <div className="mt-20 flex flex-wrap items-end justify-between gap-5">
+        <div className="mt-12 flex flex-wrap items-end justify-between gap-5 sm:mt-20">
           <PosterTitle lead="Popular" accent="designs" variant="outline" />
           <Link
             href="/templates"
@@ -102,7 +102,10 @@ export function TemplateShowcase() {
             view all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Horizontal scroll on mobile — same card, same four designs, just
+            laid out in one row like the category rail above instead of a
+            four-tall stack, which used to add ~1,700px to the page. */}
+        <div className="-mx-5 mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
           {popular.map((t, i) => (
             <motion.div
               key={t.id}
@@ -110,7 +113,7 @@ export function TemplateShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.45, delay: i * 0.06 }}
-              className="brut flex flex-col overflow-hidden rounded-[1.6rem] bg-white"
+              className="brut flex w-[240px] shrink-0 snap-start flex-col overflow-hidden rounded-[1.6rem] bg-white sm:w-auto sm:shrink"
             >
               <div className="relative h-40 border-b-[3px] border-char" style={{ background: t.preview }}>
                 <span className="absolute left-3 top-3 rounded-full border-2 border-char bg-hotpink px-2.5 py-0.5 text-[11px] font-black uppercase text-white">

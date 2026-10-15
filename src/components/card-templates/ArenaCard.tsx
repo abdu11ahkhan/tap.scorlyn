@@ -124,7 +124,7 @@ function PaymentTile({
           {ways === 1 ? "Pay for your session" : `${ways} ways to pay`}
         </span>
         <span
-          className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-bold tracking-wide"
+          className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold tracking-wide"
           style={{ borderColor: `${PAY_HUE}80`, background: `${PAY_HUE}1a`, color: light }}
         >
           Pay Now
@@ -157,7 +157,7 @@ function PaymentTile({
             </div>
           </div>
         ))}
-        <p className="text-[10px] font-medium leading-relaxed" style={{ color: fgMuted }}>
+        <p className="text-[11px] font-medium leading-relaxed" style={{ color: fgMuted }}>
           Tap any line to copy it. Always confirm these details with {owner} before sending money.
         </p>
       </div>
@@ -265,7 +265,7 @@ export default function ArenaCard({
                 )}
                 {card.company && (
                   <p
-                    className="mt-1.5 text-[8px] font-semibold uppercase tracking-[0.2em]"
+                    className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.2em]"
                     style={{ color: mixHex(accent, "#ffffff", 0.3) }}
                   >
                     {card.company}
@@ -291,7 +291,7 @@ export default function ArenaCard({
 
         <main className="relative z-10 -mt-8 px-5 pb-28">
           <span
-            className="card-rise inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] backdrop-blur-md"
+            className="card-rise inline-flex rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.15em] backdrop-blur-md"
             style={{ borderColor: "#ffffff1a", background: "#ffffff0d", color: theme.fgDim, ["--d" as string]: "120ms" }}
           >
             Welcome
@@ -377,7 +377,7 @@ export default function ArenaCard({
                       {sub}
                     </span>
                     <span
-                      className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-bold tracking-wide"
+                      className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold tracking-wide"
                       style={{ borderColor: `${hue}80`, background: `${hue}1a`, color: light }}
                     >
                       {cta}
@@ -393,7 +393,7 @@ export default function ArenaCard({
             <footer className="card-rise mt-9 text-center" style={{ ["--d" as string]: "600ms" }}>
               <div className="flex items-center gap-4">
                 <span className="h-px flex-1" style={{ background: theme.border }} />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: theme.fgMuted }}>
                   Follow us
                 </span>
                 <span className="h-px flex-1" style={{ background: theme.border }} />
@@ -420,7 +420,7 @@ export default function ArenaCard({
           )}
 
           <p
-            className="card-rise mt-7 text-center text-[9px] font-bold uppercase tracking-[0.2em]"
+            className="card-rise mt-7 text-center text-[11px] font-bold uppercase tracking-[0.2em]"
             style={{ color: theme.fgMuted, opacity: 0.6, ["--d" as string]: "650ms" }}
           >
             Powered by ScorlynTap

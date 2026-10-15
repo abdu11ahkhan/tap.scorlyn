@@ -14,45 +14,69 @@ type GalleryTemplate = {
   id: string;
   name: string;
   category: string;
+  /** Every TEMPLATE_AUDIENCES group this design fits — a design can fit more than one. */
+  audiences: readonly string[];
   preview: string;
   /** The template's own background, so a slow-loading thumbnail shows the
    *  right colour instead of a flat black box while its iframe loads. */
   tone: string;
 };
 
-type GalleryCategory = { id: string; name: string; blurb?: string };
+type GalleryGroup = { id: string; name: string; blurb?: string };
+
+/** Which lens the pill row is filtering by. "need" (what are you making this
+ *  for) is the default; "style" is the old structural grouping, kept one tap
+ *  away rather than removed — both read the same `active`/"all" state, reset
+ *  when you switch lenses. */
+type Mode = "need" | "style";
 
 /**
  * linktr.ee/s/templates' format: one pill row filters a single flat grid in
- * place — pick a category and the grid swaps instantly, no navigation, no
+ * place — pick a group and the grid swaps instantly, no navigation, no
  * per-category scroll. That instant swap is the whole point of the format,
  * which is what makes this a client component rather than the old page's
  * server-rendered anchor links into one section per category.
  */
 export default function TemplateGallery({
   templates,
+  audiences,
   categories,
   purposeId,
 }: {
   templates: GalleryTemplate[];
-  categories: readonly GalleryCategory[];
+  /** "What are you making this for?" — the default lens. */
+  audiences: readonly GalleryGroup[];
+  /** "What shape should the page be?" — the old structural lens, still one tap away. */
+  categories: readonly GalleryGroup[];
   purposeId: string | null;
 }) {
+  const [mode, setMode] = useState<Mode>("need");
   const [active, setActive] = useState<string>("all");
 
+  const groups = mode === "need" ? audiences : categories;
+  const inGroup = (t: GalleryTemplate, groupId: string) =>
+    mode === "need" ? t.audiences.includes(groupId) : t.category === groupId;
+
   const visible = useMemo(
-    () => (active === "all" ? templates : templates.filter((t) => t.category === active)),
-    [templates, active]
+    () => (active === "all" ? templates : templates.filter((t) => inGroup(t, active))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [templates, active, mode]
   );
 
   const purposeQuery = purposeId ? `&purpose=${encodeURIComponent(purposeId)}` : "";
   const editQuery = purposeId ? `?purpose=${encodeURIComponent(purposeId)}` : "";
   const counts = useMemo(() => {
     const m = new Map<string, number>();
-    for (const t of templates) m.set(t.category, (m.get(t.category) ?? 0) + 1);
+    for (const g of groups) m.set(g.id, templates.filter((t) => inGroup(t, g.id)).length);
     return m;
-  }, [templates]);
-  const activeName = active === "all" ? null : categories.find((c) => c.id === active)?.name;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [templates, mode]);
+  const activeName = active === "all" ? null : groups.find((g) => g.id === active)?.name;
+
+  const switchMode = (next: Mode) => {
+    setMode(next);
+    setActive("all");
+  };
 
   return (
     <div>
@@ -63,28 +87,42 @@ export default function TemplateGallery({
         </p>
       </div>
 
+      {/* The two lenses over the same 48 designs. "What you're making this
+          for" is the default tab; "design style" (the old structural
+          grouping) is one tap away, not gone — every design stays reachable
+          from either, plus "all" in both. */}
+      <div className="mt-6 flex gap-1.5" role="tablist" aria-label="Browse by">
+        <ModeTab label="what you need" active={mode === "need"} onClick={() => switchMode("need")} />
+        <ModeTab label="design style" active={mode === "style"} onClick={() => switchMode("style")} />
+      </div>
+
       {/* Horizontal scroll on mobile rather than wrapping, so a row of tabs
           that can't fit 390px doesn't stack into a ragged block. Negative
           margin lets it bleed to the screen edge; pt/pb leave room for the
           hard shadow. */}
       <div
-        className="-mx-5 mt-8 flex gap-3 overflow-x-auto px-5 pb-3 pt-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+        className="-mx-5 mt-3 flex gap-3 overflow-x-auto px-5 pb-3 pt-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
         role="tablist"
-        aria-label="Filter templates by category"
+        aria-label={mode === "need" ? "Filter templates by what you need" : "Filter templates by design style"}
       >
         <FilterPill label="all" count={templates.length} active={active === "all"} onClick={() => setActive("all")} />
-        {categories.map((category) =>
-          counts.get(category.id) ? (
+        {groups.map((group) =>
+          counts.get(group.id) ? (
             <FilterPill
-              key={category.id}
-              label={category.name}
-              count={counts.get(category.id) ?? 0}
-              active={active === category.id}
-              onClick={() => setActive(category.id)}
+              key={group.id}
+              label={group.name}
+              count={counts.get(group.id) ?? 0}
+              active={active === group.id}
+              onClick={() => setActive(group.id)}
             />
           ) : null
         )}
       </div>
+      {activeName && (
+        <p className="mt-2 px-1 text-[13px] font-semibold text-char/60">
+          {groups.find((g) => g.id === active)?.blurb}
+        </p>
+      )}
 
       <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4 xl:grid-cols-5">
         {visible.map((template) => {
@@ -147,6 +185,22 @@ export default function TemplateGallery({
         </p>
       )}
     </div>
+  );
+}
+
+function ModeTab({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={`inline-flex min-h-11 items-center justify-center rounded-full px-3.5 text-[12px] font-black uppercase tracking-tight transition-colors sm:min-h-9 ${
+        active ? "bg-char text-cream" : "text-char/50 hover:text-char"
+      }`}
+    >
+      {label}
+    </button>
   );
 }
 

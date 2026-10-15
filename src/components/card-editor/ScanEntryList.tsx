@@ -49,7 +49,10 @@ export function EntryListField({
               type={type}
               value={entry.value}
               onChange={(e) => update(i, { value: e.target.value })}
-              className="h-11 flex-1 rounded-xl border border-line bg-mist px-3.5 text-sm font-semibold text-ink outline-none focus:border-teal"
+              // 16px, not the default ~14px: keeps iOS Safari from zooming
+              // the page when this field is focused; h-11 already gives it
+              // a 44px touch target.
+              className="h-11 flex-1 rounded-xl border border-line bg-mist px-3.5 text-base font-semibold text-ink outline-none focus:border-teal"
             />
           </div>
         ))}

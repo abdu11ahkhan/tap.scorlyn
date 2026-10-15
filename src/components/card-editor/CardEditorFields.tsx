@@ -603,7 +603,7 @@ export default function CardEditorFields({
               type="color"
               value={form.accent_color}
               onChange={(e) => onFormChange({ accent_color: e.target.value })}
-              className="h-10 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-sc-surface-2"
+              className="h-11 w-14 cursor-pointer rounded-lg border-2 border-sc-border bg-sc-surface-2 sm:h-9"
             />
             <Input
               value={form.accent_color}
@@ -688,7 +688,7 @@ export default function CardEditorFields({
               value={form.surface_color}
               onChange={(e) => onFormChange({ surface_color: e.target.value })}
               placeholder="any hex, e.g. #123456"
-              className="h-11 w-40 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-3 text-sm font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:outline-none sm:h-9"
+              className="h-11 w-40 rounded-lg border-2 border-sc-border bg-sc-surface-2 px-3 text-base font-semibold text-sc-text placeholder:text-sc-text-dimmer focus-visible:border-sc-gold focus-visible:outline-none sm:h-9 sm:text-sm"
             />
             {form.surface_color && (() => {
               const check = surfaceReadability(form.surface_color, surfaceFamily);
@@ -765,7 +765,7 @@ export default function CardEditorFields({
                 key={font.id}
                 type="button"
                 onClick={() => onFormChange({ font: font.id })}
-                className={`h-10 flex-1 rounded-lg border-2 text-sm font-black lowercase transition-colors ${
+                className={`h-11 flex-1 rounded-lg border-2 text-sm font-black lowercase transition-colors sm:h-10 ${
                   form.font === font.id
                     ? "border-sc-gold bg-sc-gold text-sc-gold-ink"
                     : "border-sc-border bg-sc-surface-2 text-sc-text-dim hover:text-sc-text"

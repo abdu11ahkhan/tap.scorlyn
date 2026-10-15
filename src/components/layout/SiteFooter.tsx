@@ -27,11 +27,13 @@ const COLUMNS = [
 export default function SiteFooter({ whatsapp, email }: { whatsapp?: string | null; email?: string | null }) {
   const wa = normalizeWhatsapp(whatsapp ?? "");
   const mail = email?.trim() || null;
-  const link = "inline-flex min-h-10 items-center text-[15px] font-bold text-white/85 transition-colors hover:text-sun";
+  // min-h-11 (44px), not 10 (40px): every link here, including FAQ, is a
+  // real tap target on a phone, not just a desktop hover link.
+  const link = "inline-flex min-h-11 items-center text-[15px] font-bold text-white/85 transition-colors hover:text-sun";
 
   return (
     <footer className="bg-char text-white">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-10 sm:gap-10 sm:px-6 sm:py-16 lg:grid-cols-4">
         <div>
           <Link href="/" className="flex items-center gap-2.5">
             <span className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-white bg-sun">

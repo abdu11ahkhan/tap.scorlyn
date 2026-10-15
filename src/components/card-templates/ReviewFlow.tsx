@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Check, ChevronDown, Loader2, MessageSquare, Star } from "lucide-react";
+import { decideReviewOutcome } from "@/lib/review-routing";
 
 type Colors = {
   fg: string;
@@ -115,13 +116,14 @@ export default function ReviewFlow({
     track("rating", String(n));
     // A beat to see the stars fill before the view changes.
     setTimeout(() => {
-      if (n >= 4 && config.google_url) {
+      const outcome = decideReviewOutcome(n, config.google_url);
+      if (outcome === "google") {
         track("review_click", String(n));
         setStep("google");
         // In the editor preview and the gallery this only simulates — leaving
         // the page there would throw away the owner's unsaved edits.
         if (context.current.live) window.location.assign(config.google_url);
-      } else if (n <= 3) {
+      } else if (outcome === "feedback") {
         track("feedback_open");
         setStep("feedback");
       } else {

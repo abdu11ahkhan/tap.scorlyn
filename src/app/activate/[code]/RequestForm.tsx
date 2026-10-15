@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ChevronDown, KeyRound, Loader2, Send } from "lucide-react";
 import { requestActivation } from "../actions";
+import { CODE_PROBLEM, checkActivationCode } from "@/lib/activation";
 
 /**
  * Activation code → claimed on the spot. That's the main path, so it's the
@@ -17,16 +18,18 @@ export default function RequestForm({ code, codeOnly = false }: { code: string; 
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [noCode, setNoCode] = useState(false);
-  const hasCode = activation.replace(/[^a-z0-9]/gi, "").length > 0;
 
   const submit = (withCode: boolean) => {
-    if (withCode && !hasCode) {
-      setError("Enter the code printed on the packaging.");
+    // Format check first, so a typo gets a precise message without a round
+    // trip. Only the database can say whether it's the right code.
+    const check = withCode ? checkActivationCode(activation) : null;
+    if (check && !check.ok) {
+      setError(CODE_PROBLEM[check.reason]);
       return;
     }
     setError(null);
     start(async () => {
-      const r = await requestActivation(code, withCode ? activation : "");
+      const r = await requestActivation(code, check?.ok ? check.code : "");
       if (!r.ok) setError(r.error ?? "Something went wrong.");
       else router.refresh();
     });

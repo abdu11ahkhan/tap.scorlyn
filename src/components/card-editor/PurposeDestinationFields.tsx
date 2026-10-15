@@ -4,8 +4,10 @@ import { createElement } from "react";
 import { iconFor } from "@/components/card-templates/button-icons";
 import type { ButtonKind, CardButton, CardPurpose } from "@/lib/card";
 
+// 16px, not 15: iOS Safari zooms the whole page on focus below that, and
+// h-12 (48px) already clears the 44px touch-target minimum.
 const FIELD =
-  "h-12 w-full rounded-xl border border-line bg-mist px-4 text-[15px] font-semibold text-ink outline-none placeholder:text-ink-dim/60 focus:border-teal";
+  "h-12 w-full rounded-xl border border-line bg-mist px-4 text-base font-semibold text-ink outline-none placeholder:text-ink-dim/60 focus:border-teal";
 
 /** createElement, not JSX: the icon component is only known at render time
  *  (looked up from the button kind), and eslint-plugin-react-hooks's
@@ -66,7 +68,7 @@ export default function PurposeDestinationFields({
             onChange={(e) => onChange({ message: e.target.value })}
             rows={2}
             placeholder="Hi! I'd like to know more..."
-            className="w-full rounded-xl border border-line bg-mist px-4 py-3 text-[15px] font-semibold text-ink outline-none placeholder:text-ink-dim/60 focus:border-teal"
+            className="w-full rounded-xl border border-line bg-mist px-4 py-3 text-base font-semibold text-ink outline-none placeholder:text-ink-dim/60 focus:border-teal"
           />
         </div>
       )}

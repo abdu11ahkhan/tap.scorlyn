@@ -135,7 +135,7 @@ export default function ReferralBanner({
               <button
                 onClick={dismiss}
                 aria-label="Dismiss"
-                className="shrink-0 p-1 text-sc-text-dimmer transition-colors hover:text-sc-text"
+                className="-m-2.5 flex h-11 w-11 shrink-0 items-center justify-center text-sc-text-dimmer transition-colors hover:text-sc-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sc-gold"
               >
                 <X className="h-4 w-4" />
               </button>

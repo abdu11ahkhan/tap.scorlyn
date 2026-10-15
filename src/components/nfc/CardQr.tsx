@@ -230,7 +230,7 @@ export default function CardQr({
               type="button"
               onClick={() => setOpen(false)}
               aria-label="Close"
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-black/5"
+              className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
             >
               <X className="h-4 w-4" />
             </button>

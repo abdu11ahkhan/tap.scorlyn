@@ -24,8 +24,15 @@ export default function CoverBand({
     <div className="relative w-full" style={{ background: tone }}>
       {/* Viewport-relative so it stays a hero on a phone instead of a letterbox,
           with a floor and a ceiling so it can't swallow a short screen or turn
-          into a banner on a desktop one. */}
-      <div className="relative h-[38vh] max-h-[420px] min-h-[240px] w-full overflow-hidden">
+          into a banner on a desktop one.
+
+          Smaller by default: at the old 38vh/420px, the name and the save
+          button both landed 400-650px down a 390x800 phone — a visitor saw a
+          photo and nothing else for most of the first screen. Shrinks
+          further on phones, eases back up from sm: (tablet) and is back to
+          the original figures from lg: (desktop), where there's room for a
+          hero without pushing identity off-screen. */}
+      <div className="relative h-[20vh] max-h-[190px] min-h-[140px] w-full overflow-hidden sm:h-[28vh] sm:max-h-[300px] sm:min-h-[200px] lg:h-[38vh] lg:max-h-[420px] lg:min-h-[240px]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt="" className="h-full w-full object-cover" />
 

@@ -17,12 +17,16 @@ export default function ShareButton({
   name,
   accent,
   username,
+  tone = "#ffffff",
 }: {
   url: string;
   name: string;
   accent: string;
   /** For the share event — optional so this still renders anywhere it's used without a published card behind it. */
   username?: string;
+  /** The template's own background, so this reads on dark cards too — same
+   *  tone CardQr's QR trigger already keys off, via extrasTone(card). */
+  tone?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -60,7 +64,12 @@ export default function ShareButton({
         type="button"
         onClick={share}
         aria-label="Share this card"
-        className="fixed right-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-full border-2 border-black/10 bg-white/90 text-black shadow-lg backdrop-blur transition-transform active:scale-95"
+        className="fixed right-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-full shadow-lg backdrop-blur transition-transform active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        style={
+          isDark(tone)
+            ? { background: "rgba(255,255,255,0.14)", border: "2px solid rgba(255,255,255,0.2)", color: "#fff", outlineColor: "#fff" }
+            : { background: "rgba(255,255,255,0.9)", border: "2px solid rgba(0,0,0,0.1)", color: "#111", outlineColor: "#111" }
+        }
       >
         <Share2 className="h-4 w-4" />
       </button>
@@ -74,7 +83,7 @@ export default function ShareButton({
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="text-black/40 hover:text-black"
+                className="-m-2.5 flex h-11 w-11 items-center justify-center text-black/40 hover:text-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -106,4 +115,13 @@ export default function ShareButton({
       )}
     </>
   );
+}
+
+/** Duplicated from lib/card (same as CardQr) so this stays usable without a server import. */
+function isDark(hex: string): boolean {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return false;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b) < 0.4;
 }
