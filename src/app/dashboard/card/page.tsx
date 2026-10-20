@@ -518,7 +518,7 @@ function MyCardEditor() {
                             put this on a real card
                           </span>
                           <span className="mt-0.5 block text-xs font-bold text-sc-text-dim">
-                            Blank from Rs.1,600, your design from Rs.2,200 — see both
+                            ScorlynTap card from Rs.2,200, custom design from Rs.3,700 — see both
                           </span>
                         </span>
                         <ArrowRight className="h-5 w-5 shrink-0 text-sc-gold-text" />

@@ -26,12 +26,12 @@ const PLANS = [
     tilt: "-1.5deg",
   },
   {
-    name: "blank nfc card",
-    price: "Rs.1,600",
+    name: "scorlyntap card",
+    price: "Rs.2,200",
     note: "one time",
     perks: [
       "everything in the free page",
-      "blank NFC card, posted to you",
+      "NFC card with ScorlynTap's own branding",
       "we write and link it for you",
       "swap your page design anytime",
     ],
@@ -43,12 +43,12 @@ const PLANS = [
     tilt: "1deg",
   },
   {
-    name: "your design",
-    price: "Rs.2,200",
+    name: "custom design",
+    price: "Rs.3,700",
     note: "one time",
     perks: [
-      "everything in the blank card",
-      "your artwork printed on it",
+      "everything in the scorlyntap card",
+      "your own artwork, to your liking",
       "design help if you need it",
       "priority support",
     ],

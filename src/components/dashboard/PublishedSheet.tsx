@@ -98,13 +98,13 @@ export default function PublishedSheet({ url, onClose }: { url: string; onClose:
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Link href="/dashboard/nfc" className="flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 border-sc-border-soft bg-sc-surface p-3 hover:border-sc-gold">
               <Nfc className="h-5 w-5 text-sc-gold-text" />
-              <span className="text-[14px] font-black text-sc-text">Blank NFC card</span>
-              <span className="text-[12px] font-semibold text-sc-text-dim">Rs. 1,600</span>
+              <span className="text-[14px] font-black text-sc-text">ScorlynTap card</span>
+              <span className="text-[12px] font-semibold text-sc-text-dim">Rs. 2,200</span>
             </Link>
             <Link href="/dashboard/nfc" className="flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 border-sc-border-soft bg-sc-surface p-3 hover:border-sc-gold">
               <Palette className="h-5 w-5 text-sc-gold-text" />
-              <span className="text-[14px] font-black text-sc-text">Custom printed</span>
-              <span className="text-[12px] font-semibold text-sc-text-dim">Rs. 2,200</span>
+              <span className="text-[14px] font-black text-sc-text">Custom design</span>
+              <span className="text-[12px] font-semibold text-sc-text-dim">Rs. 3,700</span>
             </Link>
           </div>
         </div>

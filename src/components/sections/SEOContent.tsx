@@ -17,7 +17,7 @@ const FAQ_DATA = [
   },
   {
     question: "How much does an NFC business card cost in Pakistan?",
-    answer: "Creating your digital profile and using our online tools is completely free (Rs. 0 forever). If you want the physical NFC business card to tap and share, our premium cards start at just Rs. 1,600 as a one-time purchase, with no recurring subscription fees.",
+    answer: "Creating your digital profile and using our online tools is completely free (Rs. 0 forever). If you want the physical NFC business card to tap and share, our cards start at Rs. 2,200 as a one-time purchase, with no recurring subscription fees.",
   },
   {
     question: "What's the difference between a regular business card and a digital NFC card?",
