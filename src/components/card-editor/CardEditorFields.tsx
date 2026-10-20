@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { readStorage, writeStorage } from "@/lib/safe-storage";
 import {
   Plus,
   Trash2,
@@ -68,6 +69,15 @@ const TABS: { id: EditorTab; label: string; icon: typeof FileText }[] = [
   { id: "design", label: "design", icon: Palette },
   { id: "settings", label: "settings", icon: Settings2 },
 ];
+
+type OpenSection = null | "review" | "details" | "photos" | "links" | "payment" | "extras";
+const SECTION_IDS: NonNullable<OpenSection>[] = ["review", "details", "photos", "links", "payment", "extras"];
+
+/** Which tab and sheet were open, so reopening the editor (a reload, or
+ *  mobile Safari discarding a backgrounded tab — both routine) doesn't read
+ *  as being sent back to the start. Session-scoped, not the long-lived
+ *  draft: this is "where you were looking", not card content. */
+const UI_STATE_KEY = "scorlyntap_editor_ui";
 
 /**
  * What you're adding (names, links, photos), how it looks (template, colour,
@@ -148,9 +158,40 @@ export default function CardEditorFields({
 }) {
   const [tab, setTab] = useState<EditorTab>(initialTab);
   /** Which Content-tab section is open as a full-screen sheet right now. */
-  const [openSection, setOpenSection] = useState<
-    null | "review" | "details" | "photos" | "links" | "payment" | "extras"
-  >(null);
+  const [openSection, setOpenSection] = useState<OpenSection>(null);
+
+  // Restores the tab/sheet from this browser tab's own session, once, after
+  // mount — not during the initial render, where sessionStorage doesn't
+  // exist on the server and reading it would disagree with what the server
+  // sent. Session-scoped rather than written into the draft itself: which
+  // screen you were looking at isn't part of the card.
+  const restoredUi = useRef(false);
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    const raw = readStorage("session", UI_STATE_KEY);
+    if (raw) {
+      try {
+        const saved = JSON.parse(raw) as { tab?: string; openSection?: string };
+        if (saved.tab === "content" || saved.tab === "design" || saved.tab === "settings") {
+          setTab(saved.tab);
+        }
+        if (saved.openSection && (SECTION_IDS as string[]).includes(saved.openSection)) {
+          setOpenSection(saved.openSection as OpenSection);
+        }
+      } catch {
+        // Malformed or pre-existing value from an older shape — ignore it.
+      }
+    }
+    restoredUi.current = true;
+    // Mount-only: this is a one-time restore, not a sync with the saved value.
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  useEffect(() => {
+    if (!restoredUi.current) return;
+    writeStorage("session", UI_STATE_KEY, JSON.stringify({ tab, openSection }));
+  }, [tab, openSection]);
+
   // Shown on each row so it's obvious what's already filled in without
   // opening it.
   const photoCount =
