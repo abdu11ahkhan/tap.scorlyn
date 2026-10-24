@@ -90,7 +90,11 @@ export async function changePassword(password: string): Promise<Result> {
     if (password.length < 8) throw new Error("Use at least 8 characters.");
 
     const { error } = await supabase.auth.updateUser({ password });
-    if (error) throw new Error(error.message);
+    if (error) {
+      throw new Error(
+        error.code === "same_password" ? "That's your current password. Choose a new one." : error.message
+      );
+    }
     return { ok: true };
   } catch (e) {
     return fail(e);

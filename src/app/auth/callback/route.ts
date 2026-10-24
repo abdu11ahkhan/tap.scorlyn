@@ -25,23 +25,28 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const code = searchParams.get("code");
   const next = safeNext(searchParams.get("next"));
+  // Password reset emails (resetPasswordForEmail on /forgot-password) come back
+  // through here too. They only need the session — no welcome email, no
+  // onboarding detour — and a failure should offer a new link, not blame Google.
+  const isRecovery = next.startsWith("/reset-password");
+  const failed = isRecovery ? "/forgot-password?error=link-expired" : "/login?error=oauth-failed";
 
   // Google reports a refusal by redirecting here with an error, not by failing
   // the request — without this branch that arrives as a confusing "no code".
   const oauthError = searchParams.get("error_description") ?? searchParams.get("error");
-  if (oauthError) {
-    redirect(`/login?error=${encodeURIComponent("oauth-failed")}`);
-  }
-
-  if (!code) {
-    redirect("/login?error=oauth-failed");
+  if (oauthError || !code) {
+    redirect(failed);
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    redirect("/login?error=oauth-failed");
+    redirect(failed);
+  }
+
+  if (isRecovery) {
+    redirect(next);
   }
 
   await welcomeOnce(supabase);

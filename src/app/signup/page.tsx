@@ -14,6 +14,7 @@ import {
 } from "@/lib/referral";
 import BrandLockup from "@/components/layout/BrandLockup";
 import GoogleButton from "@/components/auth/GoogleButton";
+import PasswordInput from "@/components/auth/PasswordInput";
 import AccountTypePicker, { type AccountTypeValue } from "@/components/auth/AccountTypePicker";
 
 function SignupForm() {
@@ -21,6 +22,9 @@ function SignupForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // Set when the email already has an account, so the error can offer the way
+  // back into it. Supabase keeps one account per email and never overwrites one.
+  const [emailTaken, setEmailTaken] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [resending, setResending] = useState(false);
@@ -120,6 +124,7 @@ function SignupForm() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setEmailTaken(false);
 
     if (accountType === "corporate" && !accountValid) {
       setError("Give the business a valid, available name first — see above.");
@@ -145,7 +150,11 @@ function SignupForm() {
     });
 
     if (authError) {
-      setError(authError.message);
+      // With Confirm Email off, an existing address comes back as an error
+      // rather than the empty-identities user handled below.
+      const taken = /already (registered|exists)/i.test(authError.message);
+      setEmailTaken(taken);
+      setError(taken ? "An account with this email already exists." : authError.message);
       setLoading(false);
       return;
     }
@@ -159,7 +168,8 @@ function SignupForm() {
       // Supabase returns a user with empty identities if the email already
       // exists, to prevent enumeration. We must catch this.
       if (authData.user.identities && authData.user.identities.length === 0) {
-        setError("An account with this email already exists. Try logging in.");
+        setEmailTaken(true);
+        setError("An account with this email already exists.");
         setLoading(false);
         return;
       }
@@ -313,6 +323,16 @@ function SignupForm() {
             {error && (
               <div className="mt-6 rounded-xl border-2 border-ink bg-hotpink px-4 py-3 text-sm font-bold text-white">
                 {error}
+                {emailTaken && (
+                  <span className="mt-2 flex flex-wrap gap-x-4">
+                    <Link href={`/login?next=${encodeURIComponent(next)}`} className="inline-flex min-h-11 items-center underline underline-offset-2">
+                      log in
+                    </Link>
+                    <Link href="/forgot-password" className="inline-flex min-h-11 items-center underline underline-offset-2">
+                      reset my password
+                    </Link>
+                  </span>
+                )}
               </div>
             )}
 
@@ -358,9 +378,9 @@ function SignupForm() {
                 <label htmlFor="password" className={label}>
                   password
                 </label>
-                <input
+                <PasswordInput
                   id="password"
-                  type="password"
+                  autoComplete="new-password"
                   placeholder="Make it a good one"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

@@ -13,6 +13,7 @@ import {
 } from "./actions";
 import { COMPANY_SLUG_MAX, COMPANY_SLUG_PATTERN, slugify } from "@/lib/org";
 import { createClient } from "@/lib/supabase/client";
+import PasswordInput from "@/components/auth/PasswordInput";
 
 type Result = { ok: boolean; error?: string };
 
@@ -120,12 +121,14 @@ export default function SettingsPanels({
         onSave={() => changePassword(password)}
         saveLabel="Update password"
       >
-        <input
-          type="password"
+        <PasswordInput
+          autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="New password"
-          className="app-input max-w-sm"
+          aria-label="New password"
+          wrapperClassName="max-w-sm"
+          className="app-input w-full"
         />
       </Panel>
 

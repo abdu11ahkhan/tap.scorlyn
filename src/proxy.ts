@@ -46,6 +46,11 @@ export async function proxy(request: NextRequest) {
     path.startsWith('/api/') ||
     path.startsWith('/maintenance') ||
     path.startsWith('/login') ||
+    // Password reset has to work while the site is paused, or an admin who
+    // forgot theirs could never get back in to turn maintenance off.
+    path.startsWith('/forgot-password') ||
+    path.startsWith('/reset-password') ||
+    path.startsWith('/auth/') ||
     path.startsWith('/admin') ||
     path.startsWith('/_next')
 

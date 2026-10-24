@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import BrandLockup from "@/components/layout/BrandLockup";
 import GoogleButton from "@/components/auth/GoogleButton";
+import PasswordInput from "@/components/auth/PasswordInput";
 
 /** Why /auth/confirm sent someone here instead of into the dashboard. */
 const LINK_ERRORS: Record<string, string> = {
@@ -35,7 +36,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  // An expired reset link drops you back here; without a reason the page just
+  // An expired email link drops you back here; without a reason the page just
   // looks like it forgot you were signing in.
   const linkError = LINK_ERRORS[searchParams.get("error") ?? ""] ?? null;
 
@@ -181,15 +182,23 @@ function LoginForm() {
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="password"
-              className="text-sm font-black uppercase tracking-wide text-ink"
-            >
-              password
-            </label>
-            <input
+            <div className="flex items-center justify-between gap-3">
+              <label
+                htmlFor="password"
+                className="text-sm font-black uppercase tracking-wide text-ink"
+              >
+                password
+              </label>
+              <Link
+                href="/forgot-password"
+                className="inline-flex min-h-11 items-center text-sm font-black text-ink/60 underline decoration-acid decoration-2 underline-offset-2 hover:text-ink"
+              >
+                forgot password?
+              </Link>
+            </div>
+            <PasswordInput
               id="password"
-              type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

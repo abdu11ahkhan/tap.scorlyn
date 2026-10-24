@@ -6,10 +6,9 @@ import { needsCompanySetup } from "@/lib/org";
 
 /**
  * Where each kind of email link lands once the token checks out.
- * Recovery goes to settings because that is where the password panel lives.
  */
 const LANDING: Record<string, string> = {
-  recovery: "/dashboard/settings",
+  recovery: "/reset-password",
   email_change: "/dashboard/settings",
   invite: "/dashboard/card",
   signup: "/dashboard/card",
@@ -51,7 +50,7 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     // Expired and already-used links are the common case, not an outage.
-    redirect("/login?error=link-expired");
+    redirect(type === "recovery" ? "/forgot-password?error=link-expired" : "/login?error=link-expired");
   }
 
   const next = safeNext(searchParams.get("next"), type);
