@@ -38,11 +38,12 @@ export default function TemplateThumb({
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
-  // Every thumbnail is a full page load of the preview route. Mounting all of
-  // them at once fired three dozen server renders the moment the gallery
-  // opened, which is what made this page slow — worst on a desktop, where the
-  // wider grid puts more of them near the viewport and the browser's own lazy
-  // heuristics give up and fetch them anyway.
+  // Every thumbnail is a full page load of the preview route, rendered
+  // RENDER_H tall. Keeping one mounted after it scrolled away meant a single
+  // pass down the gallery left all 48 live documents in memory, which is what
+  // made mobile browsers kill the tab. So a preview mounts when it comes near
+  // and unmounts again once it is well out of view; the gap between the two
+  // margins stops tiles at the edge flickering in and out.
   const [near, setNear] = useState(false);
 
   useEffect(() => {
@@ -58,22 +59,20 @@ export default function TemplateThumb({
     const ro = new ResizeObserver(fit);
     ro.observe(el);
 
-    // A screen of margin, so a preview is loading by the time it is scrolled to
-    // and never appears as an empty box.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setNear(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "600px 0px" }
-    );
-    io.observe(el);
+    // Margin so a preview is loading by the time it is scrolled to.
+    const enter = new IntersectionObserver(([entry]) => entry.isIntersecting && setNear(true), {
+      rootMargin: "500px 0px",
+    });
+    const leave = new IntersectionObserver(([entry]) => !entry.isIntersecting && setNear(false), {
+      rootMargin: "1400px 0px",
+    });
+    enter.observe(el);
+    leave.observe(el);
 
     return () => {
       ro.disconnect();
-      io.disconnect();
+      enter.disconnect();
+      leave.disconnect();
     };
   }, []);
 

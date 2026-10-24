@@ -499,6 +499,7 @@ export default function CardEditorFields({
           />
           <ImagePicker
             kind="avatar"
+            crop="logo"
             label="Company logo"
             hint="Optional. Shown small in the corner of your card, over everything else."
             value={form.logo_url}

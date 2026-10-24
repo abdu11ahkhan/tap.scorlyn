@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ImagePlus, Loader2, Trash2 } from "lucide-react";
+import { Crop, ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { uploadImage } from "@/lib/upload-image";
+import ImageCropper, { type CropPreset } from "./ImageCropper";
 
 /**
  * Pick an image from the device and keep it.
@@ -11,8 +12,9 @@ import { uploadImage } from "@/lib/upload-image";
  * their picture hosted somewhere — almost nobody does. This takes the file off
  * the phone instead.
  *
- * Two things happen before it leaves the browser:
+ * Three things happen before it leaves the browser:
  *
+ *  - The person crops it (ImageCropper) — a shape per photo, see CROP.
  *  - It's downscaled and re-encoded. A modern phone photo is 3–6MB and several
  *    thousand pixels wide; nothing here is shown above ~1600px, so sending the
  *    original would be slow on a Pakistani mobile connection for no visible
@@ -41,11 +43,47 @@ const QUALITY = { avatar: 0.92, cover: 0.86, gallery: 0.86, scan: 0.95 };
 
 export type ImageKind = keyof typeof MAX_EDGE;
 
+type CropArea = { x: number; y: number; width: number; height: number };
+
+/** Crop shapes offered per photo; the first is the default. */
+export type CropStyle = "avatar" | "logo" | "cover" | "gallery";
+const CROP: Record<CropStyle, { presets: CropPreset[]; round?: boolean }> = {
+  avatar: { presets: [{ label: "Square", aspect: 1 }], round: true },
+  logo: { presets: [{ label: "Original", aspect: null }, { label: "Square", aspect: 1 }] },
+  cover: {
+    presets: [
+      { label: "Wide 16:9", aspect: 16 / 9 },
+      { label: "3:2", aspect: 3 / 2 },
+      { label: "Square", aspect: 1 },
+      { label: "Original", aspect: null },
+    ],
+  },
+  gallery: {
+    presets: [
+      { label: "Original", aspect: null },
+      { label: "Square", aspect: 1 },
+      { label: "Portrait 4:5", aspect: 4 / 5 },
+      { label: "Wide 16:9", aspect: 16 / 9 },
+    ],
+  },
+};
+
 /** Exported for the card-scan flow (src/app/templates/scan/page.tsx), which
  *  resizes a photographed card before running OCR on it — same reasoning as
  *  every other picked photo, no reason for a second implementation. */
-export async function downscale(file: File, kind: ImageKind): Promise<Blob> {
-  const bitmap = await createImageBitmap(file);
+export async function downscale(file: Blob, kind: ImageKind, crop?: CropArea): Promise<Blob> {
+  let bitmap = await createImageBitmap(file);
+  if (crop) {
+    // Crop the already-oriented bitmap, so the rectangle (measured on the
+    // on-screen, EXIF-rotated photo) means the same thing here.
+    const x = Math.max(0, Math.round(crop.x));
+    const y = Math.max(0, Math.round(crop.y));
+    const w = Math.max(1, Math.min(bitmap.width - x, Math.round(crop.width)));
+    const h = Math.max(1, Math.min(bitmap.height - y, Math.round(crop.height)));
+    const cropped = await createImageBitmap(bitmap, x, y, w, h);
+    bitmap.close?.();
+    bitmap = cropped;
+  }
   const limit = MAX_EDGE[kind];
   const scale = Math.min(1, limit / Math.max(bitmap.width, bitmap.height));
 
@@ -105,28 +143,54 @@ export function toDataUrl(blob: Blob): Promise<string> {
   });
 }
 
+function dataUrlToBlob(url: string): Blob {
+  const [head, body] = url.split(",", 2);
+  const type = head.match(/^data:([^;]+)/)?.[1] ?? "image/jpeg";
+  const bytes = head.includes(";base64") ? Uint8Array.from(atob(body), (c) => c.charCodeAt(0)) : new TextEncoder().encode(decodeURIComponent(body));
+  return new Blob([bytes], { type });
+}
+
 export default function ImagePicker({
   value,
   onChange,
   kind = "avatar",
+  crop: cropStyle,
   label,
   hint,
 }: {
   value: string;
   onChange: (url: string) => void;
-  kind?: ImageKind;
+  kind?: Exclude<ImageKind, "scan">;
+  /** Which crop shapes to offer; defaults to the one matching `kind`. */
+  crop?: CropStyle;
   label: string;
   hint?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The photo waiting in the crop screen, plus an object URL for showing it.
+  const [pending, setPending] = useState<{ blob: Blob; url: string } | null>(null);
+  const cropConfig = CROP[cropStyle ?? kind];
 
-  const pick = async (file: File) => {
+  const openCrop = (blob: Blob) => {
     setError(null);
+    setPending({ blob, url: URL.createObjectURL(blob) });
+  };
+
+  const closeCrop = () => {
+    if (pending) URL.revokeObjectURL(pending.url);
+    setPending(null);
+    if (input.current) input.current.value = "";
+  };
+
+  const save = async (area: CropArea) => {
+    if (!pending) return;
+    const { blob: source } = pending;
+    closeCrop();
     setBusy(true);
     try {
-      const blob = await downscale(file, kind);
+      const blob = await downscale(source, kind, area);
       const url = await uploadImage(blob);
 
       // null means no account yet — carry it in the draft, upload on publish.
@@ -135,7 +199,27 @@ export default function ImagePicker({
       setError(e instanceof Error ? e.message : "Could not use that image.");
     } finally {
       setBusy(false);
-      if (input.current) input.current.value = "";
+    }
+  };
+
+  // Re-crop the photo already on the card: a draft's data: URL is decoded in
+  // place (the CSP's connect-src doesn't allow fetching data: URLs), an
+  // uploaded one is fetched back from storage.
+  const recrop = async () => {
+    setError(null);
+    setBusy(true);
+    try {
+      if (value.startsWith("data:")) {
+        openCrop(dataUrlToBlob(value));
+        return;
+      }
+      const res = await fetch(value);
+      if (!res.ok) throw new Error();
+      openCrop(await res.blob());
+    } catch {
+      setError("Couldn't open this photo to crop. Choose it again from your phone.");
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -181,6 +265,17 @@ export default function ImagePicker({
         {value && !busy && (
           <button
             type="button"
+            onClick={() => void recrop()}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-sc-gold-text"
+            aria-label={`Crop ${label}`}
+            title="Crop"
+          >
+            <Crop className="h-4 w-4" />
+          </button>
+        )}
+        {value && !busy && (
+          <button
+            type="button"
             onClick={() => onChange("")}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-sc-text-dimmer transition-colors hover:text-sc-error"
             aria-label={`Remove ${label}`}
@@ -197,9 +292,19 @@ export default function ImagePicker({
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) void pick(file);
+          if (file) openCrop(file);
         }}
       />
+
+      {pending && (
+        <ImageCropper
+          src={pending.url}
+          presets={cropConfig.presets}
+          round={cropConfig.round}
+          onCancel={closeCrop}
+          onDone={(area) => void save(area)}
+        />
+      )}
     </div>
   );
 }
